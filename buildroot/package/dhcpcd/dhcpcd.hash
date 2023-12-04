@@ -1,0 +1,3 @@
+# Locally calculated from download (no sig, hash)
+sha256	6f9674dc7e27e936cc787175404a6171618675ecfb6903ab9887b1b66a87d69e	dhcpcd-6.11.5.tar.xz
+sha256 6e3cd0df9bfabe9a3d3f4c4b27cdf68a8e188714c521264b3098ea9cf0da584c  dhcpcd.c

@@ -1,0 +1,4 @@
+config BR2_PACKAGE_RKNPU2
+	bool "rknpu2"
+	help
+	  "Copy rknpu driver"

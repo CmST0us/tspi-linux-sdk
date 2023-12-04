@@ -1,0 +1,6 @@
+config BR2_PACKAGE_HOST_LIBYAML
+	bool "host libyaml"
+	help
+	  LibYAML is a YAML 1.1 parser and emitter written in C.
+
+	  http://pyyaml.org/wiki/LibYAML

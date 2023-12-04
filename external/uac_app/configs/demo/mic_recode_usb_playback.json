@@ -1,0 +1,94 @@
+{
+    "pipe_0": {
+        "node_0": {
+            "node_opts": {
+                "node_name"       : "alsa_capture"
+            },
+            "node_opts_extra": {
+                "node_source_uri" : "default:CARD=rockchipmulti72",
+                "node_buff_type"  : 0,
+                "node_buff_count" : 4,
+                "node_buff_size"  : 2048,
+                "node_buff_alloc_type" : "malloc"
+            },
+            "stream_opts_extra": {
+                "opt_audio_ppm"   : 1,
+                "opt_samaple_rate": 48000,
+                "opt_format"      : "audio:pcm_16",
+                "opt_channel"     : 8,
+                "opt_channel_layout"  : "int64:3"
+            },
+            "stream_opts": {
+                "stream_fmt_in"   : "audio:pcm_16",
+                "stream_fmt_out"  : "audio:pcm_16",
+                "stream_output"   : "audio:pcm_0"
+            }
+        },
+        "node_1": {
+            "node_opts": {
+                "node_name"       : "resample"
+            },
+            "node_opts_extra": {
+                "node_buff_type"  : 0,
+                "node_buff_count" : 7,
+                "node_buff_size"  : 2048,
+                "node_buff_alloc_type" : "malloc"
+            },
+            "stream_opts_extra": {
+                "opt_samaple_rate": 48000,
+                "opt_format"      : "audio:pcm_16",
+                "opt_channel"     : 2,
+                "opt_channel_layout"  : "int64:3"
+            },
+            "stream_opts": {
+                "stream_fmt_in"   : "audio:pcm_16",
+                "stream_fmt_out"  : "audio:pcm_16",
+                "stream_input"    : "audio:pcm_0",
+                "stream_output"   : "audio:pcm_1"
+            }
+        },
+        "node_2": {
+            "node_opts": {
+                "node_name"       : "filter_volume"
+            },
+            "node_opts_extra": {
+                "node_buff_type"  : 0,
+                "node_buff_count" : 4,
+                "node_buff_size"  : 2048,
+                "node_buff_alloc_type" : "malloc"
+            },
+            "stream_opts_extra": {
+                "opt_samaple_rate": 48000,
+                "opt_format"      : "audio:pcm_16",
+                "opt_channel"     : 2,
+                "opt_channel_layout"  : "int64:3"
+            },
+            "stream_opts": {
+                "stream_fmt_in"   : "audio:pcm_16",
+                "stream_fmt_out"  : "audio:pcm_16",
+                "stream_input"    : "audio:pcm_1",
+                "stream_output"   : "audio:pcm_2"
+            }
+        },
+        "node_3": {
+            "node_opts": {
+                "node_name"       : "alsa_playback"
+            },
+            "node_opts_extra": {
+                "node_source_uri" : "hw:1,0"
+            },
+            "stream_opts": {
+                "stream_fmt_in"   : "audio:pcm_16",
+                "stream_fmt_out"  : "audio:pcm_16",
+                "stream_input"    : "audio:pcm_2"
+            },
+            "stream_opts_extra": {
+                "opt_alsa_mode"   : "nonblock",
+                "opt_samaple_rate": 48000,
+                "opt_format"      : "audio:pcm_16",
+                "opt_channel"     : 2,
+                "opt_channel_layout"  : "int64:3"
+            }
+        }
+    }
+}

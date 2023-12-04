@@ -1,0 +1,16 @@
+config BR2_PACKAGE_ROCKCHIP_MODULES
+    bool "rockchip modules"
+
+if BR2_PACKAGE_ROCKCHIP_MODULES
+
+config BR2_PACKAGE_ROCKCHIP_MODULES_EXT4
+    bool "ext4 filesystem support"
+config BR2_PACKAGE_ROCKCHIP_MODULES_FAT
+    bool "fat filesystem support"
+config BR2_PACKAGE_ROCKCHIP_MODULES_NTFS
+    bool "ntfs filesystem support"
+config BR2_PACKAGE_ROCKCHIP_MODULES_GSLX680_D708
+    bool "gslx680_d708 touchpad support"
+endif
+
+

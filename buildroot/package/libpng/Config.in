@@ -1,0 +1,15 @@
+config BR2_PACKAGE_LIBPNG
+	bool "libpng"
+	select BR2_PACKAGE_ZLIB
+	help
+	  Library for handling PNG (Portable Network Graphics)
+	  images.
+
+	  http://www.libpng.org/
+
+if BR2_PACKAGE_LIBPNG
+
+config BR2_PACKAGE_LIBPNG_12
+	bool "libpng 1.2.x"
+
+endif

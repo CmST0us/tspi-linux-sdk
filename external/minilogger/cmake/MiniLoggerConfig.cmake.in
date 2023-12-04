@@ -1,0 +1,20 @@
+#@PACKAGE_INIT@
+
+get_filename_component(MINILOGGER_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
+include(CMakeFindDependencyMacro)
+
+list(APPEND CMAKE_MODULE_PATH ${MINILOGGER_CMAKE_DIR})
+# NOTE: to find FindLibunwind.cmake
+find_dependency(Libunwind @MIN_Libunwind_VERSION@)
+find_dependency(GLib2)
+list(REMOVE_AT CMAKE_MODULE_PATH -1)
+
+#set_and_check(MINILOGGER_INCLUDE_DIR "${MINILOGGER_CMAKE_DIR}/../../../include")
+#set_and_check(MINILOGGER_LIBRARY "${MINILOGGER_CMAKE_DIR}/../../../lib/libminilogger.a")
+#set_and_check(MINILOGGER_LIBRARY_DIR "${MINILOGGER_CMAKE_DIR}/../../../lib")
+
+if(NOT TARGET MiniLogger::MiniLogger)
+    include("${MINILOGGER_CMAKE_DIR}/MiniLoggerTargets.cmake")
+endif()
+
+set(MINILOGGER_LIBRARIES MiniLogger::MiniLogger)

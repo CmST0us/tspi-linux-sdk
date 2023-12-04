@@ -1,0 +1,10 @@
+config BR2_PACKAGE_STD_MSGS
+	bool "std-msgs for ROS"
+	depends on BR2_PACKAGE_HOST_CATKIN
+	select BR2_PACKAGE_ROSCPP_CORE_SET
+	select BR2_PACKAGE_MESSAGE_GENERATION
+	select BR2_PACKAGE_MESSAGE_RUNTIME
+	select BR2_PACKAGE_HOST_PYTHON_PYYAML
+	help
+		Contains minimal messages of primitive data types and multiarrays. Intended for quick prototyping, not production use.
+

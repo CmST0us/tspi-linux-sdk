@@ -1,0 +1,7 @@
+config BR2_PACKAGE_HOST_PYTHON_DATEUTIL
+	bool "host-python-dateutil"
+	select BR2_PACKAGE_HOST_PYTHON_SIX
+	help
+	  Extensions to the standard Python datetime module.
+
+	  https://dateutil.readthedocs.org

@@ -1,0 +1,5 @@
+config BR2_PACKAGE_SL_LOCK
+    bool "sl_lock"
+    select BR2_PACKAGE_LIBDRM
+    select BR2_PACKAGE_ROCKCHIP_RGA
+    select BR2_PACKAGE_CAMERA_ENGINE

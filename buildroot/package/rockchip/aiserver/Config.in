@@ -1,0 +1,74 @@
+menuconfig BR2_PACKAGE_AISERVER
+    bool "rockchip aiserver"
+    select BR2_PACKAGE_PROTOBUF
+    select BR2_PACKAGE_ROCKIT
+    select BR2_PACKAGE_DBUS
+    select BR2_PACKAGE_DBUS_CPP
+    select BR2_PACKAGE_LIBRKDB
+    help
+      rockchip aiserver
+
+if BR2_PACKAGE_AISERVER
+
+config BR2_PACKAGE_AISERVER_SANITIZER_DYNAMIC
+    bool "enable aiserver sanitizer tools with dynamic linker"
+    select BR2_PACKAGE_ADDRESS_SANITIZER
+    help
+      enable aiserver debug on sanitizer with dynamic linker.
+
+config BR2_PACKAGE_AISERVER_SANITIZER_STATIC
+    bool "enable aiserver sanitizer tools with static linker"
+    select BR2_PACKAGE_ADDRESS_SANITIZER
+    help
+      enable aiserver debug on sanitizer with static linker.
+
+config BR2_PACKAGE_AISERVER_CONIFG
+    string "aiserver config"
+    default "none"
+
+config BR2_PACKAGE_AISERVER_RKVO
+    bool "enable aiserver with rkvo"
+    default n
+
+config BR2_PACKAGE_AISERVER_MINILOGGER
+        bool "enable miniloger print"
+        select BR2_PACKAGE_MINILOGGER
+        default y
+        help
+          rockchip aiserver options
+
+config BR2_PACKAGE_AISERVER_SHM_SERVER
+        bool "enable shm server"
+        select BR2_PACKAGE_SHM_TOOLS
+        default n
+        help
+          rockchip aiserver options
+
+config BR2_PACKAGE_AISERVER_OSD_SERVER
+        bool "enable osd server"
+        select BR2_PACKAGE_FREETYPE
+        default n
+        help
+          rockchip aiserver options
+
+config BR2_PACKAGE_AISERVER_EXIV2_FEATURE
+        bool "enable exiv2 feature"
+        select BR2_PACKAGE_EXIV2
+        default n
+        help
+          rockchip aiserver options
+
+config BR2_PACKAGE_AISERVER_USE_ROCKX
+        bool "rockx"
+        select BR2_PACKAGE_RKNPU
+        select BR2_PACKAGE_ROCKX
+        help
+          wrapped function of rockx
+
+config BR2_PACKAGE_AISERVER_USE_STASTERIA
+        bool "stasteria"
+        select BR2_PACKAGE_RKNPU
+        default n
+        help
+          rockchip aiserver options
+endif

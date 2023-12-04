@@ -1,0 +1,35 @@
+LOCAL_SRC_DIRS 		 := ./components/fsm
+#LOCAL_SRC_DIRS_EXCULDE  :=
+LOCAL_SRC_FILES 		 := ./components/dui/dui_major_minor_multiple.c
+LOCAL_SRC_FILES 		 += ./components/json/cJSON.c
+LOCAL_SRC_FILES 		 += ./example/main.c
+#LOCAL_SRC_FILES_EXCLUDE :=
+#LOCAL_SRC_FILES_EXCLUDE :=
+
+LOCAL_MODULE := dui_$(MIC_TYPE)
+
+LOCAL_CFLAGS := -Wall -O2
+#LOCAL_CFLAGS += -DSAVE_AUDIO
+ifeq ($(MIC_TYPE), fespa)
+LOCAL_CFLAGS += -DWAKEUP_FESPA
+else ifeq ($(MIC_TYPE), fespl)
+LOCAL_CFLAGS += -DWAKEUP_FESPL
+endif
+LOCAL_CFLAGS += -I ./include
+LOCAL_CFLAGS += -I ./components/json
+LOCAL_CFLAGS += -I ./components/dui/include
+LOCAL_CFLAGS += -I ./components/fsm/include
+
+LOCAL_LDFLAGS := -lpthread
+LOCAL_CXXFLAGS := -Wall -O2
+
+ifeq ($(MIC_TYPE), fespa)
+LOCAL_LDFLAGS += -L lib/rk3308_32  -ldds -lduilite_fespa -lplayer_dev -lauth_rk3308 -Wl,-rpath=./lib/rk3308_32
+else ifeq ($(MIC_TYPE), fespl)
+LOCAL_LDFLAGS += -L lib/rk3308_32  -ldds -lduilite_fespl -lplayer_dev -lauth_rk3308 -Wl,-rpath=./lib/rk3308_32
+endif
+
+
+include $(BUILD_EXECUTABLE)
+#include $(BUILD_STATIC_LIBRARY)
+#include $(BUILD_SHARED_LIBRARY)

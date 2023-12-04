@@ -1,0 +1,39 @@
+#!/bin/sh
+#
+# Start linux launcher...
+#
+
+# Load default env variables from profiles(e.g. /etc/profile.d/weston.sh)
+. /etc/profile
+
+case "$1" in
+  start)
+		printf "Starting launcher: "
+		export LC_ALL='zh_CN.utf8'
+
+		# Uncomment to disable mirror mode
+		# unset WESTON_DRM_MIRROR
+
+		export XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR:-/var/run}
+		export QT_QPA_PLATFORM=${QT_QPA_PLATFORM:-wayland}
+
+		weston --tty=2 --idle-time=0&
+		{
+			# Wait for weston ready
+			while [ ! -e ${XDG_RUNTIME_DIR}/wayland-0 ]; do
+				sleep .1
+			done
+			/usr/bin/QLauncher &
+		}&
+	;;
+  stop)
+		killall QLauncher
+		killall weston
+		printf "stop finished"
+        ;;
+  *)
+        echo "Usage: $0 {start|stop}"
+        exit 1
+        ;;
+esac
+exit 0

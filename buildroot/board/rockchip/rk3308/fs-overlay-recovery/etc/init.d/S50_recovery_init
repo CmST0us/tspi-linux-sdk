@@ -1,0 +1,20 @@
+#!/bin/sh
+#
+# Insmod
+#
+case "$1" in
+  start)
+        ln -s /sbin/e2fsck /usr/sbin/e2fsck
+        ln -s /sbin/resize2fs /usr/sbin/resize2fs
+        /usr/bin/ueventd
+        /usr/bin/recovery &
+        ;;
+  stop)
+        printf "stop finished\n"
+        ;;
+  *)
+        echo "Usage: $0 {start|stop}"
+        exit 1
+        ;;
+esac
+exit 0

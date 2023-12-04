@@ -1,0 +1,9 @@
+config BR2_PACKAGE_ROSTEST
+	bool "rostest"
+    select BR2_PACKAGE_ROS_SET
+	select BR2_PACKAGE_ROSUNIT
+    select BR2_PACKAGE_BOOST_THREAD
+    select BR2_PACKAGE_BOOST_SYSTEM
+
+	help
+		Integration test suite based on roslaunch that is compatible with xUnit frameworks.

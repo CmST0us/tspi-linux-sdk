@@ -1,0 +1,4 @@
+#include "base.config"
+#include "base_extra.config"
+#include "rv1126_rv1109_arm.config"
+#include "recovery_updateEngine.config"

@@ -1,0 +1,30 @@
+#include "rk3308_arm64.config"
+#include "audio.config"
+#include "base.config"
+#include "wifi.config"
+#include "network.config"
+BR2_CCACHE=y
+# base tools
+BR2_PACKAGE_COREUTILS=y
+BR2_PACKAGE_RECOVERY_USE_UPDATEENGINE=y
+BR2_PACKAGE_RECOVERY_UPDATEENGINEBIN=y
+BR2_PACKAGE_RKSCRIPT=y
+BR2_PACKAGE_VENDOR_STORAGE=y
+# partition init depends on udev
+BR2_ROOTFS_DEVICE_CREATION_DYNAMIC_EUDEV=y
+# BR2_PACKAGE_EUDEV_ENABLE_HWDB is not set
+# adb feature
+BR2_PACKAGE_USBDEVICE=y
+BR2_PACKAGE_ANDROID_TOOLS=y
+# fsck fs each startup
+BR2_PACKAGE_E2FSPROGS=y
+BR2_PACKAGE_E2FSPROGS_FSCK=y
+BR2_PACKAGE_E2FSPROGS_RESIZE2FS=y
+# debug tools
+BR2_PACKAGE_EVTEST=y
+BR2_PACKAGE_IO=y
+BR2_PACKAGE_IW=y
+BR2_PACKAGE_STRACE=y
+BR2_ROOTFS_OVERLAY:="board/rockchip/common/robot/base"
+BR2_TARGET_GENERIC_HOSTNAME="rk3308_robot64"
+BR2_TARGET_GENERIC_ISSUE="Welcome to RK3308 Buildroot For Robot"

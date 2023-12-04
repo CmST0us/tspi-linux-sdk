@@ -1,0 +1,3 @@
+VERSION = 1.9.14
+SITE = https://github.com/ros/nodelet_core/archive
+SOURCE = $(VERSION).tar.gz

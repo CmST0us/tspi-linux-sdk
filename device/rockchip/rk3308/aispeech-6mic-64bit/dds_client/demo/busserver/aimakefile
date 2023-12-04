@@ -1,0 +1,12 @@
+LOCAL_MODULE 		     := test
+LOCAL_SRC_DIRS 		     += mongoose
+LOCAL_SRC_DIRS 		     += src
+
+LOCAL_CFLAGS 	:= -rdynamic -g -O0 -Wall -DMG_ENABLE_THREADS  -Wno-unused-variable -fPIC
+LOCAL_CFLAGS 	+= -Imongoose
+
+LOCAL_LDFLAGS += -lpthread
+
+LOCAL_CXXFLAGS 	:= LOCAL_CFLAGS -rdynamic 
+
+include $(BUILD_EXECUTABLE)

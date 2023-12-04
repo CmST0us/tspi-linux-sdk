@@ -1,0 +1,4 @@
+config BR2_PACKAGE_PYTHON_ROSPKG
+	bool "python rospkg for ros"
+	help
+		ros-pkg is a community repository for developing libraries that are generally robot agnostic

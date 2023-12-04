@@ -1,0 +1,6 @@
+BEGIN:VCARD
+VERSION:2.1
+N:Smiths;John;;;
+FN:John Smiths
+TEL;CELL:(858) 123-4567
+END:VCARD

@@ -1,0 +1,11 @@
+config BR2_PACKAGE_PYTHON_PYCHROMECAST
+	bool "python-pychromecast"
+    depends on BR2_PACKAGE_PYTHON3
+	select BR2_PACKAGE_PYTHON_REQUESTS
+	select BR2_PACKAGE_PYTHON_PROTOBUF
+	select BR2_PACKAGE_PYTHON_ZEROCONF
+	select BR2_PACKAGE_PYTHON_CASTTUBE
+	help
+	  Library for Python 3 to communicate with the Google Chromecast.
+
+	  https://github.com/balloob/pychromecast

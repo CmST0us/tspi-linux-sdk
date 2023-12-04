@@ -1,0 +1,4 @@
+config BR2_PACKAGE_COMMON_MSGS
+    bool "common-msgs"
+    help
+        common-msgs

@@ -1,0 +1,75 @@
+{
+    "sdk": {
+        "configPath":"./config.json"
+    },
+	"auth": {
+		"productId": "278572662",
+        "deviceProfile":"xYKXuuou17VptMur5lwru2/naA1fyB8nyRdtcUPCCRR+Ei0qMIzh9oTdm5qJlpyarJqcjZqL3cXdnM/Oy56bzsrMzM3My8+bnMbJnJvJx8icns7Jxpqazcvd092ek5OQiN3FztPdj42Qm4qci7ab3cXdzcjHysjNycnN3dPdm5qJlpyasZ6Smt3F3Z2czp2eyZvPzM/MmsuZzMaemprOypzInMqam8ibnsyd3dPdjJyQj5rdxaTdnpOT3aKC1"
+    },
+	"front": {
+		"aecBinPath": "../res/fesp/AEC_ch3-2-ch2_1ref_common_20180806_v0.9.4.bin",
+		"wakeupBinPath": "../res/wakeup/wakeup_aifar_comm_20180104.bin",
+		"beamformingBinPath": "../res/fesp/UDA_asr_chan2-2-mic2_30mm_v1.1.0.6_20180828.bin",
+        "env":"words=ni hao xiao le;thresh=0.34;dcheck=0;major=1;",
+		"rollBack": 1700,
+        "resNRBinPath":"../res/vprint/NR_v1.0.1_20180816.bin",
+        "wakeupBinPath2":"../res/wakeup/wakeup_aifar_comm_qike_v10.bin",
+        "env2":"words=da kai kong tiao,guan bi kong tiao,da kai sheng yin,zeng da yin liang,jian xiao yin liang,guan bi sheng yin,qie huan nan sheng,qie huan nv sheng,sheng wen cai ji,qing chu cai ji xin xi,zhi leng mo shi,zhi re mo shi,nuan feng mo shi,song feng mo shi,pi ei mu wei mo shi,kong qi qing xin,chu shi mo shi,kong wen chu shi,jie neng mo shi,guan bi jie neng,dian jia re,guan bi dian jia re,feng sui sheng dong,guan bi feng sui sheng dong,feng ni sheng dong,guan bi feng ni sheng dong,ge xing mo shi,guan bi ge xing mo shi,ting zhi bai dong,zuo you bai dong,shang xia bai dong,zui xiao feng,zhong deng feng,zui da feng,zeng da feng su,jian xiao feng su,zi dong feng,shang shu shi feng,xia shu shi feng,quan shu shi feng,sheng gao wen du,jiang di wen du,shi liu du,shi qi du,shi ba du,shi jiu du,er shi du,er shi yi du,er shi er du,er shi san du,er shi si du,er shi wu du,er shi liu du,er shi qi du,er shi ba du,er shi jiu du,san shi du,san shi yi du,san shi er du,kai ji,guan ji,shu shi mo shi,yi shei ou,guan bi yi shei ou,feng da dian,feng xiao dian,tai re le,tai leng le;thresh=0.25,0.28,0.29,0.13,0.20,0.29,0.17,0.13,0.16,0.06,0.28,0.24,0.30,0.38,0.06,0.25,0.45,0.19,0.30,0.28,0.30,0.14,0.23,0.20,0.23,0.22,0.28,0.14,0.14,0.16,0.12,0.26,0.26,0.32,0.20,0.20,0.36,0.22,0.14,0.25,0.18,0.12,0.40,0.40,0.40,0.40,0.55,0.36,0.30,0.30,0.38,0.24,0.32,0.36,0.36,0.26,0.42,0.28,0.22,0.40,0.40,0.38,0.22,0.14,0.30,0.30,0.30,0.28;dcheck=0,0,0,0,1,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,1,0,0,0,0,0;"
+	},
+	"vad": {
+		"resBinPath": "../res/vad/vad_aihome_v0.6.bin",
+		"pauseTime": 500,
+        "slienceTimeout": 6
+	},
+	"cloud": {
+		"productId": "278572662",
+		"aliasKey": "prod"
+	},
+	"recorder": {
+        "samplerate":16000,
+        "bits":16,
+        "channels":3,
+		"device": "2mic_loopback"
+	},
+	"player": {
+		"device": "default"
+	},
+	"tts": {
+		"type": "cloud",
+		"voice": "zhilingf",
+		"volume": 50,
+		"speed": 0.85,
+		"zhilingf": {
+            		"resBinPath": "../res/tts/cntts/zhilingf_common_param_ce_local.v2.008.bin",
+            		"dictPath": "../res/tts/cntts/aitts_sent_dict_v3.26.db"
+        	}
+	},
+    "vprint": {
+        "resBinPath":"../res/vprint/vprint_aihome_qikekongtiao_20180916.bin",
+        "modelFile":"../res/vprint/model.bin",
+        "resWkBinPath":"../res/vprint/wakeup_aihome_qi_ke_kong_tiao_20180816.bin",
+        "resNRBinPath":"../res/vprint/NR_v1.0.1_20180816.bin",
+        "env":"words=qi ke kong tiao;thresh=0.13;dcheck=1;"
+    },
+	"oneShot": {
+		"enable": false
+	},
+	"wakeup": {
+        "majorword": [{
+            "greetingFile":"path:../res/tts/help.mp3",
+            "greeting": "我在，有什么可以帮你",
+            "pinyin": "qi ke kong tiao",
+            "name": "启客空调",
+            "threshold": 0.13
+        }]
+	},
+    "abnormal": {
+        "netErrorHint":"path:../res/tts/net.mp3",
+        "ttsErrorHint":"path:../res/tts/tts_error.mp3"
+    },
+    "debug": {
+        "recAudioDumpFile":"",
+        "bfAudioDumpFile":""
+    }
+}
+

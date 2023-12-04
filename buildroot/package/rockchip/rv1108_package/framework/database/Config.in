@@ -1,0 +1,9 @@
+if BR2_PACKAGE_RV1108
+
+# BSP packages
+config BR2_PACKAGE_DATABASE
+	bool "rv1108 package database"
+	depends on BR2_PACKAGE_SQLITE
+
+endif
+

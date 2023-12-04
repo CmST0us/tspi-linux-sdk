@@ -1,0 +1,37 @@
+<?xml version="1.0" ?>
+<node>
+  <interface name="rockchip.dbserver.media">
+
+    <method name="Cmd">
+      <arg name="param" type="s" direction="in"/>
+      <arg name="result" type="s" direction="out"/>
+    </method>
+
+    <method name="Sql">
+      <arg name="param" type="s" direction="in"/>
+      <arg name="result" type="s" direction="out"/>
+    </method>
+
+    <signal name="DataChanged">
+      <arg name="param" type="s" direction="in"/>
+    </signal>
+
+  </interface>
+  <interface name="rockchip.dbserver.event">
+
+    <method name="Cmd">
+      <arg name="param" type="s" direction="in"/>
+      <arg name="result" type="s" direction="out"/>
+    </method>
+
+    <method name="Sql">
+      <arg name="param" type="s" direction="in"/>
+      <arg name="result" type="s" direction="out"/>
+    </method>
+
+    <signal name="DataChanged">
+      <arg name="param" type="s" direction="in"/>
+    </signal>
+
+  </interface>
+</node>

@@ -1,0 +1,58 @@
+#!/bin/sh
+#
+# Start mount /data....
+#
+
+case "$1" in
+  start)
+
+	target_part_name="userdata"
+	find_target_part=0
+	storage_type_emmc=1
+	mount_dir="/data"
+	nor_block_path=/dev/mtdblock5
+
+	if [ -e /dev/mmcblk0p1 ]; then
+		for block_path in /dev/mmcblk0p*;
+		do
+			block_name=`echo $block_path | sed 's/\/dev\///g'`
+			part_name=`cat /sys/block/mmcblk0/$block_name/uevent | grep PARTNAME | sed 's/PARTNAME=//g'`
+			if [ $part_name == $target_part_name ]; then
+				find_target_part=1
+				break
+			fi
+		done
+		echo block_name=$block_name
+	fi
+
+	if [ -e /dev/mtdblock0 ]; then
+		if [ -e $nor_block_path -a $find_target_part -eq 0 ]; then
+			find_target_part=1
+			storage_type_emmc=0
+			block_path=$nor_block_path 
+		fi
+		echo block_name=$block_name
+	fi
+
+	if [ $find_target_part -eq 1 ]; then
+		if [ ! -d $mount_dir ]; then mkdir $mount_dir; fi
+		if [ $storage_type_emmc -eq 1 ]; then
+			/bin/busybox mount -t ext4 $block_path $mount_dir
+		else
+			/bin/busybox mount -t jffs2 $block_path $mount_dir
+		fi
+			str_value=`/bin/busybox df | grep $mount_dir`
+			[ ! -z "$str_value" ] && echo "$mount_dir mount success" || echo "$mount_dir mount fail"
+		else
+			echo "no found $target_part_name"
+		fi
+	;;
+  stop)
+	umount /data
+	;;
+  *)
+	echo "Usage: $0 {start|stop|restart}"
+	exit 1
+esac
+
+exit $?

@@ -1,0 +1,56 @@
+if BR2_PACKAGE_RV1108
+
+# BSP packages
+config BR2_PACKAGE_LOCK
+	bool "rv1108 package lock"
+	select BR2_PACKAGE_MESSENGER
+	select BR2_PACKAGE_LIBPNG
+	select BR2_PACKAGE_LIBPNG_12
+	select BR2_PACKAGE_RV1108_MINIGUI
+	select BR2_PACKAGE_TSLIB
+	select BR2_PACKAGE_JPEG
+
+if BR2_PACKAGE_LOCK
+menu "lock app setting options"
+
+choice
+	prompt "Lock APP ui project"
+	default BR2_PACKAGE_LOCK_UI_SAMPLE
+	help
+	  Select a product type to use.
+
+config BR2_PACKAGE_LOCK_UI_PROJECT1
+	bool "project1"
+	help
+	  Product Type: project1.
+
+config BR2_PACKAGE_LOCK_UI_SAMPLE
+	bool "sample"
+	help
+	  Product Type: sample.
+endchoice
+
+config BR2_PACKAGE_LOCK_PROJECT_TYPE
+	string
+	default "PROJECT1"    if BR2_PACKAGE_LOCK_UI_PROJECT1
+	default "SAMPLE"      if BR2_PACKAGE_LOCK_UI_SAMPLE
+	help
+	  type: PROJECT1/SAMPLE
+
+config BR2_PACKAGE_LOCK_ENABLE_SCREEN_CAPTURE
+	bool "Enable screen capture"
+	default n
+	help
+	  enable the function of screen capture
+
+config BR2_PACKAGE_LOCK_ENABLE_DISP_HOLD
+	bool "Enable disp hold"
+	default y
+	help
+	  By application control when it can be displayed
+
+endmenu
+endif
+
+endif
+

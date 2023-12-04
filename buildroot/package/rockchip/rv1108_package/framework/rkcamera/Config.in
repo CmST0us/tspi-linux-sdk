@@ -1,0 +1,17 @@
+if BR2_PACKAGE_RV1108
+
+# BSP packages
+config BR2_PACKAGE_RKCAMERA
+	bool "RV1108 package rkcamera"
+	select BR2_PACKAGE_ADK
+	select BR2_PACKAGE_CAMERAHAL
+	select BR2_PACKAGE_CJSON
+
+if BR2_PACKAGE_RKCAMERA
+    config BR2_PACKAGE_RKCAMERA_TEST
+        bool "rv1108 rkcamera test"
+        default n
+endif
+
+endif
+

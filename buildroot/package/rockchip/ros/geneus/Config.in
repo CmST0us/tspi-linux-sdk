@@ -1,0 +1,5 @@
+config BR2_PACKAGE_GENEUS
+	bool "geneus"
+	select BR2_PACKAGE_GENMSG
+	help
+		EusLisp ROS message and service generators.

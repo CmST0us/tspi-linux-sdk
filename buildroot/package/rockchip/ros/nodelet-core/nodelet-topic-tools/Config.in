@@ -1,0 +1,7 @@
+config BR2_PACKAGE_NODELET_TOPIC_TOOLS
+	bool "nodelet topic tools"
+	depends on BR2_PACKAGE_BOOST
+	depends on BR2_PACKAGE_DYNAMIC_RECONFIGURE
+	select BR2_PACKAGE_BOOST_THREAD
+	help
+		nodelet topic tools

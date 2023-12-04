@@ -1,0 +1,31 @@
+#!/bin/sh
+
+check_linker()
+{
+        [ ! -L "$2" ] && ln -sf $1 $2
+}
+
+case "$1" in
+	start)
+		echo performance > /sys/devices/system/cpu/cpufreq/policy0/scaling_governor
+		echo performance > /sys/class/devfreq/fde60000.gpu/governor
+		echo performance > /sys/class/devfreq/dmc/governor
+		wpa_supplicant -B -i wlan0 -c /etc/wpa_supplicant.conf &
+		check_linker /userdata   /usr/www/userdata
+		check_linker /media/usb0 /usr/www/usb0
+		check_linker /mnt/sdcard /usr/www/sdcard
+		# if /data/rkipc not exist, cp /usr/share
+		cp /usr/share/rkipc.ini /userdata/rkipc.ini
+		rkipc &
+		;;
+	stop)
+		killall -9 rkipc
+		;;
+	restart|reload)
+		;;
+	*)
+		echo "Usage: $0 {start|stop|restart}"
+		exit 1
+esac
+
+exit $?

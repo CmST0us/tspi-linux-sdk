@@ -1,0 +1,17 @@
+#!/bin/sh
+
+case "$1" in
+	hibernate|suspend)
+		for service in $(ls /var/run/pm_dbus_services);do \
+		dbus-send --print-reply --system --type=method_call --dest=$service / local.interface.suspend;
+		done
+		;;
+	thaw|resume) 
+		irq=$(cat /sys/power/pm_wakeup_irq)
+		for service in $(ls /var/run/pm_dbus_services);do \
+		dbus-send --print-reply --system --type=method_call --dest=$service / local.interface.resume string:$irq;
+		done
+		;;
+	*) exit $NA
+		;;
+esac

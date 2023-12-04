@@ -1,0 +1,18 @@
+#include "base.config"
+#include "base_extra.config"
+#include "audio.config"
+#include "network.config"
+#include "video_mpp.config"
+#include "rk356x_arm64.config"
+#include "ubifs.config"
+#include "test.config"
+#include "camera.config"
+#include "wifi.config"
+#include "debug.config"
+#include "bt.config"
+BR2_TARGET_GENERIC_HOSTNAME="rk356x_robot"
+BR2_TARGET_GENERIC_ISSUE="Welcome to RK356X Buildroot For Robot"
+BR2_ROOTFS_OVERLAY:="board/rockchip/common/robot/base board/rockchip/common/wifi"
+BR2_PACKAGE_RKWIFIBT_RTL8821CS=y
+BR2_PACKAGE_RKWIFIBT_BTUART="ttyS1"
+BR2_PACKAGE_LINUX_SERIAL_TEST=y

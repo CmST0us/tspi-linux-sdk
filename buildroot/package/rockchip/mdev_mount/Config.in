@@ -1,0 +1,6 @@
+config BR2_PACKAGE_MDEV_MOUNT
+	bool "mdev_mount for auto mount SD/UDisk"
+	depends on BR2_ROOTFS_DEVICE_CREATION_DYNAMIC_MDEV
+
+comment "mdev_mount needs mdev"
+	depends on !BR2_ROOTFS_DEVICE_CREATION_DYNAMIC_MDEV

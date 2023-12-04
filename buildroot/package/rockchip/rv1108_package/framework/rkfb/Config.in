@@ -1,0 +1,34 @@
+if BR2_PACKAGE_RV1108
+
+# BSP packages
+config BR2_PACKAGE_RKFB
+	bool "RV1108 package rkfb"
+	help
+
+if BR2_PACKAGE_RKFB
+menu "framebuffer"
+
+choice
+        prompt "HDMI max resolution"
+        default BR2_PACKAGE_RKFB_HDMI_MAX_720
+        help
+          Select HDMI max resolution
+
+config BR2_PACKAGE_RKFB_HDMI_MAX_720
+        bool "720P"
+        help
+          HDMI max resolution 720P
+
+config BR2_PACKAGE_RKFB_HDMI_MAX_1080
+        bool "1080P"
+        help
+          HDMI max resolution 1080P
+
+endchoice
+
+endmenu
+
+endif
+
+endif
+

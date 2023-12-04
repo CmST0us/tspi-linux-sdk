@@ -1,0 +1,11 @@
+config BR2_PACKAGE_HOST_PYTHON_NUMPY
+	bool "host-python-numpy"
+	help
+	  NumPy is the fundamental package for scientific computing
+	  with Python.
+
+	  Note that NumPy needs fenv.h fully supported by the
+	  C library.
+
+	  http://www.numpy.org/
+

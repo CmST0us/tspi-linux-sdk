@@ -1,0 +1,17 @@
+menuconfig BR2_PACKAGE_GEOMETRY2_SET
+    bool "geometry2"
+    depends on BR2_PACKAGE_HOST_CATKIN
+    depends on BR2_PACKAGE_ROSPACK
+
+if BR2_PACKAGE_GEOMETRY2_SET
+source "package/rockchip/ros/geometry2/tf2-sensor-msgs/Config.in"
+
+source "package/rockchip/ros/geometry2/tf2-tools/Config.in"
+source "package/rockchip/ros/geometry2/tf2-kdl/Config.in"
+source "package/rockchip/ros/geometry2/tf2-geometry-msgs/Config.in"
+source "package/rockchip/ros/geometry2/tf2-py/Config.in"
+source "package/rockchip/ros/geometry2/tf2-ros/Config.in"
+source "package/rockchip/ros/geometry2/tf2/Config.in"
+source "package/rockchip/ros/geometry2/geometry2/Config.in"
+source "package/rockchip/ros/geometry2/tf2-msgs/Config.in"
+endif

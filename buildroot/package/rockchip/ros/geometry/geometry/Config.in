@@ -1,0 +1,4 @@
+config BR2_PACKAGE_GEOMETRY
+    bool "geometry"
+    help
+        geometry

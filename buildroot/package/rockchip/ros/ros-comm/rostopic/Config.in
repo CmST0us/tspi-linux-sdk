@@ -1,0 +1,8 @@
+config BR2_PACKAGE_ROSTOPIC
+    bool "rostopic"
+    select BR2_PACKAGE_ROSTEST
+    help
+        rostopic contains the rostopic command-line tool for
+        displaying debug information about ROS Topics,
+        including publishers, subscribers, publishing rate,
+        and ROS Messages

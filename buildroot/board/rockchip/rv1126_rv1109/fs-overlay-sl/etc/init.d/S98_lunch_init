@@ -1,0 +1,23 @@
+source /etc/profile.d/RkEnv.sh
+
+case "$1" in
+	start)
+		[ -f /oem/RkLunch.sh ] && source /oem/RkLunch.sh
+		#recovery test
+		if [ -e "/oem/rockchip_test/auto_reboot.sh" ]; then
+			mkdir /data/cfg/rockchip_test
+			cp /oem/rockchip_test/auto_reboot.sh /data/cfg/rockchip_test
+			source /data/cfg/rockchip_test/auto_reboot.sh &
+		fi
+		rksl &
+		;;
+	stop)
+		[ -f /oem/RkLunch-stop.sh ] && source /oem/RkLunch-stop.sh
+		printf "stop finished\n"
+		;;
+	*)
+		echo "Usage: $0 {start|stop}"
+		exit 1
+		;;
+esac
+exit 0

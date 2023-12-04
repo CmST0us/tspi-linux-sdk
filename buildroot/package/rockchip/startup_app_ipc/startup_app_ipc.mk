@@ -1,0 +1,20 @@
+STARTUP_APP_IPC_SITE = $(TOPDIR)/../app/startup_app_ipc
+STARTUP_APP_IPC_SITE_METHOD = local
+STARTUP_APP_IPC_DEPENDENCIES = rkmedia libgdbus
+
+ifeq ($(BR2_PACKAGE_STARTUP_APP_IPC_SANITIZER_DYNAMIC), y)
+STARTUP_APP_IPC_CONF_OPTS += -DSANITIZER_DYNAMIC=ON
+endif
+
+ifeq ($(BR2_PACKAGE_STARTUP_APP_IPC_SANITIZER_STATIC), y)
+STARTUP_APP_IPC_CONF_OPTS += -DSANITIZER_STATIC=ON
+endif
+
+STARTUP_APP_IPC_INIT_SCRIPT=package/rockchip/startup_app_ipc/S04startup_app_ipc
+
+define STARTUP_APP_IPC_INSTALL_INIT_SYSV
+$(INSTALL) -D -m 0755 ${STARTUP_APP_IPC_INIT_SCRIPT} \
+                $(TARGET_DIR)/etc/init.d/S04startup_app_ipc
+endef
+
+$(eval $(cmake-package))

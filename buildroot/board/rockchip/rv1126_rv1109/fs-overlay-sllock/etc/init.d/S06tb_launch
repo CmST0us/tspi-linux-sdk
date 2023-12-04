@@ -1,0 +1,29 @@
+#!/bin/sh
+#
+
+lunch_start()
+{
+        echo "Start S06tb_launch" > /dev/kmsg
+        echo "Start sl_lock" > /dev/kmsg
+	sl_lock &
+}
+
+lunch_stop()
+{
+	killall sl_lock
+}
+
+case "$1" in
+	start)
+		lunch_start
+		;;
+	stop)
+		lunch_stop
+		;;
+	*)
+		echo "Usage: $0 {start|stop}"
+		exit 1
+		;;
+esac
+
+exit 0

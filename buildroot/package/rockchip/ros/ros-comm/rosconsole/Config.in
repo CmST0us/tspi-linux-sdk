@@ -1,0 +1,11 @@
+config BR2_PACKAGE_ROSCONSOLE
+	bool "rosconsole"
+	depends on BR2_PACKAGE_HOST_CATKIN
+    select BR2_PACKAGE_ROSCPP_CORE_SET
+    select BR2_PACKAGE_ROS_SET
+	select BR2_PACKAGE_ROSUNIT
+	select BR2_PACKAGE_BOOST_REGEX
+	select BR2_PACKAGE_CPP_COMMON
+	select BR2_PACKAGE_ROSTIME
+	help
+		ROS console output library.

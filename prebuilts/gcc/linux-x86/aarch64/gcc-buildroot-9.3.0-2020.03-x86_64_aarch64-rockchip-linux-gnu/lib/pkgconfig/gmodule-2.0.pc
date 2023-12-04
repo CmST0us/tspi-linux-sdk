@@ -1,0 +1,12 @@
+prefix=/home/yhx/RK356X/SDK/buildroot/output/rockchip_toolchain/host
+libdir=${prefix}/lib
+includedir=${prefix}/include
+
+gmodule_supported=true
+
+Name: GModule
+Description: Dynamic module loader for GLib
+Version: 2.64.4
+Requires: gmodule-no-export-2.0, glib-2.0
+Libs: -Wl,--export-dynamic
+Cflags:-I${includedir}

@@ -1,0 +1,21 @@
+menuconfig BR2_PACKAGE_LIBIPCPROTOCOL
+	bool "rockchip libIPCProtocol"
+	select BR2_PACKAGE_LIBGDBUS
+	select BR2_PACKAGE_LIBRKDB
+	select BR2_PACKAGE_DBUS_CPP
+	help
+	  rockchip libIPCProtocol
+
+if BR2_PACKAGE_LIBIPCPROTOCOL
+
+config BR2_PACKAGE_LIBIPCPROTOCOL_DEMO
+	bool "rockchip libIPCProtocol demo"
+	help
+	  provide demo to show the usage of libIPCProtocol
+
+config BR2_PACKAGE_LIBIPCPROTOCOL_FORCE_INSTALL_TO_ROOTFS
+        bool "rockchip libIPCProtocol install to rootfs"
+        default n
+        help
+          Rockchip libIPCProtocol install to rootfs.
+endif

@@ -1,0 +1,16 @@
+config BR2_PACKAGE_TOPIC_TOOLS
+    bool "topic-tools"
+    select BR2_PACKAGE_ROSCPP_CORE_SET
+    select BR2_PACKAGE_CPP_COMMON
+    select BR2_PACKAGE_MESSAGE_GENERATION
+    select BR2_PACKAGE_ROSCONSOLE
+    select BR2_PACKAGE_ROSCPP
+    select BR2_PACKAGE_ROSTIME
+    select BR2_PACKAGE_STD_MSGS
+    select BR2_PACKAGE_XMLRPCPP
+    select BR2_PACKAGE_ROSTEST
+    help
+        rostopic ontains the rostopic command-line tool for
+        displaying debug information about ROS Topics,
+        including publishers, subscribers, publishing rate,
+        and ROS Messages

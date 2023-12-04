@@ -1,0 +1,28 @@
+config BR2_PACKAGE_RKTOOLKIT
+	bool "rockchip toolkit"
+	help
+	  rockchip toolkit for linux
+
+config BR2_PACKAGE_IO
+	bool "io tool for linux"
+	select BR2_PACKAGE_RKTOOLKIT
+	help
+	  io tool for linux. used to read/write register, memory
+
+config BR2_PACKAGE_UPDATE
+	bool "Rockchip OTA update for linux"
+	select BR2_PACKAGE_RKTOOLKIT
+	help
+	  Rockchip OTA update for linux. it is just command without UI.
+
+config BR2_PACKAGE_VENDOR_STORAGE
+	bool "vendor storage tool for linux"
+	select BR2_PACKAGE_RKTOOLKIT
+	help
+	  vendor storage tool for linux. used to read/write vendor storage.
+
+config BR2_PACKAGE_VENDOR_STORAGE_LIBRARY
+	bool "Build vendor storage library for linux application"
+	select BR2_PACKAGE_RKTOOLKIT
+	help
+	  Build vendor storage library for linux application. Used to read/write vendor storage.

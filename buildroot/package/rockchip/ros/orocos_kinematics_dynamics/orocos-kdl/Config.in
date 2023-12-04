@@ -1,0 +1,9 @@
+config BR2_PACKAGE_OROCOS_KDL
+    bool "orocos-kdl"
+    depends on BR2_PACKAGE_EIGEN
+    help
+        Kinematics and Dynamics Library: Orocos project to supply
+        RealTime usable kinematics and dynamics code, it contains
+        code for rigid body kinematics calculations and
+        representations for kinematic structures and their
+        inverse and forward kinematic solvers.

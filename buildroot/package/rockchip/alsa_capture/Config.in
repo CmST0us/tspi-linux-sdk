@@ -1,0 +1,2 @@
+config BR2_PACKAGE_ALSA_CAPTURE
+	bool "Simple ALSA Capture Demo"

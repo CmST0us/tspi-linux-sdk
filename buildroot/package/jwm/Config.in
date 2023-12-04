@@ -1,0 +1,8 @@
+config BR2_PACKAGE_JWM
+	bool "JWM (Joe's Window Manager)"
+	depends on BR2_PACKAGE_XORG7
+	select BR2_PACKAGE_XLIB_LIBX11
+	help
+	  JWM is a light-weight window manager for the X11 Window System.
+
+	  http://joewing.net/projects/jwm/

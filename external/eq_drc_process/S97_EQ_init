@@ -1,0 +1,20 @@
+#!/bin/sh
+#
+# Start 3308 linux service....
+#
+
+case "$1" in
+	start)
+		# ueventd
+		/usr/bin/eq_drc_process &
+		;;
+	stop)
+		printf "stop eq_drc_process finished"
+        ;;
+	*)
+        echo "Usage: $0 {start|stop}"
+        exit 1
+        ;;
+esac
+sleep 1
+exit 0

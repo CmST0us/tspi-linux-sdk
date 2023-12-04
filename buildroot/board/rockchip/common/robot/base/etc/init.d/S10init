@@ -1,0 +1,17 @@
+#!/bin/sh
+#
+# Do some initialzation for Rockchip Linux SDK....
+#
+
+case "$1" in
+start)
+	echo "Welcome to Rockchip Linux SDK"
+	;;
+stop)
+	;;
+*)
+	echo "Usage: $0 {start|stop}"
+	exit 1
+esac
+
+exit 0

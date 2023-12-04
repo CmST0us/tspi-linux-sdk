@@ -1,0 +1,11 @@
+prefix=/home/yhx/RK356X/SDK/buildroot/output/rockchip_toolchain/host
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: expat
+Version: 2.2.5
+Description: expat XML parser
+URL: http://www.libexpat.org
+Libs: -L${libdir} -lexpat
+Cflags: -I${includedir}

@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+#################################################################################
+1. There are 4 parts in this xml
+    1) codecList: the codec which hardware can decode.
+    1) decoder: include the codec list of one chip support.
+    2) encoder: include the codec list of one chip support.
+    3) config: some configs of player.
+
+2. The information of codec
+    resolution: the maximum resolution hw decoder can supported, for example: 4096x2160
+    bitdepth: the maximum bit depth hw decoder can supported, 8 or 10 can select
+    format: the yuv's format hw decoder can support, for example: yuv420p, yuv420sp,....
+            the name of yuv format, see variant kFAFormatMappingList in rockit.
+    bitrate: the maximum bitrate hw decoder can supported, units Mbyte. If not set this,
+            it means support all.
+    hdr: the format of hdr hw decoder can support, for example: HDR_10, HDR_HLG, HDR_DOLBY.
+        If not define this, hdr is not support by default.
+#################################################################################
+-->
+<settings>
+    <codeclist>
+        <codec name="mpeg1">
+            <limit name="id">mpeg1</limit>
+            <limit name="resolution">1920x1080</limit>
+            <limit name="format">yuv420p,yuv420sp</limit>
+        </codec>
+
+        <codec name="mpeg2">
+            <limit name="id">mpeg2</limit>
+            <limit name="resolution">1920x1080</limit>
+            <limit name="format">yuv420p,yuv420sp</limit>
+        </codec>
+
+        <codec name="mpeg4">
+            <limit name="id">mpeg4</limit>
+            <limit name="resolution">1920x1080</limit>
+            <limit name="format">yuv420p,yuv420sp</limit>
+        </codec>
+
+        <codec name="vp8">
+            <limit name="id">vp8</limit>
+            <limit name="resolution">1920x1080</limit>
+            <limit name="format">yuv420p,yuv420sp</limit>
+        </codec>
+
+        <codec name="h264_1080">
+            <limit name="id">h264</limit>
+            <limit name="resolution">1920x1080</limit>
+            <limit name="format">yuv420p,yuv420sp</limit>
+            </codec>
+
+        <codec name="hevc_1080">
+            <limit name="id">hevc</limit>
+            <limit name="resolution">1920x1080</limit>
+            <limit name="format">yuv420p,yuv420sp</limit>
+        </codec>
+
+        <codec name="vp9_1080">
+            <limit name="id">vp9</limit>
+            <limit name="resolution">1920x1080</limit>
+            <limit name="format">yuv420p,yuv420sp</limit>
+        </codec>
+
+        <codec name="avs1">
+            <limit name="id">avs</limit>
+            <limit name="resolution">1920x1080</limit>
+            <limit name="format">yuv420p,yuv420sp</limit>
+        </codec>
+
+        <codec name="avs+">
+            <limit name="id">avs+</limit>
+            <limit name="resolution">1920x1080</limit>
+            <limit name="format">yuv420p,yuv420sp</limit>
+        </codec>
+
+        <codec name="vp9_4k_8bit">
+            <limit name="id">vp9</limit>
+            <limit name="resolution">4096x2160</limit>
+            <limit name="format">yuv420p,yuv420sp</limit>
+        </codec>
+
+        <codec name="h264_4k_8bit">
+            <limit name="id">h264</limit>
+            <limit name="resolution">4096x2160</limit>
+            <limit name="format">yuv420p,yuv420sp</limit>
+        </codec>
+
+        <codec name="hevc_4k_8bit">
+            <limit name="id">hevc</limit>
+            <limit name="resolution">4096x2160</limit>
+            <limit name="format">yuv420p,yuv420sp</limit>
+        </codec>
+
+        <codec name="h264_4k_10bit">
+            <limit name="id">h264</limit>
+            <limit name="resolution">4096x2160</limit>
+            <limit name="format">yuv420p,yuv420p10le,yuv420sp</limit>
+        </codec>
+
+        <codec name="hevc_4k_10bit">
+            <limit name="id">hevc</limit>
+            <limit name="resolution">4096x2160</limit>
+            <limit name="format">yuv420p,yuv420p10le,yuv420sp</limit>
+        </codec>
+    </codeclist>
+
+    <decoder>
+        <chip name="RK2928,RK3026,RK3028">
+            <include name="mpeg1,mpeg2,mpeg4,vp8,h264_1080"/>
+        </chip>
+
+        <chip name="RK3066,RK3188">
+            <include name="mpeg1,mpeg2,mpeg4,vp8,h264_1080"/>
+            <include name="avs1"/>
+        </chip>
+
+        <chip name="RK3036,RK312X,RK3126,RK3128,RK3326">
+            <include name="mpeg1,mpeg2,mpeg4,vp8,h264_1080,hevc_1080"/>
+        </chip>
+
+        <chip name="RK3368H">
+            <include name="mpeg1,mpeg2,mpeg4,vp8,h264_1080,hevc_1080"/>
+            <include name="avs1"/>
+        </chip>
+
+        <chip name="RK3368">
+            <include name="mpeg1,mpeg2,mpeg4,vp8,h264_4k_8bit,hevc_4k_8bit"/>
+            <include name="avs1"/>
+        </chip>
+
+        <chip name="RK3288">
+            <include name="mpeg1,mpeg2,mpeg4,vp8,h264_4k_10bit,hevc_4k_10bit"/>
+            <include name="avs1"/>
+        </chip>
+
+        <chip name="RK3228A,RK3228B">
+            <include name="mpeg1,mpeg2,mpeg4,vp8,h264_4k_10bit,hevc_4k_10bit"/>
+        </chip>
+
+        <chip name="RK3229">
+            <include name="mpeg1,mpeg2,mpeg4,vp8,h264_4k_10bit,hevc_4k_10bit"/>
+            <include name="vp9_4k_8bit"/>
+        </chip>
+
+        <chip name="RK3228H">
+            <include name="mpeg1,mpeg2,mpeg4,vp8,h264_4k_10bit,hevc_4k_10bit"/>
+            <include name="avs1"/>
+            <include name="avs+"/>
+            <include name="vp9_4k_8bit"/>
+        </chip>
+
+        <chip name="RK3328,RK3399">
+            <include name="mpeg1,mpeg2,mpeg4,vp8,h264_4k_10bit,hevc_4k_10bit"/>
+            <include name="vp9_4k_8bit"/>
+        </chip>
+
+        <chip name="RV1126,RV1109">
+            <include name="mpeg1,mpeg2,mpeg4,vp8,h264_1080,hevc_1080,h264_4k_10bit,hevc_4k_10bit,hevc_1080"/>
+            <include name="avs1"/>
+            <include name="avs+"/>
+            <include name="vp9_4k_8bit,vp9_1080,h264_4k_8bit,hevc_4k_8bit"/>
+        </chip>
+    </decoder>
+
+    <encoder>
+        <chip name="RK312X,RK322x,RK3368,RK3399">
+            <include name="h264_1080"/>
+        </chip>
+        <chip name="RK3328,RK3228H">
+            <include name="h264_1080,hevc_1080"/>
+        </chip>
+        <chip name="RV1126,RV1109">
+            <include name="h264_1080,hevc_1080"/>
+        </chip>
+    </encoder>
+
+    <config>
+        <!-- add config here -->
+    </config>
+</settings>

@@ -1,0 +1,6 @@
+config BR2_PACKAGE_GENPY
+	bool "genpy for ROS"
+	depends on BR2_PACKAGE_HOST_CATKIN
+	select BR2_PACKAGE_GENMSG
+	help
+		The Python ROS message and service generator

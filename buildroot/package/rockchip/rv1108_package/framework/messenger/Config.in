@@ -1,0 +1,10 @@
+if BR2_PACKAGE_RV1108
+
+# BSP packages
+config BR2_PACKAGE_MESSENGER
+	bool "RV1108 package messenger"
+	select BR2_PACKAGE_NANOMSG
+	select BR2_PACKAGE_CJSON
+
+endif
+

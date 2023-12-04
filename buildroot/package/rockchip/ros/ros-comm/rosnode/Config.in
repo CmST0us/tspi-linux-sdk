@@ -1,0 +1,7 @@
+config BR2_PACKAGE_ROSNODE
+    bool "rosnode"
+    select BR2_PACKAGE_ROSTEST
+    help
+        rosnode is a command-line tool for displaying debug
+        information about ROS Nodes, including publications,
+        subscriptions and connections

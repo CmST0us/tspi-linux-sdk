@@ -1,0 +1,8 @@
+if BR2_PACKAGE_RV1108
+
+# BSP packages
+config BR2_PACKAGE_RV1108_SETTINGS
+	bool "rv1108 package settings"
+
+endif
+

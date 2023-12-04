@@ -1,0 +1,11 @@
+menuconfig BR2_PACKAGE_IMAGE_COMMON_SET
+	bool "image_common"
+	depends on BR2_PACKAGE_HOST_CATKIN
+	depends on BR2_PACKAGE_BOOST
+
+if BR2_PACKAGE_IMAGE_COMMON_SET
+source "package/rockchip/ros/image-common/image-common/Config.in"
+source "package/rockchip/ros/image-common/image-transport/Config.in"
+source "package/rockchip/ros/image-common/camera-calibration-parsers/Config.in"
+source "package/rockchip/ros/image-common/camera-info-manager/Config.in"
+endif

@@ -1,0 +1,30 @@
+config BR2_PACKAGE_MINIGUI
+	bool "Minigui core lib"
+	select BR2_PACKAGE_JPEG
+	help
+          http://www.minigui.org
+
+config BR2_PACKAGE_MINIGUI_SOFTWARE_SCALE
+	bool "Minigui use software scale"
+	depends on BR2_PACKAGE_LIBDRM
+	select BR2_PACKAGE_PIXMAN
+	default y
+
+config BR2_PACKAGE_MINIGUI_ENABLE_RGA
+	bool "Minigui use rga"
+	depends on BR2_PACKAGE_MINIGUI
+	select BR2_PACKAGE_ROCKCHIP_RGA
+
+config BR2_PACKAGE_MINIGUI_ENABLE_FREETYPE
+	bool "Minigui use freetype"
+	depends on BR2_PACKAGE_MINIGUI
+	select BR2_PACKAGE_FREETYPE
+	help
+		Enable freetype for vector font
+
+config BR2_PACKAGE_MINIGUI_ENABLE_PNG
+	bool "Minigui use png"
+	depends on BR2_PACKAGE_MINIGUI
+	depends on BR2_PACKAGE_LIBPNG_12
+	help
+		Enable png

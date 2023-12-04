@@ -1,0 +1,4 @@
+config BR2_PACKAGE_UAC_APP
+    bool "uac app"
+    select BR2_PACKAGE_ROCKIT
+

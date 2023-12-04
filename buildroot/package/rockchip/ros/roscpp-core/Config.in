@@ -1,0 +1,12 @@
+menuconfig BR2_PACKAGE_ROSCPP_CORE_SET
+    bool "roscpp-core"
+    depends on BR2_PACKAGE_HOST_CATKIN
+
+if BR2_PACKAGE_ROSCPP_CORE_SET
+source "package/rockchip/ros/roscpp-core/cpp_common/Config.in"
+source "package/rockchip/ros/roscpp-core/roscpp_core/Config.in"
+source "package/rockchip/ros/roscpp-core/roscpp_serialization/Config.in"
+source "package/rockchip/ros/roscpp-core/roscpp_traits/Config.in"
+source "package/rockchip/ros/roscpp-core/rostime/Config.in"
+
+endif

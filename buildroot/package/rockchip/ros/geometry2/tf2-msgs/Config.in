@@ -1,0 +1,9 @@
+config BR2_PACKAGE_TF2_MSGS
+    bool "tf2-msgs"
+    select BR2_PACKAGE_MESSAGE_GENERATION
+    select BR2_PACKAGE_COMMON_MSGS_SET
+    select BR2_PACKAGE_GEOMETRY_MSGS
+    select BR2_PACKAGE_ACTIONLIB_MSGS
+    select BR2_PACKAGE_BOOST_THREAD
+    help
+        tf2-msgs

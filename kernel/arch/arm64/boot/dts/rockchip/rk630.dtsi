@@ -1,0 +1,28 @@
+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+// Copyright (c) 2022 Rockchip Electronics Co., Ltd
+
+&rk630 {
+	compatible = "rockchip,rk630";
+
+	rk630_codec: codec {
+		compatible = "rockchip,rk630-codec";
+		status = "disabled";
+	};
+
+	rk630_efuse: efuse {
+		compatible = "rockchip,rk630-efuse";
+		#phy-cells = <0>;
+		status = "disabled";
+	};
+
+	rk630_macphy: macphy {
+		compatible = "rockchip,rk630-macphy";
+		status = "disabled";
+	};
+
+	rk630_tve: tve {
+		compatible = "rockchip,rk630-tve";
+		status = "disabled";
+	};
+};
+

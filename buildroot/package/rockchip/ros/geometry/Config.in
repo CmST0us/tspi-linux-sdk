@@ -1,0 +1,11 @@
+menuconfig BR2_PACKAGE_GEOMETRY_SET
+    bool "geometry"
+    depends on BR2_PACKAGE_HOST_CATKIN
+
+if BR2_PACKAGE_GEOMETRY_SET
+source "package/rockchip/ros/geometry/eigen-conversions/Config.in"
+source "package/rockchip/ros/geometry/tf/Config.in"
+source "package/rockchip/ros/geometry/geometry/Config.in"
+source "package/rockchip/ros/geometry/kdl-conversions/Config.in"
+source "package/rockchip/ros/geometry/tf-conversions/Config.in"
+endif

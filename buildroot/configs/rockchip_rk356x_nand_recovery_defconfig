@@ -1,0 +1,6 @@
+#include "base.config"
+#include "base_extra.config"
+#include "rk356x_arm64.config"
+#include "ubifs.config"
+#include "recovery_updateEngine.config"
+BR2_ROOTFS_OVERLAY="board/rockchip/common/recovery-ubifs-overlay"

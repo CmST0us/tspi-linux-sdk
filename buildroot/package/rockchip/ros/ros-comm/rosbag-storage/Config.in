@@ -1,0 +1,7 @@
+config BR2_PACKAGE_ROSBAG_STORAGE
+    bool "rosbag-storage"
+    select BR2_PACKAGE_ROSLZ4
+    help
+        This is a set of tools for recording from and playing
+        back ROS message without relying on the ROS client
+        library

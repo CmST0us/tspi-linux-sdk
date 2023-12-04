@@ -1,0 +1,7 @@
+config BR2_PACKAGE_SHAPE_MSGS
+    bool "shape-msgs"
+    select BR2_PACKAGE_GEOMETRY_MSGS
+    help
+        This package contains messages for defining shapes, such
+        as simple solid object primitives (cube, sphere, etc),
+        planes, and meshes

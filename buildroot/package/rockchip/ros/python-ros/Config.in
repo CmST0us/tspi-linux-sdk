@@ -1,0 +1,13 @@
+menuconfig BR2_PACKAGE_PYTHON_ROS_SET
+    bool "python for ros"
+    depends on BR2_PACKAGE_PYTHON
+
+if BR2_PACKAGE_PYTHON_ROS_SET
+source "package/rockchip/ros/python-ros/python-catkin_pkg/Config.in.host"
+source "package/rockchip/ros/python-ros/python-catkin_pkg/Config.in"
+source "package/rockchip/ros/python-ros/python-rospkg/Config.in"
+source "package/rockchip/ros/python-ros/python-em/Config.in.host"
+source "package/rockchip/ros/python-ros/python-empy/Config.in.host"
+source "package/rockchip/ros/python-ros/python-defusedxml/Config.in"
+
+endif

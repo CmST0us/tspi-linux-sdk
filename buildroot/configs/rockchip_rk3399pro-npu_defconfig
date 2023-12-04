@@ -1,0 +1,17 @@
+#include "rk3399pro_npu_arm64.config"
+#include "base.config"
+BR2_ROOTFS_OVERLAY="board/rockchip/rk3399pro_npu/fs-overlay-64/"
+BR2_ROOTFS_DEVICE_CREATION_DYNAMIC_EUDEV=y
+BR2_PACKAGE_ROCKCHIP_TEST=y
+BR2_PACKAGE_IO=y
+BR2_PACKAGE_RKNPU=y
+BR2_PACKAGE_RKNPU_NTB=y
+BR2_PACKAGE_LIBUSB=y
+BR2_PACKAGE_LIBXML2=y
+BR2_PACKAGE_PROCRANK_LINUX=y
+BR2_PACKAGE_RKSCRIPT=y
+#  - usb device package used to init and config udc like adb and usb mass storage
+BR2_PACKAGE_USBDEVICE=y
+#  - we need adb as the basic tool
+BR2_PACKAGE_ANDROID_TOOLS=y
+BR2_PACKAGE_INPUT_EVENT_DAEMON=y

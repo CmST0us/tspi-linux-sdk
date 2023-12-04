@@ -1,0 +1,2 @@
+#! /bin/sh
+exec '/home/yhx/RK356X/SDK/buildroot/output/rockchip_toolchain/host/bin/bison' -y "$@"

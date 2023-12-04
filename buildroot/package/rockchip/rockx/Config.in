@@ -1,0 +1,80 @@
+config BR2_PACKAGE_ROCKX
+	bool "rockx"
+	select BR2_PACKAGE_RKNPU
+	help
+	  rockchip rknn library
+
+if BR2_PACKAGE_ROCKX
+
+config BR2_PACKAGE_ROCKX_CARPLATE_RELATIVE
+    bool "Rockx carplate support"
+    default n
+    help
+        Rockx carplate support
+
+config BR2_PACKAGE_ROCKX_FACE_DETECTION
+    bool "Rockx face detection support"
+    default y
+    help
+        Rockx face detection support
+
+config BR2_PACKAGE_ROCKX_FACE_RECOGNITION
+    bool "Rockx face recognition support"
+    default n
+    help
+        Rockx face recognition support
+
+config BR2_PACKAGE_ROCKX_FACE_LANDMARK
+    bool "Rockx face landmark support"
+    default y
+    help
+        Rockx face landmark support
+
+config BR2_PACKAGE_ROCKX_FACE_ATTRIBUTE
+    bool "Rockx ace attribute support"
+    default n
+    help
+        Rockx face attribute support
+
+config BR2_PACKAGE_ROCKX_HEAD_DETECTION
+    bool "Rockx head detection support"
+    default n
+    help
+        Rockx head detection support
+
+
+config BR2_PACKAGE_ROCKX_OBJECT_DETECTION
+    bool "Rockx object detection support"
+    default n
+    help
+        Rockx object detection support
+
+config BR2_PACKAGE_ROCKX_POSE_BODY
+    bool "Rockx pose body support"
+    default y
+    help
+        Rockx pose body support
+
+config BR2_PACKAGE_ROCKX_POSE_FINGER
+    bool "Rockx pose finger support"
+    default y
+    help
+        Rockx pose finger support
+
+config BR2_PACKAGE_ROCKX_POSE_HAND
+    bool "Rockx pose hand support"
+    default n
+    help
+        Rockx pose hand support
+
+config BR2_PACKAGE_ROCKX_TB
+    bool "Enable thunder boot"
+
+config BR2_PACKAGE_ROCKX_PERSON_DETECTION
+    bool "Rockx person detection support"
+    default n
+    help
+        Rockx person detection support
+
+endif # BR2_PACKAGE_ROCKX
+

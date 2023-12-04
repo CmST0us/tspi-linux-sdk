@@ -1,0 +1,5 @@
+config BR2_PACKAGE_GENMSG
+	bool "genmsg for ROS"
+	depends on BR2_PACKAGE_HOST_CATKIN
+	help
+		Standalone Python library for generating ROS message and service data structures for various languages

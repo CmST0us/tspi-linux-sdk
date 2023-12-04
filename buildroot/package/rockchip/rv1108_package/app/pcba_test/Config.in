@@ -1,0 +1,29 @@
+if BR2_PACKAGE_RV1108
+
+# BSP packages
+config BR2_PACKAGE_PCBA_TEST
+	bool "rv1108 package pcba_test"
+	select BR2_PACKAGE_TINYALSA
+	select BR2_PACKAGE_STRESSAPPTEST
+	select BR2_PACKAGE_MEMTESTER
+	select BR2_PACKAGE_UPDATER
+	select BR2_PACKAGE_RV1108_SOFTAPDEMO
+	select BR2_PACKAGE_RV1108_SOFTAPSERVER
+	select BR2_PACKAGE_ROCKCHIP_RGA
+
+if BR2_PACKAGE_PCBA_TEST
+menu "rv1108 pcba_test options"
+
+    config BR2_PACKAGE_PCBA_TEST_PCTOOL_APP
+        bool "use pcba pc tool"
+        default y
+
+    config BR2_PACKAGE_PCBA_TEST_SELTTEST_APP
+        bool "use pcba self test"
+        default n
+endmenu
+
+endif
+
+endif
+

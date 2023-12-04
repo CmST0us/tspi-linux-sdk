@@ -1,0 +1,9 @@
+config BR2_PACKAGE_USBMUXD
+	bool "usbmuxd"
+	select BR2_PACKAGE_LIBUSB
+	select BR2_PACKAGE_LIBIMOBILEDEVICE
+	select BR2_PACKAGE_LIBIMOBILEDEVICE_GLUE
+	help
+	  A socket daemon to multiplex connections from and to iOS devices.
+
+	  http://www.libimobiledevice.org/

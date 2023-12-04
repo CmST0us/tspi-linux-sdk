@@ -1,0 +1,7 @@
+config BR2_PACKAGE_MULT_UVC_DEMO
+    bool "mult_uvc_demo"
+    select BR2_PACKAGE_LIBDRM
+    select BR2_PACKAGE_ROCKCHIP_RGA
+    select BR2_PACKAGE_ROCKCHIP_MPP
+    select BR2_PACKAGE_LIBV4L
+    select BR2_PACKAGE_CAMERA_ENGINE

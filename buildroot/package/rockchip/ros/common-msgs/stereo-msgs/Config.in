@@ -1,0 +1,5 @@
+config BR2_PACKAGE_STEREO_MSGS
+    bool "stereo-msgs"
+    select BR2_PACKAGE_SENSOR_MSGS
+    help
+        stereo msgs contains messages specific to stereo processing

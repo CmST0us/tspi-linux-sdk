@@ -1,0 +1,5 @@
+config BR2_PACKAGE_ROSBUILD
+    bool "rosbuild"
+    help
+        rosbuild contains scripts for managing the CMake-based
+        build system for ROS

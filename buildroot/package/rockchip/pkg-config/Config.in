@@ -1,0 +1,4 @@
+config BR2_PACKAGE_PKG_CONFIG
+	bool "pkg-config"
+	help
+	pkg-config is a helper tool used when compiling applications and libraries

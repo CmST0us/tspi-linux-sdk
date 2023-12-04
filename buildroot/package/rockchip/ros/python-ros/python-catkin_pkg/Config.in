@@ -1,0 +1,5 @@
+config BR2_PACKAGE_PYTHON_CATKIN_PKG
+	bool "catkin_pkg for ROS"
+	help
+		Standalone Python library for the catkin build system
+

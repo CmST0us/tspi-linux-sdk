@@ -1,0 +1,6 @@
+config BR2_PACKAGE_HECTOR_GEOTIFF_PLUGINS
+	bool "hector geotiff plugins"
+	select BR2_PACKAGE_HECTOR_NAV_MSGS
+	depends on BR2_PACKAGE_HECTOR_GEOTIFF
+	help
+		hector geotiff plugins

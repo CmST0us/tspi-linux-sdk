@@ -1,0 +1,5 @@
+config BR2_PACKAGE_CPP_COMMON
+	bool "cpp_common in roscpp_core for ROS"
+	select BR2_PACKAGE_CONSOLE_BRIDGE
+	help
+	  cpp_common contains C++ code for doing things that are not necessarily ROS related, but are useful for multiple packages

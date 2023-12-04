@@ -1,0 +1,4 @@
+config BR2_PACKAGE_QSTRESSTEST
+	bool "QStressTest"
+	help
+	  this is QStressTest

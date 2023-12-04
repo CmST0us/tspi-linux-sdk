@@ -1,0 +1,7 @@
+config BR2_PACKAGE_SMART_DISPLAY_SERVICE
+	bool "smart_display_service"
+
+    select BR2_PACKAGE_PROTOBUF
+    select BR2_PACKAGE_LIBEVENT
+    select BR2_PACKAGE_OPENSSL
+

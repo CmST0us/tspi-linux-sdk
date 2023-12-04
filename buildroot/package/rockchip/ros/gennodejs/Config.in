@@ -1,0 +1,5 @@
+config BR2_PACKAGE_GENNODEJS
+	bool "gennodejs"
+	select BR2_PACKAGE_GENMSG
+	help
+		Javascript ROS message and service generators.

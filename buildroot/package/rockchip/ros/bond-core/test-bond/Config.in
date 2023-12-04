@@ -1,0 +1,8 @@
+config BR2_PACKAGE_TEST_BOND
+	bool "test bond"
+	select BR2_PACKAGE_CMAKE_MODULES
+	select BR2_PACKAGE_BONDCPP
+	select BR2_PACKAGE_MESSAGE-GENERATION
+	select BR2_PACKAGE_ROSTEST
+	help
+		test bond

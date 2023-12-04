@@ -1,0 +1,5 @@
+config BR2_PACKAGE_LIBCAMERA
+	bool "libcamera"
+	select BR2_PACKAGE_HOST_PYTHON_PYYAML
+	help
+	  Camera library

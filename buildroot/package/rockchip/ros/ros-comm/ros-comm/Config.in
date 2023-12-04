@@ -1,0 +1,4 @@
+config BR2_PACKAGE_ROS_COMM
+    bool "ros-comm"
+    help
+        ros-comm

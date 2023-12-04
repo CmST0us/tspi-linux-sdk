@@ -1,0 +1,5 @@
+[Desktop Entry]
+Name=qplayer
+Exec=/usr/bin/qplayer
+Icon=/usr/share/icon/icon_player.png
+Type=Application

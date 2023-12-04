@@ -1,0 +1,11 @@
+config BR2_PACKAGE_MYNT_EYE_D_SDK
+	bool "MYNT EYE D SDK"
+	depends on BR2_aarch64 || (BR2_ARM_EABIHF && BR2_arm)
+	select BR2_PACKAGE_OPENCV if BR2_PACKAGE_MYNT_EYE_D_SDK_SAMPLES
+	select BR2_PACKAGE_OPENCV3 if !BR2_PACKAGE_MYNT_EYE_D_SDK_SAMPLES
+	select BR2_PACKAGE_LIBUSB_COMPAT
+	select BR2_PACKAGE_JPEG
+	help
+	  MYNT EYE D SDK (MYNT® EYE Depth Camera).
+
+	  https://github.com/slightech/MYNT-EYE-D-SD

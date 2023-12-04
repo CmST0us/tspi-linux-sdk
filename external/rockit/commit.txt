@@ -1,0 +1,2595 @@
+commit 87d0e5802cd2a07ae09579ea73a3d9d981a9ccf5
+Author: aaron.sun <aaron.sun@rock-chips.com>
+Date:   Thu Dec 9 18:25:24 2021 +0800
+
+    [test only] remove keyword for lincenese
+    
+    Change-Id: I2bb9b22fdcfc05e85e2fcdc7a831714005ae16ae
+    Signed-off-by: aaron.sun <aaron.sun@rock-chips.com>
+
+commit 66dcca4ee019cd7e12d8c16a64eb737057a69356
+Author: aaron.sun <aaron.sun@rock-chips.com>
+Date:   Thu Dec 9 14:22:56 2021 +0800
+
+    [test] rk_player: fix stop player assert
+    
+    Change-Id: Ied58761e2cc61fa43f447d42e3d6a55b5419804b
+    Signed-off-by: aaron.sun <aaron.sun@rock-chips.com>
+
+commit af6fdbe86d9f25ea1e5f0016feb6119a1e5b45af
+Author: aaron.sun <aaron.sun@rock-chips.com>
+Date:   Thu Dec 9 14:21:25 2021 +0800
+
+    [rt_mpi] vo: fix bug rv1109 display fail
+    
+    Change-Id: I62ba324c6a9edf722b4ff4267b5ea276a15b84cd
+    Signed-off-by: aaron.sun <aaron.sun@rock-chips.com>
+
+commit e9c5e489aab2538385309639a7a859f4c13cd267
+Author: Grey Li <grey.li@rock-chips.com>
+Date:   Mon Dec 6 19:53:25 2021 +0800
+
+    [rt_mpi] soc: fix rt_mpi head install fail by soft link
+    
+    Change-Id: I952f29fcbaabb48a24ce429ee0be864be2f51a89
+    Signed-off-by: Grey Li <grey.li@rock-chips.com>
+
+commit ea6e1e2de465dd50de3b7e9bba8572624d252834
+Author: Colum Jin <colum.jin@rock-chips.com>
+Date:   Sat Dec 4 11:42:05 2021 +0800
+
+    [rt_mpi] avs: support pipe frames sync stitching
+    
+    Change-Id: Ie82344e97d511f2493a36f806fc9ffd7c8523742
+    Signed-off-by: Colum Jin <colum.jin@rock-chips.com>
+
+commit 41536668fac62b23d547a4958a5863582000e2c7
+Author: LongChang Ma <chad.ma@rock-chips.com>
+Date:   Thu Nov 18 16:01:51 2021 +0800
+
+    rt_mpi: vi: add support isp3 topology
+    
+    Change-Id: I5310599464ba0bbd2ff6945c57d738b24671d1db
+    Signed-off-by: LongChang Ma <chad.ma@rock-chips.com>
+
+commit 69fc9295b51736464979db73d44923b1a38417df
+Author: aaron.sun <aaron.sun@rock-chips.com>
+Date:   Tue Dec 7 14:12:14 2021 +0800
+
+    [avs] fix build fail
+    
+    Change-Id: If098a265ad2a618106017a45ccaba4a3fdeaa004
+    Signed-off-by: aaron.sun <aaron.sun@rock-chips.com>
+
+commit e64d3ed0babaa940ea7b6b4877ecf1c2558a2101
+Author: aaron.sun <aaron.sun@rock-chips.com>
+Date:   Mon Dec 6 18:29:22 2021 +0800
+
+    [rt_mpi] vo: add rotation mirror flip to chn attr
+    
+    Change-Id: Ib264116fe65f025c9529da0bc17e80b670116970
+    Signed-off-by: aaron.sun <aaron.sun@rock-chips.com>
+
+commit 23c45be280e044ed1164d3ebead300eaa0d15ae0
+Author: aaron.sun <aaron.sun@rock-chips.com>
+Date:   Tue Nov 30 16:01:33 2021 +0800
+
+    [log] default log level = warning
+    
+    Change-Id: Iff56669cda711bbd56a31fdc119fddcc5ebad07a
+    Signed-off-by: aaron.sun <aaron.sun@rock-chips.com>
+
+commit 726868b12123da9df611b319330c926b238d23d6
+Author: aaron.sun <aaron.sun@rock-chips.com>
+Date:   Mon Nov 29 10:10:24 2021 +0800
+
+    [rt_mpi] vo: use env variable remove disable vop function
+    
+    - export rt_vo_disable_vop=1(default), disable vop.
+    - export rt_vo_disable_vop=0, enable vop when create the vo module
+      of rockit.
+    
+    Change-Id: If6c18fe0616659d6013ba24f5ec4d41a553abc12
+    Signed-off-by: aaron.sun <aaron.sun@rock-chips.com>
+
+commit cb1d42dcb9321f67d679daa67dfb724e106dc431
+Author: aaron.sun <aaron.sun@rock-chips.com>
+Date:   Tue Aug 17 19:59:36 2021 +0800
+
+    [build]: use complier_linux build rockit
+    
+    rockit build include ffmpeg static librarys and
+    not depend on buildroot.
+    complier_linux: build 32 system rockit
+    complier_linux --arch64 build 64 system rockit
+    
+    before build, vi complier_linux.sh and change
+    TOOLS_PATH=?
+    FFMPEG_LIB=?
+    FFMPEG_INCLUDE=?
+    
+    Change-Id: I52501acc36368593b41f3c23e595544e897da282
+    Signed-off-by: aaron.sun <aaron.sun@rock-chips.com>
+
+commit 3a2d47add9e4f40d4f62af4e62ef18c007411c12
+Author: Xingwen.Fang <fxw@rock-chips.com>
+Date:   Tue Dec 7 11:21:45 2021 +0800
+
+    [tests] vplay: fix SEGV on pthread_join
+    
+    Change-Id: Icee32ed757a35a2a260eec1911f368ee7b010583
+    Signed-off-by: Xingwen.Fang <fxw@rock-chips.com>
+
+commit 1847351152f8a1c342ffe58434a4c9adb6924b2f
+Author: Colum Jin <colum.jin@rock-chips.com>
+Date:   Fri Nov 12 19:04:26 2021 +0800
+
+    [rt_mpi] avs: implement Any View Stitching
+    
+    Change-Id: I4f509357f05339002116925f6350df9bda35cd95
+    Signed-off-by: Colum Jin <colum.jin@rock-chips.com>
+
+commit 5e2252fa17f248bdf338ee1eef780f1acdd9fec1
+Author: Xinhuang Li <buluess.li@rock-chips.com>
+Date:   Mon Dec 6 17:25:04 2021 +0800
+
+    [tests] venc: fix idr thread cannot exit
+    
+    Change-Id: I4d81e39ac4f357a34f4ddef5103c5094c73a515a
+    Signed-off-by: Xinhuang Li <buluess.li@rock-chips.com>
+
+commit 102a1f29a73dc1409df06a262c2476b50ebf5b77
+Author: Yu Liu <northark.liu@rock-chips.com>
+Date:   Thu Apr 22 17:19:21 2021 +0800
+
+    [tests] rt_player: add player case base on mpi
+    
+    Change-Id: If407a3ddd1b2c3677a0e4f69b3c39784e1622549
+    Signed-off-by: Yu Liu <northark.liu@rock-chips.com>
+
+commit 51a816be9d27b4b0ab03b98c39d019f905169358
+Author: aaron.sun <aaron.sun@rock-chips.com>
+Date:   Mon Dec 6 10:28:56 2021 +0800
+
+    [rt_mpi] vo: fix bug read out of memory space under wbc
+    
+    Change-Id: I973c7629df614c5198becdc7accd1ebd9caa0a7b
+    Signed-off-by: aaron.sun <aaron.sun@rock-chips.com>
+
+commit 27017938af96fe9ca56ac72a53e8803df0310f26
+Author: Xingwen.Fang <fxw@rock-chips.com>
+Date:   Mon Dec 6 14:46:08 2021 +0800
+
+    [rt_mpi] synchronous venc/vdec exit function processing
+    
+    Change-Id: I7ecf9ecc14176f3e40c0519ee0a4d5dd79eee2cc
+    Signed-off-by: Xingwen.Fang <fxw@rock-chips.com>
+
+commit d49567ea8a70c2635ba62eb0e5bfcae912893d38
+Author: dawnming.huang <dawnming.huang@rock-chips.com>
+Date:   Mon Dec 6 10:47:47 2021 +0800
+
+    [doc] mpi: tde: update rk3588 description
+    
+    Change-Id: I17d91798eae013736a1f62eff7a1b968b27bb37f
+    Signed-off-by: dawnming.huang <dawnming.huang@rock-chips.com>
+
+commit 8b89ab5ec9e3ef75ba418112364982390925b5e7
+Author: aaron.sun <aaron.sun@rock-chips.com>
+Date:   Mon Dec 6 10:26:48 2021 +0800
+
+    [rt_mpi] vdec: fix bug the second deinit fail
+    
+    Change-Id: If3c461ee812dcb9e9b635c37d346409c1b5d4bf3
+    Signed-off-by: aaron.sun <aaron.sun@rock-chips.com>
+
+commit 004bebd1aed7c480b3f127ea3afc587c8278007f
+Author: Zheng Yang <zhengyang@rock-chips.com>
+Date:   Mon Dec 6 10:53:50 2021 +0800
+
+    [doc] mpi: vo: fix 3588 esmart scale description error
+    
+    Change-Id: I56d9d98821a2d494dbf00876521b6087d17e1608
+    Signed-off-by: Zheng Yang <zhengyang@rock-chips.com>
+
+commit c6961b0075a4f06a3624ccc7277b90d122b3a223
+Author: Zheng Yang <zhengyang@rock-chips.com>
+Date:   Mon Dec 6 10:34:56 2021 +0800
+
+    [doc] mpi: vo: add 3588 vop introduction
+    
+    Change-Id: I1859c92847d8911544022c1a878bf23fd064c175
+    Signed-off-by: Zheng Yang <zhengyang@rock-chips.com>
+
+commit 2ceee065d44349a83b6efe640125fb9f076c2a00
+Author: Xingwen.Fang <fxw@rock-chips.com>
+Date:   Sat Dec 4 20:29:56 2021 +0800
+
+    [rt_mpi] fix rk_defines comment errors
+    
+    Change-Id: I15588b7405ecf7af725fc675de722a7a8866fdfb
+    Signed-off-by: Xingwen.Fang <fxw@rock-chips.com>
+
+commit e95099041af4a1d43849c3bdaefd8d0bce81631c
+Author: Xingwen.Fang <fxw@rock-chips.com>
+Date:   Sat Dec 4 20:19:13 2021 +0800
+
+    [doc] mpi: add rk3588 product version
+    
+    Change-Id: I7de1c6e891b5db82363431c393db45200fe3c61e
+    Signed-off-by: Xingwen.Fang <fxw@rock-chips.com>
+
+commit d90be581abcdcb1371513bb051cb457112c84dbf
+Author: Grey Li <grey.li@rock-chips.com>
+Date:   Sat Dec 4 18:55:16 2021 +0800
+
+    [rt_mpi] vo: parallel process clear cache and release some resource
+    
+    Change-Id: Ifc511dc435fb70bba16678ab364e8e12c366edcd
+    Signed-off-by: Grey Li <grey.li@rock-chips.com>
+
+commit ce3992265c0dd7e96460e8a3c1453a42ab0ec054
+Author: Grey Li <grey.li@rock-chips.com>
+Date:   Sat Nov 13 19:45:46 2021 +0800
+
+    [rt_mpi] add multi platform capacity config method
+    
+    Change-Id: Id40f528cdec449a6960476f3dd1285d90ba68618
+    Signed-off-by: Grey Li <grey.li@rock-chips.com>
+
+commit 0f8bc94c75165c6534c66a740a8e6772cff9b5be
+Author: Rimon Xu <rimon.xu@rock-chips.com>
+Date:   Thu Dec 2 11:39:37 2021 +0800
+
+    [rt_mpi] vo: sync clear gpu cache when vo disable
+    
+    copyright by http://10.10.10.100/#/c/5876/
+    
+    Change-Id: I85f597360b67efd1b322451dcbc4c34f4ae3c591
+    Signed-off-by: Rimon Xu <rimon.xu@rock-chips.com>
+
+commit f29c282de994b759f99663d7d85ba64cfb0beee8
+Author: Xinhuang Li <buluess.li@rock-chips.com>
+Date:   Wed Dec 1 16:42:41 2021 +0800
+
+    [rt_media] venc: adapt rk3588 venc roi configuration
+    
+    Change-Id: I182e09ba592871b75898d57b518bc387f44fa904
+    Signed-off-by: Xinhuang Li <buluess.li@rock-chips.com>
+
+commit c8fc9744211b54f2a3a47dc51c0d353c8e6b4ff8
+Author: Xinhuang Li <buluess.li@rock-chips.com>
+Date:   Fri Dec 3 19:20:57 2021 +0800
+
+    [rt_task] get frame rate with binding port when it is present
+    
+    When the depth set by the user is equal to the number of buffers,
+    the user does not call getMediaBuffer to obtain the frame rate,
+    and the frame rate obtained from UserOuputStream is 0.
+    
+    Change-Id: I439059fc31455ebddc4f4b2a8e8b280ce5f049d4
+    Signed-off-by: Xinhuang Li <buluess.li@rock-chips.com>
+
+commit 339d08098776bad9392e9803821bf4a733076209
+Author: Xinhuang Li <buluess.li@rock-chips.com>
+Date:   Sat Dec 4 09:33:02 2021 +0800
+
+    [rt_media] this is not an error when query VIDIOC_ENUM_FMT return -1
+    
+    avoid the redundancy log "request -1069525502, err: Invalid argument"
+    
+    Change-Id: I97134185a0c49a99a7b02b07c7620646fbd12f56
+    Signed-off-by: Xinhuang Li <buluess.li@rock-chips.com>
+
+commit 3c4a3f6dbdf465963122170d4034d06abc1f5246
+Author: Xinhuang Li <buluess.li@rock-chips.com>
+Date:   Sat Dec 4 10:14:12 2021 +0800
+
+    [tests] vi: add buf_count parameter
+    
+    Change-Id: Ieae57ea1e8266a1c6c5ef336d69a7d938f643215
+    Signed-off-by: Xinhuang Li <buluess.li@rock-chips.com>
+
+commit 29c6cafd6263dda4192ee416d29c592276e93e74
+Author: Xingwen.Fang <fxw@rock-chips.com>
+Date:   Fri Dec 3 18:29:02 2021 +0800
+
+    [rt_mpi] vdec: fix output pixelformat value error
+    
+    Note: Only mjpeg has the stVdecPictureParam parameter.
+    
+    Change-Id: Iff3211bc25563fabef4f5978b26abc73f90853ad
+    Signed-off-by: Xingwen.Fang <fxw@rock-chips.com>
+
+commit f25433a61e84c44177ac16cfb996993c71ca3a4d
+Author: Rimon Xu <rimon.xu@rock-chips.com>
+Date:   Sat Dec 4 11:49:42 2021 +0800
+
+    [rt_task] add port stream when set available depth
+    
+    After the port binding to set depth, and the port stream
+    will not be added, so the frame cannot be obtained. At the
+    same time, the graph is multiplexed, and the previous state
+    will be continued, so that the frame cannot be obtained even
+    if the channel is restarted.
+    
+    TRIGGER CASE:
+    rk_sys_gtest --gtest_filter=RKSysBindTest.*
+    
+    Change-Id: If8b27af08e6488ba2ad51d36131d0ae4e0a3c70e
+    Signed-off-by: Rimon Xu <rimon.xu@rock-chips.com>
+
+commit d94ff74377855a4b0dcc0090435a85f50350f95c
+Author: dawnming.huang <dawnming.huang@rock-chips.com>
+Date:   Sat Dec 4 12:02:19 2021 +0800
+
+    [rt_mpi] vgs: fix set crop attr crash
+    
+    Change-Id: If0becb2b6bc407d45e58bfd04cbdc136aab1ba8c
+    Signed-off-by: dawnming.huang <dawnming.huang@rock-chips.com>
+
+commit c2cd21d67f824a5150412593c89f57860de720a6
+Author: Xinhuang Li <buluess.li@rock-chips.com>
+Date:   Fri Dec 3 16:07:44 2021 +0800
+
+    [rt_task] source node not need to set input port mode
+    
+    Avoid such redundancy log "vi: Illegal operation, no input
+    port exists."
+    
+    Change-Id: Icc45f8b15da169507793bf8a92dfca9c5bad2d47
+    Signed-off-by: Xinhuang Li <buluess.li@rock-chips.com>
+
+commit 92e27c6f783154e7927ce3f72aab27741efe2676
+Author: Xinhuang Li <buluess.li@rock-chips.com>
+Date:   Fri Dec 3 16:04:42 2021 +0800
+
+    [doc] vi: update version to v0.5.0
+    
+    - modify the depth parameter description
+    - synchronous modify the test
+    
+    Change-Id: I3b87e77298a266dc675c763df4b7e855944fff1a
+    Signed-off-by: Xinhuang Li <buluess.li@rock-chips.com>
+
+commit 8acc9d81663113607d58727f570a2ef957a71616
+Author: Zheng Yang <zhengyang@rock-chips.com>
+Date:   Fri Dec 3 18:45:16 2021 +0800
+
+    [rt_mpi] vo: fix connector type compare error
+    
+    Change-Id: I237a41d00abc412428bd5a711c68348a6842ed5a
+    Signed-off-by: Zheng Yang <zhengyang@rock-chips.com>
+
+commit 59bb397df38d0f86e59632eec05300358f850b76
+Author: Zheng Yang <zhengyang@rock-chips.com>
+Date:   Fri Dec 3 17:22:20 2021 +0800
+
+    [rt_mpi] vo: fix missing channel cache and revcnt tag
+    
+    Change-Id: I9c54abce93b3b718e0ee3153514cd6d1792ff135
+    Signed-off-by: Zheng Yang <zhengyang@rock-chips.com>
+
+commit f94e548ef520934cb37f6e93071880c53d8fa014
+Author: dawnming.huang <dawnming.huang@rock-chips.com>
+Date:   Fri Dec 3 16:05:25 2021 +0800
+
+    [rt_mpi] vgs/tde: fix dumpsys crash
+    
+    Change-Id: I00ca43dc3736d19ac411e10b2627b22777544564
+    Signed-off-by: dawnming.huang <dawnming.huang@rock-chips.com>
+
+commit a028c7198a83e3193157729f6ea5fc504ac06f6c
+Author: Rimon Xu <rimon.xu@rock-chips.com>
+Date:   Fri Dec 3 11:38:00 2021 +0800
+
+    [rt_mpi] rgn: flush cache when update cavans
+    
+    Because the canvas is DMA memory, the flush cache is required
+    after providing virtual addresses to update data, otherwise
+    there will be CPU-DDR cache consistency problems.
+    
+    Change-Id: I215944d93b7ab34a56bb78f041f01707519088e6
+    Signed-off-by: Rimon Xu <rimon.xu@rock-chips.com>
+
+commit ca3cc500e93d4e300b31d6a5877bc13de7d96839
+Author: Rimon Xu <rimon.xu@rock-chips.com>
+Date:   Wed Nov 10 16:50:24 2021 +0800
+
+    [rt_mpi] vpss: crop region need to be composed
+    
+    When AFBC is turned on, 4-byte offset y will be set for
+    the decoded frame. At this time, if the VPSS/VGS/TDE is set to
+    crop, the crop information of vdec will be overwritten,
+    resulting in crop information error
+    
+    Change-Id: Iaf7ffe738e09970dc5216ce04a2d026976a41702
+    Signed-off-by: Rimon Xu <rimon.xu@rock-chips.com>
+
+commit 81537ce64901914448c394c5654a80d92578bcaa
+Author: Rimon Xu <rimon.xu@rock-chips.com>
+Date:   Thu Dec 2 19:27:09 2021 +0800
+
+    [rt_mpi] vpss: fix query statistics output error
+    
+    Because there may be multiple down stream, the graph output
+    stream name is not a fixed name, so the query needs to find
+    the corresponding graph output stream, and then find the
+    statistics by its name.
+    
+    Change-Id: Icc079463fbe735341d4978ccd93df763ca0b082d
+    Signed-off-by: Rimon Xu <rimon.xu@rock-chips.com>
+
+commit 01eec2541c0640989344671e2678ac3febb7fe9f
+Author: Xinhuang Li <buluess.li@rock-chips.com>
+Date:   Thu Nov 18 21:25:21 2021 +0800
+
+    [rt_mpi] venc: implement dump frame info
+    
+    Change-Id: Ie43735799b94a7df9d84d0bab50e845280cb1c58
+    Signed-off-by: Xinhuang Li <buluess.li@rock-chips.com>
+
+commit 92b32ea1ecfc543c38ba1328a1c9bea9a0935076
+Author: Rimon Xu <rimon.xu@rock-chips.com>
+Date:   Thu Dec 2 15:19:21 2021 +0800
+
+    [tests] vpss: support aspect ratio setting when crop enabled
+    
+    Change-Id: I664aafb9d724cc3643992f3ee3bd29992b5cc2b1
+    Signed-off-by: Rimon Xu <rimon.xu@rock-chips.com>
+
+commit af6d195e62430c1983b0f32e57d3d961ab369fde
+Author: ywj <ywj@rock-chips.com>
+Date:   Thu Nov 18 16:49:00 2021 +0800
+
+    [rt_media] vdec: modify afbc decoding buffer size calculation
+    
+    Change-Id: I18f867e358eb245d62e89b78a262c4bd7675147d
+    Signed-off-by: ywj <ywj@rock-chips.com>
+
+commit 2d0fe051439dee65347d54e4e1787c73f579c8f4
+Author: ywj <ywj@rock-chips.com>
+Date:   Tue Nov 23 14:14:17 2021 +0800
+
+    [rt_mpi] vdec: recalculate virtual width in pixels
+    
+    - In compressed mode, the virtual width of MPP is calculated
+      as follow:
+          hal_hor_stride = MPP_ALIGN(width, 64) * depth >> 3
+    
+    - The stride of MPP is in bytes, but the input requirement of
+      GPU is in pixels, so there is no need to increase *depth >>3
+      calculation.
+    
+    Change-Id: I4a1853401b926828d43377d5762c4b4f4fba6eaf
+    Signed-off-by: ywj <ywj@rock-chips.com>
+
+commit be044671476fa2765617de3098d34ee163398f01
+Author: dawnming.huang <dawnming.huang@rock-chips.com>
+Date:   Tue Jun 22 09:43:28 2021 +0800
+
+    [rt_mpi] vgs/tde: add input/output file debug
+    
+    usage:  dumpsys tde record /tmp/ 10
+            dumpsys vgs record /tmp/ 10
+    
+    Change-Id: I01c7fc1f9449b07dc4501419adc46479f65e48a2
+    Signed-off-by: dawnming.huang <dawnming.huang@rock-chips.com>
+
+commit a0cbf1e3e4eebe211e1b6382f6bacb861dd0b5b5
+Author: dawnming.huang <dawnming.huang@rock-chips.com>
+Date:   Wed Dec 1 19:24:11 2021 +0800
+
+    [tests] tde: add tde gtest
+    
+    Change-Id: If8a0054dd6cf7d108528b173513921334104c01c
+    Signed-off-by: dawnming.huang <dawnming.huang@rock-chips.com>
+
+commit ede6661e682cc89ba70f693ea92e6827f5e409c3
+Author: Xingwen.Fang <fxw@rock-chips.com>
+Date:   Thu Dec 2 09:22:15 2021 +0800
+
+    [rt_task] format code style
+    
+    Change-Id: Id5bff18431d2f81e0c73ca54da0ac6a68a34c573
+    Signed-off-by: Xingwen.Fang <fxw@rock-chips.com>
+
+commit 019a72e2c9b1e9e5b77cd004aec807eb353dd62a
+Author: dawnming.hunag <dawnming.huang@rock-chips.com>
+Date:   Tue Oct 26 19:36:39 2021 +0800
+
+    [rt_mpi] tde: optimize tde module test cases
+    
+    Change-Id: Ib24aaafdf75895c2406cba7a66f8d75d858cd836
+    Signed-off-by: dawnming.hunag <dawnming.huang@rock-chips.com>
+
+commit d8802dc5f020a2b3c550193861f5b0ec8412f6ec
+Author: Rimon Xu <rimon.xu@rock-chips.com>
+Date:   Fri Nov 26 14:46:08 2021 +0800
+
+    [rt_mpi] vpss: implement aspect ratio
+    
+    Change-Id: I814c31ce99d6eb30a44bddaebe94d87ae0796b7a
+    Signed-off-by: Rimon Xu <rimon.xu@rock-chips.com>
+
+commit d50360a49519ed6103679f959691b445c3e0fa15
+Author: Zheng Yang <zhengyang@rock-chips.com>
+Date:   Tue Nov 16 15:53:57 2021 +0800
+
+    [rt_mpi] vo: two display interfaces of the same type are supported
+    
+    Change-Id: I014bab3867dd4cae147c8e2839f85dff639b1473
+    Signed-off-by: Zheng Yang <zhengyang@rock-chips.com>
+
+commit 39f889af1b212cf01e53756a4e4175bd3e050c09
+Author: Rimon Xu <rimon.xu@rock-chips.com>
+Date:   Tue Nov 23 17:53:48 2021 +0800
+
+    [tests] sys: implement bind also get frame gtest
+    
+    Change-Id: I55886a943485339325a86b016bb162555a1fcc77
+    Signed-off-by: Rimon Xu <rimon.xu@rock-chips.com>
+
+commit 55b80eb4eee73b5f7bcf9ee04c8d3131f869bbf5
+Author: Rimon Xu <rimon.xu@rock-chips.com>
+Date:   Mon Nov 22 18:07:18 2021 +0800
+
+    [tests] vpss: remove backup frame by mpi mod test
+    
+    The backup frame function needs to be used with VO. It cannot be
+    tested in module test, and will be reintroduced in gtest.
+    
+    Change-Id: Id35ac6b7110f3a3394a13a3b373266566ed09ca6
+    Signed-off-by: Rimon Xu <rimon.xu@rock-chips.com>
+
+commit eafbfc0b71f1b312877567f14bcc2344c4ffff95
+Author: Rimon Xu <rimon.xu@rock-chips.com>
+Date:   Thu Nov 25 17:11:11 2021 +0800
+
+    [doc] dump: support mb debug info dump
+    
+    Change-Id: I6d6e9d81e8adcf501d4db352020d4aad84251a7d
+    Signed-off-by: Rimon Xu <rimon.xu@rock-chips.com>
+
+commit e3591788f9375a33984f1753ebf90190f04df5a9
+Author: Rimon Xu <rimon.xu@rock-chips.com>
+Date:   Sat Nov 27 10:24:23 2021 +0800
+
+    [rt_task] move set glpss dst frame info to task node
+    
+    The starting point of the target processing area is not necessarily
+    (0, 0), and the width of the processed area is not necessarily equal
+    to the actual image width. Only the vpss node itself knows the actual
+    width and height, so it needs to be moved to the vpss node setting.
+    
+    Associated commit:
+    http://10.10.10.100/#/c/5857/
+    
+    Change-Id: I4f23921ff97994eb32dd8236677ec72d915c18f8
+    Signed-off-by: Rimon Xu <rimon.xu@rock-chips.com>
+
+commit 97071c26414ad3541b19c3c42732ed503ed80593
+Author: ywj <ywj@rock-chips.com>
+Date:   Thu Nov 25 14:35:45 2021 +0800
+
+    [rt_mpi] vdec: support 10bit bitstream decoding
+    
+    When playing a 10bit video, there is no 10bit information for
+    vdec, resulting in a smaller decoding buffer allocated. Specify
+    the decoding buffer size directly by setting the vdec channel
+    attribute u32FrameBufSize.
+    
+    Change-Id: I4cfb7c7bda8bce77c4ff359093e36138e6c204c6
+    Signed-off-by: ywj <ywj@rock-chips.com>
+
+commit 5bc85c98a5aee74797941debdf7493a262f16803
+Author: Xinhuang Li <buluess.li@rock-chips.com>
+Date:   Mon Nov 22 17:48:29 2021 +0800
+
+    [tests] venc: use struct instead pointer for venc ctx
+    
+    Change-Id: Icee799ecb5d33ca48dffe5033a770b2c6ecf3759
+    Signed-off-by: Xinhuang Li <buluess.li@rock-chips.com>
+
+commit 48c5f531178c7d39985ef546c6c2187db88c363c
+Author: Zhihua Wang <hogan.wang@rock-chips.com>
+Date:   Fri Nov 26 15:57:02 2021 +0800
+
+    [tests] venc: add advance encoder params switch
+    
+    Include super_frm/frm_lost/intra_refresh/hier_qp/mjpeg_param.
+    
+    Change-Id: I00cbf37f543010fbccd71400a8b497d459f93710
+    Signed-off-by: Zhihua Wang <hogan.wang@rock-chips.com>
+
+commit 371f94ff5644f054d3106601828163ad6c73b94f
+Author: Zhihua Wang <hogan.wang@rock-chips.com>
+Date:   Fri Nov 26 15:59:55 2021 +0800
+
+    [tests] venc: add force_idr test
+    
+    Change-Id: Iad12f4edd65d40c43f8922b4192c2bc2a66dd046
+    Signed-off-by: Zhihua Wang <hogan.wang@rock-chips.com>
+
+commit 2f0eb08d9d32b7792c0113f00aec5a4b883895ff
+Author: Rimon Xu <rimon.xu@rock-chips.com>
+Date:   Fri Jul 9 14:50:00 2021 +0800
+
+    [rt_mpi] implement vpss v2 with one TaskGraph
+    
+    Change-Id: I851adb620c236e7db124c006eecfa836d1f25a63
+    Signed-off-by: Rimon Xu <rimon.xu@rock-chips.com>
+
+commit 46b104734fbbcb4abb238799b3a26e89d241a6de
+Author: Rimon Xu <rimon.xu@rock-chips.com>
+Date:   Tue Nov 30 14:33:57 2021 +0800
+
+    [rt_task] implement graph input/output port statistics
+    
+    Change-Id: Ia2f8506670aa2698ec920cf76538a79b91a05302
+    Signed-off-by: Rimon Xu <rimon.xu@rock-chips.com>
+
+commit 6a3db6c06ccc5199d6f24a8cd96206f600ccbc2c
+Author: dawnming.hunag <dawnming.huang@rock-chips.com>
+Date:   Wed Nov 24 15:44:58 2021 +0800
+
+    [rt_media] tde: rga support fbc data
+    
+    Change-Id: I856eddb24b9f338fc474868c1a48ea9abc3884c7
+    Signed-off-by: dawnming.hunag <dawnming.huang@rock-chips.com>
+
+commit 0facdecd281a78837aee460bb6aac46e6d94264d
+Author: dawnming.huang <dawnming.huang@rock-chips.com>
+Date:   Mon Nov 29 10:45:23 2021 +0800
+
+    [rt_media] rga set mmuFlag to zero when use phyAddr
+    
+    Change-Id: Ibfa053cc9a00258c99e577c1b12c10ad103e2357
+    Signed-off-by: dawnming.huang <dawnming.huang@rock-chips.com>
+
+commit 8478a7bcae3b2153733b09cd1c5d1387dfd067ae
+Author: Xinhuang Li <buluess.li@rock-chips.com>
+Date:   Wed Nov 24 16:18:04 2021 +0800
+
+    [rt_media] remove the mpp_buffer_import_with_tag for encoder
+    
+    - avoid the problem that the input buf fd switch causes the encoder
+      data not to update.
+    - mpp_buffer_import/mpp_buffer_put each time will increased a little
+      CPU usage.
+    
+    Change-Id: I2e6202506eee7ea9e998bd5d1bf41720358d7cbf
+    Signed-off-by: Xinhuang Li <buluess.li@rock-chips.com>
+
+commit 93000d9a78cc09ffc2d63f56e7e7462933479954
+Author: Xingwen.Fang <fxw@rock-chips.com>
+Date:   Tue Nov 30 15:02:27 2021 +0800
+
+    [rt_media] ignore en_colmv setting failed
+    
+    If MPP does not include en_colmv commit, the configuration
+    of en_colmv will fail.
+    
+    Change-Id: I743c78c224ef8f4a64c10cb04c1c1af2d4217f7e
+    Signed-off-by: Xingwen.Fang <fxw@rock-chips.com>
+
+commit 854e11373cde6f9f22f5ceb6cc0c133056b5e7a3
+Author: Grey Li <grey.li@rock-chips.com>
+Date:   Mon Nov 29 11:08:25 2021 +0800
+
+    [rt_mpi] vdec: fix en_colmv can't not change when channel reuse
+    
+    In the Dahua project, h264 mv is turned off by default, and h265
+    mv is turned on by default. If a channel decodes H264 stream first,
+    and then decodes H265 stream, mv disable flag is not cleared.
+    
+    Change-Id: Iddae6b1517b852d153a1ab6990200ca0f14f5bdc
+    Signed-off-by: Grey Li <grey.li@rock-chips.com>
+
+commit 6834e7615903ded2e31d141e2945ee1b2d22d09e
+Author: Xinhuang Li <buluess.li@rock-chips.com>
+Date:   Fri Nov 19 14:39:54 2021 +0800
+
+    [rt_mpi] vi: support isp2.x/isp3.0 afbc
+    
+    Change-Id: Iaa3bb3cdb8fad1ed1ac3ef1d3abad37fa0567d09
+    Signed-off-by: Xinhuang Li <buluess.li@rock-chips.com>
+
+commit f3c1d224d7d542f6b0a4538aad21b960375606ac
+Author: Xinhuang Li <buluess.li@rock-chips.com>
+Date:   Fri Nov 12 15:53:06 2021 +0800
+
+    [rt_mpi] vi: implement dump buffer state
+    
+    Change-Id: I811678ab9679f7a8273a2618df011158c2969a2d
+    Signed-off-by: Xinhuang Li <buluess.li@rock-chips.com>
+
+commit 07957a9bc6fa1e3a0758369c852b743885003c6b
+Author: dawnming.huang <dawnming.huang@rock-chips.com>
+Date:   Mon Nov 29 19:50:58 2021 +0800
+
+    [build] android use cmake git to generate vision info
+    
+    Change-Id: I0025f4b2cb28817869975d404c7b25208164046e
+    Signed-off-by: dawnming.huang <dawnming.huang@rock-chips.com>
+
+commit 3295d28764f3588ac88aa7fc74a83d49b2cde73d
+Author: He Hua <hh@rock-chips.com>
+Date:   Fri Nov 12 14:31:13 2021 +0800
+
+    [rt_media] use CLOCK_MONOTONIC as pts of ai
+    
+    use the same clock of vi as pts
+    
+    Change-Id: I3082b20794a72ee7b7aaaec33c95687f9d5d2339
+    Signed-off-by: He Hua <hh@rock-chips.com>
+
+commit 50f24c30b7add6ac86522a706f008ec1d03d571d
+Author: aaron.sun <aaron.sun@rock-chips.com>
+Date:   Thu Nov 25 20:58:25 2021 +0800
+
+    [rt_media] vdec: compatible player eos judgment flag only
+    
+    Change-Id: I01fb65c4ee16e3f7660804e3be4b4a3085b59ea6
+    Signed-off-by: aaron.sun <aaron.sun@rock-chips.com>
+
+commit b2093ac81c387e0559eeb20f5744ea806f2ffbb8
+Author: Xinhuang Li <buluess.li@rock-chips.com>
+Date:   Fri Nov 26 17:57:29 2021 +0800
+
+    [tests] venc: virtual height is required to read image
+    
+    Change-Id: I194d02d3b84c888331dc7db7edfcab9f6ba4e7d5
+    Signed-off-by: Xinhuang Li <buluess.li@rock-chips.com>
+
+commit 073e85ec42ec6ef4694743fca4dce83d6359ee84
+Author: Grey Li <grey.li@rock-chips.com>
+Date:   Thu Nov 25 17:41:15 2021 +0800
+
+    [rt_mpi] vo: fix miss cover change chID by commit-c32b4600c
+    
+    Change-Id: Ida7f56d9616136d99f21191f74f6b6a57da6c068
+    Signed-off-by: Grey Li <grey.li@rock-chips.com>
+
+commit 4cdb1dccfff7976d636e9e441acd253df31774b2
+Author: aaron.sun <aaron.sun@rock-chips.com>
+Date:   Thu Nov 25 17:38:35 2021 +0800
+
+    [rt_mpi] vo: fix rga composer crash with attr is not initialized
+    
+    Change-Id: I38c473412476e1af3f1723ec2301ff08348b6631
+    Signed-off-by: aaron.sun <aaron.sun@rock-chips.com>
+
+commit b89a6bf5aa2c2ad5408c6e8b1de5bd072a77708e
+Author: Grey Li <grey.li@rock-chips.com>
+Date:   Thu Nov 25 11:37:15 2021 +0800
+
+    [build] link inner ffmpeg-4.1.3 share lib in linux
+    
+    The version of ffmpeg currently used on the android platform is
+    4.0, and it will be handled in a compatible way for the time
+    being, and the version will not be unified.
+    
+    Change-Id: Iebebfbbd1e55755d4eb6a8a793ce39f03e793f3d
+    Signed-off-by: Grey Li <grey.li@rock-chips.com>
+
+commit 5dbba448ee77dd553e2e7ac4381146f3961bcc39
+Author: aaron.sun <aaron.sun@rock-chips.com>
+Date:   Sat Oct 2 17:18:41 2021 +0800
+
+    [rt_mpi] aio: open the sound card with user configuration parameters
+    
+    Change-Id: Ia7ec939bba707f3b897b922e4d8a46e5ae655172
+    Signed-off-by: aaron.sun <aaron.sun@rock-chips.com>
+
+commit 47c2a489bd87139d18a72e53d68c5f274e690efd
+Author: Xinhuang Li <buluess.li@rock-chips.com>
+Date:   Thu Nov 25 15:31:17 2021 +0800
+
+    [tests] venc: implement TEST_COMM_GetSocType instead getChipName
+    
+    Change-Id: Iee75ec4edd6d38b3458f4b4c6a29cfd8f49bc6fa
+    Signed-off-by: Xinhuang Li <buluess.li@rock-chips.com>
+
+commit 61720de7beaad53d2cc7b8a94865dd8d71e2dea9
+Author: Rimon Xu <rimon.xu@rock-chips.com>
+Date:   Thu Nov 25 09:04:45 2021 +0800
+
+    [tests] torture: implement 128 channel play gtest
+    
+    Change-Id: I19da04d8c0c1ebffe4d2f05474157afef43ab192
+    Signed-off-by: Rimon Xu <rimon.xu@rock-chips.com>
+
+commit 36d7610e57fa87071f350f4ee123382a221ba501
+Author: Rimon Xu <rimon.xu@rock-chips.com>
+Date:   Mon Nov 22 17:29:03 2021 +0800
+
+    [tests] rgn: fix rgn gtest failed
+    
+    ROOT CAUSE:
+      Caused by http://10.10.10.100/#/c/5654/.
+      TEST_VENC_Start function only starts Venc before, now it adds
+    automatic frame sending, changes the interface logic, and other
+    test items cannot be used.
+    
+    SOLUTION:
+      Manual frame sending case use TEST_VENC_Create funtion instead
+    of TEST_VENC_Start.
+    
+    TRIGGER CASE:
+      ./rk_rgn_gtest
+    
+      detail to see:
+        https://redmine.rock-chips.com/issues/326944
+    
+    Change-Id: I3ab764ad592ec00bdb213b355376dc76ccd93444
+    Signed-off-by: Rimon Xu <rimon.xu@rock-chips.com>
+
+commit ae3407332c8599a4a231b8ef30b0e3f07cee3e32
+Author: Xingwen.Fang <fxw@rock-chips.com>
+Date:   Wed Nov 24 22:33:05 2021 +0800
+
+    [rt_task] format code style
+    
+    Change-Id: I2492855d4e68d02750ef54b0aa7066626ee7f381
+    Signed-off-by: Xingwen.Fang <fxw@rock-chips.com>
+
+commit 05862b0b9c076762b845b411f1dfeedc45d6e422
+Author: Grey Li <grey.li@rock-chips.com>
+Date:   Tue Nov 16 17:34:49 2021 +0800
+
+    [tests] rt_mpi: link out/librockit.so directly
+    
+    - The method link ${RT_SHARED}(rockit) will link many inner symbols
+      to test, it will cause test bin much larger than normal, and some
+      static objects construct twice(In fact, there are two static objecs,
+      one in test bin the other in librockit.so).
+    - These Objects construct twice is complied between whole-archive and
+      no-whole-archive, such as folder rt_task, rt_mpi.
+    - We can't use -lrockit because it need librockit.so already install
+      in sysroot/usr/lib, so we directly link out/librockit.so.
+    
+    Change-Id: I09d04648dc7529100329a95bb2fde29975658199
+    Signed-off-by: Grey Li <grey.li@rock-chips.com>
+
+commit b6406ed97bc669b5505460e2b59b1f8ac8587983
+Author: Chen Jinsen <kevin.chen@rock-chips.com>
+Date:   Sat Nov 13 15:18:25 2021 +0800
+
+    [rt_media] RTASurface: match new buffer refsCount management
+    
+    - Add one more release when cancelBuffer on buffer owned by render,
+      we need sub refs of buffer to 0 if we want free buffer.
+    - Remove unnecessary release call when cancelBuffer on buffer owned
+      by us\decoder, cause refs count of buffer already set to 0.
+    
+    Change-Id: I0555ed0abd7a7ef2eea1182ce01545b24e084dae
+    Signed-off-by: Chen Jinsen <kevin.chen@rock-chips.com>
+
+commit 7de8ebab9e407cecc16be315c2a0efcd2aa05bd6
+Author: Grey Li <grey.li@rock-chips.com>
+Date:   Mon Nov 22 09:15:14 2021 +0800
+
+    [rt_media] glpss: fix crash when libgraphic_lsf not exist
+    
+    Change-Id: Ifec6da5c45efbc8657621549a34d72ee7bb492fd
+    Signed-off-by: Grey Li <grey.li@rock-chips.com>
+
+commit 8a9768af09bd00f07334ba20724b7c32b9b2ddf3
+Author: Rimon Xu <rimon.xu@rock-chips.com>
+Date:   Sat Sep 18 11:53:50 2021 +0800
+
+    [rt_task] implement input/output port for flow graph
+    
+    Change-Id: I1372cc6307cdedb67ca448f6ec9386a559abf86b
+    Signed-off-by: Rimon Xu <rimon.xu@rock-chips.com>
+
+commit 6824041a0b28dd6651986eed581663723a8ca347
+Author: He Hua <hh@rock-chips.com>
+Date:   Tue Nov 23 10:50:48 2021 +0800
+
+    [rt_node] switch sync clock if audio track create fail
+    
+    Change-Id: I8ea772bc4e89eb654e0f12a59fd9a1636bab6e14
+    Signed-off-by: He Hua <hh@rock-chips.com>
+
+commit 5ae6e35171698e2adc4b93fd7c66e6c23149c270
+Author: LongChang Ma <chad.ma@rock-chips.com>
+Date:   Sat Nov 20 19:32:14 2021 +0800
+
+    [rt_mpi] vi: v4l2 add set compress mode.
+    
+    Change-Id: I32395e98d656b32a852ac5c98cc8e91340468fc7
+    Signed-off-by: LongChang Ma <chad.ma@rock-chips.com>
+
+commit 5eb7bdf7ac6a9c8805b494be08c658588db27aeb
+Author: aaron.sun <aaron.sun@rock-chips.com>
+Date:   Mon Nov 22 10:52:58 2021 +0800
+
+    [rt_mpi] move VGS_MAX_ARRAY_SIZE from inside to outside
+    
+    Change-Id: I5f3ff7a3ca5511a917c8385280bc135a597afe59
+    Signed-off-by: aaron.sun <aaron.sun@rock-chips.com>
+
+commit 8c8fddc5e04e9badc0cb5e7657df066ccee77810
+Author: dawnming.huang <dawnming.huang@rock-chips.com>
+Date:   Sat Nov 20 21:12:06 2021 +0800
+
+    [rt_media] fix set rga dst frame format error
+    
+    Change-Id: I8b7a1fb42f86dd71834506536de2395b3ca61c7e
+    Signed-off-by: dawnming.huang <dawnming.huang@rock-chips.com>
+
+commit 09285f8bd915c7ea5115030baed9883ce4f0a18a
+Author: ywj <ywj@rock-chips.com>
+Date:   Wed Nov 17 16:14:06 2021 +0800
+
+    [tests] vdec: write the file by real width and height
+    
+    depend mpp patch: https://10.10.10.29/c/rk/mpp/+/139489
+    
+    Change-Id: I745a658f2d3653a7c896b5a91c1f33f8709a9fe3
+    Signed-off-by: ywj <ywj@rock-chips.com>
+
+commit 213abc2b55582f17592db265a3b20d7060580217
+Author: Xingwen.Fang <fxw@rock-chips.com>
+Date:   Sat Nov 20 20:36:01 2021 +0800
+
+    [rt_mpi] vo: unified use enum types to define compression mode
+    
+    vplay enables video layer compression mode by default.
+    
+    Change-Id: Ib4b4c2033287874fab5184888692f34520ea5b8e
+    Signed-off-by: Xingwen.Fang <fxw@rock-chips.com>
+
+commit 9f31d5ae71f56d7e520b688f9f2c081b9dc024dd
+Author: Rimon Xu <rimon.xu@rock-chips.com>
+Date:   Thu Nov 18 19:49:40 2021 +0800
+
+    [doc] sys: add dma buffer unique ID query and conversion instruction
+    
+    Change-Id: I2dd7c6f72672a9ef408ced948d5919208ca11d04
+    Signed-off-by: Rimon Xu <rimon.xu@rock-chips.com>
+
+commit 5440a20f19e72f77a94b8685a42eb9ff7479c0ce
+Author: Rimon Xu <rimon.xu@rock-chips.com>
+Date:   Mon Nov 15 10:50:01 2021 +0800
+
+    [rt_mpi] venc: set osd data for cover when attach rgn
+    
+    Change-Id: I21d7a0f51d7d3fd45655e4cfbb24ed066099cc7f
+    Signed-off-by: Rimon Xu <rimon.xu@rock-chips.com>
+
+commit f801903b540af8c24e205ac00514e96f52b24a5e
+Author: Xinhuang Li <buluess.li@rock-chips.com>
+Date:   Mon Nov 1 16:57:41 2021 +0800
+
+    [tests] venc: implment function/performance test
+    
+    Change-Id: I1820f9004708898f163e8285467618a2c78cf256
+    Signed-off-by: Xinhuang Li <buluess.li@rock-chips.com>
+
+commit 7be5578c48af05d0630c1e21ea6ff14c983d2c8f
+Author: Xinhuang Li <buluess.li@rock-chips.com>
+Date:   Thu Nov 18 20:49:56 2021 +0800
+
+    [rt_mpi] venc: missing priority setting for rga filter
+    
+    rkvenc encoder horStride need align 8, so set the rga out horStride align 8.
+    
+    Change-Id: I0aac14026b554582acca63c20484167fb0cdca11
+    Signed-off-by: Xinhuang Li <buluess.li@rock-chips.com>
+
+commit 960904a18cb2ca69bfb56c2d8e4b1e80cd64ba3a
+Author: He Hua <hh@rock-chips.com>
+Date:   Fri Sep 24 18:52:11 2021 +0800
+
+    [rt_media] optimize the caching mechanism
+    
+    The old caching mechanism is very esay to enter buffer
+    start and buffer end.
+    
+    Change-Id: I1239ca71ca29a3eeb51690444b7f1795c5a62dba
+    Signed-off-by: He Hua <hh@rock-chips.com>
+
+commit d122e36f49adc28714f11d740af17de03cc81e1c
+Author: Rimon Xu <rimon.xu@rock-chips.com>
+Date:   Sat Nov 20 11:05:58 2021 +0800
+
+    [rt_mpi] set ext mb flag for buffer create by user
+    
+    ROOT CAUSE:
+      The original method of using allocator to determine whether
+    the buffer is an external application is not applicable now,
+    because if VPSs is multi channel, fd will be brought to the
+    RTVideoFrame structure. At this time, the allocator is empty,
+    which will be confused with the memory by user.
+    
+    SOLUTION:
+      Set the ext mb flag in mb, and clearly mark this buffer for
+    user application.
+    
+    TRIGGER CASE:
+    ./rk_vpss_gtest
+      --gtest_filter=RKVpssMultiTest.group_4_in_channel_1_out
+    
+    Change-Id: I6ef53f2e05c5dd614c07253cb399dd525aa552bd
+    Signed-off-by: Rimon Xu <rimon.xu@rock-chips.com>
+
+commit 92d37cac23e15cad3927f7a4c3f0df0d0e633cab
+Author: dawnming.huang <dawnming.huang@rock-chips.com>
+Date:   Thu Sep 23 10:05:01 2021 +0800
+
+    [rt_media] potting rga/glpss interface
+    
+    Change-Id: I26ff36266bbd21672eeb9e303e7f4bd1412fea96
+    Signed-off-by: dawnming.hunag <dawnming.huang@rock-chips.com>
+    Signed-off-by: Xiao Ya peng <yp.xiao@rock-chips.com>
+
+commit 523115b178942e6e9b2bf281c5766d3dcc7523dd
+Author: Zheng Yang <zhengyang@rock-chips.com>
+Date:   Sat Nov 13 10:18:06 2021 +0800
+
+    [rt_mpi] vo: rk3588 support compress mode
+    
+    Change-Id: I0cf9cf87666ae45296ba0a3c75d243ebc3a3a4d3
+    Signed-off-by: Zheng Yang <zhengyang@rock-chips.com>
+
+commit 0eed66d1457fb8f0af9d92afbbc82479e369cb88
+Author: Zheng Yang <zhengyang@rock-chips.com>
+Date:   Mon Nov 8 14:28:53 2021 +0800
+
+    [rt_mpi] vo: support rk3588
+    
+    Change-Id: Ie437bbd0affe2ccadef08b2e044cab6f58052de2
+    Signed-off-by: Zheng Yang <zhengyang@rock-chips.com>
+
+commit 7855016bce36173b2c7f31a9b86212e963590d30
+Author: ywj <ywj@rock-chips.com>
+Date:   Fri Nov 19 09:03:41 2021 +0800
+
+    [tests] vdec: fix the failure of vdec creation
+    
+    FFmpeg cannot parse out the width and height, causing vdec
+    creation to fail. First specify a default width, then MPP
+    infochange will reallocate the buffer to decode.
+    
+    Change-Id: I17e09b91d0610595a69b4f1665d30aac6f390e36
+    Signed-off-by: ywj <ywj@rock-chips.com>
+
+commit 110d866547147b65bcbea70736c99ce706d87168
+Author: ywj <ywj@rock-chips.com>
+Date:   Fri Nov 19 18:15:41 2021 +0800
+
+    [rt_mpi] vdec: fix the failure of deinterlace
+    
+    VDEC_PARAM_PICTURE_S can only be assigned in the case of jpeg,
+    otherwise it will be overwritten by VDEC_PARAM_VIDEO_S,
+    because they are a union
+    
+    Change-Id: I8e34c8eb1bbb6c14de58d2a8885472d026980f1c
+    Signed-off-by: ywj <ywj@rock-chips.com>
+
+commit f255c0abc78b8ae5c69f4d95724fd0acf798e92e
+Author: ywj <ywj@rock-chips.com>
+Date:   Fri Nov 19 16:48:12 2021 +0800
+
+    [rt_mpi] vdec: fix vdec test poll interface error
+    
+    RK_MPI_VDEC_CloseFd parameter is wrong, which causes the poll fd
+    that is running to be closed and polled error occurs.
+    
+    Change-Id: I81ee2d8ee6f833929fd41b4bd1350407f411dbee
+    Signed-off-by: ywj <ywj@rock-chips.com>
+
+commit 7edb89df1978f2f935633fa613b2cb2d0817fe1c
+Author: Xinhuang Li <buluess.li@rock-chips.com>
+Date:   Tue Nov 16 20:48:25 2021 +0800
+
+    [rt_media] implement yvyu422/vyuy422/bgra4444 pixel format mapping
+    
+    Change-Id: I143e8f76368dd4049414fd306f81de56e9883362
+    Signed-off-by: Xinhuang Li <buluess.li@rock-chips.com>
+
+commit ed0eca5ebb2e198e9b3372600c76f4bf60fbe04f
+Author: ZhouDidong <shika.zhou@rock-chips.com>
+Date:   Wed Nov 17 17:49:23 2021 +0800
+
+    [rt_mpi] ao: allocate threads according to the number of nodes
+    
+    When open two ao or more, if the number of threads is less than
+    the number of nodes will probabilistically lead to data waiting,
+    and will report underrun.
+    
+    Change-Id: Ib82846f4ec3e71ec78fff7dfddf84c8a34953efe
+    Signed-off-by: ZhouDidong <shika.zhou@rock-chips.com>
+
+commit d00ddf40e2d75bf07c1c837ad8aed5935925642b
+Author: ywj <ywj@rock-chips.com>
+Date:   Tue Nov 16 18:56:35 2021 +0800
+
+    [rt_mpi] vdec: fix jpeg decoded output format error
+    
+    when mpp create, the output format is not set to mpp,
+    unified use OPT_STREAM_FMT_OUT attribute
+    
+    Change-Id: I85df75a9859c64ab79399d9bbc97bf32ffc0cad8
+    Signed-off-by: ywj <ywj@rock-chips.com>
+
+commit e000ba9e74be0dd1dee2c8840ee8e26f75ab8fcd
+Author: Grey Li <grey.li@rock-chips.com>
+Date:   Wed Nov 17 16:08:21 2021 +0800
+
+    [rt_mpi] fix RK_ERR_SYS_NOTREADY macro redefinition
+    
+    RK_ERR_SYS_NOTREADY was redefined by the SYS module, resulting
+    in an incorrect definition of RK_ERR_XXX_SYS_NOTREADY.
+    
+    Change-Id: I268fbfad4c32240025b8ca71c11a07b7faf4342b
+    Signed-off-by: Grey Li <grey.li@rock-chips.com>
+
+commit 828bc79d045448bd67aa9e0d14e8b6e1885509d7
+Author: Zheng Yang <zhengyang@rock-chips.com>
+Date:   Wed Nov 17 15:39:21 2021 +0800
+
+    [rt_mpi] vo: support YCBCR422SP/YCBCR422SP10bit
+    
+    Change-Id: Ic4adc2ea769ee088988570c746fcabf264cc43c9
+    Signed-off-by: Zheng Yang <zhengyang@rock-chips.com>
+
+commit f0712c95b6bacc76cbbf4808fa8553c8c27fd807
+Author: Grey Li <grey.li@rock-chips.com>
+Date:   Wed Nov 17 15:55:16 2021 +0800
+
+    [rt_mpi] vdec/venc: don't delete graph when prepare fail
+    
+    Change-Id: Id9c1c12a5546d3f527a5afbc049a8afa9e2e1cf8
+    Signed-off-by: Grey Li <grey.li@rock-chips.com>
+
+commit 90173d4ab245c25d6540e3e3d5f40941562c75b4
+Author: aaron.sun <aaron.sun@rock-chips.com>
+Date:   Sat Nov 6 15:18:37 2021 +0800
+
+    [doc] rt_mpi: remove title number
+    
+    The title Number is automatically generated by Typora
+    rockchip theme.
+    
+    Change-Id: Ida40ec48865a35f40b4238c55e7746105fe13834
+    Signed-off-by: aaron.sun <aaron.sun@rock-chips.com>
+
+commit e11c67eb586ea9c0c4829a7f59f9cfc959b2fc59
+Author: aishaoxiang <aisx@rock-chips.com>
+Date:   Wed Nov 17 14:08:14 2021 +0800
+
+    [rt_mpi] vo: fix bug that vo_comp_deinit block
+    
+    if enable layer then disable immediately, u32ComposeSignal not
+    initialization complete. vo_comp_deinit will block at pthread_join
+    
+    Change-Id: Id341e24d1fa54a7175e6cd8136651be2088f1a4e
+
+commit 2e2395e75d781045bc236c6d2c070fd6a1c75e08
+Author: Rimon Xu <rimon.xu@rock-chips.com>
+Date:   Tue Nov 16 17:19:28 2021 +0800
+
+    [tests] res: modify res file path to /userdata/test/res/
+    
+    Change-Id: If3c8097847a2e1674af0b3bf721aff1369cd1976
+    Signed-off-by: Rimon Xu <rimon.xu@rock-chips.com>
+
+commit a7ac544d82b1bc6184fe1a4e8d6b13b6f22b996a
+Author: Rimon Xu <rimon.xu@rock-chips.com>
+Date:   Mon Nov 15 10:55:01 2021 +0800
+
+    [tests] sys: mb need to be flush cache before fuzzy frame pixel
+    
+    Change-Id: Iaf42de6704941e31937547bd3e74b65e3064aaaa
+    Signed-off-by: Rimon Xu <rimon.xu@rock-chips.com>
+
+commit 15c71c17ed1cae9a5d466fa9dd32cd9565b46e41
+Author: Rimon Xu <rimon.xu@rock-chips.com>
+Date:   Mon Sep 6 15:58:27 2021 +0800
+
+    [tests] rgn: implement attach venc performance test
+    
+    Change-Id: I0bf95ad518281bf76e52ffaf67ed811a79b1f870
+    Signed-off-by: Rimon Xu <rimon.xu@rock-chips.com>
+
+commit 300a623164eadfae58b5b9c1a2d27a9e81d27d9c
+Author: Rimon Xu <rimon.xu@rock-chips.com>
+Date:   Mon Nov 15 10:54:05 2021 +0800
+
+    [rt_mpi] implement 8K vpss performance gtest
+    
+    Change-Id: Ic8db06d818e768281fb5aac1dc8736054fffa8d2
+    Signed-off-by: Rimon Xu <rimon.xu@rock-chips.com>
+
+commit 7cb629fafe68d6a7b9860f8c7a3125233fec36a0
+Author: Rimon Xu <rimon.xu@rock-chips.com>
+Date:   Fri Nov 12 17:31:43 2021 +0800
+
+    [tests] vpss: implement flip and mirror gtest
+    
+    Change-Id: I84bcbe3695a0cdaf30b2dc310f0e9ea7bf15e7f4
+    Signed-off-by: Rimon Xu <rimon.xu@rock-chips.com>
+
+commit 00bf12928677f4178fd57df668c28a5fd49f46bd
+Author: ywj <ywj@rock-chips.com>
+Date:   Mon Nov 1 19:38:16 2021 +0800
+
+    [tests] vdec: fix crash when the specified channel is decoded.
+    
+    The channel of running and destroyed are inconsistent.
+    
+    Change-Id: I45d434c6cd331d53323e1fed0294f6faa34af222
+    Signed-off-by: ywj <ywj@rock-chips.com>
+
+commit 3824caa76769701cd65ba62eb627c26ab803128a
+Author: ywj <ywj@rock-chips.com>
+Date:   Mon Nov 8 10:55:15 2021 +0800
+
+    [rt_mpi] vdec: fix the unit of virtual width
+    
+    - The unit of virtual width is pixel, In the NVR scene, the
+      GPU input width and height are also in pixels.
+    - In the player scene, the virtual width is transmitted to
+      nativewindow in bytes. For compatibility, it will not be
+      changed temporarily.
+    
+    Change-Id: I9e726ebf0c30b0ef19fcda7815f0f9f58e345a7a
+    Signed-off-by: ywj <ywj@rock-chips.com>
+
+commit b3403be524863d1f186e78c62f5dd950e4dbeece
+Author: Grey Li <grey.li@rock-chips.com>
+Date:   Mon Nov 15 17:58:38 2021 +0800
+
+    [rt_mpi] vo: fix miss change chID use new rule when chn disable
+    
+    Change-Id: I782080be5a67532233d62cd5a91a0f5349bfaa41
+    Signed-off-by: Grey Li <grey.li@rock-chips.com>
+
+commit dd920aabda5534f55f635289fe65e81f12c87325
+Author: He Hua <hh@rock-chips.com>
+Date:   Fri Nov 12 11:10:28 2021 +0800
+
+    [rt_task] schedule direct until output handler receive eos
+    
+    - FIXME: EOS judgment has a defect when TaskNode has multi
+      input stream.
+    - If TaskNode is not sink node, InputHandler has receive eos
+      buffer, but OutputHandler is not receive eos yet, force to
+      schedule it.
+    
+    Change-Id: Ib46932f47d78029badd1f295fb85bc0c5d95e990
+    Signed-off-by: He Hua <hh@rock-chips.com>
+
+commit 19f378ca408f7eb34fb43edd30121b99ade57baf
+Author: He Hua <hh@rock-chips.com>
+Date:   Tue Nov 9 13:59:54 2021 +0800
+
+    [rt_task] rename encoder and decoder of Audio
+    
+    rename RTNodeFFAudioDecoder to RTNodeAudioDecoder.
+    rename RTNodeFFAudioEncoder to RTNodeAudioEncoder.
+    
+    Change-Id: If8d45db4ac48e8dd17bba180e424db8ca9c71211
+    Signed-off-by: He Hua <hh@rock-chips.com>
+
+commit 8cb080201a8c90ec490f3b251647cee4250b9d18
+Author: He Hua <hh@rock-chips.com>
+Date:   Fri Nov 12 14:13:16 2021 +0800
+
+    [tests] adec: fix memory leak when send eos to adec
+    
+    - Fix memeory leak when send eos to adec.
+    - Just send a empty RTAudioPacket to send eos flag when
+      buffer pool not exist.
+    
+    Change-Id: I048be82f09c614de0eb7fc3bf174f6dc51d48c70
+    Signed-off-by: He Hua <hh@rock-chips.com>
+
+commit f159ee654955c86827edd79aee871c980589b975
+Author: ZhouDidong <shika.zhou@rock-chips.com>
+Date:   Sun Nov 14 16:08:42 2021 +0800
+
+    [rt_media] fix send eos frame error for audio resample
+    
+    Change-Id: I63aa7a3ca46481b16cd4784478b133a436de6673
+    Signed-off-by: ZhouDidong <shika.zhou@rock-chips.com>
+
+commit 0898d1f2abd94bb42fd75745d199bc42be65d929
+Author: Chen Jinsen <kevin.chen@rock-chips.com>
+Date:   Sat Nov 13 15:11:49 2021 +0800
+
+    [rt_media] no need to delete static mAllocation variant
+    
+    Change-Id: Iad4ee547e9d36f76c6a7cf4c66a4d64ae020eea9
+    Signed-off-by: Chen Jinsen <kevin.chen@rock-chips.com>
+
+commit 7913fc35be6ab07a76273cb06828a434f0d6a878
+Author: Chen Jinsen <kevin.chen@rock-chips.com>
+Date:   Fri Nov 12 21:53:10 2021 +0800
+
+    [rt_media] add usage specify_stride transfer to gralloc
+    
+    Change-Id: I2064da01a58fc456f4b9f3a25656139355119116
+    Signed-off-by: Chen Jinsen <kevin.chen@rock-chips.com>
+
+commit 18fe76d2dc27ff86f41ab83a691e4683988d93fc
+Author: Xingwen Fang <fxw@rock-chips.com>
+Date:   Fri Nov 12 22:58:18 2021 +0800
+
+    [build] fix undefined reference compilation error on Android
+    
+    fix error: undefined reference to 'vtable for IVOComposer'.
+    
+    Change-Id: I5ad68bf46a019f92ed98f34100dd8979acd3e544
+    Signed-off-by: Xingwen Fang <fxw@rock-chips.com>
+
+commit 02dd2e0158e1bb37adb35c462dd96042462375ab
+Author: Chen Jinsen <kevin.chen@rock-chips.com>
+Date:   Sat Nov 13 10:39:21 2021 +0800
+
+    [third-party] rt_video_config: add chip capability of rk3588
+    
+    Change-Id: I9a039d974c17fba7a5c87b46422f321d3b00eea7
+    Signed-off-by: Chen Jinsen <kevin.chen@rock-chips.com>
+
+commit 43e2e6745806f7f56d5d5efb19affe803a58aab6
+Author: Chen Jinsen <kevin.chen@rock-chips.com>
+Date:   Fri Nov 12 21:30:14 2021 +0800
+
+    [rt_base] build the key-value index of rk3588
+    
+    Change-Id: I38f9b0eb43721f677deef1314db0914c5bd1daa6
+    Signed-off-by: Chen Jinsen <kevin.chen@rock-chips.com>
+
+commit 70bc0c53ba6b13ac06ecad33c1ec9830f97847ce
+Author: Chen Jinsen <kevin.chen@rock-chips.com>
+Date:   Fri Nov 12 21:39:07 2021 +0800
+
+    [rt_media] add fbc capacity of rk3588
+    
+    Change-Id: I7991a62853c55820980c101ffa3046cadec9c2ee
+    Signed-off-by: Chen Jinsen <kevin.chen@rock-chips.com>
+
+commit 228fe795448dcb3f3e09a9f555ccdec6102d58d2
+Author: Zheng Yang <zhengyang@rock-chips.com>
+Date:   Sat Nov 6 14:54:58 2021 +0800
+
+    [rt_mpi] vo: support configurating key colour
+    
+    The key colour take effect only when the colour format is
+    ARGB1555/ABGR1555.
+    
+    The version of libgraphics_lsf.so should be equal or larger
+    than 3.76.
+    
+    Change-Id: I6067120a09d965f0fe436b3014b95fa5afbd71a6
+    Signed-off-by: Zheng Yang <zhengyang@rock-chips.com>
+
+commit 0704d2cab24b5709d598a9005731fbb687955a95
+Author: Xu Xuehui <xxh@rock-chips.com>
+Date:   Thu Nov 11 17:09:28 2021 +0800
+
+    [rt_mpi] vo: free drm_writeback when stop dev wbc
+    
+    Change-Id: I28b36c9b31464c2e0367545661b853469f01741c
+    Signed-off-by: xxh <xxh@rock-chips.com>
+
+commit c6003777f55c7f96a3f000f7a044e7f30e710d20
+Author: Xinhuang Li <buluess.li@rock-chips.com>
+Date:   Thu Oct 28 11:49:00 2021 +0800
+
+    [tests] vi: add get/release frame test
+    
+    Change-Id: Ibadb3ac6ac2378891ab4157412e0d459753a6171
+    Signed-off-by: Xinhuang Li <buluess.li@rock-chips.com>
+
+commit 85662ad7de8f9bd568b18578ddd54c1040764db0
+Author: Xingwen.Fang <fxw@rock-chips.com>
+Date:   Fri Nov 12 10:45:54 2021 +0800
+
+    [rt_mpi] venc: disable channel context persistence
+    
+    - There are many coding parameters, and rockit/mpp parameters
+      need to be reset.
+    - If you want to enable, it is recommended to reset all context
+      parameters when destroying.
+    
+    Change-Id: I5abb8c891200de6805ac45893a146a910c6f1ffe
+    Signed-off-by: Xingwen.Fang <fxw@rock-chips.com>
+
+commit aab4de215c309c1d73d806b26ef07ce2df9b50fe
+Author: Xinhuang Li <buluess.li@rock-chips.com>
+Date:   Thu Nov 11 16:14:28 2021 +0800
+
+    [rt_media] mapping NV16/NV61 pixel format to V4L2 format
+    
+    Change-Id: I1112ca81378978c94b52e296da787c9ca3529d70
+    Signed-off-by: Xinhuang Li <buluess.li@rock-chips.com>
+
+commit dd3f5287d3e129795f23c69921e704d57063d86d
+Author: ZhouDidong <shika.zhou@rock-chips.com>
+Date:   Tue Aug 31 09:55:37 2021 +0800
+
+    [rt_mpi] aenc: provide getting channel fd interface
+    
+    Change-Id: I5e003e4439b5c095a5dd874931a277cd0fce3d41
+    Signed-off-by: ZhouDidong <shika.zhou@rock-chips.com>
+
+commit 94bac6b8a34d6951c2963bddcabce547155d1ef4
+Author: Rimon Xu <rimon.xu@rock-chips.com>
+Date:   Tue Nov 9 16:26:07 2021 +0800
+
+    [rt_mpi] support vdec buffering size setting by user
+    
+    The user determines decode frame count by setting u32RefFrameNum
+    + 3, but MPP decode still calculates the DPB size according to the
+    syntax. If the DPB size is greater than the number of decode frame
+    cnt - 2, it will not be obtained due to insufficient frames required
+    by the DPB list in case of stream packet loss, resulting in video
+    freeze.
+    
+    Dependent MPP commit: https://10.10.10.29/c/rk/mpp/+/138611
+    
+    Change-Id: Ifa1232456a07df54a192dcfea9e70fe039d70119
+    Signed-off-by: Rimon Xu <rimon.xu@rock-chips.com>
+
+commit 590accc1990ea6ffbe9673d33075ee393f631a41
+Author: Rimon Xu <rimon.xu@rock-chips.com>
+Date:   Mon Oct 25 18:10:36 2021 +0800
+
+    [tests] rgn: implement attach venc gtest
+    
+    Change-Id: I4a5895b3d97a55288c288d6d22fbd0ef0464822b
+    Signed-off-by: Rimon Xu <rimon.xu@rock-chips.com>
+
+commit 0a9863fd0ced77ac507d6683948b4f9c759f1353
+Author: Rimon Xu <rimon.xu@rock-chips.com>
+Date:   Thu Nov 11 14:24:43 2021 +0800
+
+    [rt_mpi] fix eror conversion of uuid and mpp chn info
+    
+    Change-Id: Ib6552fbe209d96524930c5768820e30fb73c35dd
+    Signed-off-by: Rimon Xu <rimon.xu@rock-chips.com>
+
+commit 018d949ab1877075583b7ae0fc60fd7da378b604
+Author: ZhouDidong <shika.zhou@rock-chips.com>
+Date:   Mon Aug 30 16:38:19 2021 +0800
+
+    [rt_mpi] ai: provide getting channel fd interface
+    
+    Change-Id: If980ef7632534265668f2038a2fc1e54b9bd694e
+    Signed-off-by: ZhouDidong <shika.zhou@rock-chips.com>
+
+commit 744fc62fc4d6915f864da7fe3bde4c432e84d90a
+Author: Rimon Xu <rimon.xu@rock-chips.com>
+Date:   Mon Nov 8 09:39:23 2021 +0800
+
+    [tests] sys: implement function test
+    
+    Change-Id: I6cb27bbf23dfa4bacf0d5a9aec4a6266ac42e89d
+    Signed-off-by: Rimon Xu <rimon.xu@rock-chips.com>
+
+commit e47ac09ebb1d505e0f28316dae6f5a32bebe90ae
+Author: Rimon Xu <rimon.xu@rock-chips.com>
+Date:   Mon Nov 8 19:40:52 2021 +0800
+
+    [tests] vpss: implement zoom test
+    
+    Change-Id: I18ac3ca451b138136726d60d32754e294a17d6d2
+    Signed-off-by: Rimon Xu <rimon.xu@rock-chips.com>
+
+commit 5856a14cae18c9b80719f965262cce7cc746c020
+Author: Rimon Xu <rimon.xu@rock-chips.com>
+Date:   Fri Sep 3 15:16:10 2021 +0800
+
+    [tests] vpss: implement performance test
+    
+    Change-Id: Idbb95fab0bf7dcd98dccae81ea6468005b0d5bb6
+    Signed-off-by: Rimon Xu <rimon.xu@rock-chips.com>
+
+commit 30172f64e0015c8c2dac8dd7273ea44291cb0057
+Author: Rimon Xu <rimon.xu@rock-chips.com>
+Date:   Wed Sep 1 18:00:49 2021 +0800
+
+    [tests] vpss: add module test by gtest
+    
+    Change-Id: I36dcc8843d527189fe4642641d36f7bcad7f676b
+    Signed-off-by: Rimon Xu <rimon.xu@rock-chips.com>
+
+commit 03759c918c80e720bb031bd47ca0904d01052421
+Author: Xu Xuehui <xxh@rock-chips.com>
+Date:   Tue Nov 9 10:54:18 2021 +0800
+
+    [rt_mpi] vo: add Volayer Splice description
+    
+    Change-Id: I5ff3a42810568eb310a33480588790c1441e6697
+    Signed-off-by: xxh <xxh@rock-chips.com>
+
+commit c32b4600cb985f3004f013b784c7466cd3761bdf
+Author: Xu Xuehui <xxh@rock-chips.com>
+Date:   Thu Sep 23 18:13:50 2021 +0800
+
+    [rt_mpi] vo: GPU/RGA composer Refactoring
+    
+    Change-Id: I2cc1bed4bea80e8f1f3765c038d0a0e8cc2bb428
+    Signed-off-by: xxh <xxh@rock-chips.com>
+
+commit eecede88e51af43f13e38354c29e5ef9859ebea2
+Author: Xingwen.Fang <fxw@rock-chips.com>
+Date:   Sat Oct 30 14:19:02 2021 +0800
+
+    [rt_media] glpss: clear dma buffer cache in graphics_lsf
+    
+    It can be reproduced through the VGS test case, and the vgs
+    job is executed in a loop, and the dma buffer applied for
+    the previous time has a memory leak.
+    
+    Change-Id: Ib01b4a3664534438491b4e12984f754a4a2d01bd
+    Signed-off-by: Xingwen.Fang <fxw@rock-chips.com>
+
+commit 1cf3009a290a76129909a6b40373c0eb1f33299e
+Author: dawnming.hunag <dawnming.huang@rock-chips.com>
+Date:   Mon Nov 1 20:04:40 2021 +0800
+
+    [rt_mpi] tde: use glpss to do fill color when rga no support
+    
+    Change-Id: Icc9a8275bb3d7e59c2af6be432f87a87ca918601
+    Signed-off-by: dawnming.huang <dawnming.huang@rock-chips.com>
+
+commit 006cd93cec057c8e76086791168ccf87650b26dd
+Author: Xingwen.Fang <fxw@rock-chips.com>
+Date:   Tue Aug 10 18:09:18 2021 +0800
+
+    [rt_media] crop top lines of redundant data in fbc decoding
+    
+    - When fbc decoding is turned on, the first 4 rows(HEVC/AVC) after
+      decompression of fbc are invalid data. When vo/vpss processing,
+      crop these rows of data.
+    - TODO: should be replace with mpp_frame_get_offset_y if MPP support
+      all format acquisition.
+    
+    Change-Id: I602b02e236729ec9bf541bb2f92d3e21a8a89c2a
+    Signed-off-by: Xingwen.Fang <fxw@rock-chips.com>
+
+commit a0c28fde02e90fb349921666e57dec8a70f580dc
+Author: Xinhuang Li <buluess.li@rock-chips.com>
+Date:   Mon Nov 1 16:32:04 2021 +0800
+
+    [rt_media] venc: clear mpp buffer mapping list when reset
+    
+    - The mapping list needs to be cleared when venc channel reset.
+      Otherwise, when the venc channel is reused, the old mapping
+      relationship still exists and an illegal mpp buffer will be
+      found.
+    - Fix the following problems when input buffer reassignment
+      "mpp_buffer: mpp_buffer_ref_dec found non-positive ref_count
+      0 caller ma_commit_buffer_to_group".
+    
+    Change-Id: I8c523f863420ca8152678797a86de04297a9b058
+    Signed-off-by: Xinhuang Li <buluess.li@rock-chips.com>
+
+commit f8b49b5ec5052fbd9c2636ba03d53def44376a31
+Author: He Hua <hh@rock-chips.com>
+Date:   Wed Nov 3 17:33:45 2021 +0800
+
+    [rt_media] pause dequeue buffer when infochange process
+    
+    The thread of the dequeue buffer and the thread that allocate
+    buffer are not the same. In the infochange process, it may
+    occur when the buffer is reallocated, and an old buffer will
+    be dequeueed from the nativewindow.
+    
+    Change-Id: I6c2ae0062b379bde995898585560b82a132fa84f
+    Signed-off-by: He Hua <hh@rock-chips.com>
+
+commit 3f16de806600b7d79bf14841ba95071d6c1c1c42
+Author: Xingwen.Fang <fxw@rock-chips.com>
+Date:   Tue Nov 9 18:37:08 2021 +0800
+
+    [rt_media] compatible player's virtual width/height acquisition
+    
+    Change-Id: I3a3f68e46f63581d0659ca9409ddca163d2d4a25
+    Signed-off-by: Xingwen.Fang <fxw@rock-chips.com>
+
+commit 97b2d54c7ab511c991c2098373752aa0784e8db4
+Author: Xu Xuehui <xxh@rock-chips.com>
+Date:   Thu Oct 21 08:51:15 2021 +0800
+
+    [test] vo: update rk_mpi_vo_test app
+    
+    Change-Id: I70c7b88aefdb7bcd11b955a7c74dabbcb3aabda9
+    Signed-off-by: xxh <xxh@rock-chips.com>
+
+commit 702dc036ca69081d77b9905fad966e07444b9a16
+Author: He Hua <hh@rock-chips.com>
+Date:   Mon Nov 8 18:49:43 2021 +0800
+
+    [rt_player] add interface to set subtitle visible/invisible
+    
+    Change-Id: Ib41160b51be33bebdfac1489fcdf53b5bffe040e
+    Signed-off-by: He Hua <hh@rock-chips.com>
+
+commit dce50782a30e0d6174a2ffeb6eff050f5c42d753
+Author: Xingwen.Fang <fxw@rock-chips.com>
+Date:   Tue Nov 2 22:54:49 2021 +0800
+
+    [rt_task] fix input queue full to non-full callback exception
+    
+    The asynchronous multi-threaded call of getPacket and addPacket
+    causes the state to switch abnormally, and cannot switch from
+    full to non-full, and cannot continue to input packet from the
+    outside until handleIdle lifts the current limit. The steps to
+    reproduce are as follows:
+    1. RTInputStreamManager::getPackets gets isFull as False.
+    2. RTInputStreamManager::addPackets add a packet, non-full->full.
+    3. Step 1 continues to execute, non-full->non-full, the becomeNoFull
+    callback will not be executed, and the external state is always full
+    until the handleIdle releases the current limit.
+    
+    Change-Id: I2d2b93160bcce727e03f2e4af1c989d454159531
+    Signed-off-by: Xingwen.Fang <fxw@rock-chips.com>
+
+commit a29e8f0682e945a52a2f42cb96ef5987f0ef5e29
+Author: Xingwen.Fang <fxw@rock-chips.com>
+Date:   Mon Nov 8 20:51:57 2021 +0800
+
+    [rt_task] reset packet counter when TaskGraph stop
+    
+    Change-Id: Icad278419a0dfed40d2ae66a6655e75b070d466e
+    Signed-off-by: Xingwen.Fang <fxw@rock-chips.com>
+
+commit 4213eff2ed55fce9c6ab5142ebc256078cd8ce0b
+Author: Grey Li <grey.li@rock-chips.com>
+Date:   Wed Oct 27 17:25:50 2021 +0800
+
+    [rt_task] reduce TaskGraph create/destroy log level to verbose
+    
+    Change-Id: I63e12441176bafe5f0999236ec575f2346c7689d
+    Signed-off-by: Grey Li <grey.li@rock-chips.com>
+
+commit d6f9b630f823a6a1e149af44dab4258c68593983
+Author: Grey Li <grey.li@rock-chips.com>
+Date:   Wed Nov 3 14:52:27 2021 +0800
+
+    [rt_mpi] vo: remove RK_MPI_VO_CloneBuffer
+    
+    This interface will lead memory leak.
+    
+    Change-Id: I3fd792b46c1ca17e8e3b85b6e345176ba35ca3fe
+    Signed-off-by: Grey Li <grey.li@rock-chips.com>
+
+commit 0b181bbf8ac0d117a285e65015ada01fdf785e21
+Author: He Hua <hh@rock-chips.com>
+Date:   Tue Oct 19 20:14:45 2021 +0800
+
+    [rt_task] avoid block caused by calling flush
+    
+    There are multi thread to process node task when flush is called.
+    RunTask will process task which already add to scheduler, and flush
+    is called to discard tasks that have not been added to scheduler.
+    To do this in diffrent thread is not a goog idea because some critical
+    resources may not be protected very well.
+    
+    Change-Id: Id293dd85a82211f5ba71b48e37d0af3b2bdf65eb
+    Signed-off-by: He Hua <hh@rock-chips.com>
+
+commit ed1bc80b33fd7c8cefc1b5a04a17f1b2632a8611
+Author: Zheng Yang <zhengyang@rock-chips.com>
+Date:   Mon Nov 8 15:09:32 2021 +0800
+
+    [rt_mpi] vo: expand max vo dev number to 4
+    
+    Change-Id: I34e7b433ac0c90ec04aa17e289a29850646d17b7
+    Signed-off-by: Zheng Yang <zhengyang@rock-chips.com>
+
+commit 9e882761a0ee540ed62378332ef8babfaf941ff9
+Author: Zheng Yang <zhengyang@rock-chips.com>
+Date:   Sat Nov 6 15:14:55 2021 +0800
+
+    [rt_mpi] vo: support YCbCr420 10bit
+    
+    Change-Id: Id4d4399aa45eab81e70c24166fc7fd11d1e63a7d
+    Signed-off-by: Zheng Yang <zhengyang@rock-chips.com>
+
+commit 922188f89114f106ae3b483c505fb1c58aa31c57
+Author: zhijun.xie <xzj@rock-chips.com>
+Date:   Fri Nov 5 14:38:07 2021 +0800
+
+    [rt_base] use new ioctl command to close handle
+    
+    In order to fix RK_MPI_MB_UniqueId2Fd cause handle points
+    to the wrong DMA buffer after close the handle, we use new
+    DRM_IOCTL_ROCKCHIP_GEM_CLOSE ioctl to close handle.
+    
+    PS: compat commit https://10.10.10.29/c/rk/kernel/+/138399
+    
+    Change-Id: I3c7cfb891e1966cb3e4e8d65364c25bcd89d082d
+
+commit e56212af33c0156ac12a7d5ed97267dc4221a97b
+Author: Grey Li <grey.li@rock-chips.com>
+Date:   Wed Oct 27 14:26:17 2021 +0800
+
+    [rt_mpi] vdec: limit batch < streamBufCnt for fix dump info err
+    
+    When batch == streamBufCnt, packet cnt in batch may be streamBufCnt,
+    and add packet to queue also success, total cnt will greater than
+    streamBufCnt.
+    Therefore, 1 <= batch < streamBufCnt, streamBufCnt >= 2
+    
+    Change-Id: I0035001a4bf4af4f9533b05c34163648007d6bd9
+    Signed-off-by: Grey Li <grey.li@rock-chips.com>
+
+commit eb2d12574fc33af9a49be11e7f3ee98b84b6e756
+Author: Xinhuang Li <buluess.li@rock-chips.com>
+Date:   Thu Nov 4 17:53:40 2021 +0800
+
+    [rt_media] mapping yuv422 pixel format to RGA format
+    
+    Change-Id: I7cb01f18ec850de915e339f43b023fbb9b77577c
+    Signed-off-by: Xinhuang Li <buluess.li@rock-chips.com>
+
+commit 0de5faa82e33a513f4b1068bda590fd20187e2c6
+Author: Rimon Xu <rimon.xu@rock-chips.com>
+Date:   Fri Nov 5 15:21:12 2021 +0800
+
+    [rt_task] fix error trap waitUntilGraphInputStreamUnthrottled
+    
+    ROOT CAUSE:
+      The cause of the error is mThrottledGraphInputStreamCount
+    became negative. Happen in the flowing condition:
+        Thread 1:
+          -> RTInputStreamManager::getPackets
+          -> checkQueueStatus to change FULL->NOT FULL state
+          -> RTTaskGraph::updateThrottledNodes
+        Thread 2:
+          -> RTScheduler::handleIdle
+          -> RTTaskGraph::unthrottleSources
+      Because mFullInputStreams are not protected by mFullInputStreamsMutex,
+    it may cause updateThottledNodes to be executed repeatedly, resulting in
+    mThrottledGraphInputStreamCount became negative.
+      The error will not work immediately. When the handleIdle is excute
+    again, it will be judged that it will not be entered, resulting in
+    failure to unthrottle source normally.
+    
+    SOLUTION:
+    Add mFullInputStreamsMutex to protect mFullInputStreams in
+    unthrottleSources function.
+    
+    Change-Id: Iee72fb700c0e6b5878a9faf8f451d54cfc602df5
+    Signed-off-by: Rimon Xu <rimon.xu@rock-chips.com>
+
+commit f642ec368d428bfeef1a3890e6e10c025f6d75d1
+Author: Rimon Xu <rimon.xu@rock-chips.com>
+Date:   Fri Oct 22 14:44:24 2021 +0800
+
+    [tests] implment mb module test by gtest
+    
+    Change-Id: I3154da27dc592ebc5d3205257f32213a5f70508a
+    Signed-off-by: Rimon Xu <rimon.xu@rock-chips.com>
+
+commit c6a6a0af711f01611e23d1be540054a119d63132
+Author: Rimon Xu <rimon.xu@rock-chips.com>
+Date:   Sat Oct 16 16:07:55 2021 +0800
+
+    [tests] rt_mpi: implment application torture gtest
+    
+    Change-Id: I0f381285ef32a1ad9378dc04349c73a727f810aa
+    Signed-off-by: Rimon Xu <rimon.xu@rock-chips.com>
+
+commit 4bc6825963130b16520c0e5d40704d057262dd14
+Author: Xinhuang Li <buluess.li@rock-chips.com>
+Date:   Thu Nov 4 19:33:30 2021 +0800
+
+    [rt_mpi] venc: missing format setting for rga filter
+    
+    Change-Id: I714ba77e3801eacc72fcfb2ae11c93fe34f73e84
+    Signed-off-by: Xinhuang Li <buluess.li@rock-chips.com>
+
+commit 67be69eebe6d2967f72708ec289f1895a968b339
+Author: Xingwen.Fang <fxw@rock-chips.com>
+Date:   Fri Nov 5 14:26:30 2021 +0800
+
+    [doc] FAQ: correct a clerical mistake
+    
+    Change-Id: I7b2ae54dcdfa64f637797bcbc65c5963b0f1800f
+    Signed-off-by: Xingwen.Fang <fxw@rock-chips.com>
+
+commit fe2c9b35b2ff094d5913dff3c1a23151e9201616
+Author: Zheng Yang <zhengyang@rock-chips.com>
+Date:   Wed Oct 27 10:16:03 2021 +0800
+
+    [rt_mpi] vo: get more frame info in RK_MPI_VO_GetChnFrame
+    
+    Change-Id: If6c9bd1287e85a75f1f7e99f48852ede4a933e3c
+    Signed-off-by: Zheng Yang <zhengyang@rock-chips.com>
+
+commit 7fe464b29e37a151cb5ac880c130de97e3740eff
+Author: He Hua <hh@rock-chips.com>
+Date:   Fri Nov 5 11:45:28 2021 +0800
+
+    [rt_mpi] ao: fix config error number count of buffer
+    
+    Change-Id: I6b3c442bcbc6737c796603d10018d21139de5987
+    Signed-off-by: He Hua <hh@rock-chips.com>
+
+commit bb1a8ceb9fe39e70958f51f7e66ba791a7f3e0e8
+Author: Rimon Xu <rimon.xu@rock-chips.com>
+Date:   Mon Nov 1 17:33:50 2021 +0800
+
+    [rt_mpi] rgn: flush cache after bitmap data copy
+    
+    Change-Id: I2d40847c553cd5b5d2d024258a757a1362882541
+    Signed-off-by: Rimon Xu <rimon.xu@rock-chips.com>
+
+commit 34b122d6061e729396daa6a39c68f10cb1e3b46f
+Author: He Hua <hh@rock-chips.com>
+Date:   Thu Nov 4 09:18:15 2021 +0800
+
+    [task_node] using RT_LOGV to print log when read datas fail
+    
+    In UAC, read usb in unblock mode(usb can hotplug in any time), if host
+    stop send data to us, the read function will return fail and print log
+    until data is sent again or sound card is closed, too many fail logs
+    print make customer confuse, so reduce print level here, use RT_LOGV
+    to print in cap node replace RT_LOGD print in taskbase node.
+    
+    Change-Id: I5d1c46528bb30c5acec92966d1226c9f58026f45
+    Signed-off-by: He Hua <hh@rock-chips.com>
+
+commit 5fc9a5308cd28b8053dfd6dfff4953b673f1c7c3
+Author: Grey Li <grey.li@rock-chips.com>
+Date:   Thu Nov 4 09:40:01 2021 +0800
+
+    [rt_media] mediabuffer operator= can't change refcount
+    
+    Change-Id: Ic78122ca3c19d56025f7aa6c7b3d432831dd0911
+    Signed-off-by: Grey Li <grey.li@rock-chips.com>
+
+commit 6bae1ac6093c9f3df4cb766962fd7bf589b89a2e
+Author: Rimon Xu <rimon.xu@rock-chips.com>
+Date:   Tue Sep 28 17:46:02 2021 +0800
+
+    [rt_media] protect thread sync of media buffer pool
+    
+    In order to solve the deadlock problem caused by calling
+    each other between media buffer pool and media buffer, we
+    need to split the lock and try to avoid the use of lock on
+    the interface calling each other.
+    
+    Change-Id: I5247ec58b5ab5c5abed300098a8fc95882185a2a
+    Signed-off-by: Rimon Xu <rimon.xu@rock-chips.com>
+
+commit d369d8199264e94ce36b4b782c45ecfc1bd98d81
+Author: Rimon Xu <rimon.xu@rock-chips.com>
+Date:   Sat Oct 9 09:27:17 2021 +0800
+
+    [rt_media] rebuild media buffer reference count management
+    
+    - The reference count of RTMediaBuffer starts from 1.
+    - Use object reference to protect listener access.
+    - Remove the dependence of the release method on the listener.
+    - Avoid judging processing based on buffer->refsCount().
+    
+    Change-Id: I2d9324f83ff76598c179412fd8d9ddacc75d35c0
+    Signed-off-by: Rimon Xu <rimon.xu@rock-chips.com>
+
+commit 0800f6a717fbf86f88a209742cb25f4d210f7b41
+Author: Rimon Xu <rimon.xu@rock-chips.com>
+Date:   Fri Oct 22 10:44:45 2021 +0800
+
+    [doc] sys: add NVR/IPC typical scenario flowchart
+    
+    Change-Id: Ide7fb6f9b1f70dea730595b2ac242dac9d9d8264
+    Signed-off-by: Rimon Xu <rimon.xu@rock-chips.com>
+
+commit e526d9058449bc4fcae9ceb22f53e8748d256429
+Author: Xingwen.Fang <fxw@rock-chips.com>
+Date:   Tue Nov 2 14:32:30 2021 +0800
+
+    [rt_mpi] vdec: remove redundant code
+    
+    Change-Id: Ie9eab32daca2a65f58769d4e3225e121bb343387
+    Signed-off-by: Xingwen.Fang <fxw@rock-chips.com>
+
+commit db4ca33dc08d974f0bdc605d8faa29c2f1e1d5ec
+Author: ZhouDidong <shika.zhou@rock-chips.com>
+Date:   Tue Nov 2 10:24:04 2021 +0800
+
+    [rt_mpi] adec: fix sendstream crash on non-bypass mode
+    
+    Change-Id: Iad1e99cba8fe39fa0986e001598d3832805ce7c6
+    Signed-off-by: ZhouDidong <shika.zhou@rock-chips.com>
+
+commit 172109b74f83e206979909d20f26abaca0def3b8
+Author: colum.jin <colum.jin@rock-chips.com>
+Date:   Mon Nov 1 20:48:45 2021 +0800
+
+    [build] rt_base: to complie under gcc 10.2
+    
+    toolchains: gcc-arm-10.2-2020.11-x86_64-aarch64-none-linux-gnu
+    
+    Change-Id: Ia2516fbeeb8c0633ff7051912bbc2f87c14cf9ea
+    Signed-off-by: colum.jin <colum.jin@rock-chips.com>
+
+commit ba6098e27c393ff0c47d7da2a5bb17c995b20d46
+Author: Rimon Xu <rimon.xu@rock-chips.com>
+Date:   Sat Oct 9 16:53:16 2021 +0800
+
+    [rt_mpi] vdec: update chn info to mpp when channel is reused
+    
+    During the operation of the channel, info change may occur,
+    which is unknown to the outside. Therefore, when the channel
+    is reused, it is necessary to update the parameters required
+    by MPP to ensure that the channel can be used normally.
+    
+    Change-Id: Id25434110247c336f184e0bea50ee727dfe478c2
+    Signed-off-by: Rimon Xu <rimon.xu@rock-chips.com>
+
+commit 8a80fbeff70eee2dc530da7df696c63d2e20c1f6
+Author: Rimon Xu <rimon.xu@rock-chips.com>
+Date:   Fri Oct 22 10:40:41 2021 +0800
+
+    [tests] vpss: support frame rate setting to mod test
+    
+    Change-Id: I05660483152f386b380fd05c39b1e89bc80a14f4
+    Signed-off-by: Rimon Xu <rimon.xu@rock-chips.com>
+
+commit ccbaa997e91e9c10640b88ce3835eb3d48b91493
+Author: Xinhuang Li <buluess.li@rock-chips.com>
+Date:   Mon Nov 1 20:22:06 2021 +0800
+
+    [rt_media] use RTPixelFormat as ma_get_mpp_enc_hor_stride input arg type
+    
+    The original parameter type use required frequent switching between
+    RTPixelFormat and MppFrameFormat.
+    
+    Change-Id: Id8ec48f47fd2123dad332c2a66521e5c212c1291
+    Signed-off-by: Xinhuang Li <buluess.li@rock-chips.com>
+
+commit 771e0115768fdc7d8009e83db63ff7412aa30f4b
+Author: Xinhuang Li <buluess.li@rock-chips.com>
+Date:   Tue Oct 26 11:38:28 2021 +0800
+
+    [rt_media] use independent method to calculate encoder hor stride
+    
+    Due to the requirements of the VEPU encoder, the calculation
+    method of the requirements passed to the MPP is different from
+    the usual situation, so we use an independent method to calculate
+    the horizontal stride of the encoder.
+    
+    Change-Id: If203cf3e727cee0cc4f497e5a7b085c658b04912
+    Signed-off-by: Xinhuang Li <buluess.li@rock-chips.com>
+
+commit 4bfb7a67019946ec0787d07fca30a864600b5a73
+Author: Xinhuang Li <buluess.li@rock-chips.com>
+Date:   Thu Oct 28 11:43:43 2021 +0800
+
+    [doc] venc: fix the wrong err codes
+    
+    Change-Id: I638c86120c98c5370cbfcca3e89c110e83f09d42
+    Signed-off-by: Xinhuang Li <buluess.li@rock-chips.com>
+
+commit 2eaf1f93d6b0a180312e9da2c445339e92878ddf
+Author: Xinhuang Li <buluess.li@rock-chips.com>
+Date:   Tue Oct 26 09:16:49 2021 +0800
+
+    [rt_media] split the encoder code from MpiAdapterCodec
+    
+    Change-Id: Ieb1fd335d207c7cacb69e5852142e96c7d6bec8e
+    Signed-off-by: Xinhuang Li <buluess.li@rock-chips.com>
+
+commit 7c11a8ee92b7af372ad41dbd46b60a8c520cb28b
+Author: ywj <ywj@rock-chips.com>
+Date:   Fri Oct 29 09:06:48 2021 +0800
+
+    [rt_mpi] vdec: add jpeg output format support
+    
+    Add JPEG BGR565/YUV420SP_VU output format support, and add more
+    pixel format mappings for MPP and Rockit.
+    
+    Change-Id: Iaed3a108ccecb8b6581005145349b2ab5c5764c1
+    Signed-off-by: ywj <ywj@rock-chips.com>
+
+commit 7a43f39337c444b7555bd7914d09d734d2d079ae
+Author: ywj <ywj@rock-chips.com>
+Date:   Fri Oct 29 11:08:43 2021 +0800
+
+    [tests] vdec: add disable mv test
+    
+    Change-Id: Iee91d5012c6e0ce6013d8153deaf4e3d599ca6a7
+    Signed-off-by: ywj <ywj@rock-chips.com>
+
+commit a2bd3e532fc200168b5c76d3e5e373d002723a29
+Author: ywj <ywj@rock-chips.com>
+Date:   Fri Oct 29 09:17:16 2021 +0800
+
+    [tests] vdec: fix error when using external memory pool
+    
+    Change-Id: I7bd22710de050824081f3b8d80e6985307f406af
+    Signed-off-by: ywj <ywj@rock-chips.com>
+
+commit 4375523015377056e309b175ec94b4897870216e
+Author: ywj <ywj@rock-chips.com>
+Date:   Fri Oct 29 10:37:01 2021 +0800
+
+    [tests] vdec: add deinterlace test
+    
+    Change-Id: If509fbb253ec1625402a24faaf78411546646999
+    Signed-off-by: ywj <ywj@rock-chips.com>
+
+commit a1c96ec5044967dd0e45b1ca90f0d7388cd72a4a
+Author: Xingwen.Fang <fxw@rock-chips.com>
+Date:   Fri Oct 29 15:35:06 2021 +0800
+
+    [doc] FAQ: remove QT description
+    
+    Change-Id: Ie536d480e85c0cf4c11af50736d34a386d716f98
+    Signed-off-by: Xingwen.Fang <fxw@rock-chips.com>
+
+commit 9241f1f8c3f0f5ed5e9eb541a53a2065256cd43f
+Author: Xinhuang Li <buluess.li@rock-chips.com>
+Date:   Thu Oct 21 18:40:11 2021 +0800
+
+    [tests] venc: improve the venc test cases
+    
+    Change-Id: I10c735cc831de0c0bc17cc60744a861049952987
+    Signed-off-by: Xinhuang Li <buluess.li@rock-chips.com>
+
+commit 45bd47f48b850ace074b5768f42a2fe21d3c728d
+Author: Xinhuang Li <buluess.li@rock-chips.com>
+Date:   Tue Oct 19 14:18:25 2021 +0800
+
+    [rt_mpi] venc: implement AFBC format setting
+    
+    Change-Id: I239f9cd13e661554fe1f14e3e99a0e7b380ac6a8
+    Signed-off-by: Xinhuang Li <buluess.li@rock-chips.com>
+
+commit 392f4542faf224d93d6ef7a4d555c49db6c74def
+Author: Xinhuang Li <buluess.li@rock-chips.com>
+Date:   Mon Oct 18 14:06:48 2021 +0800
+
+    [rt_mpi] vi: implement AFBC format setting
+    
+    Change-Id: I06c6ea99388e7a7b075368f383dae59002e67e62
+    Signed-off-by: Xinhuang Li <buluess.li@rock-chips.com>
+
+commit 7479a20522d0fa57f0fc80ef64475d57bcdd17d9
+Author: Xingwen.Fang <fxw@rock-chips.com>
+Date:   Thu Oct 28 21:10:17 2021 +0800
+
+    [rt_media] compatible RTMediaBuffer type conversion for player
+    
+    Change-Id: I448424acbd9e83f2472f834947192a27a523903a
+    Signed-off-by: Xingwen.Fang <fxw@rock-chips.com>
+
+commit 6077946c3c1f1b86acd4e731383a053bdca5dda2
+Author: ywj <ywj@rock-chips.com>
+Date:   Wed Oct 27 18:32:06 2021 +0800
+
+    [rt_mpi] vdec: fix cannot output jpeg eos frame
+    
+    The Eos mark is attached to the effective media buffer.
+    
+    Change-Id: Id5002dd9f0ff649b681a4f81a98f6f054c2da0ed
+    Signed-off-by: ywj <ywj@rock-chips.com>
+
+commit 06eb53aefa13dd480549b33f065cc2c4d39883c4
+Author: Zheng Yang <zhengyang@rock-chips.com>
+Date:   Fri Apr 9 14:41:57 2021 +0800
+
+    [rt_mpi] vo: support packed YUV422 format
+    
+    Packed YUV422 format include four type:
+    YUYV/YVYU/UYVY/VYUY.
+    
+    RK356X only support YVYU and VYUY.
+    
+    Change-Id: Iddf220416df6ea3c9a765aeee18800a9312b34f0
+    Signed-off-by: Zheng Yang <zhengyang@rock-chips.com>
+
+commit 37b6e4ae3abb3f25bae7cd5d34f569285f45637f
+Author: He Hua <hh@rock-chips.com>
+Date:   Wed Aug 25 11:51:22 2021 +0800
+
+    [rt_media] add get angle of doa in skv
+    
+    Change-Id: I2f93c06684e40a5642d11cfae9521b1373241982
+    Signed-off-by: He Hua <hh@rock-chips.com>
+
+commit b161b625a5e40973de253d3f1b8748857f1674e4
+Author: He Hua <hh@rock-chips.com>
+Date:   Mon Sep 27 10:10:21 2021 +0800
+
+    [rt_node] forbit video sink to adjust play speed automatically
+    
+    If video's framerate is 23.976fps, 29.97fps or 59.54fps, the videosink
+    may auto ajust play rate to 24fps, 30fps or 60fps, this may leak to
+    audio and video out of sync which audio is bistream. So we follow this
+    step blow to check video can play speed:
+    1. check audio codec can speed? If audio is bitstream, return RT_OK
+      to forbid play speed. Some special test, for example dolby test,
+      this do not play speed too.
+    2. If audio codec support play speed, set flag to video sink.
+    3. If video's framerate is 23.976fps, 29.97fps or 59.54fps, and enable
+      to adjust play speed, the send message to audio codec to resample
+      audio data.
+    
+    Change-Id: I7a1c313557c67bba8aaf69a5a274a31ee9aac741
+    Signed-off-by: He Hua <hh@rock-chips.com>
+
+commit 25cd7b2335fa7f8a39ce2af5fc1f65ea2c4af562
+Author: Xu Xuehui <xxh@rock-chips.com>
+Date:   Fri Oct 22 10:36:28 2021 +0800
+
+    [rt_mpi] vo: fix wbc Atomic Commit fail without framebuffer
+    
+    Change-Id: I4bb2ae7ba3917832e623eaa79a87d2dc7d23db5f
+    Signed-off-by: xxh <xxh@rock-chips.com>
+
+commit ba53dfc72806060950df3c6c8d7843c674f4a2af
+Author: Xinhuang Li <buluess.li@rock-chips.com>
+Date:   Tue Oct 19 14:45:00 2021 +0800
+
+    [rt_media] workaround for all capture type to try reset priority
+    
+    The latest SDK will still have errors when changing types directly, the
+    error as bellow:
+    "current device:/dev/video20 isn't compatible(cap:0x84201000) device,
+    memoryType:4, retry:0 request -1069263345, err: Invalid argument failed
+    to ioctl(VIDIOC_QBUF) v4l2 subdev(rkispp_scale1) polled error
+    cameraIndex=0 rkispp_scale1 poll timeout(buffer read:0, return:0)"
+    
+    Change-Id: I0c5d7717f6401a839f835cfb702526870a12666e
+    Signed-off-by: Xinhuang Li <buluess.li@rock-chips.com>
+
+commit 5e7d05cda73a0d8baf9803414d2c0fe2e3a1d7d4
+Author: Zhihua Wang <hogan.wang@rock-chips.com>
+Date:   Sun Oct 3 15:36:45 2021 +0800
+
+    [rt_mpi] venc: add mjpeg param
+    
+    Change-Id: I2ec4b0671728037e7561de336f261113c3b98d95
+    Signed-off-by: Zhihua Wang <hogan.wang@rock-chips.com>
+
+commit ceee39d832f46d4f90aeb9a389987a70addbeeb8
+Author: Xinhuang Li <buluess.li@rock-chips.com>
+Date:   Tue Oct 26 15:25:40 2021 +0800
+
+    [doc] vi: update version to v0.4.0
+    
+    improve the structure definition
+    
+    Change-Id: I212f30851f02eb3b95bb557b78d41ba86b90cfa9
+    Signed-off-by: Xinhuang Li <buluess.li@rock-chips.com>
+
+commit 834fa8c9131aa73ab39373f307aa20f64ec1f6a9
+Author: Xingwen.Fang <fxw@rock-chips.com>
+Date:   Wed Oct 27 09:09:47 2021 +0800
+
+    [src] fix code format warning in dummy file
+    
+    Change-Id: I9d0403540baedbcc8f8a294e2feb9f68f8914f88
+    Signed-off-by: Xingwen.Fang <fxw@rock-chips.com>
+
+commit f1ce2d953b4944f8b05c4f5d92d28913695b6114
+Author: Zheng Yang <zhengyang@rock-chips.com>
+Date:   Thu Oct 21 15:20:07 2021 +0800
+
+    [rt_mpi] vo: print layer info in composer vsync callback
+    
+    Change-Id: I37c57831226f0ef7e129319f6e97b2ea9acccc91
+    Signed-off-by: Zheng Yang <zhengyang@rock-chips.com>
+
+commit 22ff45371805aac15919c546b2a47429fe7cbd78
+Author: Zheng Yang <zhengyang@rock-chips.com>
+Date:   Wed Oct 20 16:39:33 2021 +0800
+
+    [rt_mpi] vo: fix picture pause caused by abnormal changes of PTS
+    
+    If a very large abnormal PTS occurs suddenly, u64DispPts, the
+    display Pts is smaller than the frame pts, so picture will pause
+    until u64DispPts > PTS.
+    
+    This patch use frame PTS value to update u64DispPts under this
+    situation.
+    
+    Change-Id: I54f6a3210a563f61be236dee7f44088513be71ff
+    Signed-off-by: Zheng Yang <zhengyang@rock-chips.com>
+
+commit 68aec6fa95572d7fbe54092d1d45bc2c3cb8378d
+Author: Zheng Yang <zhengyang@rock-chips.com>
+Date:   Mon Oct 11 16:55:44 2021 +0800
+
+    [rt_mpi] vo: fix precision of time out when disable channel
+    
+    On some kernel configuration, the sleep precision is 10ms.
+    
+    Change-Id: I7269df18c80fbe92f3c54a5787b2b30f39f34c36
+    Signed-off-by: Zheng Yang <zhengyang@rock-chips.com>
+
+commit 4f68fcb5d9808cb91f74fc9bf4cb7e87782139b0
+Author: Xinhuang Li <buluess.li@rock-chips.com>
+Date:   Tue Oct 26 20:19:49 2021 +0800
+
+    [rt_media] fix set h265:sao_chroma_disable err
+    
+    Change-Id: I2795b964dc75001d8bd1057e10cc6e2ff648dfd4
+    Signed-off-by: Xinhuang Li <buluess.li@rock-chips.com>
+
+commit f030cbb4ef6c2e682bb803d53ba11e4fe4c479cb
+Author: He Hua <hh@rock-chips.com>
+Date:   Mon Oct 18 09:47:32 2021 +0800
+
+    [rt_mpi] ai/ao: reconfigure the number of module threads
+    
+    - Add/Dispatch threads to node which can be blocked in ai/ao, take
+      ao as example:
+      there are four tasknode in ao: resample-->trackMode-->volume-->
+      playback, the node of resample and playback can be blocked, so
+      dispatch a thread to do process of resample and playback for
+      every ao, and trackMode and volume use the sys_ext_thread for
+      all ao to reduce the number of threads.
+    - Add options to config the number of thread of ao/ai. We also can
+      use this options to set the number of thread, which is decided by
+      the numbers of node as before, for example:
+      "pipe_0": {
+          .......
+          "thread_opts": {
+              "exec_thread_num"     : 3
+          }
+      }
+    
+      we use configs above to config the number of thread in "pipe_0".
+    
+    Change-Id: I8921ff42134d31ba61fe963ae38e6efbf4f5b875
+    Signed-off-by: He Hua <hh@rock-chips.com>
+
+commit 15a1bd0d7e7cb2f2c5cfffb5dcaecd8cbbb49509
+Author: Zhihua Wang <hogan.wang@rock-chips.com>
+Date:   Tue Oct 26 16:11:43 2021 +0800
+
+    [rt_mpi] venc: fix log format
+    
+    Change-Id: I9d21c1f2019ccb83aa3bfff671c9341dbf3fad33
+    Signed-off-by: Zhihua Wang <hogan.wang@rock-chips.com>
+
+commit d7f89fbe709cf2d337877c4a8162c5de55926eec
+Author: aaron.sun <aaron.sun@rock-chips.com>
+Date:   Wed Aug 18 21:13:57 2021 +0800
+
+    [build] add HAVE_API_MEDIAPLAYER close media player
+    
+    Change-Id: Ic93918dffe9c2b7e4f5a46e8b95914d04e59419b
+    Signed-off-by: aaron.sun <aaron.sun@rock-chips.com>
+
+commit 7468c04535d1655c29976cc638e8ebc5e9a3f03e
+Author: ZhouDidong <shika.zhou@rock-chips.com>
+Date:   Tue Sep 28 16:45:52 2021 +0800
+
+    [rt_media] modify audio filter to adapt RTAudioFrame
+    
+    Modify audio filter: ANR/3A/LHpf/Skv/Doa/ChnSwap
+    
+    Change-Id: Id378bc768b5fe7d0a8cf60d8a62ab4b155cc90b3
+    Signed-off-by: ZhouDidong <shika.zhou@rock-chips.com>
+
+commit baede40fc25b1f04ea9b8ce4c52617d8c3fe38ef
+Author: He Hua <hh@rock-chips.com>
+Date:   Fri Oct 8 11:50:48 2021 +0800
+
+    [rt_task] modify TrackMode/Volume to adapt RTAudioFrame
+    
+    Change-Id: If1f73f65cdd20bd915b5a77349a29f6a3619cf72
+    Signed-off-by: He Hua <hh@rock-chips.com>
+
+commit adba81d8d6b090a0da5405528b384ecf508363a2
+Author: Xingwen.Fang <fxw@rock-chips.com>
+Date:   Mon Oct 25 15:45:23 2021 +0800
+
+    [build] revert dynamic link rockit/ffmpeg
+    
+    - Revert commit 7b19f73/38c4086.
+    - Report compilation error in Android platform:
+      cp: cannot create regular file ....: Permission denied
+      ld: error: cannot find -lrockit
+    
+    Change-Id: I6c94eb36c5cfe26100512f9dbf023f647b64fce2
+    Signed-off-by: Xingwen.Fang <fxw@rock-chips.com>
+
+commit f0dc7d614dc15fd985ab241140571fdee93cfe62
+Author: dawnming.huang <dawnming.huang@rock-chips.com>
+Date:   Fri Oct 15 10:13:59 2021 +0800
+
+    [tools] dumpsys: fix argparse build fail
+    
+    Change-Id: Icb2cfe6633369b499e2de8fbd0574994469ced68
+    Signed-off-by: dawnming.huang <dawnming.huang@rock-chips.com>
+
+commit 1a4aac01388f6fc587151e751d32bcac1207da34
+Author: He Hua <hh@rock-chips.com>
+Date:   Fri Oct 8 15:58:19 2021 +0800
+
+    [rt_mpi] modify ao/ai to adapt RTAudioFrame
+    
+    Change-Id: I445ed8781c46adf277155da65829bf066c9cf213
+    Signed-off-by: He Hua <hh@rock-chips.com>
+
+commit 07099aa94092c09941bb79c0f9b681f0bc67b3a4
+Author: ZhouDidong <shika.zhou@rock-chips.com>
+Date:   Fri Sep 17 10:53:15 2021 +0800
+
+    [rt_mpi] modify aenc to adapt RTAudioFrame
+    
+    Change-Id: I5298fdf2e38a5c8d068118d9c30fa726576fff79
+    Signed-off-by: ZhouDidong <shika.zhou@rock-chips.com>
+
+commit 3bdd43ae5078adee6f66a45cb90e2b2ed91a8e08
+Author: He Hua <hh@rock-chips.com>
+Date:   Thu May 6 17:46:08 2021 +0800
+
+    [rt_mpi] modify adec to adapt RTAudioPacket
+    
+    Change-Id: I56f7863f5aee4d090c6833a12ee37dcec56d88b5
+    Signed-off-by: He Hua <hh@rock-chips.com>
+
+commit dbccb35404808ffe55e73e880018bf0a97b86ef1
+Author: He Hua <hh@rock-chips.com>
+Date:   Fri Oct 8 15:23:11 2021 +0800
+
+    [rt_task] modify alsa capture/playback to adapt RTAudioFrame
+    
+    Change-Id: Ie7482eddf044bfd2c6436f63d4fd7554c120d667
+    Signed-off-by: He Hua <hh@rock-chips.com>
+
+commit 38c40864678714dd276d3401c9dee2bf43fa4514
+Author: Xingwen.Fang <fxw@rock-chips.com>
+Date:   Fri Oct 22 22:14:12 2021 +0800
+
+    [build] fix dynamic link compilation error
+    
+    - Fix error introduced by commit-7b19f73.
+    - Using dynamic linking (-lrockit), it will search for dynamics library
+      from the host/aarch64-buildroot-linux-gnu/sysroot/usr/lib directory by
+      default, and this directory will be installed only when compilation is
+      complete and the installation, so link directly to -lrockit, there will
+      be no dynamic library found, report error - xxx/bin/ld: cannot find
+      -lrockit.
+    - If librockit.so exists in sysroot/usr/lib, but the library is relatively
+      old, some interface implementations may not be found when compiled. E.g.
+      test_mpi_venc.cpp:(.text+0x52c): undefined reference to
+      `RK_MPI_VENC_InsertUserData'.
+    
+    Change-Id: Ic72efd832ade04fcf4eb2414e5822f6cd56e488a
+    Signed-off-by: Xingwen.Fang <fxw@rock-chips.com>
+
+commit d4c7a197a7dbf9b94806f3ef7b6b8e5922df5476
+Author: He Hua <hh@rock-chips.com>
+Date:   Fri Oct 8 15:06:05 2021 +0800
+
+    [rt_media] modify resample to adapt RTAudioFrame
+    
+    Change-Id: I9cd92e6af66880ae83662e54a470737b61c828c9
+    Signed-off-by: He Hua <hh@rock-chips.com>
+
+commit ee3e30052c53132a5f2120a349df77eebea303e0
+Author: He Hua <hh@rock-chips.com>
+Date:   Fri Oct 8 15:35:48 2021 +0800
+
+    [rt_media] update interfaces for RTAudioFrame/RTAudioPacket
+    
+    Change-Id: Icbd6c3aa83d54ff5d5cb9220c9a947e944d97334
+    Signed-off-by: He Hua <hh@rock-chips.com>
+
+commit 7b19f73e0905037322616025b34503f8de1e6f76
+Author: Xingwen.Fang <fxw@rock-chips.com>
+Date:   Thu Oct 21 22:09:23 2021 +0800
+
+    [tests] rt_mpi: dynamic link rockit/ffmpeg
+    
+    Change-Id: I105a8040672452119a2ff8d564137506b5f61e04
+    Signed-off-by: Xingwen.Fang <fxw@rock-chips.com>
+
+commit 90da1ee0d6159723d89430e4b83c065cdd256dd3
+Author: Xinhuang Li <buluess.li@rock-chips.com>
+Date:   Thu Oct 21 19:50:07 2021 +0800
+
+    [rt_media] fix a low probability crash of v4l2
+    
+    Close node immediately after open node that has a low probability
+    of causing a crash if it is not committed, because mediaBuffer is
+    NullPointer.
+    
+    Change-Id: Ib2a81ee0396daccfe2510c77d5514b3045140a86
+    Signed-off-by: Xinhuang Li <buluess.li@rock-chips.com>
+
+commit cab0c2ec71ecff61c38bcfc06dc2ab46deddd1f0
+Author: Xingwen.Fang <fxw@rock-chips.com>
+Date:   Wed Oct 20 21:39:25 2021 +0800
+
+    [tests] rt_mpi: dependent libraries use macro definition name
+    
+    This is for better publishing to the SDK.
+    
+    Change-Id: I4af493808797085e8948e0ee2e2cc07bc6f7b961
+    Signed-off-by: Xingwen.Fang <fxw@rock-chips.com>
+
+commit 1acaf01499cf09ab2c5efeee9916da80cbeb76b3
+Author: dawnming.huang <dawnming.huang@rock-chips.com>
+Date:   Fri Sep 10 18:16:38 2021 +0800
+
+    [doc] vgs/tde: update doc
+    
+    Change-Id: Ic3d625751992768a363752bfeba76841b8c7b8e0
+    Signed-off-by: dawnming.huang <dawnming.huang@rock-chips.com>
+
+commit e4b1ee3ac09971c459a45a4f81420d2ec49fe7c6
+Author: ZhouDidong <shika.zhou@rock-chips.com>
+Date:   Thu Oct 14 08:55:51 2021 +0800
+
+    [doc] audio: add the flow description
+    
+    AI/AO/ADEC/AENC module documents are merged into AUDIO
+    module documents.
+    
+    Change-Id: I771bf7b879a7b7b4dccb34cd692dd880a981e57c
+    Signed-off-by: ZhouDidong <shika.zhou@rock-chips.com>
+
+commit 66cb2216669c6f2fe446ec863038461052f245ed
+Author: ywj <ywj@rock-chips.com>
+Date:   Fri Aug 20 17:10:57 2021 +0800
+
+    [doc] vdec: release version v1.0.0
+    
+    - add chip specifications.
+    - add interface description.
+    - add important concepts description.
+    - modify document format.
+    
+    Change-Id: Id81b0ae37cdd3c92cdc77e8af35ec69c8d8ae301
+    Signed-off-by: ywj <ywj@rock-chips.com>
+
+commit e28f7b9290a730ddd7db0bbbeaa582bd6b246345
+Author: ywj <ywj@rock-chips.com>
+Date:   Mon Jul 26 16:13:55 2021 +0800
+
+    [rt_mpi] vdec: add interface RK_MPI_VDEC_SetUserPic
+    
+    Change-Id: I70df84fb5237eae11bc0917d56984336e61e7a02
+    Signed-off-by: ywj <ywj@rock-chips.com>
+
+commit b1ea0cc426803d7f69c6916b8980a4b4dcc6a4ff
+Author: Xinhuang Li <buluess.li@rock-chips.com>
+Date:   Wed Sep 29 17:47:48 2021 +0800
+
+    [rt_mpi] venc: implement rotation
+    
+    - h264/h265 support 90/180/270 rotation
+    - mjpeg support 90/270 rotation
+    - mjpeg 180 rotation is done via the rga
+    
+    Change-Id: Ia9f15e7946ce6d1191192468f0e0c4a459559172
+    Signed-off-by: Xinhuang Li <buluess.li@rock-chips.com>
+
+commit cb63271b8159aa4d4a3db754de20f99ac1eef3a5
+Author: Xingwen.Fang <fxw@rock-chips.com>
+Date:   Tue Oct 19 11:55:45 2021 +0800
+
+    [doc] FAQ: update sys module description
+    
+    Change-Id: I1f486308bc7072304d0ee76fbd2d4d002d980e43
+    Signed-off-by: Xingwen.Fang <fxw@rock-chips.com>
+
+commit b5b87ef1e544876cce3feccce0a62d4d0a5ed5e0
+Author: Xingwen.Fang <fxw@rock-chips.com>
+Date:   Mon Oct 18 23:00:05 2021 +0800
+
+    [doc] FAQ: add vo module description
+    
+    Change-Id: Ic0d35620ab356415f4cadcb803d6965718930b9a
+    Signed-off-by: Xingwen.Fang <fxw@rock-chips.com>
+
+commit 2672a89ca8045587f52932e5d40c0d505dff53bb
+Author: Rimon Xu <rimon.xu@rock-chips.com>
+Date:   Thu Sep 30 15:48:56 2021 +0800
+
+    [doc] FAQ: add vpss module description
+    
+    Change-Id: Idb1e6073594694a61c101114c135150a231e1ea3
+    Signed-off-by: Rimon Xu <rimon.xu@rock-chips.com>
+
+commit a617475153aff8a2bb43e8bf327158f9bfcb6f63
+Author: Rimon Xu <rimon.xu@rock-chips.com>
+Date:   Mon Oct 18 21:12:16 2021 +0800
+
+    [doc] FAQ: add sys module description
+    
+    Change-Id: I7640ecbd45ba9b3aaff28bf07b47b8666e54d62b
+    Signed-off-by: Rimon Xu <rimon.xu@rock-chips.com>
+
+commit 05c4ae7e75809fde7e951113d472934e7e37fa12
+Author: ywj <ywj@rock-chips.com>
+Date:   Mon Oct 18 18:30:44 2021 +0800
+
+    [doc] FAQ: update vdec description
+    
+    Change-Id: Ieb7af8ce593c35081d9006cefeb55bf3d445a7f9
+    Signed-off-by: ywj <ywj@rock-chips.com>
+
+commit 297180b30f6e5d842cf1fca58de43d8ca75efac4
+Author: ZhouDidong <shika.zhou@rock-chips.com>
+Date:   Fri Oct 8 15:58:19 2021 +0800
+
+    [doc] FAQ: add audio module description
+    
+    Change-Id: I1aca43bb99ed05cf2edf5d9a59b1b6231efa9edb
+    Signed-off-by: ZhouDidong <shika.zhou@rock-chips.com>
+
+commit e1f35705cf09000a463e5f44a8f1fc4d2d6f1bd9
+Author: dawnming.huang <dawnming.huang@rock-chips.com>
+Date:   Fri Oct 8 19:28:44 2021 +0800
+
+    [doc] FAQ: add tde/vgs module description
+    
+    Change-Id: Ibe345b2b069eeef4cd69ff9edd16ca8c7603872f
+    Signed-off-by: dawnming.huang <dawnming.huang@rock-chips.com>
+
+commit 9a8ab0d4a9dd355164773756bf3f596992439ada
+Author: ywj <ywj@rock-chips.com>
+Date:   Tue Oct 12 14:36:01 2021 +0800
+
+    [doc] FAQ: add vdec module description
+    
+    Change-Id: Ic1583ff03576dfc4b7abb2009a8b0440cb457d58
+    Signed-off-by: ywj <ywj@rock-chips.com>
+
+commit 53ba78b462adf81bff4331b62245e542a80ddad3
+Author: Xinhuang Li <buluess.li@rock-chips.com>
+Date:   Mon Oct 11 16:52:47 2021 +0800
+
+    [doc] FAQ: add vi/venc module description
+    
+    Change-Id: I442672f326c8f3bd00350be9449d95f216acd852
+    Signed-off-by: Xinhuang Li <buluess.li@rock-chips.com>
+
+commit 51ab3855df584f824ac368e56c9073fca64e59e2
+Author: Grey Li <grey.li@rock-chips.com>
+Date:   Sat Oct 9 14:57:45 2021 +0800
+
+    [doc] FAQ: optimize memory configuration method
+    
+    Change-Id: I3883f63d16c45d05d91c3b4de157db0d25c8135f
+    Signed-off-by: Grey Li <grey.li@rock-chips.com>
+
+commit 0e6386916f086bf9205164ef6da569ad45291d72
+Author: Chen Jinsen <kevin.chen@rock-chips.com>
+Date:   Wed Oct 13 19:22:26 2021 +0800
+
+    [rt_node] avoid setting framePts to 0 in videosink
+    
+    Illegal framePts of value 0 will generate invalid frameDuration, it
+    will cause videosink blocked for waiting next sync.
+    
+    Change-Id: Ica57b29122f3698f53f62dc2f851a71997e091c6
+    Signed-off-by: Chen Jinsen <kevin.chen@rock-chips.com>
+
+commit 30421f3fd85d802cc05e53f78c198a67f3d60fb5
+Author: Rimon Xu <rimon.xu@rock-chips.com>
+Date:   Wed Oct 13 17:30:54 2021 +0800
+
+    [tests] fix mb test failed when alloc malloc buffer
+    
+    Change-Id: I0ac86e089b444e0d9c98129f21f9947836c86289
+    Signed-off-by: Rimon Xu <rimon.xu@rock-chips.com>
+
+commit 21a0c4dfda155008fad309ce8f2aac3af4df6377
+Author: aaron.sun <aaron.sun@rock-chips.com>
+Date:   Wed Oct 13 18:44:07 2021 +0800
+
+    [build] install header file rk_mpi_mmz.h
+    
+    Change-Id: Iee3484e5eb076ed528957d16a81b94783fed8b8b
+    Signed-off-by: aaron.sun <aaron.sun@rock-chips.com>

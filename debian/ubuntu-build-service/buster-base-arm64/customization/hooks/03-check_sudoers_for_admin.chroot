@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# check to make sure sudoers file has ref for the sudo group
+SUDOEXISTS="$(awk '$1 == "%sudo" { print $1 }' /etc/sudoers)"
+if [ -z "$SUDOEXISTS" ]; then
+  # append sudo entry to sudoers
+  echo "# Members of the sudo group may gain root privileges" >> /etc/sudoers
+  echo "%sudo	ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+fi
+
+# make sure that NOPASSWD is set for %sudo
+# expecially in the case that we didn't add it to /etc/sudoers
+# just blow the %sudo line away and force it to be NOPASSWD
+sed -i -e '
+/\%sudo/ c \
+%sudo	ALL=(ALL) NOPASSWD: ALL
+' /etc/sudoers

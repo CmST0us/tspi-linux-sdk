@@ -1,0 +1,10 @@
+config BR2_PACKAGE_HECTOR_TRAJECTORY_SERVER
+	bool "hector trajectroy server"
+	depends on BR2_PACKAGE_TF
+	select BR2_PACKAGE_ROS_COMM_SET
+	select BR2_PACKAGE_ROSCPP
+	select BR2_PACKAGE_HECTOR_NAV_MSGS
+	select BR2_PACKAGE_HECTOR_MAP_TOOLS
+
+	help
+		hector trajectroy server

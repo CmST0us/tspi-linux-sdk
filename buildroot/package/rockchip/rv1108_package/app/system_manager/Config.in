@@ -1,0 +1,7 @@
+if BR2_PACKAGE_RV1108
+
+# BSP packages
+config BR2_PACKAGE_SYSTEM_MANAGER
+	bool "rv1108 package system manager"
+endif
+

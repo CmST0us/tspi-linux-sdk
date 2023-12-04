@@ -1,0 +1,12 @@
+BEGIN:VCARD
+VERSION:2.1
+N:Fisher;Jennnifer
+FN:Jennnifer Fisher
+TEL;WORK;VOICE:(858) 592-1223
+SOUND:Merry.wav
+PHOTO:Flower.jpb
+URL;WORK:http://www.scrippsclinic.com
+BDAY:20060606
+EMAIL;PREF;INTERNET:jfisher@test.com
+X-BT-UID:00000000000000000000000000000002
+END:VCARD

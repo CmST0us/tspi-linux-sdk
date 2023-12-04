@@ -1,0 +1,49 @@
+#!/bin/sh
+
+# Uncomment below to see more logs
+# set -x
+
+mount_start()
+{
+	cnt=0
+	while [ 1 ]
+	do
+		EMMC_BLK=`find /sys/block/ -name mmcblk*boot0 | cut -d '/' -f 4 | cut -c 1-7`
+		if [ ! -z $EMMC_BLK ]; then
+			break
+		fi
+		if [ $cnt -gt 10 ]; then
+			break
+		fi
+		let cnt+=1
+		echo "EMMC_BLK is null, wait 100ms, cnt is $cnt"
+		sleep .1
+	done
+	EMMC_PARTITIONS=`find /sys/class/block/ -name ${EMMC_BLK}"p*" | wc -l`
+
+	for i in $(seq 1 $EMMC_PARTITIONS)
+	do
+		part_name=`cat /sys/class/block/${EMMC_BLK}"p"${i}/uevent | grep PARTNAME | cut -d '=' -f 2`
+
+		if [ ${part_name}  == "oem" ]; then
+			mount /dev/${EMMC_BLK}"p"${i} /oem
+		elif [[ ${part_name}  == "userdata" ]]; then
+			{
+				resize2fs /dev/${EMMC_BLK}"p"${i}
+				mount /dev/${EMMC_BLK}"p"${i} /userdata
+			}&
+		fi
+	done
+}
+
+case "$1" in
+	start)
+		mount_start &
+		;;
+	stop)
+		;;
+	*)
+		echo "Usage: $0 {start|stop}"
+		exit 1
+		;;
+esac

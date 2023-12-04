@@ -1,0 +1,7 @@
+config BR2_PACKAGE_ROSTIME
+	bool "rostime in roscpp_core for ROS"
+	select BR2_PACKAGE_CPP_COMMON
+	select BR2_PACKAGE_BOOST_DATE_TIME
+
+	help
+	  Time and Duration implementations for C++ libraries

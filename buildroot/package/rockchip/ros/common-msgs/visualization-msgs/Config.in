@@ -1,0 +1,7 @@
+config BR2_PACKAGE_VISUALIZATION_MSGS
+    bool "visualization-msgs"
+    select BR2_PACKAGE_GEOMETRY_MSGS
+    help
+        visualization msgs is a set of messages used by higher
+        level packages, such as rviz, that deal in visualization-
+        specific data

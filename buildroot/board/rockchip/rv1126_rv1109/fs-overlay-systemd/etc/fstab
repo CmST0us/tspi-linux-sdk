@@ -1,0 +1,3 @@
+PARTUUID=614e0000-0000-4b53-8000-1d28000054a9	/		ext2	rw					0	1
+PARTUUID=ec8c0d6e-d426-462e-bfc0-366c6e064804	/userdata	ext2	defaults,noatime,x-systemd.growfs	0	2
+PARTUUID=7321802b-9b2c-43b7-d6d1-12af5b5de39e	/oem		ext2	defaults,noatime,x-systemd.growfs	0	2

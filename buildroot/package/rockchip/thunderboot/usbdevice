@@ -1,0 +1,41 @@
+#! /bin/sh
+
+MTP_EN=off
+ADB_EN=off
+PATH_TO_USB_CONFIG=/tmp/.usb_config
+PATH_TO_UDC=/sys/kernel/config/usb_gadget/rockchip/UDC
+
+find_spec_function()
+{
+	functions=`cat /sys/kernel/config/usb_gadget/rockchip/configs/b.1/strings/0x409/configuration`
+
+	functions=${functions}_over_
+	tmp=`echo $functions | awk -F "_" '{print $1}'`
+
+	while [ "${tmp}" != "over" ]; do
+		test "$tmp" == "mtp" && MTP_EN=on
+		test "$tmp" == "adb" && ADB_EN=on
+		functions=${functions#*_}
+		tmp=`echo $functions | awk -F "_" '{print $1}'`
+	done
+}
+
+dev_path=/sys$1
+state=$2
+
+find_spec_function
+if [ "$state"x != "CONFIGURED"x  ] ; then
+
+	if [ $MTP_EN = on ]; then
+		pgrep mtp-server
+		echo "mtp-server runing:" $?
+		if ! pgrep -f mtp-server; then
+			start-stop-daemon --start --quiet --background --exec /usr/bin/mtp-server
+		fi
+	fi
+
+	if [ $ADB_EN = on ] && [ "$state"x = "DISCONNECTED"x ] ; then
+		cat ${PATH_TO_USB_CONFIG} | grep USB_FORCE_CHANGED || \
+			/etc/init.d/S50tb_usbdevice restart
+	fi
+fi

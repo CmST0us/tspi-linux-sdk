@@ -1,0 +1,102 @@
+cc_defaults {
+    name: "rkaiq_tool_server_default_flags",
+
+	vendor: true,
+    proprietary: true,
+
+    defaults: [ "rkaiq-defaults", "rkaiq-defaults-flags", ],
+
+	rtti: true,
+    cflags: [
+        "-Wall",
+        "-Wno-error",
+        "-Wextra",
+        "-Wno-missing-field-initializers",
+        "-Wno-unused-parameter",
+        "-Wno-unused-variable",
+        "-Wno-non-pod-varargs",
+        "-DANDROID",
+    ],
+
+    local_include_dirs: [
+        ".",
+        "camera",
+        "common",
+        "logger",
+        "mediactl",
+        "mediactl/linux",
+        "netserver",
+        "rkaiq",
+        "rkaiq/rkaiq_api",
+        "rtspserver",
+        "rtspserver/include",
+        "rtspserver/include/UsageEnvironment/include",
+        "rtspserver/include/liveMedia/",
+        "rtspserver/include/liveMedia/include",
+        "rtspserver/include/BasicUsageEnvironment/include",
+        "rtspserver/include/groupsock/include",
+    ],
+
+    //clang: true,
+
+    //tidy: true,
+    //tidy_checks: [
+    //    "-*",
+    //    "cert-*",
+    //    "clang-analyzer-security*",
+    //    "android-*",
+    //],
+    //tidy_flags: [
+    //    "-warnings-as-errors=clang-analyzer-security*,cert-*",
+    //],
+}
+
+cc_defaults {
+    name: "rkaiq_tool_server_default_libs",
+
+    static_libs: [
+        "libliveMedia",
+        "libgroupsock",
+        "libBasicUsageEnvironment",
+        "libUsageEnvironment",
+        "librtspserver",
+    ],
+    shared_libs: [
+        "libbase",
+        "libcutils",
+        "liblog",
+        "libvpu",
+        "libssl",
+        "libcrypto",
+    ],
+}
+
+cc_binary {
+    name: "rkaiq_tool_server",
+    defaults: [
+        "rkaiq_tool_server_default_flags",
+        "rkaiq_tool_server_default_libs",
+    ],
+
+    srcs: [
+        "rkaiq_tool_server.cpp",
+        "camera/camera_capture.cpp",
+        "camera/camera_device.cpp",
+        "camera/camera_infohw.cpp",
+        "camera/camera_memory.cpp",
+        "logger/log.cpp",
+        "netserver/tcp_server.cpp",
+        "netserver/tcp_client.cpp",
+        "netserver/domain_tcp_client.cpp",
+        "rkaiq/rkaiq_api/rkaiq_socket.cpp",
+        "rkaiq/multiframe_process.cpp",
+        "rkaiq/rkaiq_protocol.cpp",
+        "rkaiq/rkaiq_online_protocol.cpp",
+        "rkaiq/rkaiq_raw_protocol.cpp",
+        "rkaiq/rkaiq_api/rkaiq_media.cpp",
+        "mediactl/libmediactl.c",
+        "mediactl/libv4l2subdev.c",
+        "mediactl/media_info.c",
+        "mediactl/options.c",
+    ],
+}

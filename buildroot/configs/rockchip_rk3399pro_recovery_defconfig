@@ -1,0 +1,5 @@
+#include "rk3399pro_arm64.config"
+#include "base.config"
+#include "base_extra.config"
+#include "recovery.config"
+#include "ntfs.config"

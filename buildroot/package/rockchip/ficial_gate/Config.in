@@ -1,0 +1,11 @@
+config BR2_PACKAGE_FICIAL_GATE
+    bool "ficial gate"
+    select BR2_PACKAGE_RKFACIAL
+    select BR2_PACKAGE_LIBDRM
+    select BR2_PACKAGE_ROCKCHIP_RGA
+    select BR2_PACKAGE_TSLIB
+    select BR2_PACKAGE_LIBPNG
+    select BR2_PACKAGE_LIBPNG_12
+    select BR2_PACKAGE_JPEG
+    select BR2_PACKAGE_MINIGUI
+    select BR2_PACKAGE_FREETYPE

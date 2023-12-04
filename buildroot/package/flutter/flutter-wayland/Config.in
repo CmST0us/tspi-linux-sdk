@@ -1,0 +1,12 @@
+config BR2_PACKAGE_FLUTTER_WAYLAND
+	bool "Flutter wayland"
+	depends on BR2_PACKAGE_FLUTTER_ENGINE
+	depends on BR2_PACKAGE_HAS_LIBEGL
+	depends on BR2_PACKAGE_WAYLAND
+	select BR2_PACKAGE_LIBXKBCOMMON
+	select BR2_PACKAGE_RAPIDJSON
+	select BR2_PACKAGE_WAYLANDPP
+	help
+	  A Flutter Embedder that talks to Wayland directly.
+
+	  https://github.com/chinmaygarde/flutter_wayland

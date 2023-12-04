@@ -1,0 +1,43 @@
+#!/bin/sh
+
+# (C) 2012-2016 Fathi Boudra <fathi.boudra@linaro.org>
+
+# Create configuration for live-build.
+
+# You need live-build package installed.
+
+set -e
+
+echo "I: create configuration"
+export LB_BOOTSTRAP_INCLUDE="apt-transport-https gnupg"
+lb config \
+ --apt-indices false \
+ --apt-recommends false \
+ --apt-secure false \
+ --architectures armhf \
+ --archive-areas 'main contrib non-free' \
+ --backports false \
+ --binary-filesystem ext4 \
+ --binary-images tar \
+ --bootappend-live "hostname=linaro-alip username=linaro" \
+ --bootstrap-qemu-arch armhf \
+ --bootstrap-qemu-static /usr/bin/qemu-arm-static \
+ --cache false \
+ --chroot-filesystem none \
+ --compression gzip \
+ --debootstrap-options "--variant=minbase --include=apt-transport-https,gnupg" \
+ --distribution buster \
+ --gzip-options '-9 --rsyncable' \
+ --iso-publisher 'Linaro; http://www.linaro.org/; linaro-dev@lists.linaro.org' \
+ --iso-volume 'Linaro Buster $(date +%Y%m%d-%H:%M)' \
+ --linux-flavours none \
+ --linux-packages none \
+ --mode debian \
+ --security true \
+ --system normal \
+ --updates true
+
+echo "I: copy customization"
+test -d customization && cp -rf customization/* config/
+
+echo "I: done"

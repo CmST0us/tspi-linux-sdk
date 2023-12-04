@@ -1,0 +1,1 @@
+BoardConfig_rk3399pro_evb_v14-combine.mk

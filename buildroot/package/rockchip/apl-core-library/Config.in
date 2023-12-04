@@ -1,0 +1,4 @@
+config BR2_PACKAGE_APL_CORE_LIBRARY
+	bool "APL Core Library"
+	help
+	Amazon APL Core Library for rendering of screen layout at runtime

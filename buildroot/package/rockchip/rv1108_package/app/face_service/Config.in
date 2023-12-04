@@ -1,0 +1,49 @@
+if BR2_PACKAGE_RV1108
+
+# BSP packages
+config BR2_PACKAGE_FACE_SERVICE
+	bool "RV1108 package face_sevice"
+	select BR2_PACKAGE_MESSENGER
+	select BR2_PACKAGE_CAMERAHAL
+	select BR2_PACKAGE_DATABASE
+	select BR2_PACKAGE_SQLITE
+	select BR2_PACKAGE_ADK
+	select BR2_PACKAGE_HAL
+	select BR2_PACKAGE_RKCAMERA
+	select BR2_PACKAGE_PROCESS_UNITS
+	select BR2_PACKAGE_RKFB
+	select BR2_PACKAGE_ROCKCHIP_RGA
+	select BR2_PACKAGE_RKFACE
+
+if BR2_PACKAGE_FACE_SERVICE
+menu "face_service setting options"
+
+    config BR2_PACKAGE_FACE_SERVICE_MAX_FEATURE_OF_USER
+        int "Extract multiple face features when registering."
+        default 3
+
+    config BR2_PACKAGE_FACE_SERVICE_FACE_CAPTURE
+        bool "Enable Face Capture"
+        default n
+        select BR2_PACKAGE_ROCKCHIP_MPP
+        select BR2_PACKAGE_RKMEDIA
+        select BR2_PACKAGE_RKMEDIA_MPP
+        select BR2_PACKAGE_RKMEDIA_MPP_ENCODER
+
+    config BR2_PACKAGE_FACE_SERVICE_USE_UVC
+        bool "use UVC"
+        default n
+        select BR2_PACKAGE_ROCKCHIP_MPP
+        select BR2_PACKAGE_LIBRKUVC
+        select BR2_PACKAGE_LIBRKUVC_CONFIG_UVC_RGA
+
+    config BR2_PACKAGE_FACE_SERVICE_USE_MJPEG_CAMERA
+        bool "use MJPEG camera"
+        default n
+        select BR2_PACKAGE_ROCKCHIP_MPP
+
+endmenu
+endif
+
+endif
+

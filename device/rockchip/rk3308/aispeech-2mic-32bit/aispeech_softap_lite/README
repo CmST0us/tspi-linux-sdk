@@ -1,0 +1,24 @@
+一、需要设置的环境变量，如果不设置使用默认值
+
+//app发送的元数据，写入此文件
+export AISPEECH_DUIKIT_APP="/data/cfg/app.json"
+
+//device元数据，app获取此信息
+export AISPEECH_DUIKIT_DEVICE="/data/cfg/device.json"
+
+//配网文件
+export AISPEECH_WIFI_CFG="/data/cfg/wpa_supplicant.conf"
+
+//服务器端口号
+export AISPEECH_SOFTAP_SERVER_PORT="8000"
+
+//设备成功获取ssid和password信息，开始联网时，播放的音频
+export AISPEECH_DO_CONNECT_MP3="/data/cfg/audio/do_connect.mp3"
+
+二、命令操作
+1.将aispeech_softap、aispeech_led命令的路径导出
+例如上述两个命令在目录/data/cfg/bin，需要进行如下操作
+export PATH=$PATH:/data/cfg/bin
+
+开启服务器：
+aispeech_softap_server  -s aiengine -p 12345678 start &

@@ -1,0 +1,18 @@
+#!/bin/sh
+#
+# RK3128H Init...
+#
+
+case "$1" in
+  start)
+	printf "RK3128H init"
+	/usr/bin/rk3128h_init &
+	;;
+  stop)
+        ;;
+  *)
+        echo "Usage: $0 {start|stop}"
+        exit 1
+        ;;
+esac
+exit 0

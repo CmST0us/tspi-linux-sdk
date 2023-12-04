@@ -1,0 +1,108 @@
+#!/bin/sh
+PROGRAM=${0##*/}
+
+
+if [ $# -ne 4 ]; then
+	echo 'Usage: '$PROGRAM' loader uboot trust boot'
+	exit
+fi
+DIR="/opt"
+UPGRADE_TOOL=/usr/bin/upgrade_tool
+LOADER=$DIR/$1
+UBOOT=$DIR/$2
+TRUST=$DIR/$3
+BOOT=$DIR/$4
+UBOOT_ADDR=0x52000
+TRUST_ADDR=0x52800
+BOOT_ADDR=0x20000
+
+if [ ! -f $UPGRADE_TOOL ]; then
+	echo $UPGRADE_TOOL 'is not existed!'
+	exit
+fi
+
+if [ ! -f $LOADER ]; then
+	echo $LOADER 'is not existed!'
+	exit
+fi
+
+if [ ! -f $UBOOT ]; then
+	echo $UBOOT 'is not existed!'
+	exit
+fi
+
+if [ ! -f $TRUST ]; then
+	echo $TRUST 'is not existed!'
+	exit
+fi
+
+if [ ! -f $BOOT ]; then
+	echo $BOOT 'is not existed!'
+	exit
+fi
+
+echo 'start to wait device...'
+i=0
+while [ $i -lt 5 ]; do
+	$UPGRADE_TOOL ld > /dev/null
+	if [ $? -ne 0 ]; then
+		i=$((i+1))
+		echo $i
+		sleep 0.01
+	else
+		break
+	fi
+done
+if [ $i -ge 5 ]; then
+	echo 'failed to wait device!'
+	exit
+fi
+echo 'device is ready'
+
+echo 'start to download loader...'
+$UPGRADE_TOOL db $LOADER > /dev/null
+if [ $? -ne 0 ]; then
+	echo 'failed to download loader!'
+	exit
+fi
+echo 'download loader ok'
+
+echo 'start to wait loader...'
+$UPGRADE_TOOL td > /dev/null
+if [ $? -ne 0 ]; then
+	echo 'failed to wait loader!'
+	exit
+fi
+echo 'loader is ready'
+
+echo 'start to write uboot...'
+$UPGRADE_TOOL wl $UBOOT_ADDR $UBOOT > /dev/null
+if [ $? -ne 0 ]; then
+	echo 'failed to write uboot!'
+	exit
+fi
+echo 'write uboot ok'
+
+echo 'start to write trust...'
+$UPGRADE_TOOL wl $TRUST_ADDR $TRUST > /dev/null
+if [ $? -ne 0 ]; then
+	echo 'failed to write trust!'
+	exit
+fi
+echo 'write trust ok'
+
+echo 'start to write boot...'
+$UPGRADE_TOOL wl $BOOT_ADDR $BOOT > /dev/null
+if [ $? -ne 0 ]; then
+	echo 'failed to write boot!'
+	exit
+fi
+echo 'write boot ok'
+
+echo 'start to run system...'
+$UPGRADE_TOOL rs $UBOOT_ADDR $TRUST_ADDR $BOOT_ADDR $UBOOT $TRUST $BOOT > /dev/null
+if [ $? -ne 0 ]; then
+	echo 'failed to run system!'
+	exit
+fi
+echo 'run system ok'

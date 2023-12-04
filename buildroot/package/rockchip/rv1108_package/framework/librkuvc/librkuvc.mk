@@ -1,0 +1,18 @@
+LIBRKUVC_SITE = $(TOPDIR)/../framework/librkuvc
+LIBRKUVC_SITE_METHOD = local
+LIBRKUVC_INSTALL_STAGING = YES
+
+# add dependencies
+LIBRKUVC_DEPENDENCIES = rockchip-mpp
+
+LIBRKUVC_CONF_OPTS += -DUVC_FORMAT_FILE=other
+LIBRKUVC_CONF_OPTS += -DYUYV_AS_RAW=0
+LIBRKUVC_CONF_OPTS += -DCONFIG_UVC_RGA=0
+LIBRKUVC_CONF_OPTS += -DUSB_UVC_FUNCTION=web_camera_rgb
+ifeq ($(RK_UVC_USE_SL_MODULE),y)
+    LIBRKUVC_CONF_OPTS += -DUVC_FORMAT_FILE=sl
+    LIBRKUVC_CONF_OPTS += -DYUYV_AS_RAW=1
+    LIBRKUVC_CONF_OPTS += -DUSB_UVC_FUNCTION=web_camera_depth,web_camera_rgb,web_camera_ir
+endif
+
+$(eval $(cmake-package))

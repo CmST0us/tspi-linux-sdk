@@ -1,0 +1,4 @@
+#include "base.config"
+#include "base_extra.config"
+#include "rk356x_arm64.config"
+#include "recovery_updateEngine.config"

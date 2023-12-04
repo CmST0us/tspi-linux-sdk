@@ -1,0 +1,16 @@
+BEGIN:VCARD
+VERSION:2.1
+N:Humphrey;Dirk
+FN:Dirk Humphrey
+ORG:Broadcom;broadcom bluetooth group
+TITLE:Engineer, Principal Software
+TEL;WORK;VOICE:(858) 522-5111
+TEL;WORK;FAX:(858) 385-8810
+ADR;WORK:;;15435 innovcation dr;san diego;CA;92128;United States of America
+LABEL;WORK;ENCODING=QUOTED-PRINTABLE:15435 innovcation dr=0D=0Asan diego, CA 92128=0D=0AUnited States of America
+EMAIL;PREF;INTERNET:dhughes@broadcom.com
+REV:20060120T191658Z
+PHOTO:Flower.jpb
+X-BT-UID:00000000000000000000000000000003
+END:VCARD
+

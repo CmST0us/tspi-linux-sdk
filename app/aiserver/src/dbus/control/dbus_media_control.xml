@@ -1,0 +1,151 @@
+<?xml version="1.0" ?>
+<node>
+  <interface name="rockchip.aiserver.control.encoder">
+
+    <method name="SetBitRate">
+      <arg name="id" type="i" direction="in"/>
+      <arg name="param" type="i" direction="in"/>
+      <arg name="result" type="i" direction="out"/>
+    </method>
+
+    <method name="SetFrameRate">
+      <arg name="id" type="i" direction="in"/>
+      <arg name="param" type="i" direction="in"/>
+      <arg name="result" type="i" direction="out"/>
+    </method>
+
+    <method name="SetQP">
+      <arg name="id" type="i" direction="in"/>
+      <arg name="param" type="i" direction="in"/>
+      <arg name="result" type="i" direction="out"/>
+    </method>
+
+    <method name="SetOSDData">
+      <arg name="id" type="i" direction="in"/>
+      <arg name="param" type="s" direction="in"/>
+      <arg name="result" type="i" direction="out"/>
+    </method>
+
+    <method name="SetForceIdrFrame">
+      <arg name="id" type="i" direction="in"/>
+      <arg name="result" type="i" direction="out"/>
+    </method>
+
+  </interface>
+  
+  <interface name="rockchip.aiserver.control.camera">
+
+    <method name="SetFrameRate">
+      <arg name="id" type="i" direction="in"/>
+      <arg name="param" type="i" direction="in"/>
+      <arg name="result" type="i" direction="out"/>
+    </method>
+
+    <method name="SetResolution">
+      <arg name="id" type="i" direction="in"/>
+      <arg name="param1" type="i" direction="in"/>
+      <arg name="param2" type="i" direction="in"/>
+      <arg name="result" type="i" direction="out"/>
+    </method>
+
+    <method name="StartCamera">
+      <arg name="id" type="i" direction="in"/>
+      <arg name="result" type="i" direction="out"/>
+    </method>
+
+    <method name="StopCamera">
+      <arg name="id" type="i" direction="in"/>
+      <arg name="result" type="i" direction="out"/>
+    </method>
+
+    <method name="TakePicture">
+      <arg name="idcount" type="s" direction="in"/>
+      <arg name="result" type="i" direction="out"/>
+    </method>
+
+  </interface>
+
+  <interface name="rockchip.aiserver.control.graph">
+  
+    <method name="Start">
+      <arg name="param" type="s" direction="in"/>
+      <arg name="result" type="i" direction="out"/>
+    </method>
+    
+    <method name="Stop">
+      <arg name="param" type="s" direction="in"/>
+      <arg name="result" type="i" direction="out"/>
+    </method>
+  
+    <method name="SetGraphOutputObserver">
+      <arg name="param" type="s" direction="in"/>
+      <arg name="id" type="i" direction="in"/>
+      <arg name="result" type="i" direction="out"/>
+    </method>
+    
+    <method name="EnableEPTZ">
+      <arg name="param" type="i" direction="in"/>
+      <arg name="result" type="i" direction="out"/>
+    </method>
+    
+    <method name="EnableFaceAE">
+      <arg name="param" type="i" direction="in"/>
+      <arg name="result" type="i" direction="out"/>
+    </method>
+
+    <method name="EnableFaceLine">
+      <arg name="param" type="i" direction="in"/>
+      <arg name="result" type="i" direction="out"/>
+    </method>
+
+    <method name="SetZoom">
+      <arg name="param" type="d" direction="in"/>
+      <arg name="result" type="i" direction="out"/>
+    </method>
+
+    <method name="EnableAIAlgorithm">
+      <arg name="param" type="s" direction="in"/>
+      <arg name="result" type="i" direction="out"/>
+    </method>
+    
+    <method name="DisableAIAlgorithm">
+      <arg name="param" type="s" direction="in"/>
+      <arg name="result" type="i" direction="out"/>
+    </method>
+    
+      <method name="CloseAIMatting">
+      <arg name="param" type="s" direction="in"/>
+      <arg name="result" type="i" direction="out"/>
+    </method>
+    
+    <method name="OpenAIMatting">
+      <arg name="param" type="s" direction="in"/>
+      <arg name="result" type="i" direction="out"/>
+    </method>
+  
+    <method name="Invoke">
+      <arg name="param1" type="s" direction="in"/>
+      <arg name="param2" type="s" direction="in"/>
+      <arg name="ext1" type="i" direction="in"/>
+      <arg name="ext2" type="x" direction="in"/>
+      <arg name="result" type="i" direction="out"/>
+    </method>
+
+    <method name="SetRockxStatus">
+      <arg name="param" type="s" direction="in"/>
+      <arg name="result" type="i" direction="out"/>
+    </method>
+
+    <method name="SetNpuCtlStatus">
+      <arg name="param" type="s" direction="in"/>
+      <arg name="result" type="i" direction="out"/>
+    </method>
+
+    <method name="UpdateAIAlgorithmParams">
+      <arg name="param" type="s" direction="in"/>
+      <arg name="result" type="i" direction="out"/>
+    </method>
+
+  </interface>
+
+</node>

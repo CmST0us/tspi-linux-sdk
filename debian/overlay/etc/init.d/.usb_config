@@ -1,0 +1,3 @@
+usb_ums_en
+ums_block=/dev/block/by-name/userdata
+usb_adb_en

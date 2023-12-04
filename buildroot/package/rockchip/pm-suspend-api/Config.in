@@ -1,0 +1,4 @@
+config BR2_PACKAGE_PM_SUSPEND_API
+	select BR2_PACKAGE_PM_UTILS
+	select BR2_PACKAGE_DBUS
+	bool "pm suspend api & demo"

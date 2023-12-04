@@ -1,0 +1,4 @@
+config BR2_PACKAGE_STD_SRVS
+    bool "std-srvs"
+    help
+        Common service definitions. Currently just the 'Empty' service

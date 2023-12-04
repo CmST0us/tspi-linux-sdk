@@ -1,0 +1,8 @@
+config BR2_PACKAGE_ROSMSG
+    bool "rosmsg"
+    help
+        rosmsg contains two command-line tools: rosmsg and
+        rossrv, rosmsg is a command-line tools for displaying
+        information about ROS Message types. rossrv is a
+        command-line tool for displaying information about
+        ROS Service types

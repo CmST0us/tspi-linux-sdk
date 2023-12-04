@@ -1,0 +1,3 @@
+config BR2_PACKAGE_JPEG_DEMO
+	bool "hw jpeg test for Linux"
+	depends on BR2_PACKAGE_LIBDRM

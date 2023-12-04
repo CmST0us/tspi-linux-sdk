@@ -1,0 +1,58 @@
+config BR2_PACKAGE_COMMON_ALGORITHM
+	bool "rockchip common algorithm"
+	help
+	  rockchip common algorithm library
+
+if BR2_PACKAGE_COMMON_ALGORITHM
+
+choice
+	default BR2_PACKAGE_COMMON_ALGORITHM_32
+	prompt "target platform(32bit/64bit)"
+
+config BR2_PACKAGE_COMMON_ALGORITHM_32
+	bool "32bit"
+	help
+	  Use algorithm for 32bit system.
+
+config BR2_PACKAGE_COMMON_ALGORITHM_64
+	bool "64bit"
+	help
+	  Use algorithm for 64bit system.
+endchoice
+
+config BR2_PACKAGE_COMMON_ALGORITHM_AEC_ANR_AGC
+	bool "RKAP-3A"
+	default y
+	help
+	  Echo cancellation algorithm, applied to voice call scenarios
+
+config BR2_PACKAGE_COMMON_ALGORITHM_ANR
+	bool "RKAP-ANR"
+	default n
+	help
+	  Automatic noise reduction algorithm, applied to recording scene
+
+config BR2_PACKAGE_COMMON_ALGORITHM_RKAPPLUS
+	bool "RKAP-PLUS"
+	default n
+	help
+	  Audio 3A Algorithm Plus by Rockchip, applied talking scene
+
+config BR2_PACKAGE_COMMON_ALGORITHM_TWO_MIC_BEAMFORM
+	bool "beamforming of two mic"
+	default n
+	help
+	  Beamforming algorithm of two mic
+
+config BR2_PACKAGE_COMMON_ALGORITHM_MOVE_DETECT
+	bool "move detection"
+	default n
+	help
+	  Move detection algorithm
+
+config BR2_PACKAGE_COMMON_ALGORITHM_OCCLUSION_DETECT
+	bool "occlusion detection"
+	default n
+	help
+	  Occlusion detection algorithm
+endif

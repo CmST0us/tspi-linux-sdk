@@ -1,0 +1,13 @@
+#include "rk1806_arm.config"
+#include "base.config"
+#include "base_extra.config"
+#include "debug.config"
+#include "camera.config"
+BR2_TARGET_GENERIC_HOSTNAME="rk1806"
+BR2_TARGET_GENERIC_ISSUE="Welcome to RK1806 Buildroot"
+BR2_PACKAGE_CAMERA_ENGINE_RKISP_3A_SPEEDUP_DIR_ETC=y
+BR2_PACKAGE_CAMERA_ENGINE_RKISP_IQFILE="ps5268_default_default.xml"
+BR2_PACKAGE_RKNPU=y
+BR2_PACKAGE_RKNPU_NOT_RUN_RKNN_SERVER=y
+BR2_PACKAGE_RKNPU_USE_MINI_DRIVER=y
+BR2_PACKAGE_FACE_DETECT=y

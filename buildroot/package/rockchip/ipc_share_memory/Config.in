@@ -1,0 +1,4 @@
+config BR2_PACKAGE_IPC_SHARE_MEMORY
+	bool "ipc using share memory"
+	help
+	  ipc using share memory.

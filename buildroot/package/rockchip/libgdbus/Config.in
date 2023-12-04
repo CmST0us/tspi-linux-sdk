@@ -1,0 +1,16 @@
+menuconfig BR2_PACKAGE_LIBGDBUS
+	bool "libgdbus"
+	select BR2_PACKAGE_LIBGLIB2
+	select BR2_PACKAGE_DBUS
+	help
+	  libgdbus library
+
+if BR2_PACKAGE_LIBGDBUS
+
+config BR2_PACKAGE_LIBGDBUS_FORCE_INSTALL_TO_ROOTFS
+	bool "libgdbus install to rootfs"
+	default n
+	help
+	  libgdbus library install to rootfs.
+
+endif

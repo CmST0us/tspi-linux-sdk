@@ -1,0 +1,4 @@
+config BR2_PACKAGE_ADDRESS_SANITIZER
+    bool "Address Sanitizer (ASan)"
+    help
+        AddressSanitizer (aka ASan) is a memory error detector for C/C++.

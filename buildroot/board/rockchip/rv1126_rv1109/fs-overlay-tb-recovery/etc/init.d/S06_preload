@@ -1,0 +1,36 @@
+#!/bin/sh
+#
+
+pre_start()
+{
+	insmod /lib/modules/dw_mmc-rockchip.ko
+
+	cnt=0
+	while [ 1 ]
+	do
+		if [ -e /dev/block/by-name/userdata ]; then
+			break
+		fi
+		if [ $cnt -gt 10 ]; then
+			echo "can't find userdata partition"
+			exit
+		fi
+		let cnt+=1
+		sleep .1
+	done
+	mount /dev/block/by-name/userdata /userdata
+}
+
+case "$1" in
+	start)
+		pre_start &
+		;;
+	stop)
+		;;
+	*)
+		echo "Usage: $0 {start|stop}"
+		exit 1
+		;;
+esac
+
+exit 0

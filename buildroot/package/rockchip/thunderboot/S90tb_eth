@@ -1,0 +1,22 @@
+#!/bin/sh
+#
+
+case "$1" in
+	start)
+	{
+		insmod /lib/modules/stmmac.ko
+		insmod /lib/modules/stmmac-platform.ko
+		insmod /lib/modules/dwmac-rockchip.ko
+
+		udhcpc -b
+	}&
+		;;
+	stop)
+		;;
+	*)
+		echo "Usage: $0 {start|stop}"
+		exit 1
+		;;
+esac
+
+exit 0

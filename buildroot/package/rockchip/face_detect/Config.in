@@ -1,0 +1,6 @@
+config BR2_PACKAGE_FACE_DETECT
+    bool "face detect"
+    select BR2_PACKAGE_RKNPU
+    select BR2_PACKAGE_LIBDRM
+    select BR2_PACKAGE_ROCKCHIP_RGA
+    select BR2_PACKAGE_CAMERA_ENGINE

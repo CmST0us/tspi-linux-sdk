@@ -1,0 +1,6 @@
+build 32bit 2mic
+./aimake/aimake.sh -t rk3308_32 MIC_TYPE=fespl clean all
+
+open "#LOCAL_CFLAGS += -DSAVE_AUDIO" in aimakefile download audio data
+/userdata/1.pcm input data
+/userdata/2.pcm output data

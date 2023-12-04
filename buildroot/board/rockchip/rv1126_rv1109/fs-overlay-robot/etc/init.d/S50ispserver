@@ -1,0 +1,20 @@
+#!/bin/sh
+#
+# Start ispserver for camera tuning
+#
+
+export HDR_MODE=1
+
+case "$1" in
+  start)
+    start-stop-daemon -S -m -b -p /var/run/ispserver.pid --exec /usr/bin/ispserver -- -no-sync-db
+    ;;
+  stop)
+    start-stop-daemon -K -q -p /var/run/ispserver.pid
+    ;;
+  *)
+    echo "Usage: $0 {start|stop}"
+    exit 1
+    ;;
+esac
+exit 0

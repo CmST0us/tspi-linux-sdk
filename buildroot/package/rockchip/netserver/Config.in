@@ -1,0 +1,27 @@
+config BR2_PACKAGE_NETSERVER
+	bool "rockchip netserver"
+	select BR2_PACKAGE_LIBGDBUS
+	select BR2_PACKAGE_LIBRKDB
+	help
+	  rockchip netserver
+
+if BR2_PACKAGE_NETSERVER
+config BR2_PACKAGE_NETSERVER_SANITIZER_DYNAMIC
+	bool "enable netserver sanitizer tools with dynamic linker"
+	select BR2_PACKAGE_ADDRESS_SANITIZER
+	help
+	  Enable netserver debug on sanitizer with dynamic linker.
+
+config BR2_PACKAGE_NETSERVER_SANITIZER_STATIC
+	bool "enable netserver sanitizer tools with static linker"
+	select BR2_PACKAGE_ADDRESS_SANITIZER
+	help
+	  Enable netserver debug on sanitizer with static linker.
+
+config BR2_PACKAGE_NETSERVER_MINILOGGER
+	bool "enable netserver miniloger print"
+	select BR2_PACKAGE_MINILOGGER
+	default y
+	help
+	  Enable netserver miniloger print.
+endif

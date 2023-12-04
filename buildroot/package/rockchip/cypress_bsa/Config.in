@@ -1,0 +1,7 @@
+config BR2_PACKAGE_CYPRESS_BSA
+    bool "broadcom(cypress) bsa server and app"
+    depends on BR2_PACKAGE_RKWIFIBT_VENDOR = "CYPRESS"
+    help
+	broadcom bsa server and app
+
+

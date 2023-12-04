@@ -1,0 +1,76 @@
+#include "arm_a7.config"
+#include "gcc8.config"
+#include "audio.config"
+#include "video_mpp.config"
+#include "camera.config"
+#include "busybox_minimal.config"
+BR2_TARGET_GENERIC_HOSTNAME="RV1126_RV1109"
+BR2_TARGET_GENERIC_ISSUE="Welcome to RV1126 rootfs"
+BR2_TARGET_GENERIC_GETTY_PORT="ttyFIQ0"
+BR2_TARGET_GENERIC_GETTY_BAUDRATE_1500000=y
+BR2_PACKAGE_RV1126_RV1109=y
+#  - io tool used to read/write register and memory
+BR2_PACKAGE_IO=y
+BR2_PACKAGE_RKSCRIPT=y
+#  - use glibc as the basic libc
+BR2_TOOLCHAIN_BUILDROOT_GLIBC=y
+#  - we use buildroot toolcharn here, may change to custom toolchain in the feature
+BR2_TOOLCHAIN_BUILDROOT_CXX=y
+#  - the basic fs-overlay, will copy to rootfs after all package built
+BR2_ROOTFS_OVERLAY="board/rockchip/common/base"
+#  - the post build script will be excuted after all fs-overlay copyed
+BR2_ROOTFS_POST_BUILD_SCRIPT="../device/rockchip/common/post-build.sh board/rockchip/rv1126_rv1109/pack-oem.sh"
+BR2_ROOTFS_POST_SCRIPT_ARGS="$(BR2_DEFCONFIG)"
+#  - specify this is rockchip package
+BR2_PACKAGE_ROCKCHIP=y
+
+BR2_ROOTFS_OVERLAY="board/rockchip/rv1126_rv1109/fs-overlay-spi-nor-uvc/"
+BR2_PACKAGE_LIBIPCPROTOCOL=y
+BR2_PACKAGE_RK_OEM=y
+BR2_PACKAGE_RK_OEM_RESOURCE_DIR="$(TOPDIR)/../device/rockchip/oem/oem_uvcc"
+BR2_PACKAGE_CAMERA_ENGINE_RKAIQ=y
+BR2_PACKAGE_CAMERA_ENGINE_RKAIQ_IQFILE="os04a10_CMK-OT1607-FV1_M12-40IRC-4MP-F16.xml"
+#BR2_PACKAGE_DBUS_GLIB=y
+BR2_PACKAGE_ROCKIT=y
+BR2_PACKAGE_AISERVER=y
+BR2_PACKAGE_AISERVER_SHM_SERVER=y
+BR2_PACKAGE_UAC_APP=y
+BR2_PACKAGE_UVC_APP=y
+BR2_PACKAGE_CALLFUNIPC=y
+BR2_PACKAGE_ISP2_IPC=y
+BR2_PACKAGE_ISP2_IPC_DBUS=y
+BR2_PACKAGE_ISP2_IPC_DBSERVER=y
+BR2_PACKAGE_DBSERVER=y
+
+#  - usb device package used to init and config udc like adb and usb mass storage
+BR2_PACKAGE_USBDEVICE=y
+#  - we need adb as the basic tool
+BR2_PACKAGE_ANDROID_TOOLS=y
+BR2_PACKAGE_MTD=y
+# BR2_PACKAGE_MTD_MTD_DEBUG is not set
+# BR2_PACKAGE_MTD_NANDDUMP is not set
+# BR2_PACKAGE_MTD_NANDTEST is not set
+# BR2_PACKAGE_MTD_NANDWRITE is not set
+# BR2_PACKAGE_MTD_MTDINFO is not set
+# BR2_PACKAGE_MTD_UBIATTACH is not set
+# BR2_PACKAGE_MTD_UBICRC32 is not set
+# BR2_PACKAGE_MTD_UBIDETACH is not set
+# BR2_PACKAGE_MTD_UBIFORMAT is not set
+# BR2_PACKAGE_MTD_UBIMKVOL is not set
+# BR2_PACKAGE_MTD_UBINFO is not set
+# BR2_PACKAGE_MTD_UBINIZE is not set
+# BR2_PACKAGE_MTD_UBIRENAME is not set
+# BR2_PACKAGE_MTD_UBIRMVOL is not set
+# BR2_PACKAGE_MTD_UBIRSVOL is not set
+# BR2_PACKAGE_MTD_UBIUPDATEVOL is not set
+# BR2_PACKAGE_MTD_UBIBLOCK is not set
+BR2_PACKAGE_DBUS_GLIB=y
+# BR2_PACKAGE_ALSA_LIB_ALOAD is not set
+# BR2_PACKAGE_ALSA_LIB_SEQ is not set
+# BR2_PACKAGE_ALSA_LIB_ALISP is not set
+# BR2_PACKAGE_ALSA_LIB_OLD_SYMBOLS is not set
+BR2_TARGET_ROOTFS_JFFS2=y
+BR2_TARGET_ROOTFS_JFFS2_FLASH_64=y
+BR2_TARGET_ROOTFS_SQUASHFS=y
+BR2_TARGET_ROOTFS_SQUASHFS4_XZ=y
+# BR2_TARGET_ROOTFS_TAR is not set

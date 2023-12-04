@@ -1,0 +1,11 @@
+{
+  "deviceType":"soundbox",
+  "deviceName":"aispeech-rk3308-0001",
+  "deviceAlias":"aispeech-rk3308-0001alias",
+  "productId":"12345678",
+  "deviceInfo": {  
+        "platform":"linux",
+        "wifiMac":"12:23:ee:11:23",
+        "btMac":"12:23:ee:11:23"
+   }
+}

@@ -1,0 +1,4 @@
+config BR2_PACKAGE_ACS
+	bool "Amazon Common Software"
+	help
+	Amazon acs linux reference for smartspeaker

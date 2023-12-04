@@ -1,0 +1,2 @@
+ALL = $(EXECUTABLE)
+include $(BUILD_ALL)

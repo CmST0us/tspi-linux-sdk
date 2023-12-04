@@ -1,0 +1,8 @@
+#!/bin/sh
+#
+# Debug init scripts
+#
+
+mount -t debugfs none /sys/kernel/debug
+
+exit $?

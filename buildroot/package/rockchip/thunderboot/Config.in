@@ -1,0 +1,72 @@
+menuconfig BR2_PACKAGE_THUNDERBOOT
+	bool "rockchip thunderboot"
+	help
+	  Rockchip tb(thunder boot) configuration.
+
+if BR2_PACKAGE_THUNDERBOOT
+config BR2_PACKAGE_THUNDERBOOT_BATIPC_LAUNCH
+	bool "lunch for battery ipc"
+	help
+	  The default usage on battery ipc is special, that will power off
+	  automatically if the cloud connection was not establish.
+
+#config BR2_PACKAGE_THUNDERBOOT_CAMERA_FPS
+#	int "camera fps setting"
+#	depends on BR2_PACKAGE_THUNDERBOOT_BATIPC_LAUNCH
+#	default 25
+#	help
+#	  Camera fps setting, default is 25fps.
+
+config BR2_THUNDERBOOT_INSTALL_MODULES
+	string "dirver modules"
+	help
+	  Kernel driver modules to be installed.
+
+config BR2_THUNDERBOOT_ETH
+	bool "ethernet configuration"
+	help
+	  Ethernet connection
+
+config BR2_THUNDERBOOT_EMMC
+	bool "emmc configuration"
+	help
+	  EMMC enable
+
+config BR2_THUNDERBOOT_SOUND
+	bool "sound configuration"
+	help
+	  Sound enable
+
+config BR2_THUNDERBOOT_SIMPLIFY_USB
+	bool "simplify usb configuration"
+	help
+	  Kernel driver modules to be installed.
+
+config BR2_PACKAGE_THUNDERBOOT_USE_EUDEV
+	bool "enable udev for usb-otg/sdcard/block-byname, etc..."
+	help
+	  enable udev for usb-otg/sdcard/block-byname, etc...
+
+if BR2_THUNDERBOOT_SIMPLIFY_USB
+
+config BR2_THUNDERBOOT_USB_ADBD
+	bool "rockchip thunderboot USB ADBD"
+	select BR2_PACKAGE_ANDROID_TOOLS
+	help
+	  Use simplify ADB configuration.
+
+config BR2_THUNDERBOOT_USB_MTP
+	bool "rockchip thunderboot USB MTP"
+	select BR2_PACKAGE_MTP
+	select BR2_PACKAGE_THUNDERBOOT_USE_EUDEV
+	help
+	  Use simplify MTP configuration.
+
+config BR2_THUNDERBOOT_USB_RNDIS
+	bool "rockchip thunderboot USB RNDIS"
+	help
+	  Use simplify RNDIS configuration.
+	  Default net device is usb0.
+	  Default net address is 190.168.1.100
+endif
+endif

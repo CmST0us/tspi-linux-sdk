@@ -1,0 +1,18 @@
+PROJECT_DIR := $(shell pwd)
+CC = gcc
+LIB_NAME = libavb_bootcontrol_avb.so 
+OBJ = boot_control_avb.o 
+
+CFLAGS += -I/home/hkh/projects/Linux/rk3308/external/avb/
+
+$(LIB_NAME): $(OBJ)
+	$(CC) -shared -o $(LIB_NAME) $(OBJ) $(CFLAGS)
+
+%.o: %.c
+	$(CC) -c -fPIC $(CFLAGS) $< -o $@
+
+clean:
+	rm -rf $(OBJ) $(LIB_NAME)
+
+install:
+	sudo install -D -m 755 libavb_bootcontrol_avb.so -t /usr/bin/

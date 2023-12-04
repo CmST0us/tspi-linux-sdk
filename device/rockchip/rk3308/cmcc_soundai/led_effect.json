@@ -1,0 +1,232 @@
+{
+    "参数说明": {
+        "back_color": "背景色，十六进制，字符串，比如FFDDBB",
+        "fore_color": "前景色，十六进制，字符串，比如FFDDBB",
+        "period": "灯效周期，例如呼吸一次为3000ms.",
+        "start": "从第几个灯开始",
+        "num": "从start开始，点亮num个灯",
+        "srcroll_num":"跑马灯个数",
+        "actions_per_period": "每个period需要经过多少次action",
+        "led_effect_type":"0:关闭灯效, 1：常亮 2:呼吸灯效,  3:淡进淡出 4:闪烁灯效 5:互换 6:跑马灯效  7:走马灯效 8：一个灯单色循环"
+    }
+    ,
+    "关闭灯效": "",
+    "led_effect_led_off": {
+        "led_effect_type": 0,
+        "back_color": "000000",
+        "fore_color": "000000",
+        "period": 0,
+        "start": 0,
+        "num": 1,
+        "actions_per_period": 0
+    }
+    ,
+    "系统启动灯效": "",
+    "led_effect_system_booting":{
+        "led_effect_type": 2,
+        "back_color": "000000",
+        "fore_color": "0000FF",
+        "period": 2000,
+        "start": 0,
+        "num": 1,
+        "actions_per_period": 25
+    }
+    ,
+    "网络恢复": "",
+    "led_effect_net_connet_recovery":{
+        "led_effect_type": 5,
+        "back_color": "000000",
+        "fore_color": "FF3399",
+        "period": 2000,
+        "start": 0,
+        "num": 1,
+        "actions_per_period": 2
+    }
+    ,
+    "等待网络连接": "",
+    "led_effect_net_connet_waiting": {
+        "led_effect_type": 5,
+        "back_color": "0000FF",
+        "fore_color": "FF0000",
+        "period": 2000,
+        "start": 0,
+        "num": 1,
+        "actions_per_period": 2
+    }
+    ,
+    "正在连接网络": "",
+    "led_effect_net_conneting":{
+        "led_effect_type": 5,
+        "back_color": "0000FF",
+        "fore_color": "FF0000",
+        "period": 2000,
+        "start": 0,
+        "num": 1,
+        "actions_per_period": 2
+    }
+    ,
+    "网络连接失败": "",
+    "led_effect_net_connet_fail": {
+        "led_effect_type": 5,
+        "back_color": "000000",
+        "fore_color": "CD3333",
+        "period": 2000,
+        "start": 0,
+        "num": 1,
+        "actions_per_period": 2
+    }
+    ,
+    "连接网络成功": "",
+    "led_effect_net_connet_success": {
+        "led_effect_type": 0,
+        "back_color": "000000",
+        "fore_color": "000000",
+        "period": 0,
+        "start": 0,
+        "num": 1,
+        "actions_per_period": 1
+    }
+    ,
+    "唤醒灯效": "",
+    "led_effect_wakeup_waiting": {
+        "led_effect_type": 2,
+        "back_color": "000000",
+        "fore_color": "CC3399",
+        "period": 2000,
+        "start": 0,
+        "num": 1,
+        "actions_per_period": 25
+    }
+    ,
+    "语音解析灯效": "",
+    "led_effect_tts_thinking": {
+        "led_effect_type": 1,
+        "back_color": "000000",
+        "fore_color": "3399CC",
+        "period": 0,
+        "start": 0,
+        "num": 1,
+        "actions_per_period": 1
+    }
+    ,
+    "播放语音灯效": "",
+    "led_effect_tts_playing": {
+        "led_effect_type": 1,
+        "back_color": "000000",
+        "fore_color": "3399CC",
+        "period": 0,
+        "start": 0,
+        "num": 1,
+        "actions_per_period": 1
+    }
+    ,
+    "等待蓝牙配对": "",
+    "led_effect_bt_pair_waiting": {
+        "led_effect_type": 5,
+        "back_color": "FF3399",
+        "fore_color": "FFFF66",
+        "period": 2000,
+        "start": 0,
+        "num": 1,
+        "actions_per_period": 2
+    }
+    ,
+    "蓝牙正在配对": "",
+    "led_effect_bt_pairing": {
+        "led_effect_type": 2,
+        "back_color": "000000",
+        "fore_color": "CC3399",
+        "period": 2000,
+        "start": 0,
+        "num": 1,
+        "actions_per_period": 20
+    }
+    ,
+    "蓝牙配对失败": "",
+    "led_effect_bt_pair_fail": {
+        "led_effect_type": 5,
+        "back_color": "000000",
+        "fore_color": "CD3333",
+        "period": 2000,
+        "start": 0,
+        "num": 1,
+        "actions_per_period": 2
+    }
+    ,
+    "蓝牙配对成功": "",
+    "led_effect_bt_pair_success": {
+        "led_effect_type": 1,
+        "back_color": "000000",
+        "fore_color": "FFFFFF",
+        "period": 1,
+        "start": 0,
+        "num": 1,
+        "actions_per_period": 1
+    }
+    ,
+    "音量": "",
+    "led_effect_volume_led": {
+        "led_effect_type": 3,
+        "back_color": "000000",
+        "fore_color": "FFFFFF",
+        "period": 2000,
+        "start": 0,
+        "num": 1,
+        "actions_per_period": 20
+    }
+    ,
+    "禁麦": "",
+    "led_effect_mic_mute": {
+        "led_effect_type": 1,
+        "back_color": "000000",
+        "fore_color": "FF0099",
+        "period": 1,
+        "start": 0,
+        "num": 1,
+        "actions_per_period": 1
+    }
+    ,
+    "取消禁麦": "",
+    "led_effect_mic_unmute": {
+        "led_effect_type": 0,
+        "back_color": "000000",
+        "fore_color": "000000",
+        "period": 1,
+        "start": 0,
+        "num": 1,
+        "actions_per_period": 1
+    }
+    ,
+    "闹钟": "",
+    "led_effect_alarm": {
+        "led_effect_type": 2,
+        "back_color": "000000",
+        "fore_color": "CD3333",
+        "period": 1000,
+        "start": 0,
+        "num": 1,
+        "actions_per_period": 20
+    }
+    ,
+    "升级中": "",
+    "led_effect_upgrading": {
+        "led_effect_type": 2,
+        "back_color": "000000",
+        "fore_color": "FFFFFF",
+        "period": 1000,
+        "start": 0,
+        "num": 1,
+        "actions_per_period": 20
+    }
+    ,
+    "升级进度": "",
+    "led_effect_upgrade_progress": {
+        "led_effect_type": 2,
+        "back_color": "000000",
+        "fore_color": "FF3399",
+        "period": 1000,
+        "start": 0,
+        "num": 1,
+        "actions_per_period": 20
+    }
+}

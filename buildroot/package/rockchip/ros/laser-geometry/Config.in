@@ -1,0 +1,20 @@
+config BR2_PACKAGE_LASER_GEOMETRY
+    bool "laser geometry"
+    depends on BR2_PACKAGE_HOST_CATKIN
+    select BR2_PACKAGE_ANGLES
+    select BR2_PACKAGE_ROS_COMM_SET
+    select BR2_PACKAGE_ROSCPP
+    select BR2_PACKAGE_COMMON_MSGS_SET
+    select BR2_PACKAGE_SENSOR_MSGS
+    depends on BR2_PACKAGE_ROSPACK
+    select BR2_PACKAGE_GEOMETRY_SET
+    select BR2_PACKAGE_TF
+    select BR2_PACKAGE_TF2
+    depends on BR2_PACKAGE_EIGEN
+    depends on BR2_PACKAGE_BOOST
+    select BR2_PACKAGE_BOOST_SYSTEM
+    select BR2_PACKAGE_BOOST_THREAD
+
+    help
+        laser geometry
+

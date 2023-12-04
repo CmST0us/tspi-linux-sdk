@@ -1,0 +1,6 @@
+config BR2_PACKAGE_NOTO_SANS_KR
+	bool "Noto Sans KR"
+	help
+	  Google Noto Sans CJK region-specific subset OTF font for Korean.
+
+	  https://www.google.com/get/noto/help/cjk/

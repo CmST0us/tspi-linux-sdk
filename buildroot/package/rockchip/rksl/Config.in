@@ -1,0 +1,7 @@
+config BR2_PACKAGE_RKSL
+    bool "rksl"
+    select BR2_PACKAGE_LIBDRM
+    select BR2_PACKAGE_ROCKCHIP_RGA
+    select BR2_PACKAGE_UVC_APP
+    select BR2_PACKAGE_ROCKFACE
+    select BR2_PACKAGE_CAMERA_ENGINE

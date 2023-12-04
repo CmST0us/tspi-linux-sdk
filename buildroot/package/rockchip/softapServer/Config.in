@@ -1,0 +1,3 @@
+config BR2_PACKAGE_SOFTAPSERVER
+    bool "socket server based on softap"
+    select BR2_PACKAGE_SOFTAP

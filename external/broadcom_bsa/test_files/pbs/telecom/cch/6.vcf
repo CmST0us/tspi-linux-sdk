@@ -1,0 +1,26 @@
+BEGIN:VCARD
+VERSION:2.1
+N:Corn;James;;;
+FN:James Corn
+ORG:IBM
+TITLE:CEO
+TEL;HOME;VOICE:(858) 678-9900
+NOTE;ENCODING=QUOTED-PRINTABLE:line1,=0D=0A=
+line2,=0D=0A=
+line3,=0D=0A=
+line4,=0D=0A=
+line5,=0D=0A=
+line6,=0D=0A=
+line7,=0D=0A=
+line8,=0D=0A=
+line9,=0D=0A=
+line10,=0D=0A=
+line11,=0D=0A=
+line12,=0D=0A=
+line13,=0D=0A=
+line14,=0D=0A=
+line15,=0D=0A=
+line16.=0D=0A
+X-IRMC-LUID:0c20eda9a
+X-IRMC-CALL-DATETIME;DIALED:20060205T112530
+END:VCARD

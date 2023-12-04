@@ -1,0 +1,13 @@
+*~
+*.o
+*.lo
+*.la
+*.orig
+*.rej
+*.loT
+*.bin
+*.pc
+.deps
+.libs
+TAGS
+*\.a

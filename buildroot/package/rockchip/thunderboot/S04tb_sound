@@ -1,0 +1,29 @@
+#!/bin/sh
+#
+
+case "$1" in
+	start)
+	{
+		insmod /lib/modules/soundcore.ko
+		insmod /lib/modules/snd.ko
+		insmod /lib/modules/snd-timer.ko
+		insmod /lib/modules/snd-pcm.ko
+		insmod /lib/modules/snd-pcm-dmaengine.ko
+		insmod /lib/modules/snd-soc-core.ko
+		insmod /lib/modules/snd-soc-dummy-codec.ko
+		insmod /lib/modules/snd-soc-rk817.ko
+		insmod /lib/modules/snd-soc-rockchip-i2s-tdm.ko
+		insmod /lib/modules/snd-soc-simple-card-utils.ko
+		insmod /lib/modules/snd-soc-simple-card.ko
+
+	}&
+		;;
+	stop)
+		;;
+	*)
+		echo "Usage: $0 {start|stop}"
+		exit 1
+		;;
+esac
+
+exit 0

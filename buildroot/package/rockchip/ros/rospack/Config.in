@@ -1,0 +1,15 @@
+config BR2_PACKAGE_ROSPACK
+    bool "rospack for ros"
+    depends on BR2_PACKAGE_HOST_CATKIN
+    depends on BR2_PACKAGE_TINYXML
+    select BR2_PACKAGE_CMAKE_MODULES
+    select BR2_PACKAGE_BOOST_FILESYSTEM
+    select BR2_PACKAGE_BOOST_PROGRAM_OPTIONS
+    help
+        rospack is a command-line program which provides many of the
+        services of the *NIX pkg-config tool. It is used to find
+        packages among the "forest" of code in a typical ROS
+        distribution, calculate dependencies, mangle Makefiles, and in
+        general promote peace and harmony in a ROS distribution
+
+

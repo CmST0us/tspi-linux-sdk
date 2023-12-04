@@ -1,0 +1,11 @@
+RKFSMK_SITE = $(TOPDIR)/../external/rkfsmk
+RKFSMK_SITE_METHOD = local
+
+RKFSMK_INSTALL_STAGING = YES
+
+ifeq ($(BR2_PACKAGE_RK_OEM), y)
+RKFSMK_INSTALL_TARGET_OPTS = DESTDIR=$(BR2_PACKAGE_RK_OEM_INSTALL_TARGET_DIR) install/fast
+RKFSMK_DEPENDENCIES += rk_oem
+endif
+
+$(eval $(cmake-package))

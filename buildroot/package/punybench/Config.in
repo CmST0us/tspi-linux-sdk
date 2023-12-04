@@ -1,0 +1,8 @@
+config BR2_PACKAGE_PUNYBENCH
+	bool "Punybench"
+	help
+
+	Punybench is a collection of micro benchmarks primarily for
+	measuring specific file system oprations.
+
+	https://chromium.googlesource.com/chromiumos/platform/punybench/

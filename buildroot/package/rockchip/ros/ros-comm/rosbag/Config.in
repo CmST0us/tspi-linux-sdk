@@ -1,0 +1,16 @@
+config BR2_PACKAGE_ROSBAG
+    bool "rosbag"
+    select BR2_PACKAGE_TOPIC_TOOLS
+
+    select BR2_PACKAGE_ROSBAG_STORAGE
+    select BR2_PACKAGE_TOPIC_TOOLS
+    select BR2_PACKAGE_BZIP2
+    select BR2_PACKAGE_BOOST_DATE_TIME
+    select BR2_PACKAGE_BOOST_REGEX
+    select BR2_PACKAGE_BOOST_PROGRAM_OPTIONS
+    select BR2_PACKAGE_BOOST_FILESYSTEM
+    help
+        This is a set of tools for recording from and playing
+        back to ROS topics. It's intended to be high performance
+        and avoids deserialization and reserialization of the
+        messages

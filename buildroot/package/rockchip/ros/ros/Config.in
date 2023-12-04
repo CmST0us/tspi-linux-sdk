@@ -1,0 +1,19 @@
+menuconfig BR2_PACKAGE_ROS_SET
+    bool "ros"
+    depends on BR2_PACKAGE_HOST_CATKIN
+    depends on BR2_PACKAGE_PYTHON
+
+if BR2_PACKAGE_ROS_SET
+source "package/rockchip/ros/ros/mk/Config.in"
+source "package/rockchip/ros/ros/ros/Config.in"
+source "package/rockchip/ros/ros/rosbash/Config.in"
+source "package/rockchip/ros/ros/rosboost-cfg/Config.in"
+source "package/rockchip/ros/ros/rosbuild/Config.in"
+source "package/rockchip/ros/ros/rosclean/Config.in"
+source "package/rockchip/ros/ros/roscreate/Config.in"
+source "package/rockchip/ros/ros/roslang/Config.in"
+source "package/rockchip/ros/ros/roslib/Config.in"
+source "package/rockchip/ros/ros/rosmake/Config.in"
+source "package/rockchip/ros/ros/rosunit/Config.in"
+
+endif

@@ -1,0 +1,13 @@
+[Unit]
+Description=adbd for Debian
+Before=lightdm.service
+
+[Service]
+Type=forking
+ExecStart=/usr/bin/usbdevice start
+ExecStop=/usr/bin/usbdevice stop
+ExecReload=/usr/bin/usbdevice reload
+
+[Install]
+WantedBy=multi-user.target
+

@@ -1,0 +1,37 @@
+if BR2_PACKAGE_RV1108
+
+# BSP packages
+config BR2_PACKAGE_CVR
+	bool "RV1108 package CVR application"
+	select BR2_PACKAGE_RKCAMERA
+	select BR2_PACKAGE_RKFB
+	select BR2_PACKAGE_MESSENGER
+	select BR2_PACKAGE_PROCESS_UNITS
+	select BR2_PACKAGE_LIBPNG
+	select BR2_PACKAGE_LIBPNG_12
+	select BR2_PACKAGE_RV1108_MINIGUI
+	select BR2_PACKAGE_TSLIB
+	select BR2_PACKAGE_JPEG
+	select BR2_PACKAGE_RKNR
+	select BR2_PACKAGE_HAL
+
+if BR2_PACKAGE_CVR
+menu "cvr setting options"
+
+	config BR2_PACKAGE_CVR_VIDEO_RECORD
+		bool "support video record."
+		default y
+		select BR2_PACKAGE_ADK_RKMEDIA
+		select BR2_PACKAGE_ADK_RKMEDIA_H264_ENCODE
+		select BR2_PACKAGE_ADK_RKMEDIA_MP4_MUXER
+
+	config BR2_PACKAGE_CVR_RTSP_STREAM
+		bool "support rtsp stream."
+		default n
+		select BR2_PACKAGE_ADK_RKMEDIA
+		select BR2_PACKAGE_ADK_RKMEDIA_H264_ENCODE
+		select BR2_PACKAGE_ADK_RKMEDIA_RTSP_STREAM
+endmenu
+endif
+
+endif

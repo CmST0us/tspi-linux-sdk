@@ -1,0 +1,126 @@
+cc_prebuilt_library_static {
+    name: "libliveMedia",
+    vendor: true,
+    arch: {
+        arm: {
+            srcs: [
+                "prebuild/arm32/libliveMedia.a",
+            ]
+        },
+        arm64: {
+            srcs: [
+                "prebuild/arm64/libliveMedia.a",
+            ]
+        },
+
+    },
+    strip: {
+        none:true,
+    }
+}
+
+cc_prebuilt_library_static {
+    name: "libgroupsock",
+    vendor: true,
+    arch: {
+        arm: {
+            srcs: [
+                "prebuild/arm32/libgroupsock.a",
+            ]
+        },
+        arm64: {
+            srcs: [
+                "prebuild/arm64/libgroupsock.a",
+            ]
+        },
+
+    },
+    strip: {
+        none:true,
+    }
+}
+
+cc_prebuilt_library_static {
+    name: "libBasicUsageEnvironment",
+    vendor: true,
+    arch: {
+        arm: {
+            srcs: [
+                "prebuild/arm32/libBasicUsageEnvironment.a",
+            ]
+        },
+        arm64: {
+            srcs: [
+                "prebuild/arm64/libBasicUsageEnvironment.a",
+            ]
+        },
+
+    },
+    strip: {
+        none:true,
+    }
+}
+
+cc_prebuilt_library_static {
+    name: "libUsageEnvironment",
+    vendor: true,
+    arch: {
+        arm: {
+            srcs: [
+                "prebuild/arm32/libUsageEnvironment.a",
+            ]
+        },
+        arm64: {
+            srcs: [
+                "prebuild/arm64/libUsageEnvironment.a",
+            ]
+        },
+
+    },
+    strip: {
+        none:true,
+    }
+}
+
+cc_library_static {
+    name: "librtspserver",
+    vendor: true,
+
+    shared_libs: [
+        "libutils",
+        "libvpu",
+    ],
+
+    static_libs: [
+        "libliveMedia",
+        "libgroupsock",
+        "libBasicUsageEnvironment",
+        "libUsageEnvironment",
+    ],
+
+    cppflags: [
+        "-Wall",
+        "-fPIC",
+        "-Wno-error",
+    ],
+
+    srcs: [
+       "QMediaBuffer.cpp",
+       "CamCaptureHelper.cpp",
+       "RKHWEncApi.cpp",
+       "H264LiveVideoSource.cpp",
+       "H264LiveVideoServerMediaSubsession.cpp",
+       "RtspServer.cpp",
+    ],
+
+    export_shared_lib_headers: ["libutils",],
+
+    local_include_dirs: [
+        "include",
+        "include/UsageEnvironment/include",
+        "include/liveMedia/",
+        "include/liveMedia/include",
+        "include/BasicUsageEnvironment/include",
+        "include/groupsock/include",
+    ],
+}

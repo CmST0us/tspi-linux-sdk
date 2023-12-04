@@ -1,0 +1,11 @@
+config BR2_PACKAGE_LIBRETRO_MAME2014
+        bool "libretro-mame2014"
+	depends on BR2_PACKAGE_RETROARCH
+	depends on BR2_INSTALL_LIBSTDCPP
+        help
+          libretro mame2014 core.
+
+	  http://www.libretro.com
+
+comment "LIBRETRO_MAME2014 needs a toolchain w/ C++"
+	depends on !BR2_INSTALL_LIBSTDCPP

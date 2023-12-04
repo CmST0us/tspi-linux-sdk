@@ -1,0 +1,165 @@
+{
+    "pipe_0": {
+        "node_0": {
+            "node_opts": {
+                "node_name"       : "alsa_capture"
+            },
+            "node_opts_extra": {
+                "node_source_uri" : "hw:0,0",
+                "node_buff_type"  : 0,
+                "node_buff_count" : 2,
+                "node_buff_size"  : 4096,
+                "node_buff_alloc_type" : "malloc"
+            },
+            "stream_opts_extra": {
+                "opt_samaple_rate": 16000,
+                "opt_format"      : "audio:pcm_16",
+                "opt_channel"     : 4,
+                "opt_channel_layout"  : "int64:15"
+            },
+            "stream_opts": {
+                "stream_fmt_in"   : "audio:pcm_16",
+                "stream_fmt_out"  : "audio:pcm_16",
+                "stream_output"   : "audio:pcm_0"
+            }
+        },
+        "node_1": {
+            "node_opts": {
+                "node_name"       : "skv_aec"
+            },
+            "node_opts_extra": {
+                "node_buff_type"  : 0,
+                "node_buff_count" : 2,
+                "node_buff_size"  : 2048,
+                "node_buff_alloc_type" : "malloc"
+            },
+            "stream_opts_extra": {
+                "opt_samaple_rate": 16000,
+                "opt_format"      : "audio:pcm_16",
+                "opt_channel"     : 4,
+                "opt_ref_channel_layout" : "int64:12",
+                "opt_rec_channel_layout" : "int64:3",
+                "opt_channel_layout"  : "int64:15"
+            },
+            "stream_opts": {
+                "stream_fmt_in"   : "audio:pcm_16",
+                "stream_fmt_out"  : "audio:pcm_16",
+                "stream_input"    : "audio:pcm_0",
+                "stream_output"   : "audio:pcm_1"
+            }
+        },
+        "node_2": {
+            "node_opts": {
+                "node_name"       : "skv_bf"
+            },
+            "node_opts_extra": {
+                "node_buff_type"  : 0,
+                "node_buff_count" : 2,
+                "node_buff_size"  : 2048,
+                "node_buff_alloc_type" : "malloc"
+            },
+            "stream_opts_extra": {
+                "opt_samaple_rate": 16000,
+                "opt_format"      : "audio:pcm_16",
+                "opt_channel"     : 2,
+                "opt_channel_layout"  : "int64:3"
+            },
+            "stream_opts": {
+                "stream_fmt_in"   : "audio:pcm_16",
+                "stream_fmt_out"  : "audio:pcm_16",
+                "stream_input"    : "audio:pcm_1",
+                "stream_output"   : "audio:pcm_2"
+            }
+        },
+        "node_3": {
+            "node_opts": {
+                "node_name"       : "alg_anr"
+            },
+            "node_opts_extra": {
+                "node_buff_type"  : 0,
+                "node_buff_count" : 2,
+                "node_buff_size"  : 1024,
+                "node_buff_alloc_type" : "malloc"
+            },
+            "stream_opts": {
+                "stream_fmt_in"   : "audio:pcm_16",
+                "stream_fmt_out"  : "audio:pcm_16",
+                "stream_input"    : "audio:pcm_2",
+                "stream_output"   : "audio:pcm_3"
+            },
+            "stream_opts_extra": {
+                "opt_samaple_rate": 16000,
+                "opt_format"      : "audio:pcm_16",
+                "opt_channel"     : 1,
+                "opt_channel_layout"  : "int64:1"
+            }
+        },
+        "node_4": {
+            "node_opts": {
+                "node_name"       : "skv_agc"
+            },
+            "node_opts_extra": {
+                "node_buff_type"  : 0,
+                "node_buff_count" : 2,
+                "node_buff_size"  : 2048,
+                "node_buff_alloc_type" : "malloc"
+            },
+            "stream_opts_extra": {
+                "opt_agc_level"   : "float:30000.0",
+                "opt_samaple_rate": 16000,
+                "opt_format"      : "audio:pcm_16",
+                "opt_channel"     : 1,
+                "opt_channel_layout"  : "int64:1"
+            },
+            "stream_opts": {
+                "stream_fmt_in"   : "audio:pcm_16",
+                "stream_fmt_out"  : "audio:pcm_16",
+                "stream_input"    : "audio:pcm_3",
+                "stream_output"   : "audio:pcm_4"
+            }
+        },
+        "node_5": {
+            "node_opts": {
+                "node_name"       : "resample"
+            },
+            "node_opts_extra": {
+                "node_buff_type"  : 0,
+                "node_buff_count" : 2,
+                "node_buff_size"  : 2048,
+                "node_buff_alloc_type" : "malloc"
+            },
+            "stream_opts_extra": {
+                "opt_samaple_rate": 48000,
+                "opt_format"      : "audio:pcm_16",
+                "opt_channel"     : 2,
+                "opt_channel_layout"  : "int64:3"
+            },
+            "stream_opts": {
+                "stream_fmt_in"   : "audio:pcm_16",
+                "stream_fmt_out"  : "audio:pcm_16",
+                "stream_input"    : "audio:pcm_4",
+                "stream_output"   : "audio:pcm_5"
+            }
+        },
+        "node_6": {
+            "node_opts": {
+                "node_name"       : "alsa_playback"
+            },
+            "node_opts_extra": {
+                "node_source_uri" : "hw:1,0"
+            },
+            "stream_opts": {
+                "stream_fmt_in"   : "audio:pcm_16",
+                "stream_fmt_out"  : "audio:pcm_16",
+                "stream_input"    : "audio:pcm_5"
+            },
+            "stream_opts_extra": {
+                "opt_alsa_mode"   : "nonblock",
+                "opt_samaple_rate": 48000,
+                "opt_format"      : "audio:pcm_16",
+                "opt_channel"     : 2,
+                "opt_channel_layout"  : "int64:3"
+            }
+        }
+    }
+}

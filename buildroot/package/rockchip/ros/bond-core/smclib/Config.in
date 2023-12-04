@@ -1,0 +1,4 @@
+config BR2_PACKAGE_SMCLIB
+	bool "smclib"
+	help
+		smclib

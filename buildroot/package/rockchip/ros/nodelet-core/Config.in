@@ -1,0 +1,11 @@
+menuconfig BR2_PACKAGE_NODELET_CORE_SET
+	bool "ros nodelet-core"
+	depends on BR2_PACKAGE_HOST_CATKIN
+
+if BR2_PACKAGE_NODELET_CORE_SET
+source "package/rockchip/ros/nodelet-core/nodelet/Config.in"
+source "package/rockchip/ros/nodelet-core/nodelet-core/Config.in"
+source "package/rockchip/ros/nodelet-core/test-nodelet/Config.in"
+source "package/rockchip/ros/nodelet-core/nodelet-topic-tools/Config.in"
+source "package/rockchip/ros/nodelet-core/test-nodelet-topic-tools/Config.in"
+endif

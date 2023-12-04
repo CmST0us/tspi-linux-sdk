@@ -1,0 +1,27 @@
+aimake is a mini building tool based on gnu make. it's easy to cross compile shared library or static library for ios and android. 
+
+it's green, you don't need to install it
+
+1. requirements:
+    (1) gnu make, aimake was based on gnu make
+    (2) [optional] ios sdk, it's required if you need to build your project for ios 
+    (3) [optional] android ndk, it's required if you need to build your project for android
+
+2. how to use aimake?
+    (1) copy 'aimakefile' to your project folder
+    (2) modify variables in aimakfile for your compilation requirement
+    (4) run 'aimake' (aimake is a soft link pointing to aimake.sh)
+
+3. how to support more target platforms
+    the sub-folder(ios, android) means supported target platform,  and the name of sub-folder is some as target platform's name.
+    Every sub-folder must contains the following files:
+        init.mk                 -- initialize variables of compilation environment, e.g. CC, CXX, CFLAGS, CXXFLAGS
+        build_executable.mk     -- specify that compile the project into executable
+        build_static_library.mk -- specify that compile the project into static library
+        build_shared_library.mk -- specify that compile the project into shared library
+        build_all.mk            -- contains explicit rules and goals for gnu make
+
+just enjoy it
+
+aaashun@gmail.com
+2011-09-29

@@ -1,0 +1,20 @@
+Source: recovery
+Priority: optional
+Maintainer: Eddie Cai <eddie.cai.linux@gmail.com>
+Uploaders: Eddie Cai <eddie.cai.linux@gmail.com>
+Build-Depends: debhelper (>= 9), libdrm-dev, zlib1g-dev, libpng-dev, libcurl4-openssl-dev
+Standards-Version: 4.1.4
+Section: libs
+Vcs-Git: https://github.com/rockchip-linux/recovery
+Vcs-Browser: https://github.com/rockchip-linux/recovery
+Homepage: https://github.com/rockchip-linux/recovery
+
+Package: recovery
+Section: libdevel
+Architecture: any-arm armhf arm64
+Depends:
+ ${misc:Depends},
+Multi-Arch: same
+Description: recovery used to do OTA
+ porting from Android
+ 

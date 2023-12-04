@@ -1,0 +1,10 @@
+#include "rk1808_arm64.config"
+#include "base.config"
+#include "base_extra.config"
+#include "debug.config"
+BR2_ROOTFS_OVERLAY="board/rockchip/rk1808/fs-overlay-64/"
+BR2_TARGET_GENERIC_HOSTNAME="rk1808"
+BR2_TARGET_GENERIC_ISSUE="Welcome to RK1808 Buildroot"
+BR2_PACKAGE_ROCKCHIP_TEST=y
+BR2_PACKAGE_RKNPU=y
+BR2_PACKAGE_RKNPU_NTB=y

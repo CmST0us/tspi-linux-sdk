@@ -1,0 +1,63 @@
+config BR2_PACKAGE_ROCKCHIP_MALI_NVR
+	bool "rockchip-mali-nvr"
+	depends on !BR2_PACKAGE_ROCKCHIP_MALI
+	depends on BR2_INSTALL_LIBSTDCPP
+	depends on BR2_TOOLCHAIN_USES_GLIBC
+	depends on BR2_TOOLCHAIN_HAS_THREADS
+	depends on BR2_aarch64 || (BR2_ARM_EABIHF && BR2_arm)
+	select BR2_PACKAGE_LIBDRM
+	help
+	  Install the binary user-space components for the ARM Mali GPU.
+	  This package requires a kernel with the ARM Mali GPU Kernel
+	  Drivers enabled.
+
+if BR2_PACKAGE_ROCKCHIP_MALI_NVR
+
+config BR2_PACKAGE_ROCKCHIP_MALI_NVR_OPTIMIZE
+	string "mali library optimize level"
+	default "optimize_3"
+
+config BR2_PACKAGE_ROCKCHIP_MALI_NVR_ARCH_DIR
+	string "mali library arch dir"
+	default "aarch64-linux-gnu" if BR2_aarch64
+	default "arm-linux-gnueabihf"
+
+config BR2_PACKAGE_ROCKCHIP_MALI_NVR_NAME
+	string "mali library name"
+	default "libmali-valhall-g610-g6p0-without-cl-dummy-gbm.so" if BR2_PACKAGE_RK3588
+	default "libmali-bifrost-g52-g2p0-dummy-gbm.so" if BR2_PACKAGE_RK356X
+
+comment "mali-nvr API features"
+
+config BR2_PACKAGE_ROCKCHIP_MALI_NVR_HAS_EGL
+	bool "OpenGL EGL"
+	default y
+	select BR2_PACKAGE_HAS_LIBEGL
+
+config BR2_PACKAGE_ROCKCHIP_MALI_NVR_HAS_GBM
+	bool "gbm"
+	default y
+	select BR2_PACKAGE_HAS_LIBGBM
+
+config BR2_PACKAGE_ROCKCHIP_MALI_NVR_HAS_GLES
+	bool "OpenGL ES"
+	default y
+	select BR2_PACKAGE_HAS_LIBGLES
+
+config BR2_PACKAGE_ROCKCHIP_MALI_NVR_HAS_OPENCL
+	bool "OpenCL"
+	select BR2_PACKAGE_HAS_LIBOPENCL
+
+config BR2_PACKAGE_PROVIDES_LIBEGL
+	default "rockchip-mali-nvr" if BR2_PACKAGE_ROCKCHIP_MALI_NVR_HAS_EGL
+
+config BR2_PACKAGE_PROVIDES_LIBGBM
+	default "rockchip-mali-nvr" if BR2_PACKAGE_ROCKCHIP_MALI_NVR_HAS_GBM
+
+config BR2_PACKAGE_PROVIDES_LIBGLES
+	default "rockchip-mali-nvr" if BR2_PACKAGE_ROCKCHIP_MALI_NVR_HAS_GLES
+
+config BR2_PACKAGE_PROVIDES_LIBOPENCL
+	default "rockchip-mali-nvr" if BR2_PACKAGE_ROCKCHIP_MALI_NVR_HAS_OPENCL
+
+endif

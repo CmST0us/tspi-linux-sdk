@@ -1,0 +1,7 @@
+VISUALIZATION_MSGS_VERSION = 1.11.9
+VISUALIZATION_MSGS_SITE = $(call github,ros,common_msgs,$(VISUALIZATION_MSGS_VERSION))
+VISUALIZATION_MSGS_SUBDIR = visualization_msgs
+
+VISUALIZATION_MSGS_DEPENDENCIES = geometry-msgs
+
+$(eval $(catkin-package))

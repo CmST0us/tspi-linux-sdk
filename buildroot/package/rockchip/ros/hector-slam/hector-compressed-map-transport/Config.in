@@ -1,0 +1,17 @@
+config BR2_PACKAGE_HECTOR_COMPRESSED_MAP_TRANSPORT
+	bool "hector compressed map transport"
+	depends on BR2_PACKAGE_EIGEN
+	depends on BR2_PACKAGE_OPENCV
+	depends on BR2_PACKAGE_CV_BRIDGE
+	depends on BR2_PACKAGE_IMAGE_TRANSPORT
+	select BR2_PACKAGE_CMAKE_MODULES
+	select BR2_PACKAGE_GEOMETRY_MSGS
+	select BR2_PACKAGE_COMMON_MSGS_SET
+	select BR2_PACKAGE_GEOMETRY_MSGS
+	select BR2_PACKAGE_HECTOR_MAP_TOOLS
+	select BR2_PACKAGE_NAV_MSGS
+	select BR2_PACKAGE_SENSOR_MSGS
+
+	help
+		hector compressed map transport
+

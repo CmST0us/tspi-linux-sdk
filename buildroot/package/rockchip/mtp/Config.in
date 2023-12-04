@@ -1,0 +1,13 @@
+config BR2_PACKAGE_MTP
+	bool "Media Transfer Protocal(MTP)"
+	depends on BR2_PACKAGE_EUDEV
+	select BR2_PACKAGE_GLOG
+	select BR2_PACKAGE_DBUS
+	select BR2_PACKAGE_DBUS_CPP
+	select BR2_PACKAGE_BOOST
+	select BR2_PACKAGE_BOOST_THREAD
+	select BR2_PACKAGE_BOOST_SYSTEM
+	select BR2_PACKAGE_BOOST_FILESYSTEM
+	select BR2_PACKAGE_BOOST_TEST
+	help
+		A port of Android's mtp server implementation to Linux.

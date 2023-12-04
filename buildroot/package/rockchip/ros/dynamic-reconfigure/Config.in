@@ -1,0 +1,15 @@
+config BR2_PACKAGE_DYNAMIC_RECONFIGURE
+    bool "dynamic reconfigure"
+    depends on BR2_PACKAGE_HOST_CATKIN
+    depends on BR2_PACKAGE_ROSPACK
+    depends on BR2_PACKAGE_BOOST
+    select BR2_PACKAGE_BOOST_CHRONO
+    select BR2_PACKAGE_ROS_COMM_SET
+    select BR2_PACKAGE_ROSCPP
+    select BR2_PACKAGE_ROSLIB
+    select BR2_PACKAGE_ROSTEST
+    select BR2_PACKAGE_PYTHON_ROSPKG
+    help
+        This unary stack contains the dynamic_reconfigure package
+        which provides a means to change node parameters at any
+        time without having to restart the nodede

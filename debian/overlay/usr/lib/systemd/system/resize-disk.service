@@ -1,0 +1,13 @@
+#start
+[Unit]
+Description=Resize disk for rockchcip platform
+After=lighdm.service
+
+[Service]
+Type=simple
+ExecStart=/etc/init.d/resize-disk.sh start
+
+[Install]
+WantedBy=multi-user.target
+#end
+

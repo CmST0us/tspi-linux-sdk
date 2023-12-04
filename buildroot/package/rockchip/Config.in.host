@@ -1,0 +1,3 @@
+menuconfig BR2_PACKAGE_HOST_ROCKCHIP
+	bool "Rockchip host packages"
+

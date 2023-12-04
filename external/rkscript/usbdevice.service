@@ -1,0 +1,11 @@
+[Unit]
+Description=usb devices init service
+
+[Service]
+Type=forking
+User=root
+ExecStart=/etc/init.d/S50usbdevice start
+ExecStop=/etc/init.d/S50usbdevice stop
+
+[Install]
+WantedBy=multi-user.target

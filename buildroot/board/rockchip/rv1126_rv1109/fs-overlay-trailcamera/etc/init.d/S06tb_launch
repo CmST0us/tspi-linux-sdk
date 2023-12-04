@@ -1,0 +1,31 @@
+#!/bin/sh
+#
+
+lunch_start()
+{
+	insmod /lib/modules/dw_mmc-rockchip.ko &
+	echo "Now we are ready to start your first application" > /dev/kmsg
+	export LVGL_EVDEV=/dev/input/event0
+	cvr_app -a /etc/iqfiles &
+}
+
+lunch_stop()
+{
+	echo "All applications have been stopped"
+	killall -9 cvr_app
+}
+
+case "$1" in
+	start)
+		lunch_start
+		;;
+	stop)
+		lunch_stop
+		;;
+	*)
+		echo "Usage: $0 {start|stop}"
+		exit 1
+		;;
+esac
+
+exit 0

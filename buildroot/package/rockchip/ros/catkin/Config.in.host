@@ -1,0 +1,8 @@
+config BR2_PACKAGE_HOST_CATKIN
+	bool "catkin host tool for ROS"
+    depends on BR2_PACKAGE_PYTHON_ROS_SET
+	select BR2_PACKAGE_HOST_PYTHON_CATKIN_PKG
+	select BR2_PACKAGE_HOST_PYTHON_EM
+	select BR2_PACKAGE_HOST_PYTHON_EMPY
+	help
+		A CMake-based build system that is used to build all packages in ROS

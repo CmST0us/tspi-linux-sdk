@@ -1,0 +1,33 @@
+#include "rk3326_arm64.config"
+#include "audio.config"
+#include "base.config"
+#include "wifi.config"
+#include "network.config"
+BR2_CCACHE=y
+BR2_PACKAGE_PARTINIT=y
+BR2_PACKAGE_RKSCRIPT=y
+# partition init depends on udev
+BR2_ROOTFS_DEVICE_CREATION_DYNAMIC_EUDEV=y
+# BR2_PACKAGE_EUDEV_ENABLE_HWDB is not set
+# adb feature
+BR2_PACKAGE_USBDEVICE=y
+BR2_PACKAGE_ANDROID_TOOLS=y
+# fsck fs each startup
+BR2_PACKAGE_E2FSPROGS=y
+BR2_PACKAGE_E2FSPROGS_FSCK=y
+BR2_PACKAGE_E2FSPROGS_RESIZE2FS=y
+# some tools
+BR2_PACKAGE_COREUTILS=y
+BR2_PACKAGE_VENDOR_STORAGE=y
+BR2_PACKAGE_UPDATE=y
+BR2_PACKAGE_EVTEST=y
+BR2_PACKAGE_IO=y
+BR2_PACKAGE_STRACE=y
+BR2_PACKAGE_IW=y
+# camera
+BR2_PACKAGE_CAMERA_ENGINE_RKISP_IQFILE="ov5695_TongJu_CHT842-MD.xml"
+# wifi type
+BR2_PACKAGE_RKWIFIBT_AP6212A1=y
+BR2_ROOTFS_OVERLAY:="board/rockchip/common/robot/base board/rockchip/common/robot/fs-overlay-64"
+BR2_TARGET_GENERIC_HOSTNAME="rk3326_robot64"
+BR2_TARGET_GENERIC_ISSUE="Welcome to RK3326 Buildroot For Robot"

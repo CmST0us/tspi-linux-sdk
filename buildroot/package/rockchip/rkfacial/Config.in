@@ -1,0 +1,28 @@
+config BR2_PACKAGE_RKFACIAL
+    bool "rk facial"
+    select BR2_PACKAGE_ROCKFACE
+    select BR2_PACKAGE_LIBDRM
+    select BR2_PACKAGE_ROCKCHIP_RGA
+    select BR2_PACKAGE_SQLITE
+    select BR2_PACKAGE_ALSA_LIB
+    select BR2_PACKAGE_ROCKCHIP_MPP
+    select BR2_PACKAGE_CAMERA_ENGINE
+    select BR2_PACKAGE_JPEG
+    select BR2_PACKAGE_JPEG_TURBO
+
+config BR2_PACKAGE_RKFACIAL_USE_WEB_SERVER
+    bool "use web server"
+    default n
+    depends on BR2_PACKAGE_RKFACIAL
+    select BR2_PACKAGE_LIBIPCPROTOCOL
+    select BR2_PACKAGE_LIBGDBUS
+
+config BR2_PACKAGE_RKFACIAL_ENABLE_IR_TEST_DATA
+    bool "enable ir test data"
+    default n
+    depends on BR2_PACKAGE_RKFACIAL
+
+config BR2_PACKAGE_RKFACIAL_ENABLE_FACE_MASK
+    bool "enable face mask"
+    default n
+    depends on BR2_PACKAGE_RKFACIAL

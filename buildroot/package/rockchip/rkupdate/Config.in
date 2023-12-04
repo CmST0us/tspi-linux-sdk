@@ -1,0 +1,6 @@
+config BR2_PACKAGE_RKUPDATE
+	bool "Rockchip rkupdate for linux"
+	select BR2_PACKAGE_LIBPTHREAD_STUBS
+	select BR2_PACKAGE_UTIL_LINUX_LIBUUID
+	help
+	  Rockchip rkupdate for linux.

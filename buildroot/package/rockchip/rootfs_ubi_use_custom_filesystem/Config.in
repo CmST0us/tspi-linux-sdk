@@ -1,0 +1,7 @@
+config BR2_PACKAGE_ROOTFS_UBI_USE_CUSTOM_FILESYSTEM
+	bool "Customize filesystem over ubi"
+	select BR2_TARGET_ROOTFS_UBI_USE_CUSTOM_CONFIG
+
+config BR2_PACKAGE_ROOTFS_UBI_CUSTOM_FILESYSTEM
+	string "Tell build system which filesystem image should be used as ubinize input file (ubifs or squashfs)"
+	default "ubifs"

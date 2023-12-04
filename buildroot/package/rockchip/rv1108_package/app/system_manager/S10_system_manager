@@ -1,0 +1,29 @@
+#!/bin/sh
+#
+# Start the system_manager....
+#
+
+
+case "$1" in
+  start)
+	printf "Starting system_manager: "
+	system_manager &
+	[ $? = 0 ] && echo "OK" || echo "FAIL"
+	sleep 1.5
+	;;
+  stop)
+	printf "Stopping system_manager: "
+	busybox killall system_manager
+	[ $? = 0 ] && echo "OK" || echo "FAIL"
+	;;
+  restart|reload)
+	"$0" stop
+	"$0" start
+	;;
+  *)
+	echo "Usage: $0 {start|stop|restart}"
+	exit 1
+esac
+
+exit $?
+

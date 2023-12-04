@@ -1,0 +1,7 @@
+config BR2_PACKAGE_ROSCPP_SERIALIZATION
+	bool "roscpp_serialization for ROS"
+	select BR2_PACKAGE_CPP_COMMON
+	select BR2_PACKAGE_ROSTIME
+	select BR2_PACKAGE_ROSCPP_TRAITS
+	help
+	  roscpp_serialization contains the code for serialization as described in MessagesSerializationAndAdaptingTypes

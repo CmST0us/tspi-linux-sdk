@@ -1,0 +1,18 @@
+#!/bin/sh
+#
+
+case "$1" in
+	start)
+	{
+		insmod /lib/modules/dw_mmc-rockchip.ko
+	}&
+		;;
+	stop)
+		;;
+	*)
+		echo "Usage: $0 {start|stop}"
+		exit 1
+		;;
+esac
+
+exit 0

@@ -1,0 +1,3 @@
+config BR2_PACKAGE_RKSSD
+	bool "rockchip single shot multibox detector"
+

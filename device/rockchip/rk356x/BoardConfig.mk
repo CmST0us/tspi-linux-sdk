@@ -1,0 +1,1 @@
+BoardConfig-rk3568-evb1-ddr4-v10.mk

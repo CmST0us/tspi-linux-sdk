@@ -1,0 +1,13 @@
+config BR2_PACKAGE_KERNEL_MODULES
+	bool "Kernel modules that match with rockchip kernel"
+	help
+	  Build modules from rockchip kernel source.
+
+if BR2_PACKAGE_KERNEL_MODULES
+config BR2_PACKAGE_KERNEL_DEFCONFIG
+	string "Defconfig name of rockchip kernel"
+	default "rockchip_linux"
+	help
+	  The name of defconfig without '_defconfig'. The default
+	  is rockchip_linux_defconfig
+endif

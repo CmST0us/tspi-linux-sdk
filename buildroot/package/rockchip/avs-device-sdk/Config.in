@@ -1,0 +1,4 @@
+config BR2_PACKAGE_AVS_DEVICE_SDK
+	bool "AVS Device SDK"
+	help
+	Amazon Alexa Voice Service Device SDK

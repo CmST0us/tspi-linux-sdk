@@ -1,0 +1,7 @@
+config BR2_PACKAGE_HOST_PYTHON_CATKIN_PKG
+	bool "host catkin_pkg for ROS"
+	select BR2_PACKAGE_HOST_PYTHON_PYPARSING
+	select BR2_PACKAGE_HOST_PYTHON_DATEUTIL
+	help
+		Standalone Python library for the catkin build system
+

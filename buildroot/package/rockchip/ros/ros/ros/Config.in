@@ -1,0 +1,4 @@
+config BR2_PACKAGE_ROS
+    bool "ros"
+    help
+        ros

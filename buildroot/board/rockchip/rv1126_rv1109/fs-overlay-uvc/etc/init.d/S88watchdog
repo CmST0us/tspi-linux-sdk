@@ -1,0 +1,14 @@
+case "$1" in
+  start)
+        echo V > /dev/watchdog
+        echo "open system watchdog"
+        ;;
+  stop)
+        ;;
+  *)
+        echo "Usage: $0 start"
+        exit 1
+        ;;
+esac
+exit 0
+

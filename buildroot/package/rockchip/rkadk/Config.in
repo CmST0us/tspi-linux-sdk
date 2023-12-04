@@ -1,0 +1,19 @@
+config BR2_PACKAGE_RKADK
+    bool "rkadk"
+    select BR2_PACKAGE_RKMEDIA
+    select BR2_PACKAGE_INIPARSER
+    select BR2_PACKAGE_CJSON
+    select BR2_PACKAGE_RKFSMK
+    help
+      rkadk
+
+if BR2_PACKAGE_RKADK
+config BR2_PACKAGE_RKADK_ROCKIT
+    bool "rockit"
+    default n
+    select BR2_PACKAGE_ROCKIT
+    select BR2_PACKAGE_ROCKIT_TGI
+    select BR2_PACKAGE_ROCKIT_MPI
+    help
+      enable rockit
+endif #BR2_PACKAGE_RKADK

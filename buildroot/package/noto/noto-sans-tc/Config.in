@@ -1,0 +1,7 @@
+config BR2_PACKAGE_NOTO_SANS_TC
+	bool "Noto Sans TC"
+	help
+	  Google Noto Sans CJK region-specific subset OTF font for
+	  Traditional Chinese.
+
+	  https://www.google.com/get/noto/help/cjk/

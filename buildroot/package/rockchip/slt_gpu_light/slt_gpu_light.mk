@@ -1,0 +1,18 @@
+ifeq ($(BR2_PACKAGE_SLT_GPU_LIGHT), y)
+
+SLT_GPU_LIGHT_SITE = $(TOPDIR)/../external/slt_gpu_light/src
+SLT_GPU_LIGHT_VERSION = 1.0.0
+SLT_GPU_LIGHT_SITE_METHOD = local
+SLT_GPU_LIGHT_LICENSE = Apache V2.0
+SLT_GPU_LIGHT_LICENSE_FILES = NOTICE
+
+SLT_GPU_LIGHT_INSTALL_STAGING = YES
+
+ifeq ($(BR2_PACKAGE_LIBDRM),y)
+SLT_GPU_LIGHT_DEPENDENCIES += libdrm
+SLT_GPU_LIGHT_CONF_OPTS += -Dlibdrm=true
+endif
+
+$(eval $(cmake-package))
+
+endif

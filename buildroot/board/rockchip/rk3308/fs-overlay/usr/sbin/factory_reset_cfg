@@ -1,0 +1,4 @@
+# !/bin/sh
+exec >>/run/factory_reset_cfg.log
+exec 2>&1
+updateEngine --misc=wipe_userdata --reboot

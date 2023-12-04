@@ -1,0 +1,23 @@
+#include "rk312x_arm.config"
+#include "base.config"
+#include "base_extra.config"
+#include "gpu.config"
+#include "weston.config"
+#include "video_mpp.config"
+#include "video_gst.config"
+#include "audio.config"
+#include "audio_gst.config"
+#include "camera.config"
+#include "camera_gst.config"
+#include "wifi.config"
+#include "network.config"
+#include "ubifs.config"
+BR2_TARGET_GENERIC_HOSTNAME="rk3126c"
+BR2_TARGET_GENERIC_ISSUE="Welcome to RK3126C Buildroot"
+BR2_PACKAGE_RKWIFIBT_RK915=y
+BR2_PACKAGE_SBC=y
+BR2_PACKAGE_EVTEST=y
+BR2_PACKAGE_LIBBSD=y
+BR2_PACKAGE_ROCKCHIP_TEST=y
+# BR2_PACKAGE_NOTO_SANS_SC is not set
+# BR2_PACKAGE_SOURCE_HAN_SANS_CN is not set

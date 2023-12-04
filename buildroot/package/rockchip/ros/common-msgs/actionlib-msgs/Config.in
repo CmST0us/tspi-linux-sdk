@@ -1,0 +1,4 @@
+config BR2_PACKAGE_ACTIONLIB_MSGS
+	bool "actionlib-msgs for ros"
+	help
+		actionlib_msgs defines the common messages to interact with an action server and an action client. For full documentation of the actionlib API see the actionlib package.

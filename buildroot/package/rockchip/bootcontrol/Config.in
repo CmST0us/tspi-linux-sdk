@@ -1,0 +1,7 @@
+config BR2_PACKAGE_BOOTCONTROL
+	bool "Rockchip bootcontrol for linux"
+    select BR2_PACKAGE_LIBAVB 
+    select BR2_PACKAGE_LIBAVB_USER 
+    select BR2_PACKAGE_LIBAVB_AB 
+	help
+	  Rockchip bootcontrol for linux.

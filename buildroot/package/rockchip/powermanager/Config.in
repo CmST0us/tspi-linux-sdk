@@ -1,0 +1,4 @@
+config BR2_PACKAGE_POWERMANAGER
+	bool "Rockchip Power Manager for linux"
+	help
+	  Rockchip power manager for linux.

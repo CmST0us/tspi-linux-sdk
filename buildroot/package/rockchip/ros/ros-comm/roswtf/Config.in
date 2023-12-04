@@ -1,0 +1,6 @@
+config BR2_PACKAGE_ROSWTF
+    bool "roswtf"
+    select BR2_PACKAGE_ROSTEST
+    help
+        roswtf is a tool for diagnosing issues with a running
+        ROS system. Think of it as a FAQ implemented in code.

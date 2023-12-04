@@ -1,0 +1,4 @@
+config BR2_PACKAGE_LIBAVB_USER
+	bool "Rockchip libavb_user for linux"
+	help
+	  Rockchip libavb_user for linux.

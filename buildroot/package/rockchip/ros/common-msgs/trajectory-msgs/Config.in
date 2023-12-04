@@ -1,0 +1,5 @@
+config BR2_PACKAGE_TRAJECTORY_MSGS
+    bool "trajectory-msgs"
+    select BR2_PACKAGE_GEOMETRY_MSGS
+    help
+        This package defines messages for defining rebot trajectoryies

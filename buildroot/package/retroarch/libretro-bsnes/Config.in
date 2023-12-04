@@ -1,0 +1,45 @@
+config BR2_PACKAGE_LIBRETRO_BSNES
+        bool "libretro-bsnes"
+	depends on BR2_PACKAGE_RETROARCH
+	depends on BR2_INSTALL_LIBSTDCPP
+        help
+          libretro bsnes core.
+
+	  http://www.libretro.com
+
+if BR2_PACKAGE_LIBRETRO_BSNES
+
+choice
+	prompt "libretro-bsnes profile"
+	default BR2_PACKAGE_LIBRETRO_BSNES_PERFORMANCE if BR2_ARM_CPU_ARMV4 || BR2_ARM_CPU_ARMV5
+	default BR2_PACKAGE_LIBRETRO_BSNES_ACCURACY if !BR2_ARM_CPU_ARMV4 && !BR2_ARM_CPU_ARMV5
+	help
+	  The bsnes comes in three different profiles (accuracy, balanced
+	  and performance) which contain minor differences in the PPU
+	  (graphics) emulation.
+
+config BR2_PACKAGE_LIBRETRO_BSNES_ACCURACY
+	bool "accuracy"
+
+config BR2_PACKAGE_LIBRETRO_BSNES_BALANCED
+	bool "balanced"
+
+config BR2_PACKAGE_LIBRETRO_BSNES_PERFORMANCE
+	bool "performance"
+
+endchoice
+
+config BR2_PACKAGE_LIBRETRO_BSNES_PROFILE
+	string "libretro-bsnes profile"
+	default "accuracy" if BR2_PACKAGE_LIBRETRO_BSNES_ACCURACY
+	default "balanced" if BR2_PACKAGE_LIBRETRO_BSNES_BALANCED
+	default "performance" if BR2_PACKAGE_LIBRETRO_BSNES_PERFORMANCE
+	help
+	  The bsnes comes in three different profiles (accuracy, balanced
+	  and performance) which contain minor differences in the PPU
+	  (graphics) emulation.
+
+endif
+
+comment "LIBRETRO_BSNES needs a toolchain w/ C++"
+	depends on !BR2_INSTALL_LIBSTDCPP

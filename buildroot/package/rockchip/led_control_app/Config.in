@@ -1,0 +1,4 @@
+config BR2_PACKAGE_LED_CONTROL_APP
+	bool "Rockchip Led control app for linux"
+	help
+	  Rockchip Led control app for linux.

@@ -1,0 +1,27 @@
+config BR2_PACKAGE_DBSERVER
+	bool "rockchip dbserver"
+	select BR2_PACKAGE_LIBGDBUS
+	select BR2_PACKAGE_LIBRKDB
+	help
+	  rockchip dbserver
+
+if BR2_PACKAGE_DBSERVER
+config BR2_PACKAGE_DBSERVER_SANITIZER_DYNAMIC
+	bool "enable dbserver sanitizer tools with dynamic linker"
+	select BR2_PACKAGE_ADDRESS_SANITIZER
+	help
+	  Enable dbserver debug on sanitizer with dynamic linker.
+
+config BR2_PACKAGE_DBSERVER_SANITIZER_STATIC
+	bool "enable dbserver sanitizer tools with static linker"
+	select BR2_PACKAGE_ADDRESS_SANITIZER
+	help
+	  Enable dbserver debug on sanitizer with static linker.
+
+config BR2_PACKAGE_DBSERVER_MINILOGGER
+	bool "enable dbserver miniloger print"
+	select BR2_PACKAGE_MINILOGGER
+	default y
+	help
+	  Enable dbserver miniloger print.
+endif

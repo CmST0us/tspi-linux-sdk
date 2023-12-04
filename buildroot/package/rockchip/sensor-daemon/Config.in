@@ -1,0 +1,15 @@
+config BR2_PACKAGE_SENSOR_DAEMON
+	bool "sensor-daemon"
+	select BR2_PACKAGE_NANOMSG
+	select BR2_PACKAGE_CJSON
+	select BR2_PACKAGE_INIPARSER
+	help
+
+if BR2_PACKAGE_SENSOR_DAEMON
+
+config BR2_PACKAGE_NANOMSG_TOOLS
+	bool "Build sensor-daemon tools"
+	help
+	  Build sensor-daemon tools
+
+endif

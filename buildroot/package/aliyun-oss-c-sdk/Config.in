@@ -1,0 +1,4 @@
+config BR2_PACKAGE_ALIYUN_OSS_C_SDK
+	bool "aliyun-oss-c-sdk"
+	help
+	    https://github.com/aliyun/aliyun-oss-c-sdk

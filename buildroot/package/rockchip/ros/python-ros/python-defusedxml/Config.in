@@ -1,0 +1,4 @@
+config BR2_PACKAGE_PYTHON_DEFUSEDXML
+	bool "python defusedxml"
+	help
+		defusedxml

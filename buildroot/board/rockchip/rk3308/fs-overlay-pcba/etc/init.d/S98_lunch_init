@@ -1,0 +1,15 @@
+source /etc/profile.d/RkEnv.sh
+
+case "$1" in
+  start)
+        source /data/RkLunch.sh
+        ;;
+  stop)
+        printf "stop finished\n"
+        ;;
+  *)
+        echo "Usage: $0 {start|stop}"
+        exit 1
+        ;;
+esac
+exit 0

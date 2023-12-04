@@ -1,0 +1,13 @@
+config BR2_PACKAGE_QFACIALGATE
+	bool "QFacialGate"
+	select BR2_PACKAGE_RKFACIAL
+	select BR2_PACKAGE_QT5
+	help
+	  Rockchip QFacialGate application based on QT
+
+if BR2_PACKAGE_QFACIALGATE
+config BR2_PACKAGE_QFACIALGATE_TEST
+	bool "build QFacialGate test"
+	help
+	  Build QFacialGate test
+endif

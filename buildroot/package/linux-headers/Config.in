@@ -1,0 +1,10 @@
+config BR2_PACKAGE_LINUX_HEADERS
+	bool
+
+if BR2_PACKAGE_LINUX_HEADERS
+
+config BR2_PACKAGE_LINUX_HEADERS_AUTO_VERSION
+	bool "auto detect header version"
+	default y
+
+endif

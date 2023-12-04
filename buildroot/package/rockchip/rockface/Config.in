@@ -1,0 +1,91 @@
+menuconfig BR2_PACKAGE_ROCKFACE
+    bool "rockface"
+    select BR2_PACKAGE_RKNPU
+
+if BR2_PACKAGE_ROCKFACE
+
+config BR2_PACKAGE_ROCKFACE_FACE_DETECTION
+    bool "Face detection support"
+    default n
+    help
+        Face detection support
+
+config BR2_PACKAGE_ROCKFACE_FACE_DETECTION_V2
+    bool "Face detection v2 support"
+    default n
+    help
+        Face detection v2 support
+
+config BR2_PACKAGE_ROCKFACE_FACE_DETECTION_V3
+    bool "Face detection v3 support"
+    default n
+    help
+        Face detection v3 support
+
+config BR2_PACKAGE_ROCKFACE_FACE_DETECTION_V3_FAST
+    bool "Face detection v3 fast support"
+    default n
+    help
+        Face detection v3 fast support
+
+config BR2_PACKAGE_ROCKFACE_FACE_DETECTION_V3_LARGE
+    bool "Face detection v3 large support"
+    default y
+    help
+        Face detection v3 large support
+
+config BR2_PACKAGE_ROCKFACE_FACE_RECOGNITION
+    bool "Face recognition support"
+    default y
+    help
+        Face recognition support
+
+config BR2_PACKAGE_ROCKFACE_FACE_LANDMARK
+    bool "Face landmark support"
+    default y
+    help
+        Face landmark support
+
+config BR2_PACKAGE_ROCKFACE_FACE_ATTRIBUTE
+    bool "Face attribute support"
+    default y
+    help
+        Face attribute support
+
+config BR2_PACKAGE_ROCKFACE_LIVING_DETECTION
+    bool "Living detection support"
+    default n
+    help
+        Living detection support
+
+config BR2_PACKAGE_ROCKFACE_OBJECT_DETECTION
+    bool "Object detection support"
+    default y
+    help
+        Object detection support
+
+config BR2_PACKAGE_ROCKFACE_MASK_CLASSIFY
+    bool "Mask classify support"
+    default n
+    help
+        Mask classify support
+
+config BR2_PACKAGE_ROCKFACE_MASK_LANDMARKS
+    bool "Mask landmarks support"
+    default n
+    help
+        Mask landmarks support
+
+config BR2_PACKAGE_ROCKFACE_MASK_RECOGNITION
+    bool "Mask recognition support"
+    default n
+    help
+        Mask recognition support
+
+config BR2_PACKAGE_ROCKFACE_MASKS_DETECTION
+    bool "Masks detetion support"
+    default n
+    help
+        Masks detection support
+
+endif # BR2_PACKAGE_ROCKFACE

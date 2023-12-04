@@ -1,0 +1,5 @@
+#include "rk3288_arm.config"
+#include "base.config"
+#include "base_extra.config"
+#include "recovery.config"
+#include "ntfs.config"

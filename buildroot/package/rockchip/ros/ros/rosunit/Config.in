@@ -1,0 +1,5 @@
+config BR2_PACKAGE_ROSUNIT
+	bool "rosunit for ros"
+	depends on BR2_PACKAGE_HOST_CATKIN
+	help
+		Unit-testing package for ROS. This is a lower-level library for rostest and handles unit tests, whereas rostest handles integration tests.

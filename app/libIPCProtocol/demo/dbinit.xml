@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqlcmds>
+    <sql>DROP TABLE StorageDiskPath</sql>
+    <sql>CREATE TABLE StorageDiskPath (id INTEGER PRIMARY KEY AUTOINCREMENT,sPath TEXT NOT NULL UNIQUE,sName TEXT DEFAULT '',iMount INT DEFAULT 0);</sql>
+    <sql>INSERT INTO StorageDiskPath (sPath,sName,iMount) VALUES ('/mnt/sdcard','SD Card',0);</sql>
+    <sql>INSERT INTO StorageDiskPath (sPath,sName,iMount) VALUES ('/media/usb0','U Disk',0);</sql>
+    <sql>INSERT INTO StorageDiskPath (sPath,sName,iMount) VALUES ('/userdata','Emmc',0);</sql>
+    <sql>SELECT * FROM StorageDiskPath</sql>
+
+    <sql>DROP TABLE StorageMediaFolder</sql>
+    <sql>CREATE TABLE StorageMediaFolder (id INTEGER PRIMARY KEY,sMediaFolder TEXT NOT NULL UNIQUE,sThumbFolder TEXT,sFormat TEXT,iCamId INT,iType INT,iDuty INT,iMaxNum INT);</sql>
+    <sql>INSERT INTO StorageMediaFolder (id,sMediaFolder,sThumbFolder,sFormat,iCamId,iType,iDuty,iMaxNum) VALUES (0,'video0','video0/.thumb','VIDEO_%Y%m%d%H%M%S',0,0,45,-1);</sql>
+    <sql>INSERT INTO StorageMediaFolder (id,sMediaFolder,sThumbFolder,sFormat,iCamId,iType,iDuty,iMaxNum) VALUES (1,'photo0','photo0/.thumb','PHOTO_%Y%m%d%H%M%S',0,1,5,-1);</sql>
+    <sql>INSERT INTO StorageMediaFolder (id,sMediaFolder,sThumbFolder,sFormat,iCamId,iType,iDuty,iMaxNum) VALUES (2,'video1','video1/.thumb','VIDEO_%Y%m%d%H%M%S',1,0,45,-1);</sql>
+    <sql>INSERT INTO StorageMediaFolder (id,sMediaFolder,sThumbFolder,sFormat,iCamId,iType,iDuty,iMaxNum) VALUES (3,'photo1','photo1/.thumb','PHOTO_%Y%m%d%H%M%S',1,1,5,-1);</sql>
+    <sql>SELECT * FROM StorageMediaFolder</sql>
+
+    <sql>DROP TABLE StorageConfig</sql>
+    <sql>CREATE TABLE StorageConfig (id INTEGER PRIMARY KEY,iFreeSize INT DEFAULT -1,sMountPath TEXT NOT NULL UNIQUE);</sql>
+    <sql>INSERT INTO StorageConfig (id,iFreeSize,sMountPath) VALUES (0,1024,'/userdata');</sql>
+    <sql>SELECT * FROM StorageConfig</sql>
+
+    <sql>DROP TABLE netconfig</sql>
+    <sql>CREATE TABLE netconfig (id INTEGER PRIMARY KEY AUTOINCREMENT,sService TEXT NOT NULL UNIQUE,sPassword TEXT DEFAULT '',iFavorite INT DEFAULT 0,iAutoconnect INT DEFAULT 0,sV4Method TEXT DEFAULT '',sV4Address TEXT DEFAULT '',sV4Netmask TEXT DEFAULT '',sV4Gateway TEXT DEFAULT '',sDNS TEXT DEFAULT '');</sql>
+    <sql>SELECT * FROM netconfig</sql>
+
+    <sql>DROP TABLE power</sql>
+    <sql>CREATE TABLE power (id INTEGER PRIMARY KEY AUTOINCREMENT,sName TEXT NOT NULL UNIQUE,iPower INT DEFAULT 0);</sql>
+    <sql>INSERT INTO power (sName,iPower) VALUES ('wifi',0);</sql>
+    <sql>INSERT INTO power (sName,iPower) VALUES ('ethernet',1);</sql>
+    <sql>SELECT * FROM power</sql>
+
+    <sql>DROP TABLE ntp</sql>
+    <sql>CREATE TABLE ntp (id INTEGER PRIMARY KEY,sNtpServers TEXT NOT NULL,sTimeZone TEXT NOT NULL,iAutoMode INT DEFAULT 0,iRefreshTime INT DEFAULT 120);</sql>
+    <sql>INSERT INTO ntp (id,sNtpServers,sTimeZone,iAutoMode,iRefreshTime) VALUES (0,'122.224.9.29 94.130.49.186','CST',0,120);</sql>
+    <sql>SELECT * FROM ntp</sql>
+
+    <sql>DROP TABLE zone</sql>
+    <sql>CREATE TABLE zone (id INTEGER PRIMARY KEY,sName TEXT NOT NULL,iHavedst INT DEFAULT 0,sTimeZone TEXT NOT NULL,sTimeZoneDst TEXT NOT NULL);</sql>
+    <sql>INSERT INTO zone (id,sName,iHavedst,sTimeZone,sTimeZoneDst) VALUES (0,'Shanghai',0,'GMT-8','');</sql>
+    <sql>INSERT INTO zone (id,sName,iHavedst,sTimeZone,sTimeZoneDst) VALUES (1,'Los_Angeles',1,'GMT+8','Los_Angeles');</sql>
+    <sql>SELECT * FROM zone</sql>
+
+    <sql>DROP TABLE port</sql>
+    <sql>CREATE TABLE port (id INTEGER PRIMARY KEY,sProtocol TEXT NOT NULL,iPortNo INT DEFAULT 0);</sql>
+    <sql>INSERT INTO port (id,sProtocol,iPortNo) VALUES (0,'HTTP',80);</sql>
+    <sql>INSERT INTO port (id,sProtocol,iPortNo) VALUES (1,'HTTPS',443);</sql>
+    <sql>INSERT INTO port (id,sProtocol,iPortNo) VALUES (2,'DEV_MANAGE',8080);</sql>
+    <sql>INSERT INTO port (id,sProtocol,iPortNo) VALUES (3,'RTSP',554);</sql>
+    <sql>INSERT INTO port (id,sProtocol,iPortNo) VALUES (4,'RTMP',1935);</sql>
+    <sql>SELECT * FROM port</sql>
+
+    <sql>DROP TABLE video</sql>
+    <sql>CREATE TABLE video (id INTEGER PRIMARY KEY,sStreamType TEXT DEFAULT 'mainStream',sVideoType TEXT DEFAULT 'compositeStream',sResolution TEXT DEFAULT '1920*1080',sRCMode TEXT DEFAULT 'CBR',sImageQuality TEXT DEFAULT 'medium',sFrameRate TEXT DEFAULT '30',iMaxRate INT DEFAULT 4096,sOutputDataType TEXT DEFAULT 'H.264',sSmart TEXT DEFAULT 'close',sRCQuality TEXT DEFAULT 'high',iGOP INT DEFAULT 30,sSVC TEXT DEFAULT 'close',iStreamSmooth INT DEFAULT 50);</sql>
+    <sql>INSERT INTO video (id, sStreamType) VALUES (0, 'mainStream');</sql>
+    <sql>INSERT INTO video (id, sStreamType) VALUES (1, 'subStream');</sql>
+    <sql>INSERT INTO video (id, sStreamType) VALUES (2, 'thirdStream');</sql>
+    <sql>SELECT * FROM video</sql>
+
+    <sql>DROP TABLE audio</sql>
+    <sql>CREATE TABLE audio (id INTEGER PRIMARY KEY,sEncodeType TEXT DEFAULT 'MP2',iSampleRate INT DEFAULT 16000,iBitRate INT DEFAULT 32,sInput TEXT DEFAULT 'micIn',iVolume INT DEFAULT 50,sANS TEXT DEFAULT 'close');</sql>
+    <sql>INSERT INTO audio (id) VALUES (0);</sql>
+    <sql>SELECT * FROM audio</sql>
+
+    <sql>DROP TABLE stream_url</sql>
+    <sql>CREATE TABLE stream_url (id INTEGER PRIMARY KEY,sStreamProtocol TEXT NOT NULL);</sql>
+    <sql>INSERT INTO stream_url (id,sStreamProtocol) VALUES (0,'RTSP');</sql>
+    <sql>INSERT INTO stream_url (id,sStreamProtocol) VALUES (1,'RTMP');</sql>
+    <sql>INSERT INTO stream_url (id,sStreamProtocol) VALUES (2,'RTMP');</sql>
+    <sql>SELECT * FROM stream_url</sql>
+
+    <sql>DROP TABLE image_scenario</sql>
+    <sql>CREATE TABLE image_scenario (id INTEGER PRIMARY KEY,sScenario TEXT DEFAULT 'normal');</sql>
+    <sql>INSERT INTO image_scenario (id) VALUES (0);</sql>
+    <sql>SELECT * FROM image_scenario</sql>
+
+    <sql>DROP TABLE image_adjustment</sql>
+    <sql>CREATE TABLE image_adjustment (id INTEGER PRIMARY KEY,iBrightness INT DEFAULT 50,iContrast INT DEFAULT 50,iSaturation INT DEFAULT 50,iSharpness INT DEFAULT 50);</sql>
+    <sql>INSERT INTO image_adjustment (id) VALUES (0);</sql>
+    <sql>INSERT INTO image_adjustment (id) VALUES (1);</sql>
+    <sql>INSERT INTO image_adjustment (id) VALUES (2);</sql>
+    <sql>INSERT INTO image_adjustment (id) VALUES (3);</sql>
+    <sql>INSERT INTO image_adjustment (id) VALUES (4);</sql>
+    <sql>INSERT INTO image_adjustment (id) VALUES (5);</sql>
+    <sql>SELECT * FROM image_adjustment</sql>
+
+    <sql>DROP TABLE image_exposure</sql>
+    <sql>CREATE TABLE image_exposure (id INTEGER PRIMARY KEY,sIrisType TEXT DEFAULT 'auto',iAutoIrisLevel INT DEFAULT 5,sExposureTime TEXT DEFAULT '1/6',iExposureGain INT DEFAULT 0);</sql>
+    <sql>INSERT INTO image_exposure (id) VALUES (0);</sql>
+    <sql>INSERT INTO image_exposure (id) VALUES (1);</sql>
+    <sql>INSERT INTO image_exposure (id) VALUES (2);</sql>
+    <sql>INSERT INTO image_exposure (id) VALUES (3);</sql>
+    <sql>INSERT INTO image_exposure (id) VALUES (4);</sql>
+    <sql>INSERT INTO image_exposure (id) VALUES (5);</sql>
+    <sql>SELECT * FROM image_exposure</sql>
+
+    <sql>DROP TABLE image_night_to_day</sql>
+    <sql>CREATE TABLE image_night_to_day (id INTEGER PRIMARY KEY,sNightToDay TEXT DEFAULT 'auto',iNightToDayFilterLevel INT DEFAULT 5,iNightToDayFilterTime INT DEFAULT 5,sBeginTime TEXT DEFAULT '07:00:00',sEndTime TEXT DEFAULT '18:00:00',sIrcutFilterAction TEXT DEFAULT 'day',sOverexposeSuppress TEXT DEFAULT 'open',sOverexposeSuppressType TEXT DEFAULT 'auto',iDistanceLevel INT DEFAULT 1);</sql>
+    <sql>INSERT INTO image_night_to_day (id) VALUES (0);</sql>
+    <sql>INSERT INTO image_night_to_day (id) VALUES (1);</sql>
+    <sql>INSERT INTO image_night_to_day (id) VALUES (2);</sql>
+    <sql>INSERT INTO image_night_to_day (id) VALUES (3);</sql>
+    <sql>INSERT INTO image_night_to_day (id) VALUES (4);</sql>
+    <sql>INSERT INTO image_night_to_day (id) VALUES (5);</sql>
+    <sql>SELECT * FROM image_night_to_day</sql>
+
+    <sql>DROP TABLE image_blc</sql>
+    <sql>CREATE TABLE image_blc (id INTEGER PRIMARY KEY,sBLCRegion TEXT DEFAULT 'close',sWDR TEXT DEFAULT 'close',iWDRLevel INT DEFAULT 0,sHLC TEXT DEFAULT 'close',iHLCLevel INT DEFAULT 0,iPositionX0 INT DEFAULT 0,iPositionY0 INT DEFAULT 0,iPositionX1 INT DEFAULT 0,iPositionY1 INT DEFAULT 0,iPositionX2 INT DEFAULT 0,iPositionY2 INT DEFAULT 0,iPositionX3 INT DEFAULT 0,iPositionY3 INT DEFAULT 0);</sql>
+    <sql>INSERT INTO image_blc (id) VALUES (0);</sql>
+    <sql>INSERT INTO image_blc (id) VALUES (1);</sql>
+    <sql>INSERT INTO image_blc (id) VALUES (2);</sql>
+    <sql>INSERT INTO image_blc (id) VALUES (3);</sql>
+    <sql>INSERT INTO image_blc (id) VALUES (4);</sql>
+    <sql>INSERT INTO image_blc (id) VALUES (5);</sql>
+    <sql>SELECT * FROM image_blc</sql>
+
+    <sql>DROP TABLE image_white_blance</sql>
+    <sql>CREATE TABLE image_white_blance (id INTEGER PRIMARY KEY,sWhiteBlanceStyle TEXT DEFAULT 'naturalLight',iWhiteBalanceRed INT DEFAULT 50,iWhiteBalanceBlue INT DEFAULT 50);</sql>
+    <sql>INSERT INTO image_white_blance (id) VALUES (0);</sql>
+    <sql>INSERT INTO image_white_blance (id) VALUES (1);</sql>
+    <sql>INSERT INTO image_white_blance (id) VALUES (2);</sql>
+    <sql>INSERT INTO image_white_blance (id) VALUES (3);</sql>
+    <sql>INSERT INTO image_white_blance (id) VALUES (4);</sql>
+    <sql>INSERT INTO image_white_blance (id) VALUES (5);</sql>
+    <sql>SELECT * FROM image_white_blance</sql>
+
+    <sql>DROP TABLE image_enhancement</sql>
+    <sql>CREATE TABLE image_enhancement (id INTEGER PRIMARY KEY,sNoiseReduceMode TEXT DEFAULT 'general',iDenoiseLevel INT DEFAULT 0,iSpatialDenoiseLevel INT DEFAULT 0,iTemporalDenoiseLevel INT DEFAULT 0,sDehaze TEXT DEFAULT 'close',iDehazeLevel INT DEFAULT 0,sDIS TEXT DEFAULT 'close',sGrayScaleMode TEXT DEFAULT '[0-255]');</sql>
+    <sql>INSERT INTO image_enhancement (id) VALUES (0);</sql>
+    <sql>INSERT INTO image_enhancement (id) VALUES (1);</sql>
+    <sql>INSERT INTO image_enhancement (id) VALUES (2);</sql>
+    <sql>INSERT INTO image_enhancement (id) VALUES (3);</sql>
+    <sql>INSERT INTO image_enhancement (id) VALUES (4);</sql>
+    <sql>INSERT INTO image_enhancement (id) VALUES (5);</sql>
+    <sql>SELECT * FROM image_enhancement</sql>
+
+    <sql>DROP TABLE image_video_adjustment</sql>
+    <sql>CREATE TABLE image_video_adjustment (id INTEGER PRIMARY KEY,sImageFlip TEXT DEFAULT 'close',sSceneMode TEXT DEFAULT 'indoor',sPowerLineFrequencyMode TEXT DEFAULT 'PAL(50HZ)');</sql>
+    <sql>INSERT INTO image_video_adjustment (id) VALUES (0);</sql>
+    <sql>INSERT INTO image_video_adjustment (id) VALUES (1);</sql>
+    <sql>INSERT INTO image_video_adjustment (id) VALUES (2);</sql>
+    <sql>INSERT INTO image_video_adjustment (id) VALUES (3);</sql>
+    <sql>INSERT INTO image_video_adjustment (id) VALUES (4);</sql>
+    <sql>INSERT INTO image_video_adjustment (id) VALUES (5);</sql>
+    <sql>SELECT * FROM image_video_adjustment</sql>
+</sqlcmds>

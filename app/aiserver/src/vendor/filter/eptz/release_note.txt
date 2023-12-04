@@ -1,0 +1,93 @@
+eptz V2.0.6：
+【主要更新】
+1.添加rkauth授权管理，未授权版本仅在开机30min内有效。
+2.修复一些已知问题。
+3.添加eptz_animation动画选择。
+4.eptz_algorithm.h头文件修改
+添加接口：
+  1）setEptzLicense(char *lic_path);
+  -- 设置eptz授权文件
+
+eptz V1.0.5：
+【主要更新】
+1.优化画面移动效果。
+2.eptz_algorithm.h头文件修改
+添加接口：
+  1）void changeEptzConfig(char *config_path);
+  -- 动态切换zoom配置文件
+  2）void setEptzMode(INT32 mode);
+  -- 添加模式切换功能，默认mode 1，灵动模式。可设置为mode 2，会议模式。
+  -- 灵动模式：人物跟踪灵敏，人物移动中就进行画面跟随。
+  -- 会议模式：人物停止移动后，进行画面切换。
+3.EptzInitInfo添加eptz_zoom_frame_judge变量，控制zoom灵敏度。
+
+eptz V1.0.3：
+【主要更新】
+1.优化zoom效果。
+2.优化第一次检测到人脸时eptz响应速度。
+3.修复切换分辨率时，eptz失效问题。
+4.优化单人场景时，轻微左右上下摇头，画面跟随晃动问题。
+5.通过touch /tmp/eptz_face_debug,动态输出人脸坐标信息
+6.修复异常掉电或其他异常场景下造成的eptz_zoom.cfg解析失败问题。
+
+eptz V1.0.1：
+【主要更新】
+1.适配不同分辨率，避免特殊分辨率引起的crash问题。
+2.添加eptz场景，不同分辨率宽高比下，人物宽高保持原始比例，通过export eptz_geometric_support=1使能，会丢失部分画面信息，默认关闭。
+3.修复概率的Y轴方向抖动问题。
+
+eptz V1.0.0：
+【主要更新】
+1.修改单人/多人模式下zoom策略，提供eptz_zoom.conf调整适配不同FOV SENSOR，默认使用/data/eptz_zoom.conf
+--人脸范围占source源画面比例
+area_ratio_data:0.05,0.08,0.10,0.13,0.16,0.20,0.25,0.50,0.75,1.0
+--裁剪画面占source源数据比例
+clip_ratio_data:0.35,0.40,0.45,0.50,0.60,0.70,0.85,0.90,0.95,1.0
+
+最高支持20组数据扩展，可根据场景进行调节。提供480P，720P，1080P，1440P，2160P五组数据，针对不同预览分辨率自动动态选择
+通过touch /tmp/eptz_zoom_debug,动态打开zoom日志，显示当前人脸范围和裁剪比例数据 ：face_ratio[%.2f] eptz_clip_ratio[%.2f]
+
+2.eptz_algorithm.h头文件修改，移除V0.1.6接口及无用参数
+3.eptz_zoom_speed参数修改，可配1，2，3选择zoom速度，1代表速度最慢
+4.修复zoom过程中的宽高形变问题
+
+eptz V0.1.6：
+【主要更新】
+1.添加单人模式下缩放功能
+-- float eptz_face_small_ratio; //人脸占画面比例下阈值，控制单人/多人场景zoom(-1不启用)
+-- float eptz_face_big_ratio;   //人脸占画面比例上阈值，控制单人/多人场景zoom(10不启用)
+
+eptz V0.1.5：
+【主要更新】
+1.防止缩放过程中反复抖动
+
+eptz V0.1.4：
+【主要更新】
+1.添加接口reSetPosition
+2.添加接口isMoving
+2.添加接口getPersonCurrentRect
+
+eptz V0.1.3：
+【主要更新】
+1.修复eptzConfigInit接口，内存泄漏48个字节的问题
+
+eptz V0.1.2：
+【主要更新】
+1.功能添加，可根据calculateClipRect传入的output_result初始值设置EPTZ裁剪框初始位置
+2.功能添加, calculateClipRect可设置在X秒无人情况下回到预览中心位置
+3.头文件参数说明
+
+eptz V0.1.1：
+【主要更新】
+1.添加日志打印，通过export eptz_log_level=3动态打开debug信息
+2.其他已知问题修改
+
+eptz V0.0.1：
+【主要更新】
+1.头文件eptz_algorithm.h，包含初始化接口和范围计算接口
+2.头文件eptz_type.h, 相关数据结构体定义
+
+使用说明
+1. 初始化调用一次eptzConfigInit，传入EptzInitInfo参数。
+2. 后续在每次计算出NN数据后调用calculateClipRect，传入转换好的EptzAiData，以及接收范围计算结果的int32 *output_result指针。
+3. 获取*output_result参数作为rga dst范围，进行裁剪。

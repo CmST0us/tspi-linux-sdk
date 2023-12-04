@@ -1,0 +1,11 @@
+prefix=/home/yhx/RK356X/SDK/buildroot/output/rockchip_toolchain/host
+exec_prefix=/home/yhx/RK356X/SDK/buildroot/output/rockchip_toolchain/host
+libdir=/home/yhx/RK356X/SDK/buildroot/output/rockchip_toolchain/host/lib
+includedir=/home/yhx/RK356X/SDK/buildroot/output/rockchip_toolchain/host/include
+
+Name: blkid
+Description: Block device id library
+Version: 2.31.1
+Requires.private: uuid
+Cflags: -I${includedir}/blkid
+Libs: -L${libdir} -lblkid

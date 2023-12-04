@@ -1,0 +1,5 @@
+config BR2_PACKAGE_LVGL
+	bool "lvgl"
+	default n
+	help
+	  lvgl

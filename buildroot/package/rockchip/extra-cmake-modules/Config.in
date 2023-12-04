@@ -1,0 +1,4 @@
+config BR2_PACKAGE_EXTRA_CMAKE_MODULES
+	bool "KDE Extra CMake Modules package, or ECM"
+	help
+	The Extra CMake Modules package, or ECM, adds to the modules provided by CMake

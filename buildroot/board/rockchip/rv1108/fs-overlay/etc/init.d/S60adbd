@@ -1,0 +1,46 @@
+#!/bin/sh
+#
+# Start ADB daemon service....
+#
+
+case "$1" in
+  start)
+	if [ -z "`df | grep root`" ]; then
+		exit 1
+	fi
+
+	echo "Configuring ADB USB gadget driver..."
+	echo rockchip > /sys/class/android_usb/android0/iManufacturer
+	echo rk1108 > /sys/class/android_usb/android0/iProduct 
+
+	mkdir -p /dev/usb-ffs/adb
+	mount -t functionfs adb /dev/usb-ffs/adb
+	echo adb > /sys/class/android_usb/android0/f_ffs/aliases
+
+	echo 0 > /sys/class/android_usb/android0/enable
+	echo 2207 > /sys/class/android_usb/android0/idVendor
+	echo 0006 > /sys/class/android_usb/android0/idProduct
+	echo adb > /sys/class/android_usb/android0/functions
+	echo 1 > /sys/class/android_usb/android0/enable
+	start-stop-daemon --start --oknodo --pidfile /var/run/adbd.pid --startas /root/bin/adbd --background
+	;;
+  stop)
+	start-stop-daemon --stop --oknodo --pidfile /var/run/adbd.pid --retry 5
+	echo 0 > /sys/class/android_usb/android0/enable
+	umount /dev/usb-ffs/adb
+	;;
+  restart|reload)
+	echo adb > /sys/class/android_usb/android0/f_ffs/aliases
+	echo 0 > /sys/class/android_usb/android0/enable
+	echo 2207 > /sys/class/android_usb/android0/idVendor
+	echo 0006 > /sys/class/android_usb/android0/idProduct
+	echo adb > /sys/class/android_usb/android0/functions
+	echo 1 > /sys/class/android_usb/android0/enable
+
+	;;
+  *)
+	echo "Usage: $0 {start|stop|restart}"
+	exit 1
+esac
+
+exit $?

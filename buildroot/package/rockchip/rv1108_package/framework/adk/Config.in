@@ -1,0 +1,54 @@
+if BR2_PACKAGE_RV1108
+
+# BSP packages
+config BR2_PACKAGE_ADK
+	bool "RV1108 package adk"
+	select BR2_PACKAGE_LIBION
+
+if BR2_PACKAGE_ADK
+menu "adk setting options"
+
+    config BR2_PACKAGE_ADK_MEDIA_WAV_PLAYBACK
+        bool "support adk wav playback"
+        default n
+        select BR2_PACKAGE_ALSA_LIB
+
+    config BR2_PACKAGE_ADK_RKMEDIA
+        bool "adk media configure."
+        default n
+        select BR2_PACKAGE_RKMEDIA
+
+    if BR2_PACKAGE_ADK_RKMEDIA
+        config BR2_PACKAGE_ADK_RKMEDIA_OGG_PLAYBACK
+            bool "support adk ogg playback"
+            default n
+            select BR2_PACKAGE_ALSA_LIB
+            select BR2_PACKAGE_RKMEDIA_OGG
+            select BR2_PACKAGE_RKMEDIA_OGGVORBIS_DEMUXER
+            select BR2_PACKAGE_RKMEDIA_ALSA_PLAYBACK
+
+        config BR2_PACKAGE_ADK_RKMEDIA_H264_ENCODE
+            bool "h264 encoder options"
+            default n
+            select BR2_PACKAGE_ROCKCHIP_MPP
+            select BR2_PACKAGE_RKMEDIA_MPP
+            select BR2_PACKAGE_RKMEDIA_MPP_ENCODER
+
+            if BR2_PACKAGE_ADK_RKMEDIA_H264_ENCODE
+                config BR2_PACKAGE_ADK_RKMEDIA_MP4_MUXER
+                    bool "support mp4 muxer"
+                    default y
+
+                config BR2_PACKAGE_ADK_RKMEDIA_RTSP_STREAM
+                    bool "support rtsp stream"
+                    default n
+                    select BR2_PACKAGE_RKMEDIA_LIVE555
+                    select BR2_PACKAGE_RKMEDIA_RTSP_SERVER
+                    select BR2_PACKAGE_RKMEDIA_RTSP_SERVER_H264
+            endif
+    endif
+endmenu
+endif
+
+endif
+

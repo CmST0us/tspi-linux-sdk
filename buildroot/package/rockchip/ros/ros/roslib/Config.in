@@ -1,0 +1,6 @@
+config BR2_PACKAGE_ROSLIB
+    bool "roslib"
+    depends on BR2_PACKAGE_HOST_CATKIN
+    depends on BR2_PACKAGE_ROSPACK
+    help
+        Base dependencies and support libraries for ROS

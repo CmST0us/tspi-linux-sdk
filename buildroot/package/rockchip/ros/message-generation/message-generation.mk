@@ -1,0 +1,14 @@
+MESSAGE_GENERATION_VERSION = 0.4.0
+ifeq ($(BR2_PACKAGE_ROS_INDIGO),y)
+MESSAGE_GENERATION_VERSION = 0.2.10	#groovy
+endif
+
+MESSAGE_GENERATION_SITE = $(call github,ros,message_generation,$(MESSAGE_GENERATION_VERSION))
+
+MESSAGE_GENERATION_DEPENDENCIES = gencpp genlisp genpy
+
+ifeq ($(BR2_PACKAGE_ROS_KINETIC),y)
+MESSAGE_GENERATION_DEPENDENCIES += geneus gennodejs
+endif
+
+$(eval $(catkin-package))

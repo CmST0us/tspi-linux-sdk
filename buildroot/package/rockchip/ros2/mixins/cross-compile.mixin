@@ -1,0 +1,54 @@
+build:
+  aarch64-docker: {}
+  aarch64-linux:
+    cmake-args:
+      - "-DCMAKE_SYSTEM_NAME=Linux"
+      - "-DCMAKE_SYSTEM_VERSION=1"
+      - "-DCMAKE_SYSTEM_PROCESSOR=aarch64"
+      - "-DCMAKE_AR=/buildroot/host/bin/aarch64-buildroot-linux-gnu-ar"
+      - "-DCMAKE_LINKER=/buildroot/host/bin/aarch64-buildroot-linux-gnu-ld"
+      - "-DCMAKE_NM=/buildroot/host/bin/aarch64-buildroot-linux-gnu-nm"
+      - "-DCMAKE_OBJCOPY=/buildroot/host/bin/aarch64-buildroot-linux-gnu-objcopy"
+      - "-DCMAKE_OBJDUMP=/buildroot/host/bin/aarch64-buildroot-linux-gnu-objdump"
+      - "-DCMAKE_RANLIB=/buildroot/host/bin/aarch64-buildroot-linux-gnu-ranlib"
+      - "-DCMAKE_STRIP=/buildroot/host/bin/aarch64-buildroot-linux-gnu-strip"
+      - "-DCMAKE_C_COMPILER=/buildroot/host/bin/aarch64-buildroot-linux-gnu-gcc"
+      - "-DCMAKE_CXX_COMPILER=/buildroot/host/bin/aarch64-buildroot-linux-gnu-g++"
+      - "-DCMAKE_SYSROOT=/buildroot/host/aarch64-buildroot-linux-gnu/sysroot"
+      - "-DCMAKE_FIND_ROOT_PATH=/buildroot/target/usr/lib:/buildroot/target/opt/ros"
+      - "-DCMAKE_INSTALL_RPATH=/buildroot/target/opt/ros"
+      - "-DCMAKE_INSTALL_RPATH_USE_LINK_PATH=TRUE"
+      - "-DCMAKE_FIND_ROOT_PATH_MODE_PROGRAM=NEVER"
+      - "-DCMAKE_FIND_ROOT_PATH_MODE_PACKAGE=ONLY"
+      - "-DCMAKE_FIND_ROOT_PATH_MODE_LIBRARY=ONLY"
+      - "-DCMAKE_FIND_ROOT_PATH_MODE_INCLUDE=ONLY"
+      - "-DPYTHON_SOABI=cpython-38-aarch64-linux-gnu"
+      - "-DTHREADS_PTHREAD_ARG=0"
+      - "--no-warn-unused-cli"
+  armhf-docker:
+    cmake-args:
+      - "-DCMAKE_C_FLAGS=-Wno-psabi"
+      - "-DCMAKE_CXX_FLAGS=-Wno-psabi"
+      - "--no-warn-unused-cli"
+  armhf-linux:
+    cmake-args:
+      - "-DCMAKE_SYSTEM_NAME=Linux"
+      - "-DCMAKE_SYSTEM_VERSION=1"
+      - "-DCMAKE_SYSTEM_PROCESSOR=arm"
+      - "-DCMAKE_C_COMPILER=/usr/bin/arm-linux-gnueabihf-gcc"
+      - "-DCMAKE_CXX_COMPILER=/usr/bin/arm-linux-gnueabihf-g++"
+      - "-DCMAKE_SYSROOT=$CC_ROOT/sysroot"
+      - "-DCMAKE_C_FLAGS=-Wno-psabi"
+      - "-DCMAKE_CXX_FLAGS=-Wno-psabi"
+      - "-DCMAKE_FIND_ROOT_PATH=$CC_ROOT/sysroot/root_path:$CC_ROOT/install"
+      - "-DCMAKE_INSTALL_RPATH=$CC_ROOT/sysroot/opt/ros/$ROS_DISTRO/lib"
+      - "-DCMAKE_INSTALL_RPATH_USE_LINK_PATH=TRUE"
+      - "-DCMAKE_FIND_ROOT_PATH_MODE_PROGRAM=NEVER"
+      - "-DCMAKE_FIND_ROOT_PATH_MODE_PACKAGE=ONLY"
+      - "-DCMAKE_FIND_ROOT_PATH_MODE_LIBRARY=ONLY"
+      - "-DCMAKE_FIND_ROOT_PATH_MODE_INCLUDE=ONLY"
+      - "-DPYTHON_SOABI=cpython-36m-arm-linux-gnueabihf"
+      - "-DTHREADS_PTHREAD_ARG=0"
+      - "--no-warn-unused-cli"
+  x86_64-docker: {}
+  x86_64-linux: {}

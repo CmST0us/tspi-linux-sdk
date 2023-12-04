@@ -1,0 +1,21 @@
+menuconfig BR2_PACKAGE_PCBA
+        bool "rockchip pcba test"
+
+if BR2_PACKAGE_PCBA
+choice
+        prompt "pcba test whether support screen"
+        default BR2_PACKAGE_PCBA_NO_SCREEN
+
+config BR2_PACKAGE_PCBA_SCREEN
+        bool "pcba with screen"
+        select BR2_PACKAGE_LIBDRM
+        select BR2_PACKAGE_LIBPNG
+        select BR2_PACKAGE_LIBPTHREAD_STUBS
+        select BR2_PACKAGE_LIBZIP
+
+config BR2_PACKAGE_PCBA_NO_SCREEN
+        bool "pcba with no screen"
+
+endchoice
+endif
+

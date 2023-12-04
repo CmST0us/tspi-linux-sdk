@@ -1,0 +1,7 @@
+config BR2_PACKAGE_NAV_MSGS
+    bool "nav-msgs"
+    select BR2_PACKAGE_ACTIONLIB_MSGS
+    select BR2_PACKAGE_GEOMETRY_MSGS
+    help
+        nav msgs defines the common messages used to interact
+        with the navigation stack

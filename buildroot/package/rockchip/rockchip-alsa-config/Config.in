@@ -1,0 +1,5 @@
+config BR2_PACKAGE_ROCKCHIP_ALSA_CONFIG
+	bool "rockchip-alsa-config"
+        depends on BR2_PACKAGE_ALSA_LIB
+	help
+	  Rockchip sound cards' alsa configs.

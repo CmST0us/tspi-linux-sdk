@@ -1,0 +1,11 @@
+ONVIF_SERVER_SITE = $(TOPDIR)/../app/onvif_server
+ONVIF_SERVER_SITE_METHOD = local
+
+ONVIF_SERVER_DEPENDENCIES = libgdbus libIPCProtocol
+
+ifeq ($(BR2_PACKAGE_RK_OEM), y)
+ONVIF_SERVER_INSTALL_TARGET_OPTS = DESTDIR=$(BR2_PACKAGE_RK_OEM_INSTALL_TARGET_DIR) install/fast
+ONVIF_SERVER_DEPENDENCIES += rk_oem
+endif
+
+$(eval $(cmake-package))

@@ -1,0 +1,18 @@
+#!/bin/sh
+
+# Uncomment below to see more logs
+# set -x
+
+EMMC_BLK=`find /sys/block/ -name mmcblk*boot0 | cut -d '/' -f 4 | cut -c 1-7`
+EMMC_PARTITIONS=`find /sys/class/block/ -name ${EMMC_BLK}"p*" | wc -l`
+
+for i in $(seq 1 $EMMC_PARTITIONS)
+do
+	part_name=`cat /sys/class/block/${EMMC_BLK}"p"${i}/uevent | grep PARTNAME | cut -d '=' -f 2`
+
+	if [ ${part_name}  == "userdata" ]; then
+		umount /dev/${EMMC_BLK}"p"${i} -l
+	fi
+done
+
+/usr/bin/io -4 0xff460000 0x10000

@@ -1,0 +1,4 @@
+config BR2_PACKAGE_IMAGE_COMMON
+	bool "image-common"
+	help
+		image-common

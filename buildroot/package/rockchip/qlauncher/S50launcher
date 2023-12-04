@@ -1,0 +1,59 @@
+#!/bin/sh -e
+### BEGIN INIT INFO
+# Provides:          qlauncher
+# Required-Start:    mountvirtfs
+# Required-Stop:
+# Should-Start:
+# Should-Stop:
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Qt launcher
+### END INIT INFO
+
+PATH="/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin"
+
+# Load default env variables from profiles(e.g. /etc/profile.d/qlauncher.sh)
+. /etc/profile
+
+start_qlauncher()
+{
+	# Wait for weston ready
+	[ "${QT_QPA_PLATFORM}" == wayland ] && \
+		while [ ! -e ${XDG_RUNTIME_DIR}/wayland-0 ]; do
+			sleep .1
+		done
+
+	/usr/bin/QLauncher&
+}
+
+stop_qlauncher()
+{
+	killall QLauncher
+}
+
+case "$1" in
+	start)
+		echo -n "starting qlauncher... "
+		start_qlauncher
+		echo "done."
+		;;
+	stop)
+		echo -n "stoping qlauncher... "
+		stop_qlauncher
+		echo "done."
+		;;
+	restart|reload)
+		echo -n "stoping qlauncher... "
+		stop_qlauncher && sleep .3
+		echo "done."
+
+		echo -n "starting qlauncher... "
+		start_qlauncher
+		echo "done."
+		;;
+	*)
+		echo "Usage: $0 {start|stop|restart}"
+		exit 1
+esac
+
+exit 0

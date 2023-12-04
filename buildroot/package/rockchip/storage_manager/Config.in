@@ -1,0 +1,43 @@
+menuconfig BR2_PACKAGE_STORAGE_MANAGER
+	bool "rockchip storage_manager"
+	select BR2_PACKAGE_LIBGDBUS
+	select BR2_PACKAGE_LIBRKDB
+	help
+	  rockchip storage_manager
+
+if BR2_PACKAGE_STORAGE_MANAGER
+config BR2_PACKAGE_STORAGE_MANAGER_SANITIZER_DYNAMIC
+	bool "enable storage manager sanitizer tools with dynamic linker"
+	select BR2_PACKAGE_ADDRESS_SANITIZER
+	help
+	  Enable storage manager debug on sanitizer with dynamic linker.
+
+config BR2_PACKAGE_STORAGE_MANAGER_SANITIZER_STATIC
+	bool "enable storage manager sanitizer tools with static linker"
+	select BR2_PACKAGE_ADDRESS_SANITIZER
+	help
+	  Enable storage manager debug on sanitizer with static linker.
+
+config BR2_PACKAGE_STORAGE_MANAGER_MINILOGGER
+	bool "enable storage manager miniloger print"
+	select BR2_PACKAGE_MINILOGGER
+	default y
+	help
+	  Enable storage manager miniloger print.
+
+config BR2_PACKAGE_STORAGE_MANAGER_FILE_LOAD_DELAY
+	int "file load delay, us"
+	default 0
+
+config BR2_PACKAGE_STORAGE_MANAGER_WAIT_MEDIASTOP_WHEN_FORMAT
+	bool "enable storage manager wait mediastop cmd when format"
+	default y
+	help
+	  Enable storage manager wait mediastop cmd when format.
+
+config BR2_PACKAGE_STORAGE_MANAGER_AUTO_ADJUST_MEDIA_PATH
+	bool "enable auto adjust media path"
+	default y
+	help
+	  Enable use data as media path when default media path not exist.
+endif

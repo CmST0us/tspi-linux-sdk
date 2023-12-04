@@ -1,0 +1,9 @@
+config BR2_PACKAGE_BONDCPP
+	bool "bondcpp"
+	select BR2_PACKAGE_BOND
+	select BR2_PACKAGE_CMAKE_MODULES
+	select BR2_PACKAGE_ROSCPP
+	select BR2_PACKAGE_SMCLIB
+	depends on BR2_PACKAGE_UTIL_LINUX_LIBUUID
+	help
+		bondcpp

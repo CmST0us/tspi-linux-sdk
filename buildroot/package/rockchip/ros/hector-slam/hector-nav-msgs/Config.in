@@ -1,0 +1,7 @@
+config BR2_PACKAGE_HECTOR_NAV_MSGS
+	bool "hector nav msgs"
+	select BR2_PACKAGE_COMMON_MSGS_SET
+	select BR2_PACKAGE_NAV_MSGS
+	select BR2_PACKAGE_MESSAGE_GENERATION
+	help
+		hector nav msgs

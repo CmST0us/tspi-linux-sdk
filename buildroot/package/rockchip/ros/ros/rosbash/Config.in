@@ -1,0 +1,6 @@
+config BR2_PACKAGE_ROSBASH
+    bool "rosbash"
+    depends on BR2_PACKAGE_BASH
+    depends on BR2_PACKAGE_FINDUTILS
+    help
+        Assorted shell commands for using ros with bash

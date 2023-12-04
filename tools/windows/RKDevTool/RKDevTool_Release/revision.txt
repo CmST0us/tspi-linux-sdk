@@ -1,0 +1,67 @@
+v2.71 revision(2019/08/21):
+1.fix download image at last partition bug up
+2.optimize the progress of downloading
+
+v2.72 revision(2020/01/13):
+1.fix erase flash is timeout on nor flash up
+
+v2.73 revision(2020/05/20):
+1.support with exporting com log
+
+v2.74 revision(2020/07/23):
+1.take small slice to erase nor flash
+
+v2.75 revision(2020/09/15):
+1.fix virtual list grid msg collision
+
+v2.76 revision(2020/09/25):
+1.complete to download new idblock
+
+v2.78 revision(2020/11/02):
+1.support to create download list from parameter
+
+v2.79 revision(2020/11/11):
+1.support new loader format
+
+v2.8 revision(2021/01/04):
+1.fix chunk size beyond 4g in sparse download
+
+v2.81 revision(2021/01/28)
+1.support to list storage and switch storage
+
+v2.82 revision(2021/03/23)
+1.modify lastusedlba in gpt to assure that align with 64 sector
+
+v2.83 revision(2021/04/19)
+1.reloading the modified firmware when upgrading
+
+v2.84 revision(2021/04/30)
+1.fix lastusedlba in gpt bug
+
+v2.85 revision(2021/05/20)
+1.handle erase emmc without eraselba
+
+v2.86 revision(2021/05/26)
+1.support to write image by address
+
+v2.87 revision(2021/07/30)
+1.support to download firmware into different storage
+
+v2.88 revision(2021/08/26)
+1.support to choose device when more devices connected
+2.give prompt for error
+
+v2.89 revision(2021/09/07)
+1.check partition size and offset if larger than flash
+
+v2.9 revision(2021/09/22)
+1.test storage operation pass
+2.support custom vidpids
+
+v2.91 revision(2021/11/10)
+1.add check pagesize during download ubi image
+2.add destrory gpt during download parameter
+
+v2.92 revision(2021/11/30)
+1.support 4 images for idblock
+2.support one single idblock for nor flash

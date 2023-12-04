@@ -1,0 +1,3 @@
+config BR2_PACKAGE_PCBA_ADB_TEST
+    bool "pcba test using adb"
+

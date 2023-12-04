@@ -1,0 +1,5 @@
+config BR2_PACKAGE_VIDEO
+	bool "video"
+	depends on BR2_PACKAGE_QT5
+	help
+	  Rockchip video application based on QT

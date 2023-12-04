@@ -1,0 +1,20 @@
+if BR2_PACKAGE_RV1108
+
+# BSP packages
+source "package/rockchip/rv1108_package/framework/adk/Config.in"
+source "package/rockchip/rv1108_package/framework/camerahal/Config.in"
+source "package/rockchip/rv1108_package/framework/database/Config.in"
+source "package/rockchip/rv1108_package/framework/hal/Config.in"
+source "package/rockchip/rv1108_package/framework/libion/Config.in"
+source "package/rockchip/rv1108_package/framework/librkuvc/Config.in"
+source "package/rockchip/rv1108_package/framework/messenger/Config.in"
+source "package/rockchip/rv1108_package/framework/process_units/Config.in"
+source "package/rockchip/rv1108_package/framework/preisp/Config.in"
+source "package/rockchip/rv1108_package/framework/rkcamera/Config.in"
+source "package/rockchip/rv1108_package/framework/rkface/Config.in"
+source "package/rockchip/rv1108_package/framework/rkfb/Config.in"
+source "package/rockchip/rv1108_package/framework/rknr/Config.in"
+source "package/rockchip/rv1108_package/framework/rv1108_settings/Config.in"
+
+endif
+

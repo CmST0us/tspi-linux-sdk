@@ -1,0 +1,9 @@
+config BR2_PACKAGE_LIBUVC
+	bool "libuvc"
+	depends on BR2_PACKAGE_BOOST
+	depends on BR2_PACKAGE_HOST_CATKIN
+	depends on BR2_PACKAGE_CV_BRIDGE
+	depends on BR2_PACKAGE_JPEG
+	select BR2_PACKAGE_LIBUSB
+	help
+		libuvc

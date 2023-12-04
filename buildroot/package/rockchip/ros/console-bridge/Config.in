@@ -1,0 +1,8 @@
+config BR2_PACKAGE_CONSOLE_BRIDGE
+	bool "console_bridge for ros"
+	depends on BR2_PACKAGE_HOST_CATKIN
+    select BR2_PACKAGE_BOOST_SYSTEM
+    select BR2_PACKAGE_BOOST_THREAD
+	help
+	  console_bridge is a ROS-independent, pure CMake (i.e. non-catkin and non-rosbuild package) that provides logging calls that mirror those found in rosconsole, but for applications that are not necessarily using ROS.
+

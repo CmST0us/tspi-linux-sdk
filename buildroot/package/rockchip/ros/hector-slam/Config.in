@@ -1,0 +1,19 @@
+menuconfig BR2_PACKAGE_HECTOR_SLAM_SET
+	bool "hector slam set"
+	depends on BR2_PACKAGE_HOST_CATKIN
+
+if BR2_PACKAGE_HECTOR_SLAM_SET
+source "package/rockchip/ros/hector-slam/hector-slam/Config.in"
+source "package/rockchip/ros/hector-slam/hector-map-tools/Config.in"
+source "package/rockchip/ros/hector-slam/hector-compressed-map-transport/Config.in"
+source "package/rockchip/ros/hector-slam/hector-nav-msgs/Config.in"
+source "package/rockchip/ros/hector-slam/hector-geotiff/Config.in"
+source "package/rockchip/ros/hector-slam/hector-geotiff-plugins/Config.in"
+source "package/rockchip/ros/hector-slam/hector-imu-attitude-to-tf/Config.in"
+source "package/rockchip/ros/hector-slam/hector-imu-tools/Config.in"
+source "package/rockchip/ros/hector-slam/hector-mapping/Config.in"
+source "package/rockchip/ros/hector-slam/hector-map-server/Config.in"
+source "package/rockchip/ros/hector-slam/hector-marker-drawing/Config.in"
+source "package/rockchip/ros/hector-slam/hector-slam-launch/Config.in"
+source "package/rockchip/ros/hector-slam/hector-trajectory-server/Config.in"
+endif

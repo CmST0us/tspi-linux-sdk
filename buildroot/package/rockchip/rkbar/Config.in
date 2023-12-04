@@ -1,0 +1,5 @@
+config BR2_PACKAGE_RKBAR
+	bool "QR code scan library optimized by rockchip"
+	default n
+	help
+		rkbar library is used to scan QR code

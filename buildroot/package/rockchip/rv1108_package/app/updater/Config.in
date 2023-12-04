@@ -1,0 +1,21 @@
+if BR2_PACKAGE_RV1108
+
+# BSP packages
+config BR2_PACKAGE_UPDATER
+	bool "rv1108 package updater"
+
+if BR2_PACKAGE_UPDATER
+menu "rv1108 updater options"
+
+    config BR2_PACKAGE_UPDATER_FOR_EMMC
+        bool "updater support fot emmc"
+        default y
+
+	config BR2_PACKAGE_UPDATER_FOR_NOR
+        bool "updater support fot nor"
+        default n
+endmenu
+endif
+
+endif
+

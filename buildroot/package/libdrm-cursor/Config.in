@@ -1,0 +1,5 @@
+config BR2_PACKAGE_LIBDRM_CURSOR
+	bool "A hook of drm cursor APIs to fake cursor plane."
+	select BR2_PACKAGE_LIBDRM
+	help
+    A hook of drm cursor APIs to fake cursor plane.

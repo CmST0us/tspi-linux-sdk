@@ -1,0 +1,9 @@
+config BR2_PACKAGE_TEST_NODELET_TOPIC_TOOLS
+	bool "test nodelet topic tools"
+	select BR2_PACKAGE_MESSAGE_FILTERS
+	depends on BR2_PACKAGE_NODELET
+	select BR2_PACKAGE_NODELET_TOPIC_TOOLS
+	select BR2_PACKAGE_ROSCPP
+	select BR2_PACKAGE_ROSTEST
+	help
+		test nodelet topic tools

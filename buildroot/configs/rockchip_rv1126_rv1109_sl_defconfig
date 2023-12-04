@@ -1,0 +1,15 @@
+#include "base.config"
+#include "base_extra.config"
+#include "debug.config"
+#include "video_mpp.config"
+#include "rv1126_rv1109_arm.config"
+#include "camera.config"
+BR2_ROOTFS_OVERLAY="board/rockchip/rv1126_rv1109/fs-overlay-sl/"
+BR2_PACKAGE_CAMERA_ENGINE_RKAIQ_IQFILE="ov02k10_ORCF-0249-00-PD-V1_xuye.xml"
+BR2_PACKAGE_ROCKCHIP_UTILS=y
+BR2_PACKAGE_RKNPU_USE_MINI_DRIVER=y
+BR2_PACKAGE_RK_OEM=y
+BR2_PACKAGE_RK_OEM_RESOURCE_DIR="$(TOPDIR)/../device/rockchip/oem/oem_empty"
+BR2_PACKAGE_RKSL=y
+BR2_PACKAGE_GDB=y
+BR2_PACKAGE_GDB_DEBUGGER=y

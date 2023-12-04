@@ -1,0 +1,46 @@
+
+
+test:
+
+1. run app1
+# app_test1&
+ hello world
+
+2. run app2
+# app_test2&
+ hello world
+
+3. trigger suspend, app_test1 & app_test2 suspend before system suspended
+# pm-suspend
+
+[   47.070981] EXT4-fs (mmcblk0p7): re-mounted. Opts: data=ordered,commit=0
+Message has noargs
+app_test1 suspending
+app_test1 suspend succeed
+Message has noargs
+app_test2 suspending
+app_test2 suspend succeed
+[   47.617531] PM: suspend entry 1970-01-01 00:00:47.609591605 UTC
+[   47.617606] PM: Syncing filesystems ... done.
+
+
+4. press the power key, trigger resume, app_test1 & app_test2 resume after system resume
+
+[   47.721493] PM: resume of devices complete after 8.996 msecs
+[   47.722073] [BT_RFKILL]: ** disable irq
+[   47.723942] Restarting tasks ... done.
+[   47.724748] PM: suspend exit 1970-01-01 00:00:58.589742402 UTC
+resume irq: 38
+app_test1 resumeing 
+[   47.870414] dwc2 ff400000.usb: new device is high-speed
+app_test1 resume succeed
+[   47.925415] dwc2 ff400000.usb: new device is high-speed
+resume irq: 38
+app_test2 resumeing 
+[   47.963233] dwc2 ff400000.usb: new address 8
+[   47.982570] android_work: sent uevent USB_STATE=CONNECTED
+[   48.002742] configfs-gadget gadget: high-speed config #1: b
+app_test2 resume succeed
+
+
+

@@ -1,0 +1,4 @@
+config BR2_PACKAGE_POLKIT_QT_1
+	bool "KDE polkit-qt-1"
+	help
+	Polkit-qt is a library that lets developers use the PolicyKit API through a nice Qt-styled API

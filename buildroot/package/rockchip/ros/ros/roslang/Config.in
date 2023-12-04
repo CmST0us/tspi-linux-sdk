@@ -1,0 +1,5 @@
+config BR2_PACKAGE_ROSLANG
+    bool "roslang"
+    help
+        roslang is a common package that all ROS client
+        libraies depends on

@@ -1,0 +1,20 @@
+#!/bin/sh
+# Log some extra information at the beginning of a suspend/resume cycle.
+# TODO: Make this hook only run when PM_DEBUG is true?
+
+. "${PM_FUNCTIONS}"
+
+case "$1" in
+	hibernate|suspend)
+		echo "stop daemon n4"
+		start-stop-daemon --stop --name n4
+		;;
+	thaw|resume)
+		echo "start daemon n4"
+		sleep 0.5
+		start-stop-daemon --start -b --exec /usr/bin/n4
+		;;
+	*) exit $NA
+		;;
+esac
+

@@ -1,0 +1,12 @@
+config BR2_PACKAGE_HECTOR_IMU_ATTITUDE_TO_TF
+	bool "hector imu attitude to tf"
+	depends on BR2_PACKAGE_ROSPACK
+	select BR2_PACKAGE_ROS_COMM_SET
+	select BR2_PACKAGE_ROSCPP
+	select BR2_PACKAGE_GEOMETRY_SET
+	select BR2_PACKAGE_TF
+	select BR2_PACKAGE_COMMON_MSGS_SET
+	select BR2_PACKAGE_SENSOR_MSGS
+	
+	help
+		hector imu attitude to tf

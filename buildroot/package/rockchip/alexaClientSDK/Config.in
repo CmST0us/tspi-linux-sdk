@@ -1,0 +1,5 @@
+config BR2_PACKAGE_ALEXACLIENTSDK
+	bool "alexa client sdk"
+config BR2_PACKAGE_ALEXACLIENTSDK_INTERNAL
+	bool "alexa client sdk internal"
+

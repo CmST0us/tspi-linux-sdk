@@ -1,0 +1,14 @@
+#start
+[Unit]
+Description=Setup rockchip platform environment
+#Before=lightdm.service
+After=NetworkManager.service
+
+[Service]
+Type=forking
+ExecStart=/etc/init.d/rkwifibt.sh
+
+[Install]
+WantedBy=multi-user.target
+#end
+

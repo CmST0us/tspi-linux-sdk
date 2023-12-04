@@ -1,0 +1,74 @@
+// Copyright 2015 The Android Open Source Project
+//
+//   Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto2";
+option optimize_for = LITE_RUNTIME;
+
+message NNData {
+  required int32 model_type = 1;
+  required string model_name = 2;
+  required int32 nn_width = 3;
+  required int32 nn_height = 4;
+  repeated FaceDetect face_detect = 5;
+  repeated LandMark landmark = 6;
+  repeated MobileSSD mobile_ssd = 7;
+}
+
+message FaceDetect{
+  required int32 left = 1;
+  required int32 top = 2;
+  required int32 right = 3;
+  required int32 bottom = 4;
+  optional int32 age = 5;
+  optional int32 name = 6;
+  optional string gender = 7;
+  optional float score = 8;
+}
+
+message MobileSSD{
+  required int32 class = 1;
+  required int32 left = 2;
+  required int32 top = 3;
+  required int32 right = 4;
+  required int32 bottom = 5;
+  optional float score = 6;
+}
+
+message LandMark{
+  repeated Points points= 1;
+  optional int32 left = 2;
+  optional int32 top = 3;
+  optional int32 right = 4;
+  optional int32 bottom = 5;
+  optional float score = 6;
+}
+
+message Points{
+  required int32 x = 1;
+  required int32 y = 2;
+}
+
+message RTImage {
+    repeated bytes data   = 1;
+    required int32 width  = 2;
+    required int32 height = 3;
+    required int32 format = 4;
+    required int32 angle  = 5;
+    required int32 mirror = 6;
+}
+
+
+
+
+

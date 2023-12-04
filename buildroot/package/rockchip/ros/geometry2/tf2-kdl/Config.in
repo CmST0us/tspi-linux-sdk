@@ -1,0 +1,6 @@
+config BR2_PACKAGE_TF2_KDL
+    bool "tf2-kdl"
+    depends on BR2_PACKAGE_EIGEN
+    select BR2_PACKAGE_TF2_ROS
+    help
+        KDL binding for tf2

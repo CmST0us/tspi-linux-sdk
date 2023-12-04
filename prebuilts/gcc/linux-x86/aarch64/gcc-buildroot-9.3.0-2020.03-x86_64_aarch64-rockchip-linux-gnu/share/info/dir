@@ -1,0 +1,171 @@
+This is the file .../info/dir, which contains the
+topmost node of the Info hierarchy, called (dir)Top.
+The first time you invoke Info you start off looking at this node.
+
+File: dir,	Node: Top	This is the top of the INFO tree
+
+  This (the Directory node) gives a menu of major topics.
+  Typing "q" exits, "?" lists all Info commands, "d" returns here,
+  "h" gives a primer for first-timers,
+  "mEmacs<Return>" visits the Emacs manual, etc.
+
+  In Emacs, you can click mouse button 2 on a menu item or cross reference
+  to select it.
+
+* Menu:
+
+Data Compression
+* Lzip: (lzip).                 LZMA lossless data compressor
+
+Development
+* libffi: (libffi).             Portable foreign-function interface library.
+
+GNU Gettext Utilities
+* autopoint: (gettext)autopoint Invocation.
+                                Copy gettext infrastructure.
+* envsubst: (gettext)envsubst Invocation.
+                                Expand environment variables.
+* gettextize: (gettext)gettextize Invocation.
+                                Prepare a package for gettext.
+* gettext: (gettext).           GNU gettext utilities.
+* ISO3166: (gettext)Country Codes.
+                                ISO 3166 country codes.
+* ISO639: (gettext)Language Codes.
+                                ISO 639 language codes.
+* msgattrib: (gettext)msgattrib Invocation.
+                                Select part of a PO file.
+* msgcat: (gettext)msgcat Invocation.
+                                Combine several PO files.
+* msgcmp: (gettext)msgcmp Invocation.
+                                Compare a PO file and template.
+* msgcomm: (gettext)msgcomm Invocation.
+                                Match two PO files.
+* msgconv: (gettext)msgconv Invocation.
+                                Convert PO file to encoding.
+* msgen: (gettext)msgen Invocation.
+                                Create an English PO file.
+* msgexec: (gettext)msgexec Invocation.
+                                Process a PO file.
+* msgfilter: (gettext)msgfilter Invocation.
+                                Pipe a PO file through a filter.
+* msgfmt: (gettext)msgfmt Invocation.
+                                Make MO files out of PO files.
+* msggrep: (gettext)msggrep Invocation.
+                                Select part of a PO file.
+* msginit: (gettext)msginit Invocation.
+                                Create a fresh PO file.
+* msgmerge: (gettext)msgmerge Invocation.
+                                Update a PO file from template.
+* msgunfmt: (gettext)msgunfmt Invocation.
+                                Uncompile MO file into PO file.
+* msguniq: (gettext)msguniq Invocation.
+                                Unify duplicates for PO file.
+* ngettext: (gettext)ngettext Invocation.
+                                Translate a message with plural.
+* xgettext: (gettext)xgettext Invocation.
+                                Extract strings into a PO file.
+
+GNU libraries
+* gmp: (gmp).                   GNU Multiple Precision Arithmetic Library.
+
+GNU Libraries
+* libgomp: (libgomp).           GNU Offloading and Multi Processing Runtime 
+                                  Library.
+* libitm: (libitm).             GNU Transactional Memory Library
+
+GNU organization
+* Standards: (standards).       GNU coding standards.
+
+GNU Packages
+* mpc: (mpc)Multiple Precision Complex Library.
+
+Individual utilities
+* aclocal-invocation: (automake)aclocal Invocation.
+                                                Generating aclocal.m4.
+* addr2line: (binutils)addr2line.               Convert addresses to file and 
+                                                  line.
+* ar: (binutils)ar.                             Create, modify, and extract 
+                                                  from archives.
+* autoconf-invocation: (autoconf)autoconf Invocation.
+                                                How to create configuration 
+                                                  scripts
+* autoheader: (autoconf)autoheader Invocation.  How to create configuration 
+                                                  templates
+* autom4te: (autoconf)autom4te Invocation.      The Autoconf executables 
+                                                  backbone
+* automake-invocation: (automake)automake Invocation.
+                                                Generating Makefile.in.
+* autoreconf: (autoconf)autoreconf Invocation.  Remaking multiple `configure' 
+                                                  scripts
+* autoscan: (autoconf)autoscan Invocation.      Semi-automatic `configure.ac' 
+                                                  writing
+* autoupdate: (autoconf)autoupdate Invocation.  Automatic update of 
+                                                  `configure.ac'
+* awk: (gawk)Invoking gawk.                     Text scanning and processing.
+* c++filt: (binutils)c++filt.                   Filter to demangle encoded C++ 
+                                                  symbols.
+* config.status: (autoconf)config.status Invocation.
+                                                Recreating configurations.
+* configure: (autoconf)configure Invocation.    Configuring a package.
+* cxxfilt: (binutils)c++filt.                   MS-DOS name for c++filt.
+* dlltool: (binutils)dlltool.                   Create files needed to build 
+                                                  and use DLLs.
+* elfedit: (binutils)elfedit.                   Update the ELF header of ELF 
+                                                  files.
+* ifnames: (autoconf)ifnames Invocation.        Listing conditionals in source.
+* nlmconv: (binutils)nlmconv.                   Converts object code into an 
+                                                  NLM.
+* nm: (binutils)nm.                             List symbols from object files.
+* objcopy: (binutils)objcopy.                   Copy and translate object 
+                                                  files.
+* objdump: (binutils)objdump.                   Display information from 
+                                                  object files.
+* ranlib: (binutils)ranlib.                     Generate index to archive 
+                                                  contents.
+* readelf: (binutils)readelf.                   Display the contents of ELF 
+                                                  format files.
+* size: (binutils)size.                         List section sizes and total 
+                                                  size.
+* strings: (binutils)strings.                   List printable strings from 
+                                                  files.
+* strip: (binutils)strip.                       Discard symbols.
+* testsuite: (autoconf)testsuite Invocation.    Running an Autotest test suite.
+* windmc: (binutils)windmc.                     Generator for Windows message 
+                                                  resources.
+* windres: (binutils)windres.                   Manipulate Windows resources.
+
+Network applications
+* Gawkinet: (gawkinet).         TCP/IP Internetworking With 'gawk'.
+
+Software development
+* Annotate: (annotate).         The obsolete annotation interface.
+* As: (as).                     The GNU assembler.
+* Autoconf: (autoconf).         Create source code configuration scripts.
+* Automake: (automake).         Making GNU standards-compliant Makefiles.
+* Bfd: (bfd).                   The Binary File Descriptor library.
+* Binutils: (binutils).         The GNU binary utilities.
+* Cpp: (cpp).                   The GNU C preprocessor.
+* Cpplib: (cppinternals).       Cpplib internals.
+* Gas: (as).                    The GNU assembler.
+* Gdb: (gdb).                   The GNU debugger.
+* Stabs: (stabs).               The "stabs" debugging information format.
+* bison: (bison).               GNU parser generator (Yacc replacement).
+* g++: (gcc).                   The GNU C++ compiler.
+* gcc: (gcc).                   The GNU Compiler Collection.
+* gccinstall: (gccinstall).     Installing the GNU Compiler Collection.
+* gccint: (gccint).             Internals of the GNU Compiler Collection.
+* gcov: (gcc) Gcov.             'gcov'--a test coverage program.
+* gcov-dump: (gcc) Gcov-dump.   'gcov-dump'--an offline gcda and gcno profile 
+                                  dump tool.
+* gcov-tool: (gcc) Gcov-tool.   'gcov-tool'--an offline gcda profile 
+                                  processing program.
+* gdbserver: (gdb) Server.      The GNU debugging server.
+* gprof: (gprof).               Profiling your program's execution
+
+Software libraries
+* mpfr: (mpfr).                 Multiple Precision Floating-Point Reliable 
+                                  Library.
+
+Text creation and manipulation
+* Gawk: (gawk).                 A text scanning and processing language.
+* M4: (m4).                     A powerful macro processor.

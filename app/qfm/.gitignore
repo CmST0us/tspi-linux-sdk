@@ -1,0 +1,4 @@
+.qmake.stash
+qfm.pro.user
+Makefile
+pkg-config_wrapper.sh

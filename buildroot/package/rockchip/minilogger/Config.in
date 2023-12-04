@@ -1,0 +1,6 @@
+config BR2_PACKAGE_MINILOGGER
+	bool "minilogger"
+	select BR2_PACKAGE_LIBGLIB2
+	select BR2_PACKAGE_LIBUNWIND
+	help
+	  A small logger with backtrace in signal handler

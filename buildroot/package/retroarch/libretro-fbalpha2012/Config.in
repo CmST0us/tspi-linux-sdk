@@ -1,0 +1,20 @@
+config BR2_PACKAGE_LIBRETRO_FBALPHA2012
+        bool "libretro-fbalpha2012"
+	depends on BR2_PACKAGE_RETROARCH
+	depends on BR2_INSTALL_LIBSTDCPP
+        help
+          libretro fbalpha2012 core.
+
+	  http://www.libretro.com
+
+comment "LIBRETRO_FBALPHA2012 needs a toolchain w/ C++"
+	depends on !BR2_INSTALL_LIBSTDCPP
+
+if BR2_PACKAGE_LIBRETRO_FBALPHA2012
+
+config BR2_PACKAGE_LIBRETRO_FBALPHA2012_PGM_NEOGEO_ONLY
+	bool "libretro-fbalpha2012 pgm and neogeo only"
+	help
+	  Only enable pgm and negeo.
+
+endif

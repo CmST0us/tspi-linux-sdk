@@ -1,0 +1,5 @@
+config BR2_PACKAGE_MUSIC
+	bool "music"
+	depends on BR2_PACKAGE_QT5
+	help
+	  Rockchip music application based on QT

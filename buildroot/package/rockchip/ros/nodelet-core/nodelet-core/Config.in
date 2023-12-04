@@ -1,0 +1,4 @@
+config BR2_PACKAGE_NODELET_CORE
+	bool "nodelet core"
+	help
+		nodelet core

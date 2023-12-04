@@ -1,0 +1,9 @@
+config BR2_PACKAGE_MESSAGE_RUNTIME
+	bool "message runtime for ROS"
+	depends on BR2_PACKAGE_HOST_CATKIN
+    depends on BR2_PACKAGE_ROSCPP_CORE_SET
+	select BR2_PACKAGE_GENCPP
+	select BR2_PACKAGE_CPP_COMMON
+	select BR2_PACKAGE_ROSCPP_SERIALIZATION
+	help
+		Package modeling the run-time dependencies for language bindings of messages.

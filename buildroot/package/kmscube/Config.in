@@ -1,0 +1,7 @@
+config BR2_PACKAGE_KMSCUBE
+	bool "kmscube"
+	depends on BR2_PACKAGE_HAS_LIBGBM
+	help
+	  kmscube is an application to test kms/drm drivers.
+
+	  https://cgit.freedesktop.org/mesa/kmscube/

@@ -1,0 +1,11 @@
+config BR2_PACKAGE_EIGEN_CONVERSIONS
+    bool "eigen conversions"
+    depends on BR2_PACKAGE_OROCOS_KDL
+    select BR2_PACKAGE_CMAKE_MODULES
+    select BR2_PACKAGE_COMMON_MSGS_SET
+    select BR2_PACKAGE_GEOMETRY_MSGS
+    select BR2_PACKAGE_STD_MSGS
+
+    help
+        Conversion functions between Eigen and KDL, and Eigen and
+        geometry_msgs

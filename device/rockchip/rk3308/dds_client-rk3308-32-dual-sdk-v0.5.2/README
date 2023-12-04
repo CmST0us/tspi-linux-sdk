@@ -1,0 +1,11 @@
+## 基本信息: 
+
+	平台: rk3308-32
+	录音: 2chs_1ref
+	内核版本: duilite_v0.1.98(wtkv1.9.27.5, fesplv1.1.0.5, ttsv2.02, NRv1.0.1)
+	dds版本: v0.2.17
+	AEC资源: AEC_ch3-2-ch2_1ref_common_20180806_v0.9.4.bin 03b08816196b5456bbc701e10c8580f4
+	BF资源: UDA_asr_chan2-2-mic2_30mm_v1.1.0.6_20180828.bin 774867db1240d863fbe959313ce0f572
+	WK资源: wakeup_aifar_comm_20180104.bin 0507e6588c7fc6d8ca4feeb12e6cec68
+	VAD资源: vad_aihome_v0.6.bin 0227b2b1b39a66212f0e8140e77f7069
+	config: ./demo/config_rk3308-32_fespl2_meiling.json

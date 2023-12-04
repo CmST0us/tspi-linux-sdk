@@ -1,0 +1,9 @@
+BEGIN:VCARD
+VERSION:3.0
+N:Smith;Kelvin
+FN:Kelvin Smith
+TEL;WORK;VOICE:(858) 592-1223
+ROLE:Programmer
+NICKNAME:Kel
+CHARSET:abby
+END:VCARD

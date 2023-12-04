@@ -1,0 +1,9 @@
+config BR2_PACKAGE_PYTHON_NUMBA
+	bool "python-numba"
+	select BR2_PACKAGE_PYTHON_LLVMLITE
+	select BR2_PACKAGE_PYTHON_NUMPA
+	help
+	  Numba is an open source JIT compiler that translates a subset
+	  of Python and NumPy code into fast machine code.
+
+	  http://numba.pydata.org/

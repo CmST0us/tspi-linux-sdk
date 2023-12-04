@@ -1,0 +1,8 @@
+config BR2_PACKAGE_ROSOUT
+    bool "rosout"
+    select BR2_PACKAGE_ROSCPP
+    select BR2_PACKAGE_ROS_COMM_MSGS
+    select BR2_PACKAGE_ROSGRAPH_MSGS
+    help
+        System-wide logging mechanism for message sent to
+        the rosout topic

@@ -1,0 +1,10 @@
+config BR2_PACKAGE_UNIXBENCH
+	bool "UnixBench"
+	select BR2_PACKAGE_PERL
+	select BR2_PACKAGE_MAKE
+	help
+
+	UnixBench is the original BYTE UNIX benchmark suite, updated and
+	revised by many people over the years.
+
+	https://github.com/kdlucas/byte-unixbench

@@ -1,0 +1,9 @@
+config BR2_PACKAGE_VKMARK
+	bool "vkmark"
+	depends on BR2_PACKAGE_ASSIMP
+	depends on BR2_PACKAGE_GLM
+	depends on BR2_PACKAGE_VULKAN_LOADER
+	help
+	  An extensible Vulkan benchmarking suite.
+
+	  https://github.com/vkmark/vkmark

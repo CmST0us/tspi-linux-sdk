@@ -1,0 +1,5 @@
+config BR2_PACKAGE_TF2_TOOLS
+    bool "tf2-tools"
+    select BR2_PACKAGE_TF2_ROS
+    help
+        tf2-tools

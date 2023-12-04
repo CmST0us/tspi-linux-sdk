@@ -1,0 +1,14 @@
+#include "base.config"
+#include "base_extra.config"
+#include "debug.config"
+#include "debug2.config"
+#include "rk3588_arm64.config"
+#include "test.config"
+#include "video_mpp.config"
+#include "gpu_dummy.config"
+BR2_PACKAGE_RKNPU=y
+BR2_PACKAGE_RKNPU_USE_RKNN_API=y
+BR2_PACKAGE_ROCKCHIP=y
+BR2_PACKAGE_E2FSPROGS=y
+BR2_PACKAGE_E2FSPROGS_RESIZE2FS=y
+BR2_PACKAGE_BASH=y

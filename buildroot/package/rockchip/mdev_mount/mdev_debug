@@ -1,0 +1,4 @@
+#!/bin/sh
+#for mdev hotplug debug, can check env value
+
+env > /tmp/mdev_env

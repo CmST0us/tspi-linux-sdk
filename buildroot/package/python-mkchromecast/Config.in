@@ -1,0 +1,12 @@
+config BR2_PACKAGE_PYTHON_MKCHROMECAST
+	bool "python-mkchromecast"
+	depends on BR2_PACKAGE_PYTHON3
+	select BR2_PACKAGE_PYTHON_NETIFACES
+	select BR2_PACKAGE_PYTHON_FLASK
+	select BR2_PACKAGE_PYTHON_PYQT5
+	select BR2_PACKAGE_PYTHON_PSUTIL
+	select BR2_PACKAGE_PYTHON_PYCHROMECAST
+	help
+	  Cast audio/video to your Google Cast devices.
+
+	  https://github.com/muammar/mkchromecast

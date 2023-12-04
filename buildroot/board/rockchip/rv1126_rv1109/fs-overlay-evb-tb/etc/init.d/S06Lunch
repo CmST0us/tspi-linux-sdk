@@ -1,0 +1,33 @@
+#!/bin/sh
+#
+
+lunch_start()
+{
+	echo "Now we are ready to start your first application" > /dev/kmsg
+	export HDR_MODE=0
+	ispserver &
+	export mediaserver_log_level=2
+	mediaserver -a -d -c /usr/share/mediaserver/evb_tb.conf > /dev/kmsg 2>&1 &
+}
+
+lunch_stop()
+{
+	killall mediaserver
+	killall ispserver
+	echo "All applications have been stopped"
+}
+
+case "$1" in
+	start)
+		lunch_start
+		;;
+	stop)
+		lunch_stop
+		;;
+	*)
+		echo "Usage: $0 {start|stop}"
+		exit 1
+		;;
+esac
+
+exit 0

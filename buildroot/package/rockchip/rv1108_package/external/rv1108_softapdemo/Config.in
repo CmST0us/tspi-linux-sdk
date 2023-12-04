@@ -1,0 +1,9 @@
+if BR2_PACKAGE_RV1108
+
+# BSP packages
+config BR2_PACKAGE_RV1108_SOFTAPDEMO
+	bool "rv1108 package softapdemo"
+	help
+
+endif
+

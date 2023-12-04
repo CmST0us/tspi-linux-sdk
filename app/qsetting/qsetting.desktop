@@ -1,0 +1,5 @@
+[Desktop Entry]
+Name=qsetting
+Exec=/usr/bin/qsetting
+Icon=/usr/share/icon/icon_qsetting.png
+Type=Application

@@ -1,0 +1,5 @@
+config BR2_PACKAGE_CATKIN
+    bool "catkin"
+    depends on BR2_PACKAGE_HOST_CATKIN
+    help
+        catkin

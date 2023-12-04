@@ -1,0 +1,5 @@
+#!/home/yhx/RK356X/SDK/buildroot/output/rockchip_toolchain/host/bin/python2.7
+
+import pydoc
+if __name__ == '__main__':
+    pydoc.cli()

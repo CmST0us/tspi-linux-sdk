@@ -1,0 +1,9 @@
+config BR2_PACKAGE_ROSCPP_CORE
+	bool "roscpp_core for ROS"
+	depends on BR2_PACKAGE_HOST_CATKIN
+	select BR2_PACKAGE_CPP_COMMON
+	select BR2_PACKAGE_ROSTIME
+	select BR2_PACKAGE_ROSCPP_TRAITS
+	select BR2_PACKAGE_ROSCPP_SERIALIZATION
+	help
+	  roscpp_core is an underlying library for support roscpp message data types. It is a lightweight/minimal library that can easily be used in non-ROS-based projects

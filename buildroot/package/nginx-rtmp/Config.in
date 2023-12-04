@@ -1,0 +1,7 @@
+config BR2_PACKAGE_NGINX_RTMP
+	bool "nginx-rtmp"
+	depends on BR2_PACKAGE_NGINX_HTTP
+	help
+	  nginx rtmp module
+
+	  https://github.com/arut/nginx-rtmp-module

@@ -1,0 +1,12 @@
+# Package Information for pkg-config
+
+prefix=/home/yhx/RK356X/SDK/buildroot/output/rockchip_toolchain/host
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: libpcrecpp
+Description: PCRECPP - C++ wrapper for PCRE
+Version: 8.41
+Libs: -L${libdir} -lpcre -lpcrecpp
+Cflags: -I${includedir} 

@@ -1,0 +1,7 @@
+config BR2_PACKAGE_TF2_PY
+    bool "tf2-py"
+    select BR2_PACKAGE_ROS_COMM_SET
+    select BR2_PACKAGE_ROSPY
+    select BR2_PACKAGE_TF2
+    help
+        The tf2_py package

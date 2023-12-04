@@ -1,0 +1,4 @@
+config BR2_PACKAGE_RK_HW_VAD
+	bool "rockchip hardware vad"
+	help
+	  rockchip hardware vad.

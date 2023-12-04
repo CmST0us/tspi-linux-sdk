@@ -1,0 +1,8 @@
+if BR2_PACKAGE_RV1108
+
+# BSP packages
+config BR2_PACKAGE_RKNR
+	bool "RV1108 package 3DNR algorithm"
+
+endif
+

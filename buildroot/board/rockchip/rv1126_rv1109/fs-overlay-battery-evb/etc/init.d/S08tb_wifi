@@ -1,0 +1,30 @@
+#!/bin/sh
+#
+
+case "$1" in
+	start)
+		{
+			insmod /vendor/lib/modules/rk_wifi_config.ko
+			insmod /vendor/lib/modules/rfkill.ko
+			insmod /vendor/lib/modules/rfkill-rk.ko
+			insmod /vendor/lib/modules/cfg80211.ko
+			insmod /vendor/lib/modules/mac80211.ko
+			if [ -f "/vendor/lib/modules/bcmdhd_indep_power.ko" ]; then
+				insmod /vendor/lib/modules/bcmdhd_indep_power.ko
+			elif [ -f "/vendor/lib/modules/cywdhd.ko" ]; then
+				insmod /vendor/lib/modules/cywdhd.ko
+			else
+				echo "cywdhd.ko and bcmdhd_indep_power.ko are not found, the wifi driver failed to load"
+			fi
+		}&
+		;;
+	stop)
+		dhd_priv setsuspendmode 1
+		;;
+	*)
+		echo "Usage: $0 {start|stop}"
+		exit 1
+		;;
+esac
+
+exit 0

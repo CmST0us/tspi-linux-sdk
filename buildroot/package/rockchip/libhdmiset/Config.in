@@ -1,0 +1,5 @@
+menuconfig BR2_PACKAGE_LIBHDMISET
+	bool "libhdmiset for rockchip"
+
+
+

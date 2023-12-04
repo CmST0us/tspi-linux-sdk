@@ -1,0 +1,27 @@
+#include "rk3326_arm64.config"
+#include "audio_gst.config"
+#include "base.config"
+#include "base_extra.config"
+#include "gpu.config"
+#include "weston.config"
+#include "video_mpp.config"
+#include "video_gst.config"
+#include "audio.config"
+#include "camera.config"
+#include "camera_gst.config"
+#include "test.config"
+#include "debug.config"
+#include "benchmark.config"
+#include "wifi.config"
+#include "network.config"
+#include "bt.config"
+BR2_TARGET_GENERIC_HOSTNAME="px30_64"
+BR2_TARGET_GENERIC_ISSUE="Welcome to PX30 Buildroot"
+BR2_ROOTFS_OVERLAY="board/rockchip/px30/fs-overlay-64/"
+BR2_PACKAGE_RKWIFIBT_AP6212A1=y
+BR2_PACKAGE_RKWIFIBT_BTUART="ttyS1"
+BR2_PACKAGE_ROCKCHIP_MALI_WITHOUT_CL=y
+BR2_PACKAGE_DOSFSTOOLS_FATLABEL=y
+BR2_PACKAGE_DOSFSTOOLS_FSCK_FAT=y
+BR2_PACKAGE_FATRESIZE=y
+BR2_PACKAGE_PARTED=y

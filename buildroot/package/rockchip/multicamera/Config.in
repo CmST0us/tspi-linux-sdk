@@ -1,0 +1,5 @@
+config BR2_PACKAGE_MULTICAMERA
+	bool "multicamera"
+	depends on BR2_PACKAGE_QT5
+	help
+	  Rockchip camera application based on QT

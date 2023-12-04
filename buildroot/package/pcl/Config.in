@@ -1,0 +1,13 @@
+config BR2_PACKAGE_PCL
+	bool "PCL"
+	select BR2_PACKAGE_BOOST
+	select BR2_PACKAGE_BOOST_DATE_TIME
+	select BR2_PACKAGE_BOOST_FILESYSTEM
+	select BR2_PACKAGE_BOOST_IOSTREAMS
+	select BR2_PACKAGE_BOOST_SYSTEM
+	select BR2_PACKAGE_EIGEN
+	select BR2_PACKAGE_FLANN
+	help
+	  Point Cloud Library (PCL).
+
+	  https://github.com/PointCloudLibrary/pcl

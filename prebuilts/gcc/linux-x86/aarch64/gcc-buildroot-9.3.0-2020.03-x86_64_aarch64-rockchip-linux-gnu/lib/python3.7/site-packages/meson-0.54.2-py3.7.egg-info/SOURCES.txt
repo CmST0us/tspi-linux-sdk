@@ -1,0 +1,3005 @@
+COPYING
+MANIFEST.in
+README.md
+__main__.py
+ghwt.py
+meson.py
+pyproject.toml
+run_cross_test.py
+run_meson_command_tests.py
+run_project_tests.py
+run_tests.py
+run_unittests.py
+setup.cfg
+setup.py
+cross/armcc.txt
+cross/armclang-linux.txt
+cross/armclang.txt
+cross/c2000.txt
+cross/ccrx.txt
+cross/iphone.txt
+cross/linux-mingw-w64-32bit.txt
+cross/linux-mingw-w64-64bit.txt
+cross/ownstdlib.txt
+cross/tvos.txt
+cross/ubuntu-armhf.txt
+cross/ubuntu-faketarget.txt
+cross/wasm.txt
+cross/xc16.txt
+data/com.mesonbuild.install.policy
+data/macros.meson
+data/shell-completions/bash/meson
+data/shell-completions/zsh/_meson
+data/syntax-highlighting/emacs/meson.el
+data/syntax-highlighting/vim/README
+data/syntax-highlighting/vim/ftdetect/meson.vim
+data/syntax-highlighting/vim/ftplugin/meson.vim
+data/syntax-highlighting/vim/indent/meson.vim
+data/syntax-highlighting/vim/syntax/meson.vim
+graphics/meson_logo.svg
+graphics/meson_logo_big.png
+graphics/wrap_logo.svg
+man/meson.1
+manual tests/1 wrap/main.c
+manual tests/1 wrap/meson.build
+manual tests/1 wrap/subprojects/sqlite.wrap
+manual tests/10 svn wrap/meson.build
+manual tests/10 svn wrap/prog.c
+manual tests/10 svn wrap/subprojects/samplesubproject.wrap
+manual tests/11 wrap imposter/meson.build
+manual tests/11 wrap imposter/subprojects/zlib.wrap
+manual tests/12 wrap mirror/meson.build
+manual tests/12 wrap mirror/subprojects/zlib.wrap
+manual tests/2 multiwrap/meson.build
+manual tests/2 multiwrap/prog.c
+manual tests/2 multiwrap/subprojects/libpng.wrap
+manual tests/2 multiwrap/subprojects/lua.wrap
+manual tests/2 multiwrap/subprojects/zlib.wrap
+manual tests/3 git wrap/meson.build
+manual tests/3 git wrap/prog.c
+manual tests/3 git wrap/subprojects/samplesubproject.wrap
+manual tests/4 standalone binaries/Info.plist
+manual tests/4 standalone binaries/build_linux_package.sh
+manual tests/4 standalone binaries/build_osx_package.sh
+manual tests/4 standalone binaries/build_windows_package.py
+manual tests/4 standalone binaries/linux_bundler.sh
+manual tests/4 standalone binaries/meson.build
+manual tests/4 standalone binaries/myapp.cpp
+manual tests/4 standalone binaries/myapp.icns
+manual tests/4 standalone binaries/myapp.iss
+manual tests/4 standalone binaries/myapp.sh
+manual tests/4 standalone binaries/osx_bundler.sh
+manual tests/4 standalone binaries/readme.txt
+manual tests/4 standalone binaries/template.dmg.gz
+manual tests/5 rpm/lib.c
+manual tests/5 rpm/lib.h
+manual tests/5 rpm/main.c
+manual tests/5 rpm/meson.build
+manual tests/6 hg wrap/meson.build
+manual tests/6 hg wrap/prog.c
+manual tests/6 hg wrap/subprojects/samplesubproject.wrap
+manual tests/7 vala composite widgets/meson.build
+manual tests/7 vala composite widgets/my-resources.xml
+manual tests/7 vala composite widgets/mywidget.ui
+manual tests/7 vala composite widgets/mywidget.vala
+manual tests/8 timeout/meson.build
+manual tests/8 timeout/sleepprog.c
+manual tests/9 nostdlib/meson.build
+manual tests/9 nostdlib/prog.c
+manual tests/9 nostdlib/subprojects/mylibc/libc.c
+manual tests/9 nostdlib/subprojects/mylibc/meson.build
+manual tests/9 nostdlib/subprojects/mylibc/stdio.h
+manual tests/9 nostdlib/subprojects/mylibc/stubstart.s
+meson.egg-info/PKG-INFO
+meson.egg-info/SOURCES.txt
+meson.egg-info/dependency_links.txt
+meson.egg-info/entry_points.txt
+meson.egg-info/requires.txt
+meson.egg-info/top_level.txt
+mesonbuild/__init__.py
+mesonbuild/build.py
+mesonbuild/coredata.py
+mesonbuild/depfile.py
+mesonbuild/envconfig.py
+mesonbuild/environment.py
+mesonbuild/interpreter.py
+mesonbuild/interpreterbase.py
+mesonbuild/linkers.py
+mesonbuild/mcompile.py
+mesonbuild/mconf.py
+mesonbuild/mdist.py
+mesonbuild/mesonlib.py
+mesonbuild/mesonmain.py
+mesonbuild/minit.py
+mesonbuild/minstall.py
+mesonbuild/mintro.py
+mesonbuild/mlog.py
+mesonbuild/mparser.py
+mesonbuild/msetup.py
+mesonbuild/msubprojects.py
+mesonbuild/mtest.py
+mesonbuild/munstable_coredata.py
+mesonbuild/optinterpreter.py
+mesonbuild/rewriter.py
+mesonbuild/ast/__init__.py
+mesonbuild/ast/interpreter.py
+mesonbuild/ast/introspection.py
+mesonbuild/ast/postprocess.py
+mesonbuild/ast/printer.py
+mesonbuild/ast/visitor.py
+mesonbuild/backend/__init__.py
+mesonbuild/backend/backends.py
+mesonbuild/backend/ninjabackend.py
+mesonbuild/backend/vs2010backend.py
+mesonbuild/backend/vs2015backend.py
+mesonbuild/backend/vs2017backend.py
+mesonbuild/backend/vs2019backend.py
+mesonbuild/backend/xcodebackend.py
+mesonbuild/cmake/__init__.py
+mesonbuild/cmake/client.py
+mesonbuild/cmake/common.py
+mesonbuild/cmake/executor.py
+mesonbuild/cmake/fileapi.py
+mesonbuild/cmake/generator.py
+mesonbuild/cmake/interpreter.py
+mesonbuild/cmake/traceparser.py
+mesonbuild/cmake/data/preload.cmake
+mesonbuild/cmake/data/run_ctgt.py
+mesonbuild/compilers/__init__.py
+mesonbuild/compilers/c.py
+mesonbuild/compilers/c_function_attributes.py
+mesonbuild/compilers/compilers.py
+mesonbuild/compilers/cpp.py
+mesonbuild/compilers/cs.py
+mesonbuild/compilers/cuda.py
+mesonbuild/compilers/d.py
+mesonbuild/compilers/fortran.py
+mesonbuild/compilers/java.py
+mesonbuild/compilers/objc.py
+mesonbuild/compilers/objcpp.py
+mesonbuild/compilers/rust.py
+mesonbuild/compilers/swift.py
+mesonbuild/compilers/vala.py
+mesonbuild/compilers/mixins/__init__.py
+mesonbuild/compilers/mixins/arm.py
+mesonbuild/compilers/mixins/c2000.py
+mesonbuild/compilers/mixins/ccrx.py
+mesonbuild/compilers/mixins/clang.py
+mesonbuild/compilers/mixins/clike.py
+mesonbuild/compilers/mixins/elbrus.py
+mesonbuild/compilers/mixins/emscripten.py
+mesonbuild/compilers/mixins/gnu.py
+mesonbuild/compilers/mixins/intel.py
+mesonbuild/compilers/mixins/islinker.py
+mesonbuild/compilers/mixins/pgi.py
+mesonbuild/compilers/mixins/visualstudio.py
+mesonbuild/compilers/mixins/xc16.py
+mesonbuild/dependencies/__init__.py
+mesonbuild/dependencies/base.py
+mesonbuild/dependencies/boost.py
+mesonbuild/dependencies/coarrays.py
+mesonbuild/dependencies/cuda.py
+mesonbuild/dependencies/dev.py
+mesonbuild/dependencies/hdf5.py
+mesonbuild/dependencies/misc.py
+mesonbuild/dependencies/mpi.py
+mesonbuild/dependencies/platform.py
+mesonbuild/dependencies/scalapack.py
+mesonbuild/dependencies/ui.py
+mesonbuild/dependencies/data/CMakeLists.txt
+mesonbuild/dependencies/data/CMakeListsLLVM.txt
+mesonbuild/dependencies/data/CMakePathInfo.txt
+mesonbuild/modules/__init__.py
+mesonbuild/modules/cmake.py
+mesonbuild/modules/dlang.py
+mesonbuild/modules/fs.py
+mesonbuild/modules/gnome.py
+mesonbuild/modules/hotdoc.py
+mesonbuild/modules/i18n.py
+mesonbuild/modules/modtest.py
+mesonbuild/modules/pkgconfig.py
+mesonbuild/modules/python.py
+mesonbuild/modules/python3.py
+mesonbuild/modules/qt.py
+mesonbuild/modules/qt4.py
+mesonbuild/modules/qt5.py
+mesonbuild/modules/rpm.py
+mesonbuild/modules/sourceset.py
+mesonbuild/modules/unstable_cuda.py
+mesonbuild/modules/unstable_icestorm.py
+mesonbuild/modules/unstable_kconfig.py
+mesonbuild/modules/unstable_simd.py
+mesonbuild/modules/windows.py
+mesonbuild/scripts/__init__.py
+mesonbuild/scripts/clangformat.py
+mesonbuild/scripts/clangtidy.py
+mesonbuild/scripts/cleantrees.py
+mesonbuild/scripts/commandrunner.py
+mesonbuild/scripts/coverage.py
+mesonbuild/scripts/delwithsuffix.py
+mesonbuild/scripts/depfixer.py
+mesonbuild/scripts/dirchanger.py
+mesonbuild/scripts/gettext.py
+mesonbuild/scripts/gtkdochelper.py
+mesonbuild/scripts/hotdochelper.py
+mesonbuild/scripts/meson_exe.py
+mesonbuild/scripts/msgfmthelper.py
+mesonbuild/scripts/regen_checker.py
+mesonbuild/scripts/scanbuild.py
+mesonbuild/scripts/symbolextractor.py
+mesonbuild/scripts/tags.py
+mesonbuild/scripts/uninstall.py
+mesonbuild/scripts/vcstagger.py
+mesonbuild/scripts/yelphelper.py
+mesonbuild/templates/__init__.py
+mesonbuild/templates/cpptemplates.py
+mesonbuild/templates/cstemplates.py
+mesonbuild/templates/ctemplates.py
+mesonbuild/templates/cudatemplates.py
+mesonbuild/templates/dlangtemplates.py
+mesonbuild/templates/fortrantemplates.py
+mesonbuild/templates/javatemplates.py
+mesonbuild/templates/mesontemplates.py
+mesonbuild/templates/objcpptemplates.py
+mesonbuild/templates/objctemplates.py
+mesonbuild/templates/rusttemplates.py
+mesonbuild/templates/samplefactory.py
+mesonbuild/templates/sampleimpl.py
+mesonbuild/wrap/__init__.py
+mesonbuild/wrap/wrap.py
+mesonbuild/wrap/wraptool.py
+test cases/cmake/1 basic/main.cpp
+test cases/cmake/1 basic/meson.build
+test cases/cmake/1 basic/subprojects/cmMod/CMakeLists.txt
+test cases/cmake/1 basic/subprojects/cmMod/cmMod.cpp
+test cases/cmake/1 basic/subprojects/cmMod/cmMod.hpp
+test cases/cmake/10 header only/main.cpp
+test cases/cmake/10 header only/meson.build
+test cases/cmake/10 header only/subprojects/cmMod/CMakeLists.txt
+test cases/cmake/10 header only/subprojects/cmMod/include/cmMod.hpp
+test cases/cmake/11 cmake_module_path/meson.build
+test cases/cmake/11 cmake_module_path/cmake/FindSomethingLikePython.cmake
+test cases/cmake/12 generator expressions/main.cpp
+test cases/cmake/12 generator expressions/meson.build
+test cases/cmake/12 generator expressions/subprojects/cmMod/CMakeLists.txt
+test cases/cmake/12 generator expressions/subprojects/cmMod/include/cmMod.hpp
+test cases/cmake/13 system includes/main.cpp
+test cases/cmake/13 system includes/meson.build
+test cases/cmake/13 system includes/subprojects/cmMod/CMakeLists.txt
+test cases/cmake/13 system includes/subprojects/cmMod/cmMod.cpp
+test cases/cmake/13 system includes/subprojects/cmMod/cmMod.hpp
+test cases/cmake/13 system includes/subprojects/cmMod/sysInc/triggerWarn.hpp
+test cases/cmake/14 fortran threads/meson.build
+test cases/cmake/15 object library advanced/main.cpp
+test cases/cmake/15 object library advanced/meson.build
+test cases/cmake/15 object library advanced/subprojects/cmObjLib/CMakeLists.txt
+test cases/cmake/15 object library advanced/subprojects/cmObjLib/genC.cpp
+test cases/cmake/15 object library advanced/subprojects/cmObjLib/libA.cpp
+test cases/cmake/15 object library advanced/subprojects/cmObjLib/libA.hpp
+test cases/cmake/15 object library advanced/subprojects/cmObjLib/libB.cpp
+test cases/cmake/15 object library advanced/subprojects/cmObjLib/libB.hpp
+test cases/cmake/16 threads/main.cpp
+test cases/cmake/16 threads/meson.build
+test cases/cmake/16 threads/meson_options.txt
+test cases/cmake/16 threads/test.json
+test cases/cmake/16 threads/subprojects/cmMod/CMakeLists.txt
+test cases/cmake/16 threads/subprojects/cmMod/cmMod.cpp
+test cases/cmake/16 threads/subprojects/cmMod/cmMod.hpp
+test cases/cmake/16 threads/subprojects/cmMod/main.cpp
+test cases/cmake/17 include path order/main.cpp
+test cases/cmake/17 include path order/meson.build
+test cases/cmake/17 include path order/subprojects/cmMod/CMakeLists.txt
+test cases/cmake/17 include path order/subprojects/cmMod/cmMod.cpp
+test cases/cmake/17 include path order/subprojects/cmMod/incA/cmMod.hpp
+test cases/cmake/17 include path order/subprojects/cmMod/incB/cmMod.hpp
+test cases/cmake/17 include path order/subprojects/cmMod/incC/cmMod.hpp
+test cases/cmake/17 include path order/subprojects/cmMod/incD/cmMod.hpp
+test cases/cmake/17 include path order/subprojects/cmMod/incE/cmMod.hpp
+test cases/cmake/17 include path order/subprojects/cmMod/incF/cmMod.hpp
+test cases/cmake/17 include path order/subprojects/cmMod/incG/cmMod.hpp
+test cases/cmake/17 include path order/subprojects/cmMod/incH/cmMod.hpp
+test cases/cmake/17 include path order/subprojects/cmMod/incI/cmMod.hpp
+test cases/cmake/17 include path order/subprojects/cmMod/incJ/cmMod.hpp
+test cases/cmake/17 include path order/subprojects/cmMod/incL/cmMod.hpp
+test cases/cmake/17 include path order/subprojects/cmMod/incM/cmMod.hpp
+test cases/cmake/17 include path order/subprojects/cmMod/incN/cmMod.hpp
+test cases/cmake/17 include path order/subprojects/cmMod/incO/cmMod.hpp
+test cases/cmake/17 include path order/subprojects/cmMod/incP/cmMod.hpp
+test cases/cmake/18 skip include files/main.cpp
+test cases/cmake/18 skip include files/meson.build
+test cases/cmake/18 skip include files/subprojects/cmMod/CMakeLists.txt
+test cases/cmake/18 skip include files/subprojects/cmMod/cmMod.cpp
+test cases/cmake/18 skip include files/subprojects/cmMod/cmMod.hpp
+test cases/cmake/18 skip include files/subprojects/cmMod/fakeInc/CMakeLists.txt
+test cases/cmake/18 skip include files/subprojects/cmMod/fakeInc/cmModInc1.cpp
+test cases/cmake/18 skip include files/subprojects/cmMod/fakeInc/cmModInc2.cpp
+test cases/cmake/18 skip include files/subprojects/cmMod/fakeInc/cmModInc3.cpp
+test cases/cmake/18 skip include files/subprojects/cmMod/fakeInc/cmModInc4.cpp
+test cases/cmake/2 advanced/main.cpp
+test cases/cmake/2 advanced/meson.build
+test cases/cmake/2 advanced/test.json
+test cases/cmake/2 advanced/subprojects/cmMod/CMakeLists.txt
+test cases/cmake/2 advanced/subprojects/cmMod/config.h.in
+test cases/cmake/2 advanced/subprojects/cmMod/main.cpp
+test cases/cmake/2 advanced/subprojects/cmMod/lib/cmMod.cpp
+test cases/cmake/2 advanced/subprojects/cmMod/lib/cmMod.hpp
+test cases/cmake/3 advanced no dep/main.cpp
+test cases/cmake/3 advanced no dep/meson.build
+test cases/cmake/3 advanced no dep/test.json
+test cases/cmake/3 advanced no dep/subprojects/cmMod/CMakeLists.txt
+test cases/cmake/3 advanced no dep/subprojects/cmMod/config.h.in
+test cases/cmake/3 advanced no dep/subprojects/cmMod/main.cpp
+test cases/cmake/3 advanced no dep/subprojects/cmMod/lib/cmMod.cpp
+test cases/cmake/3 advanced no dep/subprojects/cmMod/lib/cmMod.hpp
+test cases/cmake/4 code gen/main.cpp
+test cases/cmake/4 code gen/meson.build
+test cases/cmake/4 code gen/test.hpp
+test cases/cmake/4 code gen/subprojects/cmCodeGen/CMakeLists.txt
+test cases/cmake/4 code gen/subprojects/cmCodeGen/main.cpp
+test cases/cmake/5 object library/main.cpp
+test cases/cmake/5 object library/meson.build
+test cases/cmake/5 object library/subprojects/cmObjLib/CMakeLists.txt
+test cases/cmake/5 object library/subprojects/cmObjLib/libA.cpp
+test cases/cmake/5 object library/subprojects/cmObjLib/libA.hpp
+test cases/cmake/5 object library/subprojects/cmObjLib/libB.cpp
+test cases/cmake/5 object library/subprojects/cmObjLib/libB.hpp
+test cases/cmake/6 object library no dep/main.cpp
+test cases/cmake/6 object library no dep/meson.build
+test cases/cmake/6 object library no dep/subprojects/cmObjLib/CMakeLists.txt
+test cases/cmake/6 object library no dep/subprojects/cmObjLib/libA.cpp
+test cases/cmake/6 object library no dep/subprojects/cmObjLib/libA.hpp
+test cases/cmake/6 object library no dep/subprojects/cmObjLib/libB.cpp
+test cases/cmake/6 object library no dep/subprojects/cmObjLib/libB.hpp
+test cases/cmake/7 cmake options/meson.build
+test cases/cmake/7 cmake options/subprojects/cmOpts/CMakeLists.txt
+test cases/cmake/8 custom command/main.cpp
+test cases/cmake/8 custom command/meson.build
+test cases/cmake/8 custom command/subprojects/cmMod/CMakeLists.txt
+test cases/cmake/8 custom command/subprojects/cmMod/args_test.cpp
+test cases/cmake/8 custom command/subprojects/cmMod/cmMod.cpp
+test cases/cmake/8 custom command/subprojects/cmMod/cmMod.hpp
+test cases/cmake/8 custom command/subprojects/cmMod/cp.cpp
+test cases/cmake/8 custom command/subprojects/cmMod/cpyBase.cpp.am
+test cases/cmake/8 custom command/subprojects/cmMod/cpyBase.hpp.am
+test cases/cmake/8 custom command/subprojects/cmMod/cpyNext.cpp.am
+test cases/cmake/8 custom command/subprojects/cmMod/cpyNext.hpp.am
+test cases/cmake/8 custom command/subprojects/cmMod/cpyTest.cpp
+test cases/cmake/8 custom command/subprojects/cmMod/genMain.cpp
+test cases/cmake/8 custom command/subprojects/cmMod/macro_name.cpp
+test cases/cmake/8 custom command/subprojects/cmMod/cpyTest/CMakeLists.txt
+test cases/cmake/8 custom command/subprojects/cmMod/cpyTest/cpyTest.hpp
+test cases/cmake/8 custom command/subprojects/cmMod/cpyTest/cpyTest2.hpp
+test cases/cmake/8 custom command/subprojects/cmMod/cpyTest/cpyTest3.hpp
+test cases/cmake/8 custom command/subprojects/cmMod/cpyTest/cpyTest4.hpp
+test cases/cmake/9 disabled subproject/meson.build
+test cases/common/1 trivial/meson.build
+test cases/common/1 trivial/trivial.c
+test cases/common/10 man install/bar.2
+test cases/common/10 man install/baz.1.in
+test cases/common/10 man install/foo.1
+test cases/common/10 man install/meson.build
+test cases/common/10 man install/test.json
+test cases/common/10 man install/vanishing/meson.build
+test cases/common/10 man install/vanishing/vanishing.1
+test cases/common/10 man install/vanishing/vanishing.2
+test cases/common/100 stringdef/meson.build
+test cases/common/100 stringdef/stringdef.c
+test cases/common/101 find program path/meson.build
+test cases/common/101 find program path/program.py
+test cases/common/102 subproject subdir/meson.build
+test cases/common/102 subproject subdir/prog.c
+test cases/common/102 subproject subdir/subprojects/sub/meson.build
+test cases/common/102 subproject subdir/subprojects/sub/lib/meson.build
+test cases/common/102 subproject subdir/subprojects/sub/lib/sub.c
+test cases/common/102 subproject subdir/subprojects/sub/lib/sub.h
+test cases/common/102 subproject subdir/subprojects/sub_novar/meson.build
+test cases/common/103 postconf/meson.build
+test cases/common/103 postconf/postconf.py
+test cases/common/103 postconf/prog.c
+test cases/common/103 postconf/raw.dat
+test cases/common/104 postconf with args/meson.build
+test cases/common/104 postconf with args/postconf.py
+test cases/common/104 postconf with args/prog.c
+test cases/common/104 postconf with args/raw.dat
+test cases/common/105 testframework options/meson.build
+test cases/common/105 testframework options/meson_options.txt
+test cases/common/105 testframework options/test.json
+test cases/common/106 extract same name/lib.c
+test cases/common/106 extract same name/main.c
+test cases/common/106 extract same name/meson.build
+test cases/common/106 extract same name/src/lib.c
+test cases/common/107 has header symbol/meson.build
+test cases/common/108 has arg/meson.build
+test cases/common/109 generatorcustom/catter.py
+test cases/common/109 generatorcustom/gen.py
+test cases/common/109 generatorcustom/main.c
+test cases/common/109 generatorcustom/meson.build
+test cases/common/109 generatorcustom/res1.txt
+test cases/common/109 generatorcustom/res2.txt
+test cases/common/11 subdir/meson.build
+test cases/common/11 subdir/subdir/meson.build
+test cases/common/11 subdir/subdir/prog.c
+test cases/common/110 multiple dir configure file/meson.build
+test cases/common/110 multiple dir configure file/subdir/foo.txt
+test cases/common/110 multiple dir configure file/subdir/meson.build
+test cases/common/110 multiple dir configure file/subdir/someinput.in
+test cases/common/111 spaces backslash/comparer-end-notstring.c
+test cases/common/111 spaces backslash/comparer-end.c
+test cases/common/111 spaces backslash/comparer.c
+test cases/common/111 spaces backslash/meson.build
+test cases/common/111 spaces backslash/asm output/meson.build
+test cases/common/111 spaces backslash/include/comparer.h
+test cases/common/112 ternary/meson.build
+test cases/common/113 custom target capture/data_source.txt
+test cases/common/113 custom target capture/meson.build
+test cases/common/113 custom target capture/my_compiler.py
+test cases/common/113 custom target capture/test.json
+test cases/common/114 allgenerate/converter.py
+test cases/common/114 allgenerate/foobar.cpp.in
+test cases/common/114 allgenerate/meson.build
+test cases/common/115 pathjoin/meson.build
+test cases/common/116 subdir subproject/meson.build
+test cases/common/116 subdir subproject/prog/meson.build
+test cases/common/116 subdir subproject/prog/prog.c
+test cases/common/116 subdir subproject/subprojects/sub/meson.build
+test cases/common/116 subdir subproject/subprojects/sub/sub.c
+test cases/common/116 subdir subproject/subprojects/sub/sub.h
+test cases/common/117 interpreter copy mutable var on assignment/meson.build
+test cases/common/118 skip/meson.build
+test cases/common/119 subproject project arguments/exe.c
+test cases/common/119 subproject project arguments/exe.cpp
+test cases/common/119 subproject project arguments/meson.build
+test cases/common/119 subproject project arguments/subprojects/subexe/meson.build
+test cases/common/119 subproject project arguments/subprojects/subexe/subexe.c
+test cases/common/12 data/datafile.dat
+test cases/common/12 data/etcfile.dat
+test cases/common/12 data/fileobject_datafile.dat
+test cases/common/12 data/meson.build
+test cases/common/12 data/runscript.sh
+test cases/common/12 data/somefile.txt
+test cases/common/12 data/test.json
+test cases/common/12 data/to_be_renamed_1.txt
+test cases/common/12 data/to_be_renamed_3.txt
+test cases/common/12 data/to_be_renamed_4.txt
+test cases/common/12 data/vanishing/meson.build
+test cases/common/12 data/vanishing/to_be_renamed_2.txt
+test cases/common/12 data/vanishing/vanishing.dat
+test cases/common/12 data/vanishing/vanishing2.dat
+test cases/common/120 test skip/meson.build
+test cases/common/120 test skip/test_skip.c
+test cases/common/121 shared module/meson.build
+test cases/common/121 shared module/module.c
+test cases/common/121 shared module/nosyms.c
+test cases/common/121 shared module/prog.c
+test cases/common/121 shared module/runtime.c
+test cases/common/121 shared module/test.json
+test cases/common/122 llvm ir and assembly/main.c
+test cases/common/122 llvm ir and assembly/main.cpp
+test cases/common/122 llvm ir and assembly/meson.build
+test cases/common/122 llvm ir and assembly/square-arm.S
+test cases/common/122 llvm ir and assembly/square-x86.S
+test cases/common/122 llvm ir and assembly/square-x86_64.S
+test cases/common/122 llvm ir and assembly/square.ll
+test cases/common/122 llvm ir and assembly/symbol-underscore.h
+test cases/common/123 cpp and asm/meson.build
+test cases/common/123 cpp and asm/retval-arm.S
+test cases/common/123 cpp and asm/retval-x86.S
+test cases/common/123 cpp and asm/retval-x86_64.S
+test cases/common/123 cpp and asm/symbol-underscore.h
+test cases/common/123 cpp and asm/trivial.cc
+test cases/common/124 extract all shared library/extractor.h
+test cases/common/124 extract all shared library/four.c
+test cases/common/124 extract all shared library/func1234.def
+test cases/common/124 extract all shared library/meson.build
+test cases/common/124 extract all shared library/one.c
+test cases/common/124 extract all shared library/prog.c
+test cases/common/124 extract all shared library/three.c
+test cases/common/124 extract all shared library/two.c
+test cases/common/125 object only target/meson.build
+test cases/common/125 object only target/obj_generator.py
+test cases/common/125 object only target/prog.c
+test cases/common/125 object only target/source.c
+test cases/common/125 object only target/source2.c
+test cases/common/125 object only target/source2.def
+test cases/common/125 object only target/source3.c
+test cases/common/125 object only target/test.json
+test cases/common/126 no buildincdir/meson.build
+test cases/common/126 no buildincdir/prog.c
+test cases/common/126 no buildincdir/include/header.h
+test cases/common/127 custom target directory install/docgen.py
+test cases/common/127 custom target directory install/meson.build
+test cases/common/127 custom target directory install/test.json
+test cases/common/128 dependency file generation/main .c
+test cases/common/128 dependency file generation/meson.build
+test cases/common/129 configure file in generator/meson.build
+test cases/common/129 configure file in generator/inc/confdata.in
+test cases/common/129 configure file in generator/inc/meson.build
+test cases/common/129 configure file in generator/src/gen.py
+test cases/common/129 configure file in generator/src/main.c
+test cases/common/129 configure file in generator/src/meson.build
+test cases/common/129 configure file in generator/src/source
+test cases/common/13 pch/meson.build
+test cases/common/13 pch/c/meson.build
+test cases/common/13 pch/c/prog.c
+test cases/common/13 pch/c/pch/prog.h
+test cases/common/13 pch/cpp/meson.build
+test cases/common/13 pch/cpp/prog.cc
+test cases/common/13 pch/cpp/pch/prog.hh
+test cases/common/13 pch/generated/gen_custom.py
+test cases/common/13 pch/generated/gen_generator.py
+test cases/common/13 pch/generated/generated_generator.in
+test cases/common/13 pch/generated/meson.build
+test cases/common/13 pch/generated/prog.c
+test cases/common/13 pch/generated/pch/prog.h
+test cases/common/13 pch/mixed/func.c
+test cases/common/13 pch/mixed/main.cc
+test cases/common/13 pch/mixed/meson.build
+test cases/common/13 pch/mixed/pch/func.h
+test cases/common/13 pch/mixed/pch/main.h
+test cases/common/13 pch/userDefined/meson.build
+test cases/common/13 pch/userDefined/prog.c
+test cases/common/13 pch/userDefined/pch/pch.c
+test cases/common/13 pch/userDefined/pch/pch.h
+test cases/common/13 pch/withIncludeDirectories/meson.build
+test cases/common/13 pch/withIncludeDirectories/prog.c
+test cases/common/13 pch/withIncludeDirectories/include/lib/lib.h
+test cases/common/13 pch/withIncludeDirectories/pch/prog.h
+test cases/common/130 generated llvm ir/copyfile.py
+test cases/common/130 generated llvm ir/main.c
+test cases/common/130 generated llvm ir/meson.build
+test cases/common/130 generated llvm ir/square.ll.in
+test cases/common/131 generated assembly/copyfile.py
+test cases/common/131 generated assembly/main.c
+test cases/common/131 generated assembly/meson.build
+test cases/common/131 generated assembly/square-arm.S.in
+test cases/common/131 generated assembly/square-x86.S.in
+test cases/common/131 generated assembly/square-x86_64.S.in
+test cases/common/131 generated assembly/symbol-underscore.h
+test cases/common/132 build by default targets in tests/main.c
+test cases/common/132 build by default targets in tests/meson.build
+test cases/common/132 build by default targets in tests/write_file.py
+test cases/common/133 build by default/checkexists.py
+test cases/common/133 build by default/foo.c
+test cases/common/133 build by default/meson.build
+test cases/common/133 build by default/mygen.py
+test cases/common/133 build by default/source.txt
+test cases/common/134 include order/meson.build
+test cases/common/134 include order/ordertest.c
+test cases/common/134 include order/ctsub/copyfile.py
+test cases/common/134 include order/ctsub/emptyfile.c
+test cases/common/134 include order/ctsub/main.h
+test cases/common/134 include order/ctsub/meson.build
+test cases/common/134 include order/inc1/hdr.h
+test cases/common/134 include order/inc2/hdr.h
+test cases/common/134 include order/sub1/main.h
+test cases/common/134 include order/sub1/meson.build
+test cases/common/134 include order/sub1/some.c
+test cases/common/134 include order/sub1/some.h
+test cases/common/134 include order/sub2/main.h
+test cases/common/134 include order/sub2/meson.build
+test cases/common/134 include order/sub3/main.h
+test cases/common/134 include order/sub3/meson.build
+test cases/common/134 include order/sub4/main.c
+test cases/common/134 include order/sub4/main.h
+test cases/common/134 include order/sub4/meson.build
+test cases/common/135 override options/four.c
+test cases/common/135 override options/meson.build
+test cases/common/135 override options/one.c
+test cases/common/135 override options/three.c
+test cases/common/135 override options/two.c
+test cases/common/136 get define/concat.h
+test cases/common/136 get define/meson.build
+test cases/common/136 get define/meson_options.txt
+test cases/common/137 c cpp and asm/main.c
+test cases/common/137 c cpp and asm/main.cpp
+test cases/common/137 c cpp and asm/meson.build
+test cases/common/137 c cpp and asm/retval-arm.S
+test cases/common/137 c cpp and asm/retval-x86.S
+test cases/common/137 c cpp and asm/retval-x86_64.S
+test cases/common/137 c cpp and asm/somelib.c
+test cases/common/137 c cpp and asm/symbol-underscore.h
+test cases/common/138 compute int/config.h.in
+test cases/common/138 compute int/foobar.h
+test cases/common/138 compute int/meson.build
+test cases/common/138 compute int/prog.c.in
+test cases/common/139 custom target object output/meson.build
+test cases/common/139 custom target object output/obj_generator.py
+test cases/common/139 custom target object output/objdir/meson.build
+test cases/common/139 custom target object output/objdir/source.c
+test cases/common/139 custom target object output/progdir/meson.build
+test cases/common/139 custom target object output/progdir/prog.c
+test cases/common/14 configure file/basename.py
+test cases/common/14 configure file/check_file.py
+test cases/common/14 configure file/check_inputs.py
+test cases/common/14 configure file/config.h
+test cases/common/14 configure file/config.h.in
+test cases/common/14 configure file/config4a.h.in
+test cases/common/14 configure file/config4b.h.in
+test cases/common/14 configure file/config5.h.in
+test cases/common/14 configure file/config6.h.in
+test cases/common/14 configure file/config7.h.in
+test cases/common/14 configure file/config8.h.in
+test cases/common/14 configure file/depfile
+test cases/common/14 configure file/differentafterbasename1.in
+test cases/common/14 configure file/differentafterbasename2.in
+test cases/common/14 configure file/dummy.dat
+test cases/common/14 configure file/dumpprog.c
+test cases/common/14 configure file/file_contains.py
+test cases/common/14 configure file/generator-deps.py
+test cases/common/14 configure file/generator-without-input-file.py
+test cases/common/14 configure file/generator.py
+test cases/common/14 configure file/invalid-utf8.bin.in
+test cases/common/14 configure file/meson.build
+test cases/common/14 configure file/nosubst-nocopy1.txt.in
+test cases/common/14 configure file/nosubst-nocopy2.txt.in
+test cases/common/14 configure file/prog.c
+test cases/common/14 configure file/prog2.c
+test cases/common/14 configure file/prog4.c
+test cases/common/14 configure file/prog5.c
+test cases/common/14 configure file/prog6.c
+test cases/common/14 configure file/prog7.c
+test cases/common/14 configure file/prog9.c
+test cases/common/14 configure file/sameafterbasename.in
+test cases/common/14 configure file/sameafterbasename.in2
+test cases/common/14 configure file/test.json
+test cases/common/14 configure file/test.py.in
+test cases/common/14 configure file/touch.py
+test cases/common/14 configure file/subdir/meson.build
+test cases/common/140 empty build file/meson.build
+test cases/common/140 empty build file/subdir/meson.build
+test cases/common/141 whole archive/func1.c
+test cases/common/141 whole archive/func2.c
+test cases/common/141 whole archive/meson.build
+test cases/common/141 whole archive/mylib.h
+test cases/common/141 whole archive/prog.c
+test cases/common/141 whole archive/exe/meson.build
+test cases/common/141 whole archive/exe2/meson.build
+test cases/common/141 whole archive/exe3/meson.build
+test cases/common/141 whole archive/exe4/meson.build
+test cases/common/141 whole archive/sh_func2_dep_func1/meson.build
+test cases/common/141 whole archive/sh_func2_linked_func1/meson.build
+test cases/common/141 whole archive/sh_func2_transdep_func1/meson.build
+test cases/common/141 whole archive/sh_only_link_whole/meson.build
+test cases/common/141 whole archive/st_func1/meson.build
+test cases/common/141 whole archive/st_func2/meson.build
+test cases/common/142 C and CPP link/dummy.c
+test cases/common/142 C and CPP link/foo.c
+test cases/common/142 C and CPP link/foo.cpp
+test cases/common/142 C and CPP link/foo.h
+test cases/common/142 C and CPP link/foo.hpp
+test cases/common/142 C and CPP link/foobar.c
+test cases/common/142 C and CPP link/foobar.h
+test cases/common/142 C and CPP link/meson.build
+test cases/common/142 C and CPP link/sub.c
+test cases/common/142 C and CPP link/sub.h
+test cases/common/143 mesonintrospect from scripts/check_env.py
+test cases/common/143 mesonintrospect from scripts/check_introspection.py
+test cases/common/143 mesonintrospect from scripts/meson.build
+test cases/common/144 custom target multiple outputs/generator.py
+test cases/common/144 custom target multiple outputs/meson.build
+test cases/common/144 custom target multiple outputs/test.json
+test cases/common/145 special characters/check_quoting.py
+test cases/common/145 special characters/meson.build
+test cases/common/145 special characters/test.json
+test cases/common/146 nested links/meson.build
+test cases/common/146 nested links/xephyr.c
+test cases/common/147 list of file sources/foo
+test cases/common/147 list of file sources/gen.py
+test cases/common/147 list of file sources/meson.build
+test cases/common/148 link depends custom target/foo.c
+test cases/common/148 link depends custom target/make_file.py
+test cases/common/148 link depends custom target/meson.build
+test cases/common/149 recursive linking/lib.h
+test cases/common/149 recursive linking/main.c
+test cases/common/149 recursive linking/meson.build
+test cases/common/149 recursive linking/3rdorderdeps/lib.c.in
+test cases/common/149 recursive linking/3rdorderdeps/main.c.in
+test cases/common/149 recursive linking/3rdorderdeps/meson.build
+test cases/common/149 recursive linking/circular/lib1.c
+test cases/common/149 recursive linking/circular/lib2.c
+test cases/common/149 recursive linking/circular/lib3.c
+test cases/common/149 recursive linking/circular/main.c
+test cases/common/149 recursive linking/circular/meson.build
+test cases/common/149 recursive linking/circular/prop1.c
+test cases/common/149 recursive linking/circular/prop2.c
+test cases/common/149 recursive linking/circular/prop3.c
+test cases/common/149 recursive linking/edge-cases/libsto.c
+test cases/common/149 recursive linking/edge-cases/meson.build
+test cases/common/149 recursive linking/edge-cases/shstmain.c
+test cases/common/149 recursive linking/edge-cases/stobuilt.c
+test cases/common/149 recursive linking/edge-cases/stomain.c
+test cases/common/149 recursive linking/shnodep/lib.c
+test cases/common/149 recursive linking/shnodep/meson.build
+test cases/common/149 recursive linking/shshdep/lib.c
+test cases/common/149 recursive linking/shshdep/meson.build
+test cases/common/149 recursive linking/shstdep/lib.c
+test cases/common/149 recursive linking/shstdep/meson.build
+test cases/common/149 recursive linking/stnodep/lib.c
+test cases/common/149 recursive linking/stnodep/meson.build
+test cases/common/149 recursive linking/stshdep/lib.c
+test cases/common/149 recursive linking/stshdep/meson.build
+test cases/common/149 recursive linking/ststdep/lib.c
+test cases/common/149 recursive linking/ststdep/meson.build
+test cases/common/15 if/meson.build
+test cases/common/15 if/prog.c
+test cases/common/150 library at root/lib.c
+test cases/common/150 library at root/meson.build
+test cases/common/150 library at root/main/main.c
+test cases/common/150 library at root/main/meson.build
+test cases/common/151 simd/fallback.c
+test cases/common/151 simd/meson.build
+test cases/common/151 simd/simd_avx.c
+test cases/common/151 simd/simd_avx2.c
+test cases/common/151 simd/simd_mmx.c
+test cases/common/151 simd/simd_neon.c
+test cases/common/151 simd/simd_sse.c
+test cases/common/151 simd/simd_sse2.c
+test cases/common/151 simd/simd_sse3.c
+test cases/common/151 simd/simd_sse41.c
+test cases/common/151 simd/simd_sse42.c
+test cases/common/151 simd/simd_ssse3.c
+test cases/common/151 simd/simdchecker.c
+test cases/common/151 simd/simdfuncs.h
+test cases/common/151 simd/include/simdheader.h
+test cases/common/152 shared module resolving symbol in executable/meson.build
+test cases/common/152 shared module resolving symbol in executable/module.c
+test cases/common/152 shared module resolving symbol in executable/prog.c
+test cases/common/153 dotinclude/dotproc.c
+test cases/common/153 dotinclude/meson.build
+test cases/common/153 dotinclude/stdio.h
+test cases/common/154 reserved targets/meson.build
+test cases/common/154 reserved targets/test.c
+test cases/common/154 reserved targets/all/meson.build
+test cases/common/154 reserved targets/benchmark/meson.build
+test cases/common/154 reserved targets/clean/meson.build
+test cases/common/154 reserved targets/clean-ctlist/meson.build
+test cases/common/154 reserved targets/clean-gcda/meson.build
+test cases/common/154 reserved targets/clean-gcno/meson.build
+test cases/common/154 reserved targets/coverage/meson.build
+test cases/common/154 reserved targets/coverage-html/meson.build
+test cases/common/154 reserved targets/coverage-text/meson.build
+test cases/common/154 reserved targets/coverage-xml/meson.build
+test cases/common/154 reserved targets/dist/meson.build
+test cases/common/154 reserved targets/distcheck/meson.build
+test cases/common/154 reserved targets/install/meson.build
+test cases/common/154 reserved targets/phony/meson.build
+test cases/common/154 reserved targets/reconfigure/meson.build
+test cases/common/154 reserved targets/runtarget/meson.build
+test cases/common/154 reserved targets/scan-build/meson.build
+test cases/common/154 reserved targets/test/meson.build
+test cases/common/154 reserved targets/uninstall/meson.build
+test cases/common/155 duplicate source names/meson.build
+test cases/common/155 duplicate source names/dir1/file.c
+test cases/common/155 duplicate source names/dir1/meson.build
+test cases/common/155 duplicate source names/dir2/file.c
+test cases/common/155 duplicate source names/dir2/meson.build
+test cases/common/155 duplicate source names/dir2/dir1/file.c
+test cases/common/155 duplicate source names/dir3/file.c
+test cases/common/155 duplicate source names/dir3/meson.build
+test cases/common/155 duplicate source names/dir3/dir1/file.c
+test cases/common/156 index customtarget/check_args.py
+test cases/common/156 index customtarget/gen_sources.py
+test cases/common/156 index customtarget/lib.c
+test cases/common/156 index customtarget/meson.build
+test cases/common/156 index customtarget/subdir/foo.c
+test cases/common/156 index customtarget/subdir/meson.build
+test cases/common/157 wrap file should not failed/meson.build
+test cases/common/157 wrap file should not failed/src/meson.build
+test cases/common/157 wrap file should not failed/src/subprojects/prog.c
+test cases/common/157 wrap file should not failed/src/subprojects/foo/prog2.c
+test cases/common/157 wrap file should not failed/subprojects/foo.wrap
+test cases/common/157 wrap file should not failed/subprojects/zlib.wrap
+test cases/common/157 wrap file should not failed/subprojects/foo-1.0/foo.c
+test cases/common/157 wrap file should not failed/subprojects/foo-1.0/meson.build
+test cases/common/157 wrap file should not failed/subprojects/packagecache/foo-1.0-patch.tar.xz
+test cases/common/157 wrap file should not failed/subprojects/packagecache/foo-1.0.tar.xz
+test cases/common/157 wrap file should not failed/subprojects/packagecache/zlib-1.2.8-8-wrap.zip
+test cases/common/157 wrap file should not failed/subprojects/packagecache/zlib-1.2.8.tar.gz
+test cases/common/157 wrap file should not failed/subprojects/zlib-1.2.8/foo.c
+test cases/common/157 wrap file should not failed/subprojects/zlib-1.2.8/meson.build
+test cases/common/158 includedir subproj/meson.build
+test cases/common/158 includedir subproj/prog.c
+test cases/common/158 includedir subproj/subprojects/inctest/meson.build
+test cases/common/158 includedir subproj/subprojects/inctest/include/incfile.h
+test cases/common/159 subproject dir name collision/a.c
+test cases/common/159 subproject dir name collision/meson.build
+test cases/common/159 subproject dir name collision/custom_subproject_dir/B/b.c
+test cases/common/159 subproject dir name collision/custom_subproject_dir/B/meson.build
+test cases/common/159 subproject dir name collision/custom_subproject_dir/C/c.c
+test cases/common/159 subproject dir name collision/custom_subproject_dir/C/meson.build
+test cases/common/159 subproject dir name collision/other_subdir/meson.build
+test cases/common/159 subproject dir name collision/other_subdir/custom_subproject_dir/other.c
+test cases/common/16 else/meson.build
+test cases/common/16 else/prog.c
+test cases/common/160 config tool variable/meson.build
+test cases/common/161 custom target subdir depend files/copyfile.py
+test cases/common/161 custom target subdir depend files/meson.build
+test cases/common/161 custom target subdir depend files/subdir/dep.dat
+test cases/common/161 custom target subdir depend files/subdir/foo.c.in
+test cases/common/161 custom target subdir depend files/subdir/meson.build
+test cases/common/162 external program shebang parsing/input.txt
+test cases/common/162 external program shebang parsing/main.c
+test cases/common/162 external program shebang parsing/meson.build
+test cases/common/162 external program shebang parsing/script.int.in
+test cases/common/163 disabler/meson.build
+test cases/common/164 array option/meson.build
+test cases/common/164 array option/meson_options.txt
+test cases/common/165 custom target template substitution/checkcopy.py
+test cases/common/165 custom target template substitution/foo.c.in
+test cases/common/165 custom target template substitution/meson.build
+test cases/common/166 not-found dependency/meson.build
+test cases/common/166 not-found dependency/testlib.c
+test cases/common/166 not-found dependency/sub/meson.build
+test cases/common/166 not-found dependency/subprojects/trivial/meson.build
+test cases/common/166 not-found dependency/subprojects/trivial/trivial.c
+test cases/common/167 subdir if_found/meson.build
+test cases/common/167 subdir if_found/subdir/meson.build
+test cases/common/168 default options prefix dependent defaults/meson.build
+test cases/common/169 dependency factory/meson.build
+test cases/common/17 comparison/meson.build
+test cases/common/17 comparison/prog.c
+test cases/common/170 get project license/bar.c
+test cases/common/170 get project license/meson.build
+test cases/common/171 yield/meson.build
+test cases/common/171 yield/meson_options.txt
+test cases/common/171 yield/subprojects/sub/meson.build
+test cases/common/171 yield/subprojects/sub/meson_options.txt
+test cases/common/172 subproject nested subproject dirs/meson.build
+test cases/common/172 subproject nested subproject dirs/prog.c
+test cases/common/172 subproject nested subproject dirs/contrib/subprojects/alpha/a.c
+test cases/common/172 subproject nested subproject dirs/contrib/subprojects/alpha/meson.build
+test cases/common/172 subproject nested subproject dirs/contrib/subprojects/alpha/var/subprojects/wrap_files_might_be_here
+test cases/common/172 subproject nested subproject dirs/contrib/subprojects/beta/b.c
+test cases/common/172 subproject nested subproject dirs/contrib/subprojects/beta/meson.build
+test cases/common/173 preserve gendir/base.inp
+test cases/common/173 preserve gendir/genprog.py
+test cases/common/173 preserve gendir/meson.build
+test cases/common/173 preserve gendir/testprog.c
+test cases/common/173 preserve gendir/com/mesonbuild/subbie.inp
+test cases/common/174 source in dep/bar.cpp
+test cases/common/174 source in dep/foo.c
+test cases/common/174 source in dep/meson.build
+test cases/common/174 source in dep/generated/funname
+test cases/common/174 source in dep/generated/genheader.py
+test cases/common/174 source in dep/generated/main.c
+test cases/common/174 source in dep/generated/meson.build
+test cases/common/175 generator link whole/export.h
+test cases/common/175 generator link whole/generator.py
+test cases/common/175 generator link whole/main.c
+test cases/common/175 generator link whole/meson.build
+test cases/common/175 generator link whole/meson_test_function.tmpl
+test cases/common/175 generator link whole/pull_meson_test_function.c
+test cases/common/176 initial c_args/meson.build
+test cases/common/176 initial c_args/test.json
+test cases/common/177 identical target name in subproject flat layout/foo.c
+test cases/common/177 identical target name in subproject flat layout/main.c
+test cases/common/177 identical target name in subproject flat layout/meson.build
+test cases/common/177 identical target name in subproject flat layout/subprojects/subproj/foo.c
+test cases/common/177 identical target name in subproject flat layout/subprojects/subproj/meson.build
+test cases/common/178 as-needed/config.h
+test cases/common/178 as-needed/libA.cpp
+test cases/common/178 as-needed/libA.h
+test cases/common/178 as-needed/libB.cpp
+test cases/common/178 as-needed/main.cpp
+test cases/common/178 as-needed/meson.build
+test cases/common/179 ndebug if-release enabled/main.c
+test cases/common/179 ndebug if-release enabled/meson.build
+test cases/common/18 array/func.c
+test cases/common/18 array/meson.build
+test cases/common/18 array/prog.c
+test cases/common/180 ndebug if-release disabled/main.c
+test cases/common/180 ndebug if-release disabled/meson.build
+test cases/common/181 subproject version/meson.build
+test cases/common/181 subproject version/subprojects/a/meson.build
+test cases/common/182 subdir_done/meson.build
+test cases/common/183 bothlibraries/libfile.c
+test cases/common/183 bothlibraries/main.c
+test cases/common/183 bothlibraries/meson.build
+test cases/common/183 bothlibraries/mylib.h
+test cases/common/184 escape and unicode/file.c.in
+test cases/common/184 escape and unicode/file.py
+test cases/common/184 escape and unicode/find.py
+test cases/common/184 escape and unicode/fun.c
+test cases/common/184 escape and unicode/main.c
+test cases/common/184 escape and unicode/meson.build
+test cases/common/185 has link arg/meson.build
+test cases/common/186 same target name flat layout/foo.c
+test cases/common/186 same target name flat layout/main.c
+test cases/common/186 same target name flat layout/meson.build
+test cases/common/186 same target name flat layout/subdir/foo.c
+test cases/common/186 same target name flat layout/subdir/meson.build
+test cases/common/187 find override/meson.build
+test cases/common/187 find override/otherdir/main.c
+test cases/common/187 find override/otherdir/main2.c
+test cases/common/187 find override/otherdir/meson.build
+test cases/common/187 find override/otherdir/source.desc
+test cases/common/187 find override/otherdir/source2.desc
+test cases/common/187 find override/subdir/converter.py
+test cases/common/187 find override/subdir/gencodegen.py.in
+test cases/common/187 find override/subdir/meson.build
+test cases/common/188 partial dependency/meson.build
+test cases/common/188 partial dependency/declare_dependency/main.c
+test cases/common/188 partial dependency/declare_dependency/meson.build
+test cases/common/188 partial dependency/declare_dependency/other.c
+test cases/common/188 partial dependency/declare_dependency/headers/foo.c
+test cases/common/188 partial dependency/declare_dependency/headers/foo.h
+test cases/common/189 openmp/main.c
+test cases/common/189 openmp/main.cpp
+test cases/common/189 openmp/main.f90
+test cases/common/189 openmp/meson.build
+test cases/common/19 includedir/meson.build
+test cases/common/19 includedir/include/func.h
+test cases/common/19 includedir/src/func.c
+test cases/common/19 includedir/src/meson.build
+test cases/common/19 includedir/src/prog.c
+test cases/common/190 same target name/file.c
+test cases/common/190 same target name/meson.build
+test cases/common/190 same target name/sub/file2.c
+test cases/common/190 same target name/sub/meson.build
+test cases/common/191 test depends/gen.py
+test cases/common/191 test depends/main.c
+test cases/common/191 test depends/meson.build
+test cases/common/191 test depends/test.py
+test cases/common/192 args flattening/meson.build
+test cases/common/193 dict/meson.build
+test cases/common/193 dict/prog.c
+test cases/common/194 check header/meson.build
+test cases/common/194 check header/ouagadougou.h
+test cases/common/195 install_mode/config.h.in
+test cases/common/195 install_mode/data_source.txt
+test cases/common/195 install_mode/foo.1
+test cases/common/195 install_mode/meson.build
+test cases/common/195 install_mode/rootdir.h
+test cases/common/195 install_mode/runscript.sh
+test cases/common/195 install_mode/stat.c
+test cases/common/195 install_mode/test.json
+test cases/common/195 install_mode/trivial.c
+test cases/common/195 install_mode/sub1/second.dat
+test cases/common/195 install_mode/sub2/stub
+test cases/common/196 subproject array version/meson.build
+test cases/common/196 subproject array version/subprojects/foo/meson.build
+test cases/common/197 feature option/meson.build
+test cases/common/197 feature option/meson_options.txt
+test cases/common/198 feature option disabled/meson.build
+test cases/common/198 feature option disabled/meson_options.txt
+test cases/common/199 static threads/lib1.c
+test cases/common/199 static threads/lib2.c
+test cases/common/199 static threads/meson.build
+test cases/common/199 static threads/prog.c
+test cases/common/2 cpp/meson.build
+test cases/common/2 cpp/something.txt
+test cases/common/2 cpp/trivial.cc
+test cases/common/20 header in file list/header.h
+test cases/common/20 header in file list/meson.build
+test cases/common/20 header in file list/prog.c
+test cases/common/200 generator in subdir/meson.build
+test cases/common/200 generator in subdir/com/mesonbuild/genprog.py
+test cases/common/200 generator in subdir/com/mesonbuild/meson.build
+test cases/common/200 generator in subdir/com/mesonbuild/subbie.inp
+test cases/common/200 generator in subdir/com/mesonbuild/testprog.c
+test cases/common/201 override with exe/main2.input
+test cases/common/201 override with exe/meson.build
+test cases/common/201 override with exe/subprojects/sub/foobar.c
+test cases/common/201 override with exe/subprojects/sub/meson.build
+test cases/common/202 subproject with features/meson.build
+test cases/common/202 subproject with features/meson_options.txt
+test cases/common/202 subproject with features/nothing.c
+test cases/common/202 subproject with features/subprojects/auto_sub_with_missing_dep/meson.build
+test cases/common/202 subproject with features/subprojects/disabled_sub/meson.build
+test cases/common/202 subproject with features/subprojects/disabled_sub/lib/meson.build
+test cases/common/202 subproject with features/subprojects/disabled_sub/lib/sub.c
+test cases/common/202 subproject with features/subprojects/disabled_sub/lib/sub.h
+test cases/common/202 subproject with features/subprojects/sub/meson.build
+test cases/common/202 subproject with features/subprojects/sub/lib/meson.build
+test cases/common/202 subproject with features/subprojects/sub/lib/sub.c
+test cases/common/202 subproject with features/subprojects/sub/lib/sub.h
+test cases/common/203 function attributes/meson.build
+test cases/common/204 broken subproject/meson.build
+test cases/common/204 broken subproject/subprojects/broken/broken.c
+test cases/common/204 broken subproject/subprojects/broken/meson.build
+test cases/common/205 argument syntax/meson.build
+test cases/common/206 install name_prefix name_suffix/libfile.c
+test cases/common/206 install name_prefix name_suffix/meson.build
+test cases/common/206 install name_prefix name_suffix/test.json
+test cases/common/207 kwarg entry/meson.build
+test cases/common/207 kwarg entry/prog.c
+test cases/common/207 kwarg entry/test.json
+test cases/common/207 kwarg entry/inc/prog.h
+test cases/common/208 custom target build by default/docgen.py
+test cases/common/208 custom target build by default/meson.build
+test cases/common/208 custom target build by default/test.json
+test cases/common/209 find_library and headers/foo.h
+test cases/common/209 find_library and headers/meson.build
+test cases/common/21 global arg/meson.build
+test cases/common/21 global arg/prog.c
+test cases/common/21 global arg/prog.cc
+test cases/common/210 line continuation/meson.build
+test cases/common/211 cmake module/meson.build
+test cases/common/211 cmake module/projectConfig.cmake.in
+test cases/common/211 cmake module/test.json
+test cases/common/211 cmake module/cmake_project/CMakeLists.txt
+test cases/common/212 native file path override/main.cpp
+test cases/common/212 native file path override/meson.build
+test cases/common/212 native file path override/nativefile.ini
+test cases/common/212 native file path override/test.json
+test cases/common/213 tap tests/meson.build
+test cases/common/213 tap tests/tester.c
+test cases/common/214 warning level 0/main.cpp
+test cases/common/214 warning level 0/meson.build
+test cases/common/215 link custom/custom_stlib.py
+test cases/common/215 link custom/lib.c
+test cases/common/215 link custom/meson.build
+test cases/common/215 link custom/prog.c
+test cases/common/216 link custom_i single from multiple/generate_conflicting_stlibs.py
+test cases/common/216 link custom_i single from multiple/meson.build
+test cases/common/216 link custom_i single from multiple/prog.c
+test cases/common/217 link custom_i multiple from multiple/generate_stlibs.py
+test cases/common/217 link custom_i multiple from multiple/meson.build
+test cases/common/217 link custom_i multiple from multiple/prog.c
+test cases/common/218 dependency get_variable method/meson.build
+test cases/common/219 source set configuration_data/a.c
+test cases/common/219 source set configuration_data/all.h
+test cases/common/219 source set configuration_data/f.c
+test cases/common/219 source set configuration_data/g.c
+test cases/common/219 source set configuration_data/meson.build
+test cases/common/219 source set configuration_data/nope.c
+test cases/common/219 source set configuration_data/subdir/b.c
+test cases/common/219 source set configuration_data/subdir/meson.build
+test cases/common/22 target arg/func.c
+test cases/common/22 target arg/func2.c
+test cases/common/22 target arg/meson.build
+test cases/common/22 target arg/prog.cc
+test cases/common/22 target arg/prog2.cc
+test cases/common/220 source set dictionary/a.c
+test cases/common/220 source set dictionary/all.h
+test cases/common/220 source set dictionary/f.c
+test cases/common/220 source set dictionary/g.c
+test cases/common/220 source set dictionary/meson.build
+test cases/common/220 source set dictionary/nope.c
+test cases/common/220 source set dictionary/subdir/b.c
+test cases/common/220 source set dictionary/subdir/meson.build
+test cases/common/221 source set custom target/a.c
+test cases/common/221 source set custom target/all.h
+test cases/common/221 source set custom target/cp.py
+test cases/common/221 source set custom target/f.c
+test cases/common/221 source set custom target/g.c
+test cases/common/221 source set custom target/meson.build
+test cases/common/222 source set realistic example/common.h
+test cases/common/222 source set realistic example/main.cc
+test cases/common/222 source set realistic example/meson.build
+test cases/common/222 source set realistic example/not-found.cc
+test cases/common/222 source set realistic example/was-found.cc
+test cases/common/222 source set realistic example/zlib.cc
+test cases/common/222 source set realistic example/boards/meson.build
+test cases/common/222 source set realistic example/boards/arm/aarch64.cc
+test cases/common/222 source set realistic example/boards/arm/arm.cc
+test cases/common/222 source set realistic example/boards/arm/arm.h
+test cases/common/222 source set realistic example/boards/arm/arm32.cc
+test cases/common/222 source set realistic example/boards/arm/versatilepb.cc
+test cases/common/222 source set realistic example/boards/arm/virt.cc
+test cases/common/222 source set realistic example/boards/arm/xlnx_zcu102.cc
+test cases/common/222 source set realistic example/boards/x86/pc.cc
+test cases/common/222 source set realistic example/config/aarch64
+test cases/common/222 source set realistic example/config/arm
+test cases/common/222 source set realistic example/config/x86
+test cases/common/222 source set realistic example/devices/meson.build
+test cases/common/222 source set realistic example/devices/virtio-mmio.cc
+test cases/common/222 source set realistic example/devices/virtio-pci.cc
+test cases/common/222 source set realistic example/devices/virtio.cc
+test cases/common/222 source set realistic example/devices/virtio.h
+test cases/common/223 custom target input extracted objects/check_object.py
+test cases/common/223 custom target input extracted objects/meson.build
+test cases/common/223 custom target input extracted objects/libdir/meson.build
+test cases/common/223 custom target input extracted objects/libdir/source.c
+test cases/common/224 test priorities/meson.build
+test cases/common/224 test priorities/testprog.py
+test cases/common/225 include_dir dot/meson.build
+test cases/common/225 include_dir dot/rone.h
+test cases/common/225 include_dir dot/src/main.c
+test cases/common/225 include_dir dot/src/meson.build
+test cases/common/225 include_dir dot/src/rone.c
+test cases/common/226 include_type dependency/meson.build
+test cases/common/226 include_type dependency/subprojects/subDep/meson.build
+test cases/common/227 fs module/a_symlink
+test cases/common/227 fs module/meson.build
+test cases/common/227 fs module/subdir/meson.build
+test cases/common/227 fs module/subdir/subdirfile.txt
+test cases/common/227 fs module/subprojects/subbie/meson.build
+test cases/common/227 fs module/subprojects/subbie/subprojectfile.txt
+test cases/common/227 fs module/subprojects/subbie/subsub/meson.build
+test cases/common/227 fs module/subprojects/subbie/subsub/subsubfile.txt
+test cases/common/228 zlib/meson.build
+test cases/common/229 native prop/crossfile.ini
+test cases/common/229 native prop/meson.build
+test cases/common/229 native prop/nativefile.ini
+test cases/common/229 persubproject options/foo.c
+test cases/common/229 persubproject options/meson.build
+test cases/common/229 persubproject options/subprojects/sub1/foo.c
+test cases/common/229 persubproject options/subprojects/sub1/meson.build
+test cases/common/229 persubproject options/subprojects/sub2/foo.c
+test cases/common/229 persubproject options/subprojects/sub2/meson.build
+test cases/common/23 object extraction/lib.c
+test cases/common/23 object extraction/lib2.c
+test cases/common/23 object extraction/main.c
+test cases/common/23 object extraction/meson.build
+test cases/common/23 object extraction/src/lib.c
+test cases/common/230 arithmetic operators/meson.build
+test cases/common/233 link depends indexed custom target/foo.c
+test cases/common/233 link depends indexed custom target/make_file.py
+test cases/common/233 link depends indexed custom target/meson.build
+test cases/common/24 endian/meson.build
+test cases/common/24 endian/prog.c
+test cases/common/25 library versions/lib.c
+test cases/common/25 library versions/meson.build
+test cases/common/25 library versions/test.json
+test cases/common/25 library versions/subdir/meson.build
+test cases/common/26 config subdir/meson.build
+test cases/common/26 config subdir/include/config.h.in
+test cases/common/26 config subdir/include/meson.build
+test cases/common/26 config subdir/src/meson.build
+test cases/common/26 config subdir/src/prog.c
+test cases/common/27 pipeline/input_src.dat
+test cases/common/27 pipeline/meson.build
+test cases/common/27 pipeline/prog.c
+test cases/common/27 pipeline/srcgen.c
+test cases/common/27 pipeline/depends/copyrunner.py
+test cases/common/27 pipeline/depends/filecopier.c
+test cases/common/27 pipeline/depends/libsrc.c.in
+test cases/common/27 pipeline/depends/meson.build
+test cases/common/27 pipeline/depends/prog.c
+test cases/common/27 pipeline/src/input_src.dat
+test cases/common/27 pipeline/src/meson.build
+test cases/common/27 pipeline/src/prog.c
+test cases/common/27 pipeline/src/srcgen.c
+test cases/common/28 find program/meson.build
+test cases/common/28 find program/print-version-with-prefix.py
+test cases/common/28 find program/print-version.py
+test cases/common/28 find program/source.in
+test cases/common/28 find program/scripts/test_subdir.py
+test cases/common/29 multiline string/meson.build
+test cases/common/3 static/libfile.c
+test cases/common/3 static/libfile2.c
+test cases/common/3 static/meson.build
+test cases/common/3 static/meson_options.txt
+test cases/common/30 try compile/invalid.c
+test cases/common/30 try compile/meson.build
+test cases/common/30 try compile/valid.c
+test cases/common/31 compiler id/meson.build
+test cases/common/32 sizeof/config.h.in
+test cases/common/32 sizeof/meson.build
+test cases/common/32 sizeof/prog.c.in
+test cases/common/33 define10/config.h.in
+test cases/common/33 define10/meson.build
+test cases/common/33 define10/prog.c
+test cases/common/34 has header/meson.build
+test cases/common/34 has header/ouagadougou.h
+test cases/common/35 run program/get-version.py
+test cases/common/35 run program/meson.build
+test cases/common/35 run program/scripts/hello.bat
+test cases/common/35 run program/scripts/hello.sh
+test cases/common/36 tryrun/error.c
+test cases/common/36 tryrun/meson.build
+test cases/common/36 tryrun/no_compile.c
+test cases/common/36 tryrun/ok.c
+test cases/common/37 logic ops/meson.build
+test cases/common/38 string operations/meson.build
+test cases/common/39 has function/meson.build
+test cases/common/4 shared/libfile.c
+test cases/common/4 shared/meson.build
+test cases/common/40 has member/meson.build
+test cases/common/41 alignment/meson.build
+test cases/common/42 library chain/main.c
+test cases/common/42 library chain/meson.build
+test cases/common/42 library chain/test.json
+test cases/common/42 library chain/subdir/lib1.c
+test cases/common/42 library chain/subdir/meson.build
+test cases/common/42 library chain/subdir/subdir2/lib2.c
+test cases/common/42 library chain/subdir/subdir2/meson.build
+test cases/common/42 library chain/subdir/subdir3/lib3.c
+test cases/common/42 library chain/subdir/subdir3/meson.build
+test cases/common/43 options/meson.build
+test cases/common/43 options/meson_options.txt
+test cases/common/44 test args/cmd_args.c
+test cases/common/44 test args/copyfile.py
+test cases/common/44 test args/env2vars.c
+test cases/common/44 test args/envvars.c
+test cases/common/44 test args/meson.build
+test cases/common/44 test args/tester.c
+test cases/common/44 test args/tester.py
+test cases/common/44 test args/testfile.txt
+test cases/common/45 subproject/meson.build
+test cases/common/45 subproject/test.json
+test cases/common/45 subproject/user.c
+test cases/common/45 subproject/subprojects/sublib/meson.build
+test cases/common/45 subproject/subprojects/sublib/simpletest.c
+test cases/common/45 subproject/subprojects/sublib/sublib.c
+test cases/common/45 subproject/subprojects/sublib/include/subdefs.h
+test cases/common/46 subproject options/meson.build
+test cases/common/46 subproject options/meson_options.txt
+test cases/common/46 subproject options/subprojects/subproject/meson.build
+test cases/common/46 subproject options/subprojects/subproject/meson_options.txt
+test cases/common/47 pkgconfig-gen/meson.build
+test cases/common/47 pkgconfig-gen/simple.c
+test cases/common/47 pkgconfig-gen/simple.h
+test cases/common/47 pkgconfig-gen/test.json
+test cases/common/47 pkgconfig-gen/dependencies/custom.c
+test cases/common/47 pkgconfig-gen/dependencies/exposed.c
+test cases/common/47 pkgconfig-gen/dependencies/internal.c
+test cases/common/47 pkgconfig-gen/dependencies/main.c
+test cases/common/47 pkgconfig-gen/dependencies/meson.build
+test cases/common/48 custom install dirs/datafile.cat
+test cases/common/48 custom install dirs/meson.build
+test cases/common/48 custom install dirs/prog.1
+test cases/common/48 custom install dirs/prog.c
+test cases/common/48 custom install dirs/sample.h
+test cases/common/48 custom install dirs/test.json
+test cases/common/48 custom install dirs/subdir/datafile.dog
+test cases/common/49 subproject subproject/meson.build
+test cases/common/49 subproject subproject/prog.c
+test cases/common/49 subproject subproject/subprojects/a/a.c
+test cases/common/49 subproject subproject/subprojects/a/meson.build
+test cases/common/49 subproject subproject/subprojects/b/b.c
+test cases/common/49 subproject subproject/subprojects/b/meson.build
+test cases/common/49 subproject subproject/subprojects/c/meson.build
+test cases/common/5 linkstatic/libfile.c
+test cases/common/5 linkstatic/libfile2.c
+test cases/common/5 linkstatic/libfile3.c
+test cases/common/5 linkstatic/libfile4.c
+test cases/common/5 linkstatic/main.c
+test cases/common/5 linkstatic/meson.build
+test cases/common/50 same file name/meson.build
+test cases/common/50 same file name/prog.c
+test cases/common/50 same file name/d1/file.c
+test cases/common/50 same file name/d2/file.c
+test cases/common/51 file grabber/a.c
+test cases/common/51 file grabber/b.c
+test cases/common/51 file grabber/c.c
+test cases/common/51 file grabber/grabber.bat
+test cases/common/51 file grabber/grabber.sh
+test cases/common/51 file grabber/grabber2.bat
+test cases/common/51 file grabber/meson.build
+test cases/common/51 file grabber/prog.c
+test cases/common/51 file grabber/subdir/meson.build
+test cases/common/51 file grabber/subdir/suba.c
+test cases/common/51 file grabber/subdir/subb.c
+test cases/common/51 file grabber/subdir/subc.c
+test cases/common/51 file grabber/subdir/subprog.c
+test cases/common/52 custom target/data_source.txt
+test cases/common/52 custom target/meson.build
+test cases/common/52 custom target/my_compiler.py
+test cases/common/52 custom target/test.json
+test cases/common/52 custom target/depfile/dep.py
+test cases/common/52 custom target/depfile/meson.build
+test cases/common/53 custom target chain/data_source.txt
+test cases/common/53 custom target chain/meson.build
+test cases/common/53 custom target chain/my_compiler.py
+test cases/common/53 custom target chain/my_compiler2.py
+test cases/common/53 custom target chain/test.json
+test cases/common/53 custom target chain/usetarget/meson.build
+test cases/common/53 custom target chain/usetarget/myexe.c
+test cases/common/53 custom target chain/usetarget/subcomp.py
+test cases/common/54 run target/check_exists.py
+test cases/common/54 run target/configure.in
+test cases/common/54 run target/converter.py
+test cases/common/54 run target/fakeburner.py
+test cases/common/54 run target/helloprinter.c
+test cases/common/54 run target/meson.build
+test cases/common/55 object generator/meson.build
+test cases/common/55 object generator/obj_generator.py
+test cases/common/55 object generator/prog.c
+test cases/common/55 object generator/source.c
+test cases/common/55 object generator/source2.c
+test cases/common/55 object generator/source3.c
+test cases/common/56 install script/meson.build
+test cases/common/56 install script/myinstall.py
+test cases/common/56 install script/prog.c
+test cases/common/56 install script/test.json
+test cases/common/56 install script/src/meson.build
+test cases/common/56 install script/src/myinstall.py
+test cases/common/57 custom target source output/generator.py
+test cases/common/57 custom target source output/main.c
+test cases/common/57 custom target source output/meson.build
+test cases/common/58 exe static shared/meson.build
+test cases/common/58 exe static shared/prog.c
+test cases/common/58 exe static shared/shlib2.c
+test cases/common/58 exe static shared/stat.c
+test cases/common/58 exe static shared/stat2.c
+test cases/common/58 exe static shared/subdir/exports.h
+test cases/common/58 exe static shared/subdir/meson.build
+test cases/common/58 exe static shared/subdir/shlib.c
+test cases/common/59 array methods/meson.build
+test cases/common/6 linkshared/cpplib.cpp
+test cases/common/6 linkshared/cppmain.cpp
+test cases/common/6 linkshared/libfile.c
+test cases/common/6 linkshared/main.c
+test cases/common/6 linkshared/meson.build
+test cases/common/6 linkshared/test.json
+test cases/common/60 custom header generator/input.def
+test cases/common/60 custom header generator/makeheader.py
+test cases/common/60 custom header generator/meson.build
+test cases/common/60 custom header generator/prog.c
+test cases/common/60 custom header generator/somefile.txt
+test cases/common/61 multiple generators/data2.dat
+test cases/common/61 multiple generators/main.cpp
+test cases/common/61 multiple generators/meson.build
+test cases/common/61 multiple generators/mygen.py
+test cases/common/61 multiple generators/subdir/data.dat
+test cases/common/61 multiple generators/subdir/meson.build
+test cases/common/62 install subdir/meson.build
+test cases/common/62 install subdir/test.json
+test cases/common/62 install subdir/nested_elided/sub/eighth.dat
+test cases/common/62 install subdir/nested_elided/sub/dircheck/ninth.dat
+test cases/common/62 install subdir/sub/sub1/third.dat
+test cases/common/62 install subdir/sub1/second.dat
+test cases/common/62 install subdir/sub2/excluded-three.dat
+test cases/common/62 install subdir/sub2/one.dat
+test cases/common/62 install subdir/sub2/dircheck/excluded-three.dat
+test cases/common/62 install subdir/sub2/excluded/two.dat
+test cases/common/62 install subdir/sub_elided/fourth.dat
+test cases/common/62 install subdir/sub_elided/dircheck/fifth.dat
+test cases/common/62 install subdir/subdir/meson.build
+test cases/common/62 install subdir/subdir/sub1/data1.dat
+test cases/common/62 install subdir/subdir/sub1/sub2/data2.dat
+test cases/common/62 install subdir/subdir/sub_elided/sixth.dat
+test cases/common/62 install subdir/subdir/sub_elided/dircheck/seventh.dat
+test cases/common/63 foreach/meson.build
+test cases/common/63 foreach/prog1.c
+test cases/common/63 foreach/prog2.c
+test cases/common/63 foreach/prog3.c
+test cases/common/63 foreach/test.json
+test cases/common/64 number arithmetic/meson.build
+test cases/common/65 string arithmetic/meson.build
+test cases/common/66 array arithmetic/meson.build
+test cases/common/67 arithmetic bidmas/meson.build
+test cases/common/68 build always/main.c
+test cases/common/68 build always/meson.build
+test cases/common/68 build always/version.c.in
+test cases/common/68 build always/version.h
+test cases/common/68 build always/version_gen.py
+test cases/common/69 vcstag/meson.build
+test cases/common/69 vcstag/tagprog.c
+test cases/common/69 vcstag/vcstag.c.in
+test cases/common/7 mixed/func.c
+test cases/common/7 mixed/main.cc
+test cases/common/7 mixed/meson.build
+test cases/common/70 modules/meson.build
+test cases/common/71 should fail/failing.c
+test cases/common/71 should fail/meson.build
+test cases/common/72 configure file in custom target/meson.build
+test cases/common/72 configure file in custom target/inc/confdata.in
+test cases/common/72 configure file in custom target/inc/meson.build
+test cases/common/72 configure file in custom target/src/meson.build
+test cases/common/72 configure file in custom target/src/mycompiler.py
+test cases/common/73 external test program/meson.build
+test cases/common/73 external test program/mytest.py
+test cases/common/74 ctarget dependency/gen1.py
+test cases/common/74 ctarget dependency/gen2.py
+test cases/common/74 ctarget dependency/input.dat
+test cases/common/74 ctarget dependency/meson.build
+test cases/common/75 shared subproject/a.c
+test cases/common/75 shared subproject/meson.build
+test cases/common/75 shared subproject/subprojects/B/b.c
+test cases/common/75 shared subproject/subprojects/B/meson.build
+test cases/common/75 shared subproject/subprojects/C/c.c
+test cases/common/75 shared subproject/subprojects/C/meson.build
+test cases/common/76 shared subproject 2/a.c
+test cases/common/76 shared subproject 2/meson.build
+test cases/common/76 shared subproject 2/subprojects/B/b.c
+test cases/common/76 shared subproject 2/subprojects/B/meson.build
+test cases/common/76 shared subproject 2/subprojects/C/c.c
+test cases/common/76 shared subproject 2/subprojects/C/meson.build
+test cases/common/77 file object/lib.c
+test cases/common/77 file object/meson.build
+test cases/common/77 file object/prog.c
+test cases/common/77 file object/subdir1/lib.c
+test cases/common/77 file object/subdir1/meson.build
+test cases/common/77 file object/subdir1/prog.c
+test cases/common/77 file object/subdir2/lib.c
+test cases/common/77 file object/subdir2/meson.build
+test cases/common/77 file object/subdir2/prog.c
+test cases/common/78 custom subproject dir/a.c
+test cases/common/78 custom subproject dir/meson.build
+test cases/common/78 custom subproject dir/custom_subproject_dir/B/b.c
+test cases/common/78 custom subproject dir/custom_subproject_dir/B/meson.build
+test cases/common/78 custom subproject dir/custom_subproject_dir/C/c.c
+test cases/common/78 custom subproject dir/custom_subproject_dir/C/meson.build
+test cases/common/79 has type/meson.build
+test cases/common/8 install/meson.build
+test cases/common/8 install/prog.c
+test cases/common/8 install/stat.c
+test cases/common/8 install/test.json
+test cases/common/80 extract from nested subdir/meson.build
+test cases/common/80 extract from nested subdir/src/meson.build
+test cases/common/80 extract from nested subdir/src/first/lib_first.c
+test cases/common/80 extract from nested subdir/src/first/meson.build
+test cases/common/80 extract from nested subdir/tst/meson.build
+test cases/common/80 extract from nested subdir/tst/first/exe_first.c
+test cases/common/80 extract from nested subdir/tst/first/meson.build
+test cases/common/81 internal dependency/meson.build
+test cases/common/81 internal dependency/proj1/meson.build
+test cases/common/81 internal dependency/proj1/proj1f1.c
+test cases/common/81 internal dependency/proj1/proj1f2.c
+test cases/common/81 internal dependency/proj1/proj1f3.c
+test cases/common/81 internal dependency/proj1/include/proj1.h
+test cases/common/81 internal dependency/src/main.c
+test cases/common/81 internal dependency/src/meson.build
+test cases/common/82 same basename/exe1.c
+test cases/common/82 same basename/exe2.c
+test cases/common/82 same basename/lib.c
+test cases/common/82 same basename/meson.build
+test cases/common/82 same basename/sharedsub/meson.build
+test cases/common/82 same basename/staticsub/meson.build
+test cases/common/83 declare dep/main.c
+test cases/common/83 declare dep/meson.build
+test cases/common/83 declare dep/entity/entity.h
+test cases/common/83 declare dep/entity/entity1.c
+test cases/common/83 declare dep/entity/entity2.c
+test cases/common/83 declare dep/entity/meson.build
+test cases/common/84 extract all/extractor.h
+test cases/common/84 extract all/four.c
+test cases/common/84 extract all/meson.build
+test cases/common/84 extract all/one.c
+test cases/common/84 extract all/prog.c
+test cases/common/84 extract all/three.c
+test cases/common/84 extract all/two.c
+test cases/common/85 add language/meson.build
+test cases/common/85 add language/prog.c
+test cases/common/85 add language/prog.cc
+test cases/common/86 identical target name in subproject/bar.c
+test cases/common/86 identical target name in subproject/meson.build
+test cases/common/86 identical target name in subproject/subprojects/foo/bar.c
+test cases/common/86 identical target name in subproject/subprojects/foo/meson.build
+test cases/common/87 plusassign/meson.build
+test cases/common/88 skip subdir/meson.build
+test cases/common/88 skip subdir/subdir1/meson.build
+test cases/common/88 skip subdir/subdir1/subdir2/meson.build
+test cases/common/89 private include/meson.build
+test cases/common/89 private include/stlib/compiler.py
+test cases/common/89 private include/stlib/foo1.def
+test cases/common/89 private include/stlib/foo2.def
+test cases/common/89 private include/stlib/meson.build
+test cases/common/89 private include/user/libuser.c
+test cases/common/89 private include/user/meson.build
+test cases/common/9 header install/meson.build
+test cases/common/9 header install/rootdir.h
+test cases/common/9 header install/subdir.h
+test cases/common/9 header install/test.json
+test cases/common/9 header install/sub/fileheader.h
+test cases/common/9 header install/sub/meson.build
+test cases/common/9 header install/vanishing_subdir/meson.build
+test cases/common/9 header install/vanishing_subdir/vanished.h
+test cases/common/90 default options/meson.build
+test cases/common/91 dep fallback/gensrc.py
+test cases/common/91 dep fallback/meson.build
+test cases/common/91 dep fallback/tester.c
+test cases/common/91 dep fallback/subprojects/boblib/bob.c
+test cases/common/91 dep fallback/subprojects/boblib/bob.h
+test cases/common/91 dep fallback/subprojects/boblib/genbob.py
+test cases/common/91 dep fallback/subprojects/boblib/meson.build
+test cases/common/91 dep fallback/subprojects/dummylib/meson.build
+test cases/common/92 default library/ef.cpp
+test cases/common/92 default library/ef.h
+test cases/common/92 default library/eftest.cpp
+test cases/common/92 default library/meson.build
+test cases/common/93 selfbuilt custom/data.dat
+test cases/common/93 selfbuilt custom/mainprog.cpp
+test cases/common/93 selfbuilt custom/meson.build
+test cases/common/93 selfbuilt custom/tool.cpp
+test cases/common/94 gen extra/meson.build
+test cases/common/94 gen extra/name.dat
+test cases/common/94 gen extra/name.l
+test cases/common/94 gen extra/plain.c
+test cases/common/94 gen extra/srcgen.py
+test cases/common/94 gen extra/srcgen2.py
+test cases/common/94 gen extra/srcgen3.py
+test cases/common/94 gen extra/upper.c
+test cases/common/95 benchmark/delayer.c
+test cases/common/95 benchmark/meson.build
+test cases/common/96 test workdir/meson.build
+test cases/common/96 test workdir/opener.c
+test cases/common/96 test workdir/subdir/checker.py
+test cases/common/96 test workdir/subdir/meson.build
+test cases/common/97 suites/exe1.c
+test cases/common/97 suites/exe2.c
+test cases/common/97 suites/meson.build
+test cases/common/97 suites/subprojects/sub/meson.build
+test cases/common/97 suites/subprojects/sub/sub1.c
+test cases/common/97 suites/subprojects/sub/sub2.c
+test cases/common/98 threads/meson.build
+test cases/common/98 threads/threadprog.c
+test cases/common/98 threads/threadprog.cpp
+test cases/common/99 manygen/depuser.c
+test cases/common/99 manygen/meson.build
+test cases/common/99 manygen/subdir/funcinfo.def
+test cases/common/99 manygen/subdir/manygen.py
+test cases/common/99 manygen/subdir/meson.build
+test cases/csharp/1 basic/meson.build
+test cases/csharp/1 basic/prog.cs
+test cases/csharp/1 basic/test.json
+test cases/csharp/1 basic/text.cs
+test cases/csharp/2 library/helper.cs
+test cases/csharp/2 library/meson.build
+test cases/csharp/2 library/prog.cs
+test cases/csharp/2 library/test.json
+test cases/csharp/3 resource/TestRes.resx
+test cases/csharp/3 resource/meson.build
+test cases/csharp/3 resource/resprog.cs
+test cases/csharp/4 external dep/hello.txt
+test cases/csharp/4 external dep/meson.build
+test cases/csharp/4 external dep/prog.cs
+test cases/csharp/4 external dep/test.json
+test cases/cuda/1 simple/meson.build
+test cases/cuda/1 simple/prog.cu
+test cases/cuda/10 cuda dependency/meson.build
+test cases/cuda/10 cuda dependency/c/meson.build
+test cases/cuda/10 cuda dependency/c/prog.c
+test cases/cuda/10 cuda dependency/cpp/meson.build
+test cases/cuda/10 cuda dependency/cpp/prog.cc
+test cases/cuda/10 cuda dependency/modules/meson.build
+test cases/cuda/10 cuda dependency/modules/prog.cc
+test cases/cuda/10 cuda dependency/version_reqs/meson.build
+test cases/cuda/10 cuda dependency/version_reqs/prog.cc
+test cases/cuda/11 cuda dependency (nvcc)/meson.build
+test cases/cuda/11 cuda dependency (nvcc)/modules/meson.build
+test cases/cuda/11 cuda dependency (nvcc)/modules/prog.cu
+test cases/cuda/11 cuda dependency (nvcc)/version_reqs/meson.build
+test cases/cuda/11 cuda dependency (nvcc)/version_reqs/prog.cu
+test cases/cuda/12 cuda dependency (mixed)/kernel.cu
+test cases/cuda/12 cuda dependency (mixed)/meson.build
+test cases/cuda/12 cuda dependency (mixed)/prog.cpp
+test cases/cuda/2 split/lib.cu
+test cases/cuda/2 split/main.cpp
+test cases/cuda/2 split/meson.build
+test cases/cuda/2 split/static/lib.cu
+test cases/cuda/2 split/static/libsta.cu
+test cases/cuda/2 split/static/main_static.cpp
+test cases/cuda/2 split/static/meson.build
+test cases/cuda/3 cudamodule/meson.build
+test cases/cuda/3 cudamodule/prog.cu
+test cases/cuda/4 shared/main.cu
+test cases/cuda/4 shared/meson.build
+test cases/cuda/4 shared/shared/kernels.cu
+test cases/cuda/4 shared/shared/kernels.h
+test cases/cuda/4 shared/shared/meson.build
+test cases/cuda/5 threads/main.cu
+test cases/cuda/5 threads/meson.build
+test cases/cuda/5 threads/shared/kernels.cu
+test cases/cuda/5 threads/shared/kernels.h
+test cases/cuda/5 threads/shared/meson.build
+test cases/cuda/6 std/main.cu
+test cases/cuda/6 std/meson.build
+test cases/cuda/7 static vs runtime/main.cu
+test cases/cuda/7 static vs runtime/meson.build
+test cases/cuda/8 release/main.cu
+test cases/cuda/8 release/meson.build
+test cases/cuda/9 optimize for space/main.cu
+test cases/cuda/9 optimize for space/meson.build
+test cases/d/1 simple/app.d
+test cases/d/1 simple/meson.build
+test cases/d/1 simple/test.json
+test cases/d/1 simple/utils.d
+test cases/d/10 d cpp/cppmain.cpp
+test cases/d/10 d cpp/dmain.d
+test cases/d/10 d cpp/libfile.cpp
+test cases/d/10 d cpp/libfile.d
+test cases/d/10 d cpp/meson.build
+test cases/d/11 dub/meson.build
+test cases/d/11 dub/test.d
+test cases/d/2 static library/app.d
+test cases/d/2 static library/libstuff.d
+test cases/d/2 static library/meson.build
+test cases/d/2 static library/test.json
+test cases/d/3 shared library/app.d
+test cases/d/3 shared library/libstuff.d
+test cases/d/3 shared library/libstuff.di
+test cases/d/3 shared library/lld-test.py
+test cases/d/3 shared library/meson.build
+test cases/d/3 shared library/test.json
+test cases/d/3 shared library/sub/libstuff.d
+test cases/d/3 shared library/sub/meson.build
+test cases/d/4 library versions/lib.d
+test cases/d/4 library versions/meson.build
+test cases/d/4 library versions/test.json
+test cases/d/5 mixed/app.d
+test cases/d/5 mixed/libstuff.c
+test cases/d/5 mixed/meson.build
+test cases/d/5 mixed/test.json
+test cases/d/6 unittest/app.d
+test cases/d/6 unittest/meson.build
+test cases/d/6 unittest/second_unit.d
+test cases/d/6 unittest/test.json
+test cases/d/7 multilib/app.d
+test cases/d/7 multilib/meson.build
+test cases/d/7 multilib/say1.d
+test cases/d/7 multilib/say1.di
+test cases/d/7 multilib/say2.d
+test cases/d/7 multilib/say2.di
+test cases/d/7 multilib/test.json
+test cases/d/8 has multi arguments/meson.build
+test cases/d/9 features/app.d
+test cases/d/9 features/extra.d
+test cases/d/9 features/meson.build
+test cases/d/9 features/data/food.txt
+test cases/d/9 features/data/people.txt
+test cases/failing build/1 vala c werror/meson.build
+test cases/failing build/1 vala c werror/prog.vala
+test cases/failing build/1 vala c werror/unused-var.c
+test cases/failing build/2 hidden symbol/bob.c
+test cases/failing build/2 hidden symbol/bob.h
+test cases/failing build/2 hidden symbol/bobuser.c
+test cases/failing build/2 hidden symbol/meson.build
+test cases/failing build/3 pch disabled/meson.build
+test cases/failing build/3 pch disabled/c/meson.build
+test cases/failing build/3 pch disabled/c/prog.c
+test cases/failing build/3 pch disabled/c/pch/prog.h
+test cases/failing build/3 pch disabled/c/pch/prog_pch.c
+test cases/failing build/4 cmake subproject isolation/main.cpp
+test cases/failing build/4 cmake subproject isolation/meson.build
+test cases/failing build/4 cmake subproject isolation/incDir/fileA.hpp
+test cases/failing build/4 cmake subproject isolation/subprojects/cmMod/CMakeLists.txt
+test cases/failing build/4 cmake subproject isolation/subprojects/cmMod/cmMod.cpp
+test cases/failing build/4 cmake subproject isolation/subprojects/cmMod/cmMod.hpp
+test cases/failing test/1 trivial/main.c
+test cases/failing test/1 trivial/meson.build
+test cases/failing test/2 signal/main.c
+test cases/failing test/2 signal/meson.build
+test cases/failing test/3 ambiguous/main.c
+test cases/failing test/3 ambiguous/meson.build
+test cases/failing test/3 ambiguous/test_runner.sh
+test cases/failing test/4 hard error/main.c
+test cases/failing test/4 hard error/meson.build
+test cases/failing test/5 tap tests/meson.build
+test cases/failing test/5 tap tests/tester.c
+test cases/failing test/6 xpass/meson.build
+test cases/failing test/6 xpass/xpass.c
+test cases/failing/1 project not first/meson.build
+test cases/failing/1 project not first/prog.c
+test cases/failing/10 out of bounds/meson.build
+test cases/failing/100 fallback consistency/meson.build
+test cases/failing/100 fallback consistency/subprojects/sub/meson.build
+test cases/failing/100 no native compiler/main.c
+test cases/failing/100 no native compiler/meson.build
+test cases/failing/100 subdir parse error/meson.build
+test cases/failing/100 subdir parse error/subdir/meson.build
+test cases/failing/101 invalid option file/meson.build
+test cases/failing/101 invalid option file/meson_options.txt
+test cases/failing/101 no lang/main.c
+test cases/failing/101 no lang/meson.build
+test cases/failing/11 object arithmetic/meson.build
+test cases/failing/12 string arithmetic/meson.build
+test cases/failing/13 array arithmetic/meson.build
+test cases/failing/14 invalid option name/meson.build
+test cases/failing/14 invalid option name/meson_options.txt
+test cases/failing/15 kwarg before arg/meson.build
+test cases/failing/15 kwarg before arg/prog.c
+test cases/failing/16 extract from subproject/main.c
+test cases/failing/16 extract from subproject/meson.build
+test cases/failing/16 extract from subproject/subprojects/sub_project/meson.build
+test cases/failing/16 extract from subproject/subprojects/sub_project/sub_lib.c
+test cases/failing/17 same target/file.c
+test cases/failing/17 same target/meson.build
+test cases/failing/18 wrong plusassign/meson.build
+test cases/failing/19 target clash/clash.c
+test cases/failing/19 target clash/meson.build
+test cases/failing/2 missing file/meson.build
+test cases/failing/20 version/meson.build
+test cases/failing/21 subver/meson.build
+test cases/failing/21 subver/subprojects/foo/meson.build
+test cases/failing/22 assert/meson.build
+test cases/failing/23 rel testdir/meson.build
+test cases/failing/23 rel testdir/simple.c
+test cases/failing/24 int conversion/meson.build
+test cases/failing/25 badlang/meson.build
+test cases/failing/26 output subdir/foo.in
+test cases/failing/26 output subdir/meson.build
+test cases/failing/26 output subdir/subdir/dummy.txt
+test cases/failing/27 noprog use/meson.build
+test cases/failing/28 no crossprop/meson.build
+test cases/failing/29 nested ternary/meson.build
+test cases/failing/3 missing subdir/meson.build
+test cases/failing/30 invalid man extension/foo.a1
+test cases/failing/30 invalid man extension/meson.build
+test cases/failing/31 no man extension/foo
+test cases/failing/31 no man extension/meson.build
+test cases/failing/32 exe static shared/meson.build
+test cases/failing/32 exe static shared/prog.c
+test cases/failing/32 exe static shared/shlib2.c
+test cases/failing/32 exe static shared/stat.c
+test cases/failing/33 non-root subproject/meson.build
+test cases/failing/33 non-root subproject/some/meson.build
+test cases/failing/34 dependency not-required then required/meson.build
+test cases/failing/35 project argument after target/exe.c
+test cases/failing/35 project argument after target/meson.build
+test cases/failing/36 pkgconfig dependency impossible conditions/meson.build
+test cases/failing/37 has function external dependency/meson.build
+test cases/failing/37 has function external dependency/mylib.c
+test cases/failing/38 libdir must be inside prefix/meson.build
+test cases/failing/38 libdir must be inside prefix/test.json
+test cases/failing/39 prefix absolute/meson.build
+test cases/failing/39 prefix absolute/test.json
+test cases/failing/4 missing meson.build/meson.build
+test cases/failing/4 missing meson.build/subdir/dummy.txt
+test cases/failing/40 kwarg assign/dummy.c
+test cases/failing/40 kwarg assign/meson.build
+test cases/failing/40 kwarg assign/prog.c
+test cases/failing/41 custom target plainname many inputs/1.txt
+test cases/failing/41 custom target plainname many inputs/2.txt
+test cases/failing/41 custom target plainname many inputs/catfiles.py
+test cases/failing/41 custom target plainname many inputs/meson.build
+test cases/failing/42 custom target outputs not matching install_dirs/generator.py
+test cases/failing/42 custom target outputs not matching install_dirs/meson.build
+test cases/failing/42 custom target outputs not matching install_dirs/test.json
+test cases/failing/43 project name colon/meson.build
+test cases/failing/44 abs subdir/meson.build
+test cases/failing/44 abs subdir/bob/meson.build
+test cases/failing/45 abspath to srcdir/meson.build
+test cases/failing/46 pkgconfig variables reserved/meson.build
+test cases/failing/46 pkgconfig variables reserved/simple.c
+test cases/failing/46 pkgconfig variables reserved/simple.h
+test cases/failing/47 pkgconfig variables zero length/meson.build
+test cases/failing/47 pkgconfig variables zero length/simple.c
+test cases/failing/47 pkgconfig variables zero length/simple.h
+test cases/failing/48 pkgconfig variables zero length value/meson.build
+test cases/failing/48 pkgconfig variables zero length value/simple.c
+test cases/failing/48 pkgconfig variables zero length value/simple.h
+test cases/failing/49 pkgconfig variables not key value/meson.build
+test cases/failing/49 pkgconfig variables not key value/simple.c
+test cases/failing/49 pkgconfig variables not key value/simple.h
+test cases/failing/5 misplaced option/meson.build
+test cases/failing/50 executable comparison/meson.build
+test cases/failing/50 executable comparison/prog.c
+test cases/failing/51 inconsistent comparison/meson.build
+test cases/failing/52 slashname/meson.build
+test cases/failing/52 slashname/sub/meson.build
+test cases/failing/52 slashname/sub/prog.c
+test cases/failing/53 reserved meson prefix/meson.build
+test cases/failing/53 reserved meson prefix/meson-foo/meson.build
+test cases/failing/54 wrong shared crate type/foo.rs
+test cases/failing/54 wrong shared crate type/meson.build
+test cases/failing/55 wrong static crate type/foo.rs
+test cases/failing/55 wrong static crate type/meson.build
+test cases/failing/56 or on new line/meson.build
+test cases/failing/56 or on new line/meson_options.txt
+test cases/failing/57 kwarg in module/meson.build
+test cases/failing/58 link with executable/meson.build
+test cases/failing/58 link with executable/module.c
+test cases/failing/58 link with executable/prog.c
+test cases/failing/59 assign custom target index/meson.build
+test cases/failing/6 missing incdir/meson.build
+test cases/failing/60 getoption prefix/meson.build
+test cases/failing/60 getoption prefix/subprojects/abc/meson.build
+test cases/failing/60 getoption prefix/subprojects/abc/meson_options.txt
+test cases/failing/61 bad option argument/meson.build
+test cases/failing/61 bad option argument/meson_options.txt
+test cases/failing/62 subproj filegrab/meson.build
+test cases/failing/62 subproj filegrab/prog.c
+test cases/failing/62 subproj filegrab/subprojects/a/meson.build
+test cases/failing/63 grab subproj/meson.build
+test cases/failing/63 grab subproj/subprojects/foo/meson.build
+test cases/failing/63 grab subproj/subprojects/foo/sub.c
+test cases/failing/64 grab sibling/meson.build
+test cases/failing/64 grab sibling/subprojects/a/meson.build
+test cases/failing/64 grab sibling/subprojects/b/meson.build
+test cases/failing/64 grab sibling/subprojects/b/sneaky.c
+test cases/failing/65 string as link target/meson.build
+test cases/failing/65 string as link target/prog.c
+test cases/failing/66 dependency not-found and required/meson.build
+test cases/failing/67 subproj different versions/main.c
+test cases/failing/67 subproj different versions/meson.build
+test cases/failing/67 subproj different versions/subprojects/a/a.c
+test cases/failing/67 subproj different versions/subprojects/a/a.h
+test cases/failing/67 subproj different versions/subprojects/a/meson.build
+test cases/failing/67 subproj different versions/subprojects/b/b.c
+test cases/failing/67 subproj different versions/subprojects/b/b.h
+test cases/failing/67 subproj different versions/subprojects/b/meson.build
+test cases/failing/67 subproj different versions/subprojects/c/c.h
+test cases/failing/67 subproj different versions/subprojects/c/meson.build
+test cases/failing/68 wrong boost module/meson.build
+test cases/failing/69 install_data rename bad size/file1.txt
+test cases/failing/69 install_data rename bad size/file2.txt
+test cases/failing/69 install_data rename bad size/meson.build
+test cases/failing/7 go to subproject/meson.build
+test cases/failing/7 go to subproject/subprojects/meson.build
+test cases/failing/70 skip only subdir/meson.build
+test cases/failing/70 skip only subdir/subdir/meson.build
+test cases/failing/72 dual override/meson.build
+test cases/failing/72 dual override/overrides.py
+test cases/failing/73 override used/meson.build
+test cases/failing/73 override used/other.py
+test cases/failing/73 override used/something.py
+test cases/failing/74 run_command unclean exit/meson.build
+test cases/failing/74 run_command unclean exit/returncode.py
+test cases/failing/75 int literal leading zero/meson.build
+test cases/failing/76 configuration immutable/input
+test cases/failing/76 configuration immutable/meson.build
+test cases/failing/77 link with shared module on osx/meson.build
+test cases/failing/77 link with shared module on osx/module.c
+test cases/failing/77 link with shared module on osx/prog.c
+test cases/failing/78 non ascii in ascii encoded configure file/config9.h.in
+test cases/failing/78 non ascii in ascii encoded configure file/meson.build
+test cases/failing/79 subproj dependency not-found and required/meson.build
+test cases/failing/8 recursive/meson.build
+test cases/failing/8 recursive/subprojects/a/meson.build
+test cases/failing/8 recursive/subprojects/b/meson.build
+test cases/failing/80 unfound run/meson.build
+test cases/failing/81 framework dependency with version/meson.build
+test cases/failing/82 override exe config/foo.c
+test cases/failing/82 override exe config/meson.build
+test cases/failing/83 gl dependency with version/meson.build
+test cases/failing/84 threads dependency with version/meson.build
+test cases/failing/85 gtest dependency with version/meson.build
+test cases/failing/86 dub libray/meson.build
+test cases/failing/87 dub executable/meson.build
+test cases/failing/88 dub compiler/meson.build
+test cases/failing/89 subproj not-found dep/meson.build
+test cases/failing/89 subproj not-found dep/subprojects/somesubproj/meson.build
+test cases/failing/9 missing extra file/meson.build
+test cases/failing/9 missing extra file/prog.c
+test cases/failing/90 invalid configure file/input
+test cases/failing/90 invalid configure file/meson.build
+test cases/failing/91 kwarg dupe/meson.build
+test cases/failing/91 kwarg dupe/prog.c
+test cases/failing/92 missing pch file/meson.build
+test cases/failing/92 missing pch file/prog.c
+test cases/failing/93 pch source different folder/meson.build
+test cases/failing/93 pch source different folder/prog.c
+test cases/failing/93 pch source different folder/include/pch.h
+test cases/failing/93 pch source different folder/src/pch.c
+test cases/failing/94 vala without c/meson.build
+test cases/failing/95 unknown config tool/meson.build
+test cases/failing/96 custom target install data/Info.plist.cpp
+test cases/failing/96 custom target install data/meson.build
+test cases/failing/96 custom target install data/preproc.py
+test cases/failing/97 add dict non string key/meson.build
+test cases/failing/98 add dict duplicate keys/meson.build
+test cases/failing/99 fallback consistency/meson.build
+test cases/failing/99 fallback consistency/subprojects/sub/meson.build
+test cases/failing/99 no native prop/meson.build
+test cases/fortran/1 basic/meson.build
+test cases/fortran/1 basic/simple.f90
+test cases/fortran/10 find library/gzip.f90
+test cases/fortran/10 find library/main.f90
+test cases/fortran/10 find library/meson.build
+test cases/fortran/11 compiles links runs/meson.build
+test cases/fortran/12 submodule/a1.f90
+test cases/fortran/12 submodule/a2.f90
+test cases/fortran/12 submodule/a3.f90
+test cases/fortran/12 submodule/child.f90
+test cases/fortran/12 submodule/meson.build
+test cases/fortran/12 submodule/parent.f90
+test cases/fortran/13 coarray/main.f90
+test cases/fortran/13 coarray/meson.build
+test cases/fortran/14 fortran links c/clib.c
+test cases/fortran/14 fortran links c/clib.def
+test cases/fortran/14 fortran links c/f_call_c.f90
+test cases/fortran/14 fortran links c/meson.build
+test cases/fortran/15 include/inc1.f90
+test cases/fortran/15 include/inc2.f90
+test cases/fortran/15 include/include_hierarchy.f90
+test cases/fortran/15 include/include_syntax.f90
+test cases/fortran/15 include/include_tests.f90
+test cases/fortran/15 include/meson.build
+test cases/fortran/15 include/timestwo.f90
+test cases/fortran/16 openmp/main.f90
+test cases/fortran/16 openmp/meson.build
+test cases/fortran/17 add_languages/meson.build
+test cases/fortran/18 first_arg/meson.build
+test cases/fortran/19 fortran_std/legacy.f
+test cases/fortran/19 fortran_std/meson.build
+test cases/fortran/19 fortran_std/std2003.f90
+test cases/fortran/19 fortran_std/std2008.f90
+test cases/fortran/19 fortran_std/std2018.f90
+test cases/fortran/19 fortran_std/std95.f90
+test cases/fortran/2 modules/comment_mod.f90
+test cases/fortran/2 modules/meson.build
+test cases/fortran/2 modules/mymod.f90
+test cases/fortran/2 modules/prog.f90
+test cases/fortran/20 buildtype/main.f90
+test cases/fortran/20 buildtype/meson.build
+test cases/fortran/3 module procedure/meson.build
+test cases/fortran/3 module procedure/use_syntax.f90
+test cases/fortran/4 self dependency/meson.build
+test cases/fortran/4 self dependency/selfdep.f90
+test cases/fortran/4 self dependency/src/selfdep_mod.f90
+test cases/fortran/4 self dependency/subprojects/sub1/main.f90
+test cases/fortran/4 self dependency/subprojects/sub1/meson.build
+test cases/fortran/5 static/main.f90
+test cases/fortran/5 static/meson.build
+test cases/fortran/5 static/static_hello.f90
+test cases/fortran/6 dynamic/dynamic.f90
+test cases/fortran/6 dynamic/main.f90
+test cases/fortran/6 dynamic/meson.build
+test cases/fortran/7 generated/meson.build
+test cases/fortran/7 generated/mod1.fpp
+test cases/fortran/7 generated/mod2.fpp
+test cases/fortran/7 generated/prog.f90
+test cases/fortran/8 module names/meson.build
+test cases/fortran/8 module names/mod1.f90
+test cases/fortran/8 module names/mod2.f90
+test cases/fortran/8 module names/test.f90
+test cases/fortran/9 cpp/fortran.f
+test cases/fortran/9 cpp/main.cpp
+test cases/fortran/9 cpp/meson.build
+test cases/fpga/1 simple/meson.build
+test cases/fpga/1 simple/spin.pcf
+test cases/fpga/1 simple/spin.v
+test cases/frameworks/1 boost/extralib.cpp
+test cases/frameworks/1 boost/linkexe.cc
+test cases/frameworks/1 boost/meson.build
+test cases/frameworks/1 boost/meson_options.txt
+test cases/frameworks/1 boost/nomod.cpp
+test cases/frameworks/1 boost/python_module.cpp
+test cases/frameworks/1 boost/test.json
+test cases/frameworks/1 boost/test_python_module.py
+test cases/frameworks/1 boost/unit_test.cpp
+test cases/frameworks/1 boost/partial_dep/foo.cpp
+test cases/frameworks/1 boost/partial_dep/foo.hpp
+test cases/frameworks/1 boost/partial_dep/main.cpp
+test cases/frameworks/1 boost/partial_dep/meson.build
+test cases/frameworks/10 gtk-doc/meson.build
+test cases/frameworks/10 gtk-doc/test.json
+test cases/frameworks/10 gtk-doc/doc/foobar-docs.sgml
+test cases/frameworks/10 gtk-doc/doc/meson.build
+test cases/frameworks/10 gtk-doc/doc/version.xml.in
+test cases/frameworks/10 gtk-doc/doc/foobar1/foobar-docs.sgml
+test cases/frameworks/10 gtk-doc/doc/foobar1/meson.build
+test cases/frameworks/10 gtk-doc/doc/foobar2/foobar-docs.sgml
+test cases/frameworks/10 gtk-doc/doc/foobar2/meson.build
+test cases/frameworks/10 gtk-doc/doc/foobar3/foobar-docs.sgml
+test cases/frameworks/10 gtk-doc/doc/foobar3/meson.build
+test cases/frameworks/10 gtk-doc/doc/foobar4/foobar-docs.sgml
+test cases/frameworks/10 gtk-doc/doc/foobar4/meson.build
+test cases/frameworks/10 gtk-doc/include/foo-version.h.in
+test cases/frameworks/10 gtk-doc/include/foo.h
+test cases/frameworks/10 gtk-doc/include/generate-enums-docbook.py
+test cases/frameworks/10 gtk-doc/include/meson.build
+test cases/frameworks/11 gir subproject/meson.build
+test cases/frameworks/11 gir subproject/test.json
+test cases/frameworks/11 gir subproject/gir/meson-subsample.c
+test cases/frameworks/11 gir subproject/gir/meson-subsample.h
+test cases/frameworks/11 gir subproject/gir/meson.build
+test cases/frameworks/11 gir subproject/gir/prog.c
+test cases/frameworks/11 gir subproject/gir/prog.py
+test cases/frameworks/11 gir subproject/subprojects/mesongir/meson-sample.c
+test cases/frameworks/11 gir subproject/subprojects/mesongir/meson-sample.h
+test cases/frameworks/11 gir subproject/subprojects/mesongir/meson.build
+test cases/frameworks/12 multiple gir/meson.build
+test cases/frameworks/12 multiple gir/test.json
+test cases/frameworks/12 multiple gir/gir/meson-subsample.c
+test cases/frameworks/12 multiple gir/gir/meson-subsample.h
+test cases/frameworks/12 multiple gir/gir/meson.build
+test cases/frameworks/12 multiple gir/gir/prog.c
+test cases/frameworks/12 multiple gir/mesongir/meson-sample.c
+test cases/frameworks/12 multiple gir/mesongir/meson-sample.h.in
+test cases/frameworks/12 multiple gir/mesongir/meson.build
+test cases/frameworks/13 yelp/meson.build
+test cases/frameworks/13 yelp/test.json
+test cases/frameworks/13 yelp/help/LINGUAS
+test cases/frameworks/13 yelp/help/meson.build
+test cases/frameworks/13 yelp/help/C/index.page
+test cases/frameworks/13 yelp/help/C/media/test.txt
+test cases/frameworks/13 yelp/help/de/de.po
+test cases/frameworks/13 yelp/help/es/es.po
+test cases/frameworks/13 yelp/help/es/media/test.txt
+test cases/frameworks/14 doxygen/meson.build
+test cases/frameworks/14 doxygen/test.json
+test cases/frameworks/14 doxygen/doc/Doxyfile.in
+test cases/frameworks/14 doxygen/doc/meson.build
+test cases/frameworks/14 doxygen/include/comedian.h
+test cases/frameworks/14 doxygen/include/spede.h
+test cases/frameworks/14 doxygen/src/spede.cpp
+test cases/frameworks/15 llvm/meson.build
+test cases/frameworks/15 llvm/sum.c
+test cases/frameworks/16 sdl2/meson.build
+test cases/frameworks/16 sdl2/sdl2prog.c
+test cases/frameworks/17 mpi/main.c
+test cases/frameworks/17 mpi/main.cpp
+test cases/frameworks/17 mpi/main.f90
+test cases/frameworks/17 mpi/meson.build
+test cases/frameworks/17 mpi/meson_options.txt
+test cases/frameworks/18 vulkan/meson.build
+test cases/frameworks/18 vulkan/vulkanprog.c
+test cases/frameworks/19 pcap/meson.build
+test cases/frameworks/19 pcap/pcap_prog.c
+test cases/frameworks/2 gtest/meson.build
+test cases/frameworks/2 gtest/test.cc
+test cases/frameworks/2 gtest/test_nomain.cc
+test cases/frameworks/20 cups/cups_prog.c
+test cases/frameworks/20 cups/meson.build
+test cases/frameworks/21 libwmf/libwmf_prog.c
+test cases/frameworks/21 libwmf/meson.build
+test cases/frameworks/22 gir link order/meson-sample.c
+test cases/frameworks/22 gir link order/meson-sample.h
+test cases/frameworks/22 gir link order/meson.build
+test cases/frameworks/22 gir link order/fake-gthread/fake-gthread.c
+test cases/frameworks/22 gir link order/fake-gthread/fake-gthread.h
+test cases/frameworks/22 gir link order/fake-gthread/meson.build
+test cases/frameworks/22 gir link order/get-prgname/get-prgname.c
+test cases/frameworks/22 gir link order/get-prgname/get-prgname.h
+test cases/frameworks/22 gir link order/get-prgname/meson.build
+test cases/frameworks/23 hotdoc/meson.build
+test cases/frameworks/23 hotdoc/test.json
+test cases/frameworks/23 hotdoc/doc/index.md
+test cases/frameworks/23 hotdoc/doc/meson.build
+test cases/frameworks/23 hotdoc/doc/sitemap.txt
+test cases/frameworks/24 libgcrypt/libgcrypt_prog.c
+test cases/frameworks/24 libgcrypt/meson.build
+test cases/frameworks/25 hdf5/main.c
+test cases/frameworks/25 hdf5/main.cpp
+test cases/frameworks/25 hdf5/main.f90
+test cases/frameworks/25 hdf5/meson.build
+test cases/frameworks/26 netcdf/main.c
+test cases/frameworks/26 netcdf/main.cpp
+test cases/frameworks/26 netcdf/main.f90
+test cases/frameworks/26 netcdf/meson.build
+test cases/frameworks/27 gpgme/gpgme_prog.c
+test cases/frameworks/27 gpgme/meson.build
+test cases/frameworks/28 gir link order 2/meson-sample.c
+test cases/frameworks/28 gir link order 2/meson-sample.h
+test cases/frameworks/28 gir link order 2/meson.build
+test cases/frameworks/28 gir link order 2/samelibname/meson.build
+test cases/frameworks/29 blocks/main.c
+test cases/frameworks/29 blocks/meson.build
+test cases/frameworks/3 gmock/gmocktest.cc
+test cases/frameworks/3 gmock/meson.build
+test cases/frameworks/30 scalapack/main.c
+test cases/frameworks/30 scalapack/main.f90
+test cases/frameworks/30 scalapack/meson.build
+test cases/frameworks/30 scalapack/cmake/FindSCALAPACK.cmake
+test cases/frameworks/31 curses/main.c
+test cases/frameworks/31 curses/meson.build
+test cases/frameworks/4 qt/main.cpp
+test cases/frameworks/4 qt/mainWindow.cpp
+test cases/frameworks/4 qt/mainWindow.h
+test cases/frameworks/4 qt/mainWindow.ui
+test cases/frameworks/4 qt/manualinclude.cpp
+test cases/frameworks/4 qt/manualinclude.h
+test cases/frameworks/4 qt/meson.build
+test cases/frameworks/4 qt/meson_options.txt
+test cases/frameworks/4 qt/q5core.cpp
+test cases/frameworks/4 qt/qt4core_fr.ts
+test cases/frameworks/4 qt/qt5core_fr.ts
+test cases/frameworks/4 qt/qtinterface.cpp
+test cases/frameworks/4 qt/stuff.qrc
+test cases/frameworks/4 qt/stuff2.qrc
+test cases/frameworks/4 qt/thing.png
+test cases/frameworks/4 qt/thing2.png
+test cases/frameworks/4 qt/plugin/plugin.cpp
+test cases/frameworks/4 qt/plugin/plugin.h
+test cases/frameworks/4 qt/plugin/plugin.json
+test cases/frameworks/4 qt/pluginInterface/plugin_if.h
+test cases/frameworks/4 qt/subfolder/generator.py
+test cases/frameworks/4 qt/subfolder/main.cpp
+test cases/frameworks/4 qt/subfolder/meson.build
+test cases/frameworks/4 qt/subfolder/resources/stuff3.qrc
+test cases/frameworks/4 qt/subfolder/resources/stuff4.qrc.in
+test cases/frameworks/4 qt/subfolder/resources/thing.png
+test cases/frameworks/5 protocol buffers/defs.proto
+test cases/frameworks/5 protocol buffers/main.cpp
+test cases/frameworks/5 protocol buffers/meson.build
+test cases/frameworks/5 protocol buffers/asubdir/defs.proto
+test cases/frameworks/5 protocol buffers/asubdir/main.cpp
+test cases/frameworks/5 protocol buffers/asubdir/meson.build
+test cases/frameworks/5 protocol buffers/sidedir/meson.build
+test cases/frameworks/5 protocol buffers/sidedir/sideprog.cpp
+test cases/frameworks/5 protocol buffers/withpath/meson.build
+test cases/frameworks/5 protocol buffers/withpath/pathprog.cpp
+test cases/frameworks/5 protocol buffers/withpath/com/mesonbuild/simple.proto
+test cases/frameworks/5 protocol buffers/withpath/com/mesonbuild/subsite/complex.proto
+test cases/frameworks/6 gettext/meson.build
+test cases/frameworks/6 gettext/test.json
+test cases/frameworks/6 gettext/data/meson.build
+test cases/frameworks/6 gettext/data/test.desktop.in
+test cases/frameworks/6 gettext/data/test2.desktop.in
+test cases/frameworks/6 gettext/data/data3/meson.build
+test cases/frameworks/6 gettext/data/data3/test.desktop.in
+test cases/frameworks/6 gettext/data2/meson.build
+test cases/frameworks/6 gettext/data2/test.desktop.in
+test cases/frameworks/6 gettext/generated/desktopgenerator.py
+test cases/frameworks/6 gettext/generated/meson.build
+test cases/frameworks/6 gettext/generated/something.desktop.in.in
+test cases/frameworks/6 gettext/po/LINGUAS
+test cases/frameworks/6 gettext/po/POTFILES
+test cases/frameworks/6 gettext/po/de.po
+test cases/frameworks/6 gettext/po/fi.po
+test cases/frameworks/6 gettext/po/intltest.pot
+test cases/frameworks/6 gettext/po/meson.build
+test cases/frameworks/6 gettext/po/ru.po
+test cases/frameworks/6 gettext/src/intlmain.c
+test cases/frameworks/6 gettext/src/meson.build
+test cases/frameworks/7 gnome/meson.build
+test cases/frameworks/7 gnome/test.json
+test cases/frameworks/7 gnome/gdbus/gdbusprog.c
+test cases/frameworks/7 gnome/gdbus/meson.build
+test cases/frameworks/7 gnome/gdbus/data/com.example.Sample.xml
+test cases/frameworks/7 gnome/genmarshal/main.c
+test cases/frameworks/7 gnome/genmarshal/marshaller.list
+test cases/frameworks/7 gnome/genmarshal/meson.build
+test cases/frameworks/7 gnome/gir/meson-sample.c
+test cases/frameworks/7 gnome/gir/meson-sample.h
+test cases/frameworks/7 gnome/gir/meson-sample2.c
+test cases/frameworks/7 gnome/gir/meson-sample2.h
+test cases/frameworks/7 gnome/gir/meson.build
+test cases/frameworks/7 gnome/gir/prog.c
+test cases/frameworks/7 gnome/gir/prog.py
+test cases/frameworks/7 gnome/gir/dep1/dep1.c
+test cases/frameworks/7 gnome/gir/dep1/dep1.h
+test cases/frameworks/7 gnome/gir/dep1/meson.build
+test cases/frameworks/7 gnome/gir/dep1/dep2/dep2.c
+test cases/frameworks/7 gnome/gir/dep1/dep2/dep2.h
+test cases/frameworks/7 gnome/gir/dep1/dep2/meson.build
+test cases/frameworks/7 gnome/gir/dep1/dep3/dep3.c
+test cases/frameworks/7 gnome/gir/dep1/dep3/dep3.h
+test cases/frameworks/7 gnome/gir/dep1/dep3/meson.build
+test cases/frameworks/7 gnome/mkenums/enums.c.in
+test cases/frameworks/7 gnome/mkenums/enums.h.in
+test cases/frameworks/7 gnome/mkenums/enums2.c.in
+test cases/frameworks/7 gnome/mkenums/enums2.h.in
+test cases/frameworks/7 gnome/mkenums/main.c
+test cases/frameworks/7 gnome/mkenums/main4.c
+test cases/frameworks/7 gnome/mkenums/main5.c
+test cases/frameworks/7 gnome/mkenums/meson-decls.h
+test cases/frameworks/7 gnome/mkenums/meson-sample.h
+test cases/frameworks/7 gnome/mkenums/meson.build
+test cases/frameworks/7 gnome/resources/copyfile.py
+test cases/frameworks/7 gnome/resources/generated-main.c
+test cases/frameworks/7 gnome/resources/generated.gresource.xml
+test cases/frameworks/7 gnome/resources/meson.build
+test cases/frameworks/7 gnome/resources/myresource.gresource.xml
+test cases/frameworks/7 gnome/resources/res3.txt
+test cases/frameworks/7 gnome/resources/resources.py
+test cases/frameworks/7 gnome/resources/simple-main.c
+test cases/frameworks/7 gnome/resources/simple.gresource.xml
+test cases/frameworks/7 gnome/resources-data/meson.build
+test cases/frameworks/7 gnome/resources-data/res1.txt
+test cases/frameworks/7 gnome/resources-data/res3.txt.in
+test cases/frameworks/7 gnome/resources-data/subdir/meson.build
+test cases/frameworks/7 gnome/resources-data/subdir/res2.txt
+test cases/frameworks/7 gnome/resources-data/subdir/res4.txt.in
+test cases/frameworks/7 gnome/schemas/com.github.meson.gschema.xml
+test cases/frameworks/7 gnome/schemas/meson.build
+test cases/frameworks/7 gnome/schemas/schemaprog.c
+test cases/frameworks/8 flex/lexer.l
+test cases/frameworks/8 flex/meson.build
+test cases/frameworks/8 flex/parser.y
+test cases/frameworks/8 flex/prog.c
+test cases/frameworks/8 flex/test.txt
+test cases/frameworks/9 wxwidgets/mainwin.h
+test cases/frameworks/9 wxwidgets/meson.build
+test cases/frameworks/9 wxwidgets/wxprog.cpp
+test cases/frameworks/9 wxwidgets/wxstc.cpp
+test cases/java/1 basic/meson.build
+test cases/java/1 basic/test.json
+test cases/java/1 basic/com/mesonbuild/Simple.java
+test cases/java/2 subdir/meson.build
+test cases/java/2 subdir/sub/meson.build
+test cases/java/2 subdir/sub/com/mesonbuild/Simple.java
+test cases/java/2 subdir/sub/com/mesonbuild/TextPrinter.java
+test cases/java/3 args/meson.build
+test cases/java/3 args/com/mesonbuild/Simple.java
+test cases/java/4 inner class/meson.build
+test cases/java/4 inner class/com/mesonbuild/Simple.java
+test cases/java/5 includedirs/meson.build
+test cases/java/5 includedirs/com/mesonbuild/Simple.java
+test cases/java/5 includedirs/com/mesonbuild/TextPrinter.java
+test cases/java/6 codegen/meson.build
+test cases/java/6 codegen/com/mesonbuild/Config.java.in
+test cases/java/6 codegen/com/mesonbuild/Simple.java
+test cases/java/6 codegen/com/mesonbuild/TextPrinter.java
+test cases/java/6 codegen/com/mesonbuild/meson.build
+test cases/java/7 linking/meson.build
+test cases/java/7 linking/com/mesonbuild/Linking.java
+test cases/java/7 linking/sub/meson.build
+test cases/java/7 linking/sub/com/mesonbuild/SimpleLib.java
+test cases/java/8 codegen custom target/meson.build
+test cases/java/8 codegen custom target/com/mesonbuild/Config.java.in
+test cases/java/8 codegen custom target/com/mesonbuild/Simple.java
+test cases/java/8 codegen custom target/com/mesonbuild/TextPrinter.java
+test cases/java/8 codegen custom target/com/mesonbuild/meson.build
+test cases/kconfig/1 basic/.config
+test cases/kconfig/1 basic/meson.build
+test cases/kconfig/2 subdir/.config
+test cases/kconfig/2 subdir/meson.build
+test cases/kconfig/2 subdir/dir/meson.build
+test cases/kconfig/3 load_config files/meson.build
+test cases/kconfig/3 load_config files/dir/config
+test cases/kconfig/3 load_config files/dir/meson.build
+test cases/kconfig/4 load_config builddir/config
+test cases/kconfig/4 load_config builddir/meson.build
+test cases/linuxlike/1 pkg-config/meson.build
+test cases/linuxlike/1 pkg-config/prog-checkver.c
+test cases/linuxlike/1 pkg-config/prog.c
+test cases/linuxlike/1 pkg-config/incdir/myinc.h
+test cases/linuxlike/10 large file support/meson.build
+test cases/linuxlike/11 runpath rpath ldlibrarypath/lib.c
+test cases/linuxlike/11 runpath rpath ldlibrarypath/main.c
+test cases/linuxlike/11 runpath rpath ldlibrarypath/meson.build
+test cases/linuxlike/11 runpath rpath ldlibrarypath/lib1/meson.build
+test cases/linuxlike/11 runpath rpath ldlibrarypath/lib2/meson.build
+test cases/linuxlike/12 subprojects in subprojects/main.c
+test cases/linuxlike/12 subprojects in subprojects/meson.build
+test cases/linuxlike/12 subprojects in subprojects/subprojects/a/a.c
+test cases/linuxlike/12 subprojects in subprojects/subprojects/a/a.h
+test cases/linuxlike/12 subprojects in subprojects/subprojects/a/meson.build
+test cases/linuxlike/12 subprojects in subprojects/subprojects/b/b.c
+test cases/linuxlike/12 subprojects in subprojects/subprojects/b/b.h
+test cases/linuxlike/12 subprojects in subprojects/subprojects/b/meson.build
+test cases/linuxlike/12 subprojects in subprojects/subprojects/c/c.h
+test cases/linuxlike/12 subprojects in subprojects/subprojects/c/meson.build
+test cases/linuxlike/13 cmake dependency/meson.build
+test cases/linuxlike/13 cmake dependency/prog-checkver.c
+test cases/linuxlike/13 cmake dependency/prog.c
+test cases/linuxlike/13 cmake dependency/test.json
+test cases/linuxlike/13 cmake dependency/testFlagSet.c
+test cases/linuxlike/13 cmake dependency/cmake/FindImportedTarget.cmake
+test cases/linuxlike/13 cmake dependency/cmake/FindSomethingLikeZLIB.cmake
+test cases/linuxlike/13 cmake dependency/cmake_pref_env/lib/cmake/cmMesonTestDep/cmMesonTestDepConfig.cmake
+test cases/linuxlike/13 cmake dependency/incdir/myinc.h
+test cases/linuxlike/14 static dynamic linkage/main.c
+test cases/linuxlike/14 static dynamic linkage/meson.build
+test cases/linuxlike/14 static dynamic linkage/verify_static.py
+test cases/linuxlike/15 ld binary/meson.build
+test cases/linuxlike/2 external library/meson.build
+test cases/linuxlike/2 external library/prog.c
+test cases/linuxlike/3 linker script/bob.c
+test cases/linuxlike/3 linker script/bob.h
+test cases/linuxlike/3 linker script/bob.map
+test cases/linuxlike/3 linker script/bob.map.in
+test cases/linuxlike/3 linker script/copy.py
+test cases/linuxlike/3 linker script/meson.build
+test cases/linuxlike/3 linker script/prog.c
+test cases/linuxlike/3 linker script/sub/foo.map
+test cases/linuxlike/3 linker script/sub/meson.build
+test cases/linuxlike/4 extdep static lib/lib.c
+test cases/linuxlike/4 extdep static lib/meson.build
+test cases/linuxlike/4 extdep static lib/prog.c
+test cases/linuxlike/5 dependency versions/meson.build
+test cases/linuxlike/5 dependency versions/subprojects/fakezlib/meson.build
+test cases/linuxlike/5 dependency versions/subprojects/somelib/lib.c
+test cases/linuxlike/5 dependency versions/subprojects/somelib/meson.build
+test cases/linuxlike/5 dependency versions/subprojects/somelibnover/lib.c
+test cases/linuxlike/5 dependency versions/subprojects/somelibnover/meson.build
+test cases/linuxlike/5 dependency versions/subprojects/somelibver/lib.c
+test cases/linuxlike/5 dependency versions/subprojects/somelibver/meson.build
+test cases/linuxlike/6 subdir include order/meson.build
+test cases/linuxlike/6 subdir include order/prog.c
+test cases/linuxlike/6 subdir include order/subdir/glib.h
+test cases/linuxlike/7 library versions/exe.orig.c
+test cases/linuxlike/7 library versions/lib.c
+test cases/linuxlike/7 library versions/meson.build
+test cases/linuxlike/7 library versions/test.json
+test cases/linuxlike/8 subproject library install/meson.build
+test cases/linuxlike/8 subproject library install/test.json
+test cases/linuxlike/8 subproject library install/subprojects/sublib/meson.build
+test cases/linuxlike/8 subproject library install/subprojects/sublib/sublib.c
+test cases/linuxlike/8 subproject library install/subprojects/sublib/include/subdefs.h
+test cases/linuxlike/9 compiler checks with dependencies/meson.build
+test cases/nasm/1 configure file/hello.asm
+test cases/nasm/1 configure file/meson.build
+test cases/objc/1 simple/meson.build
+test cases/objc/1 simple/prog.m
+test cases/objc/2 nsstring/meson.build
+test cases/objc/2 nsstring/stringprog.m
+test cases/objc/3 objc args/meson.build
+test cases/objc/3 objc args/prog.m
+test cases/objc/4 c++ project objc subproject/master.cpp
+test cases/objc/4 c++ project objc subproject/meson.build
+test cases/objc/4 c++ project objc subproject/subprojects/foo/foo.m
+test cases/objc/4 c++ project objc subproject/subprojects/foo/meson.build
+test cases/objcpp/1 simple/meson.build
+test cases/objcpp/1 simple/prog.mm
+test cases/objcpp/2 objc++ args/meson.build
+test cases/objcpp/2 objc++ args/prog.mm
+test cases/osx/1 basic/main.c
+test cases/osx/1 basic/meson.build
+test cases/osx/2 library versions/CMakeLists.txt
+test cases/osx/2 library versions/exe.orig.c
+test cases/osx/2 library versions/lib.c
+test cases/osx/2 library versions/meson.build
+test cases/osx/2 library versions/require_pkgconfig.py
+test cases/osx/2 library versions/test.json
+test cases/osx/3 has function xcode8/meson.build
+test cases/osx/4 framework/meson.build
+test cases/osx/4 framework/prog.c
+test cases/osx/4 framework/stat.c
+test cases/osx/4 framework/test.json
+test cases/osx/4 framework/xcode-frameworks.png
+test cases/osx/5 extra frameworks/meson.build
+test cases/osx/5 extra frameworks/prog.c
+test cases/osx/5 extra frameworks/stat.c
+test cases/osx/5 extra frameworks/test.json
+test cases/osx/6 multiframework/main.m
+test cases/osx/6 multiframework/meson.build
+test cases/osx/7 bitcode/libbar.mm
+test cases/osx/7 bitcode/libfile.c
+test cases/osx/7 bitcode/libfoo.m
+test cases/osx/7 bitcode/meson.build
+test cases/osx/7 bitcode/vis.h
+test cases/osx/8 pie/main.c
+test cases/osx/8 pie/meson.build
+test cases/python/1 basic/meson.build
+test cases/python/1 basic/prog.py
+test cases/python/1 basic/gluon/__init__.py
+test cases/python/1 basic/gluon/gluonator.py
+test cases/python/1 basic/subdir/meson.build
+test cases/python/1 basic/subdir/subprog.py
+test cases/python/2 extmodule/blaster.py
+test cases/python/2 extmodule/meson.build
+test cases/python/2 extmodule/ext/meson.build
+test cases/python/2 extmodule/ext/tachyon_module.c
+test cases/python/3 cython/cytest.py
+test cases/python/3 cython/meson.build
+test cases/python/3 cython/libdir/cstorer.pxd
+test cases/python/3 cython/libdir/meson.build
+test cases/python/3 cython/libdir/storer.c
+test cases/python/3 cython/libdir/storer.h
+test cases/python/3 cython/libdir/storer.pyx
+test cases/python/4 custom target depends extmodule/blaster.py
+test cases/python/4 custom target depends extmodule/meson.build
+test cases/python/4 custom target depends extmodule/ext/meson.build
+test cases/python/4 custom target depends extmodule/ext/tachyon_module.c
+test cases/python/4 custom target depends extmodule/ext/lib/meson-tachyonlib.c
+test cases/python/4 custom target depends extmodule/ext/lib/meson-tachyonlib.h
+test cases/python/4 custom target depends extmodule/ext/lib/meson.build
+test cases/python/5 modules kwarg/meson.build
+test cases/python3/1 basic/meson.build
+test cases/python3/1 basic/prog.py
+test cases/python3/1 basic/gluon/__init__.py
+test cases/python3/1 basic/gluon/gluonator.py
+test cases/python3/1 basic/subdir/meson.build
+test cases/python3/1 basic/subdir/subprog.py
+test cases/python3/2 extmodule/blaster.py
+test cases/python3/2 extmodule/meson.build
+test cases/python3/2 extmodule/ext/meson.build
+test cases/python3/2 extmodule/ext/tachyon_module.c
+test cases/python3/3 cython/cytest.py
+test cases/python3/3 cython/meson.build
+test cases/python3/3 cython/libdir/cstorer.pxd
+test cases/python3/3 cython/libdir/meson.build
+test cases/python3/3 cython/libdir/storer.c
+test cases/python3/3 cython/libdir/storer.h
+test cases/python3/3 cython/libdir/storer.pyx
+test cases/python3/4 custom target depends extmodule/blaster.py
+test cases/python3/4 custom target depends extmodule/meson.build
+test cases/python3/4 custom target depends extmodule/ext/meson.build
+test cases/python3/4 custom target depends extmodule/ext/tachyon_module.c
+test cases/python3/4 custom target depends extmodule/ext/lib/meson-tachyonlib.c
+test cases/python3/4 custom target depends extmodule/ext/lib/meson-tachyonlib.h
+test cases/python3/4 custom target depends extmodule/ext/lib/meson.build
+test cases/rewrite/1 basic/addSrc.json
+test cases/rewrite/1 basic/addTgt.json
+test cases/rewrite/1 basic/info.json
+test cases/rewrite/1 basic/meson.build
+test cases/rewrite/1 basic/rmSrc.json
+test cases/rewrite/1 basic/rmTgt.json
+test cases/rewrite/2 subdirs/addSrc.json
+test cases/rewrite/2 subdirs/addTgt.json
+test cases/rewrite/2 subdirs/info.json
+test cases/rewrite/2 subdirs/meson.build
+test cases/rewrite/2 subdirs/rmTgt.json
+test cases/rewrite/2 subdirs/sub1/meson.build
+test cases/rewrite/2 subdirs/sub2/meson.build
+test cases/rewrite/3 kwargs/add.json
+test cases/rewrite/3 kwargs/defopts_delete.json
+test cases/rewrite/3 kwargs/defopts_set.json
+test cases/rewrite/3 kwargs/delete.json
+test cases/rewrite/3 kwargs/info.json
+test cases/rewrite/3 kwargs/meson.build
+test cases/rewrite/3 kwargs/remove.json
+test cases/rewrite/3 kwargs/remove_regex.json
+test cases/rewrite/3 kwargs/set.json
+test cases/rewrite/4 same name targets/addSrc.json
+test cases/rewrite/4 same name targets/info.json
+test cases/rewrite/4 same name targets/meson.build
+test cases/rewrite/4 same name targets/sub1/meson.build
+test cases/rewrite/5 sorting/meson.build
+test cases/rust/1 basic/meson.build
+test cases/rust/1 basic/prog.rs
+test cases/rust/1 basic/test.json
+test cases/rust/1 basic/subdir/meson.build
+test cases/rust/1 basic/subdir/prog.rs
+test cases/rust/2 sharedlib/meson.build
+test cases/rust/2 sharedlib/prog.rs
+test cases/rust/2 sharedlib/stuff.rs
+test cases/rust/2 sharedlib/test.json
+test cases/rust/3 staticlib/meson.build
+test cases/rust/3 staticlib/prog.rs
+test cases/rust/3 staticlib/stuff.rs
+test cases/rust/3 staticlib/test.json
+test cases/rust/4 polyglot/meson.build
+test cases/rust/4 polyglot/prog.c
+test cases/rust/4 polyglot/stuff.rs
+test cases/rust/4 polyglot/test.json
+test cases/rust/5 polyglot static/meson.build
+test cases/rust/5 polyglot static/prog.c
+test cases/rust/5 polyglot static/stuff.rs
+test cases/rust/5 polyglot static/test.json
+test cases/rust/6 named staticlib/meson.build
+test cases/rust/6 named staticlib/prog.rs
+test cases/rust/6 named staticlib/stuff.rs
+test cases/rust/6 named staticlib/test.json
+test cases/rust/7 private crate collision/meson.build
+test cases/rust/7 private crate collision/prog.rs
+test cases/rust/7 private crate collision/rand.rs
+test cases/rust/7 private crate collision/test.json
+test cases/rust/8 many files/foo.rs
+test cases/rust/8 many files/main.rs
+test cases/rust/8 many files/meson.build
+test cases/swift/1 exe/meson.build
+test cases/swift/1 exe/prog.swift
+test cases/swift/2 multifile/libfile.swift
+test cases/swift/2 multifile/main.swift
+test cases/swift/2 multifile/meson.build
+test cases/swift/3 library/meson.build
+test cases/swift/3 library/exe/main.swift
+test cases/swift/3 library/exe/meson.build
+test cases/swift/3 library/lib/datasource.swift
+test cases/swift/3 library/lib/meson.build
+test cases/swift/3 library/lib/othersource.swift
+test cases/swift/4 generate/meson.build
+test cases/swift/4 generate/gen/main.swift
+test cases/swift/4 generate/gen/meson.build
+test cases/swift/4 generate/user/main.swift
+test cases/swift/4 generate/user/meson.build
+test cases/swift/5 mixed/main.swift
+test cases/swift/5 mixed/meson.build
+test cases/swift/5 mixed/mylib.c
+test cases/swift/5 mixed/mylib.h
+test cases/swift/6 modulemap/main.swift
+test cases/swift/6 modulemap/meson.build
+test cases/swift/6 modulemap/module.modulemap
+test cases/swift/6 modulemap/mylib.c
+test cases/swift/6 modulemap/mylib.h
+test cases/swift/7 modulemap subdir/main.swift
+test cases/swift/7 modulemap subdir/meson.build
+test cases/swift/7 modulemap subdir/mylib/meson.build
+test cases/swift/7 modulemap subdir/mylib/module.modulemap
+test cases/swift/7 modulemap subdir/mylib/mylib.c
+test cases/swift/7 modulemap subdir/mylib/mylib.h
+test cases/unit/1 soname/CMakeLists.txt
+test cases/unit/1 soname/meson.build
+test cases/unit/1 soname/versioned.c
+test cases/unit/10 build_rpath/meson.build
+test cases/unit/10 build_rpath/prog.c
+test cases/unit/10 build_rpath/prog.cc
+test cases/unit/10 build_rpath/sub/meson.build
+test cases/unit/10 build_rpath/sub/stuff.c
+test cases/unit/11 cross prog/meson.build
+test cases/unit/11 cross prog/some_cross_tool.py
+test cases/unit/11 cross prog/sometool.py
+test cases/unit/12 promote/meson.build
+test cases/unit/12 promote/subprojects/s1/meson.build
+test cases/unit/12 promote/subprojects/s1/s1.c
+test cases/unit/12 promote/subprojects/s1/subprojects/s3/meson.build
+test cases/unit/12 promote/subprojects/s1/subprojects/s3/s3.c
+test cases/unit/12 promote/subprojects/s1/subprojects/scommon/meson.build
+test cases/unit/12 promote/subprojects/s1/subprojects/scommon/scommon_broken.c
+test cases/unit/12 promote/subprojects/s2/meson.build
+test cases/unit/12 promote/subprojects/s2/s2.c
+test cases/unit/12 promote/subprojects/s2/subprojects/athing.wrap
+test cases/unit/12 promote/subprojects/s2/subprojects/scommon/meson.build
+test cases/unit/12 promote/subprojects/s2/subprojects/scommon/scommon_ok.c
+test cases/unit/13 reconfigure/meson.build
+test cases/unit/14 testsetup selection/main.c
+test cases/unit/14 testsetup selection/meson.build
+test cases/unit/14 testsetup selection/subprojects/bar/bar.c
+test cases/unit/14 testsetup selection/subprojects/bar/meson.build
+test cases/unit/14 testsetup selection/subprojects/foo/foo.c
+test cases/unit/14 testsetup selection/subprojects/foo/meson.build
+test cases/unit/15 prebuilt object/main.c
+test cases/unit/15 prebuilt object/meson.build
+test cases/unit/15 prebuilt object/source.c
+test cases/unit/16 prebuilt static/main.c
+test cases/unit/16 prebuilt static/meson.build
+test cases/unit/16 prebuilt static/libdir/best.c
+test cases/unit/16 prebuilt static/libdir/best.h
+test cases/unit/16 prebuilt static/libdir/meson.build
+test cases/unit/17 prebuilt shared/alexandria.c
+test cases/unit/17 prebuilt shared/alexandria.h
+test cases/unit/17 prebuilt shared/another_visitor.c
+test cases/unit/17 prebuilt shared/meson.build
+test cases/unit/17 prebuilt shared/patron.c
+test cases/unit/18 pkgconfig static/foo.c
+test cases/unit/18 pkgconfig static/foo.pc.in
+test cases/unit/18 pkgconfig static/main.c
+test cases/unit/18 pkgconfig static/meson.build
+test cases/unit/18 pkgconfig static/include/foo.h
+test cases/unit/19 array option/meson.build
+test cases/unit/19 array option/meson_options.txt
+test cases/unit/2 testsetups/buggy.c
+test cases/unit/2 testsetups/envcheck.py
+test cases/unit/2 testsetups/impl.c
+test cases/unit/2 testsetups/impl.h
+test cases/unit/2 testsetups/meson.build
+test cases/unit/20 subproj dep variables/meson.build
+test cases/unit/20 subproj dep variables/subprojects/failingsubproj/meson.build
+test cases/unit/20 subproj dep variables/subprojects/nestedsubproj/meson.build
+test cases/unit/20 subproj dep variables/subprojects/nestedsubproj/subprojects/subsubproject.wrap
+test cases/unit/20 subproj dep variables/subprojects/somesubproj/meson.build
+test cases/unit/21 exit status/meson.build
+test cases/unit/22 warning location/a.c
+test cases/unit/22 warning location/b.c
+test cases/unit/22 warning location/conf.in
+test cases/unit/22 warning location/main.c
+test cases/unit/22 warning location/meson.build
+test cases/unit/22 warning location/sub/c.c
+test cases/unit/22 warning location/sub/d.c
+test cases/unit/22 warning location/sub/meson.build
+test cases/unit/22 warning location/sub/sub.c
+test cases/unit/23 unfound pkgconfig/meson.build
+test cases/unit/23 unfound pkgconfig/some.c
+test cases/unit/24 compiler run_command/meson.build
+test cases/unit/25 non-permitted kwargs/meson.build
+test cases/unit/26 install umask/datafile.cat
+test cases/unit/26 install umask/meson.build
+test cases/unit/26 install umask/myinstall.py
+test cases/unit/26 install umask/prog.1
+test cases/unit/26 install umask/prog.c
+test cases/unit/26 install umask/sample.h
+test cases/unit/26 install umask/subdir/datafile.dog
+test cases/unit/26 install umask/subdir/sayhello
+test cases/unit/27 pkgconfig usage/dependee/meson.build
+test cases/unit/27 pkgconfig usage/dependee/pkguser.c
+test cases/unit/27 pkgconfig usage/dependency/meson.build
+test cases/unit/27 pkgconfig usage/dependency/pkgdep.c
+test cases/unit/27 pkgconfig usage/dependency/pkgdep.h
+test cases/unit/27 pkgconfig usage/dependency/privatelib.c
+test cases/unit/28 ndebug if-release/main.c
+test cases/unit/28 ndebug if-release/meson.build
+test cases/unit/29 guessed linker dependencies/exe/app.c
+test cases/unit/29 guessed linker dependencies/exe/meson.build
+test cases/unit/29 guessed linker dependencies/lib/lib.c
+test cases/unit/29 guessed linker dependencies/lib/meson.build
+test cases/unit/29 guessed linker dependencies/lib/meson_options.txt
+test cases/unit/3 subproject defaults/meson.build
+test cases/unit/3 subproject defaults/meson_options.txt
+test cases/unit/3 subproject defaults/subprojects/foob/meson.build
+test cases/unit/3 subproject defaults/subprojects/foob/meson_options.txt
+test cases/unit/30 shared_mod linking/libfile.c
+test cases/unit/30 shared_mod linking/main.c
+test cases/unit/30 shared_mod linking/meson.build
+test cases/unit/31 forcefallback/meson.build
+test cases/unit/31 forcefallback/test_not_zlib.c
+test cases/unit/31 forcefallback/subprojects/notzlib/meson.build
+test cases/unit/31 forcefallback/subprojects/notzlib/notzlib.c
+test cases/unit/31 forcefallback/subprojects/notzlib/notzlib.h
+test cases/unit/32 pkgconfig use libraries/app/app.c
+test cases/unit/32 pkgconfig use libraries/app/meson.build
+test cases/unit/32 pkgconfig use libraries/lib/liba.c
+test cases/unit/32 pkgconfig use libraries/lib/libb.c
+test cases/unit/32 pkgconfig use libraries/lib/meson.build
+test cases/unit/33 cross file overrides always args/meson.build
+test cases/unit/33 cross file overrides always args/test.c
+test cases/unit/33 cross file overrides always args/ubuntu-armhf-overrides.txt
+test cases/unit/34 command line/meson.build
+test cases/unit/34 command line/meson_options.txt
+test cases/unit/34 command line/subprojects/subp/meson.build
+test cases/unit/34 command line/subprojects/subp/meson_options.txt
+test cases/unit/35 dist script/meson.build
+test cases/unit/35 dist script/prog.c
+test cases/unit/35 dist script/replacer.py
+test cases/unit/36 exe_wrapper behaviour/broken-cross.txt
+test cases/unit/36 exe_wrapper behaviour/meson.build
+test cases/unit/36 exe_wrapper behaviour/meson_options.txt
+test cases/unit/36 exe_wrapper behaviour/prog.c
+test cases/unit/37 mixed command line args/meson.build
+test cases/unit/37 mixed command line args/meson_options.txt
+test cases/unit/38 pkgconfig format/meson.build
+test cases/unit/38 pkgconfig format/somelib.c
+test cases/unit/38 pkgconfig format/someret.c
+test cases/unit/39 python extmodule/blaster.py
+test cases/unit/39 python extmodule/meson.build
+test cases/unit/39 python extmodule/meson_options.txt
+test cases/unit/39 python extmodule/ext/meson.build
+test cases/unit/39 python extmodule/ext/tachyon_module.c
+test cases/unit/4 suite selection/failing_test.c
+test cases/unit/4 suite selection/meson.build
+test cases/unit/4 suite selection/successful_test.c
+test cases/unit/4 suite selection/subprojects/subprjfail/failing_test.c
+test cases/unit/4 suite selection/subprojects/subprjfail/meson.build
+test cases/unit/4 suite selection/subprojects/subprjmix/failing_test.c
+test cases/unit/4 suite selection/subprojects/subprjmix/meson.build
+test cases/unit/4 suite selection/subprojects/subprjmix/successful_test.c
+test cases/unit/4 suite selection/subprojects/subprjsucc/meson.build
+test cases/unit/4 suite selection/subprojects/subprjsucc/successful_test.c
+test cases/unit/40 external, internal library rpath/built library/bar.c
+test cases/unit/40 external, internal library rpath/built library/meson.build
+test cases/unit/40 external, internal library rpath/built library/meson_options.txt
+test cases/unit/40 external, internal library rpath/built library/prog.c
+test cases/unit/40 external, internal library rpath/external library/bar.c
+test cases/unit/40 external, internal library rpath/external library/faa.c
+test cases/unit/40 external, internal library rpath/external library/foo.c
+test cases/unit/40 external, internal library rpath/external library/meson.build
+test cases/unit/41 featurenew subprojects/meson.build
+test cases/unit/41 featurenew subprojects/subprojects/bar/meson.build
+test cases/unit/41 featurenew subprojects/subprojects/baz/meson.build
+test cases/unit/41 featurenew subprojects/subprojects/foo/meson.build
+test cases/unit/42 rpath order/meson.build
+test cases/unit/42 rpath order/myexe.c
+test cases/unit/42 rpath order/subprojects/sub1/lib.c
+test cases/unit/42 rpath order/subprojects/sub1/meson.build
+test cases/unit/42 rpath order/subprojects/sub2/lib.c
+test cases/unit/42 rpath order/subprojects/sub2/meson.build
+test cases/unit/43 dep order/lib1.c
+test cases/unit/43 dep order/lib2.c
+test cases/unit/43 dep order/meson.build
+test cases/unit/43 dep order/myexe.c
+test cases/unit/44 promote wrap/meson.build
+test cases/unit/44 promote wrap/subprojects/s1/meson.build
+test cases/unit/44 promote wrap/subprojects/s1/subprojects/ambiguous/meson.build
+test cases/unit/44 promote wrap/subprojects/s2/meson.build
+test cases/unit/44 promote wrap/subprojects/s2/subprojects/ambiguous.wrap
+test cases/unit/45 vscpp17/main.cpp
+test cases/unit/45 vscpp17/meson.build
+test cases/unit/46 native dep pkgconfig var/cross_pkgconfig.py
+test cases/unit/46 native dep pkgconfig var/meson.build
+test cases/unit/46 native dep pkgconfig var/meson_options.txt
+test cases/unit/46 native dep pkgconfig var/cross_pkgconfig/dep_tester.pc
+test cases/unit/46 native dep pkgconfig var/native_pkgconfig/dep_tester.pc
+test cases/unit/47 native file binary/meson.build
+test cases/unit/47 native file binary/meson_options.txt
+test cases/unit/48 reconfigure/main.c
+test cases/unit/48 reconfigure/meson.build
+test cases/unit/48 reconfigure/meson_options.txt
+test cases/unit/49 testsetup default/envcheck.py
+test cases/unit/49 testsetup default/meson.build
+test cases/unit/5 compiler detection/compiler wrapper.py
+test cases/unit/5 compiler detection/meson.build
+test cases/unit/5 compiler detection/trivial.c
+test cases/unit/5 compiler detection/trivial.cc
+test cases/unit/5 compiler detection/trivial.m
+test cases/unit/5 compiler detection/trivial.mm
+test cases/unit/50 pkgconfig csharp library/meson.build
+test cases/unit/50 pkgconfig csharp library/somelib.cs
+test cases/unit/51 noncross options/meson.build
+test cases/unit/51 noncross options/prog.c
+test cases/unit/51 noncross options/ylib.pc
+test cases/unit/52 ldflagdedup/bob.c
+test cases/unit/52 ldflagdedup/meson.build
+test cases/unit/52 ldflagdedup/prog.c
+test cases/unit/53 pkgconfig static link order/meson.build
+test cases/unit/54 clang-format/.clang-format
+test cases/unit/54 clang-format/header_expected_h
+test cases/unit/54 clang-format/header_orig_h
+test cases/unit/54 clang-format/meson.build
+test cases/unit/54 clang-format/prog_expected_c
+test cases/unit/54 clang-format/prog_orig_c
+test cases/unit/55 introspect buildoptions/subprojects/projectBad/meson.build
+test cases/unit/55 introspect buildoptions/subprojects/projectBad/meson_options.txt
+test cases/unit/56 dedup compiler libs/meson.build
+test cases/unit/56 dedup compiler libs/app/app.c
+test cases/unit/56 dedup compiler libs/app/meson.build
+test cases/unit/56 dedup compiler libs/liba/liba.c
+test cases/unit/56 dedup compiler libs/liba/liba.h
+test cases/unit/56 dedup compiler libs/liba/meson.build
+test cases/unit/56 dedup compiler libs/libb/libb.c
+test cases/unit/56 dedup compiler libs/libb/libb.h
+test cases/unit/56 dedup compiler libs/libb/meson.build
+test cases/unit/57 introspection/meson.build
+test cases/unit/57 introspection/meson_options.txt
+test cases/unit/57 introspection/t1.cpp
+test cases/unit/57 introspection/t2.cpp
+test cases/unit/57 introspection/t3.cpp
+test cases/unit/57 introspection/sharedlib/meson.build
+test cases/unit/57 introspection/sharedlib/shared.cpp
+test cases/unit/57 introspection/sharedlib/shared.hpp
+test cases/unit/57 introspection/staticlib/meson.build
+test cases/unit/57 introspection/staticlib/static.c
+test cases/unit/57 introspection/staticlib/static.h
+test cases/unit/58 pkg_config_path option/meson.build
+test cases/unit/58 pkg_config_path option/build_extra_path/totally_made_up_dep.pc
+test cases/unit/58 pkg_config_path option/host_extra_path/totally_made_up_dep.pc
+test cases/unit/59 introspect buildoptions/c_compiler.py
+test cases/unit/59 introspect buildoptions/main.c
+test cases/unit/59 introspect buildoptions/meson.build
+test cases/unit/59 introspect buildoptions/meson_options.txt
+test cases/unit/59 introspect buildoptions/subprojects/evilFile.txt
+test cases/unit/59 introspect buildoptions/subprojects/projectA/meson.build
+test cases/unit/59 introspect buildoptions/subprojects/projectA/meson_options.txt
+test cases/unit/59 introspect buildoptions/subprojects/projectBad/meson.build
+test cases/unit/59 introspect buildoptions/subprojects/projectBad/meson_options.txt
+test cases/unit/6 std override/meson.build
+test cases/unit/6 std override/prog11.cpp
+test cases/unit/6 std override/prog98.cpp
+test cases/unit/6 std override/progp.cpp
+test cases/unit/60 native file override/crossfile
+test cases/unit/60 native file override/crossfile2
+test cases/unit/60 native file override/meson.build
+test cases/unit/60 native file override/meson_options.txt
+test cases/unit/60 native file override/nativefile
+test cases/unit/61 identity cross/build_wrapper.py
+test cases/unit/61 identity cross/host_wrapper.py
+test cases/unit/61 identity cross/meson.build
+test cases/unit/61 identity cross/stuff.h
+test cases/unit/62 pkgconfig relative paths/pkgconfig/librelativepath.pc
+test cases/unit/63 test env does not stack/meson.build
+test cases/unit/63 test env does not stack/script.py
+test cases/unit/64 cmake_prefix_path/meson.build
+test cases/unit/64 cmake_prefix_path/prefix/lib/cmake/mesontest/mesontest-config.cmake
+test cases/unit/65 cmake parser/meson.build
+test cases/unit/65 cmake parser/prefix/lib/cmake/mesontest/mesontest-config.cmake
+test cases/unit/66 alias target/main.c
+test cases/unit/66 alias target/meson.build
+test cases/unit/67 static archive stripping/app/appA.c
+test cases/unit/67 static archive stripping/app/appB.c
+test cases/unit/67 static archive stripping/app/meson.build
+test cases/unit/67 static archive stripping/lib/libA.c
+test cases/unit/67 static archive stripping/lib/libA.h
+test cases/unit/67 static archive stripping/lib/libB.c
+test cases/unit/67 static archive stripping/lib/libB.h
+test cases/unit/67 static archive stripping/lib/meson.build
+test cases/unit/68 static link/meson.build
+test cases/unit/68 static link/test1.c
+test cases/unit/68 static link/test2.c
+test cases/unit/68 static link/test3.c
+test cases/unit/68 static link/test4.c
+test cases/unit/68 static link/test5.c
+test cases/unit/68 static link/lib/func1.c
+test cases/unit/68 static link/lib/func10.c
+test cases/unit/68 static link/lib/func11.c
+test cases/unit/68 static link/lib/func12.c
+test cases/unit/68 static link/lib/func14.c
+test cases/unit/68 static link/lib/func15.c
+test cases/unit/68 static link/lib/func16.c
+test cases/unit/68 static link/lib/func17.c
+test cases/unit/68 static link/lib/func18.c
+test cases/unit/68 static link/lib/func19.c
+test cases/unit/68 static link/lib/func2.c
+test cases/unit/68 static link/lib/func3.c
+test cases/unit/68 static link/lib/func4.c
+test cases/unit/68 static link/lib/func5.c
+test cases/unit/68 static link/lib/func6.c
+test cases/unit/68 static link/lib/func7.c
+test cases/unit/68 static link/lib/func8.c
+test cases/unit/68 static link/lib/func9.c
+test cases/unit/68 static link/lib/meson.build
+test cases/unit/69 test env value/meson.build
+test cases/unit/69 test env value/test.py
+test cases/unit/7 run installed/meson.build
+test cases/unit/7 run installed/prog.c
+test cases/unit/7 run installed/foo/foo.c
+test cases/unit/7 run installed/foo/meson.build
+test cases/unit/70 clang-tidy/.clang-tidy
+test cases/unit/70 clang-tidy/cttest.cpp
+test cases/unit/70 clang-tidy/meson.build
+test cases/unit/71 cross/crossfile.in
+test cases/unit/71 cross/meson.build
+test cases/unit/71 cross/meson_options.txt
+test cases/unit/72 summary/meson.build
+test cases/unit/72 summary/subprojects/sub/meson.build
+test cases/unit/72 summary/subprojects/sub2/meson.build
+test cases/unit/73 wrap file url/meson.build
+test cases/unit/73 wrap file url/subprojects/foo-patch.tar.xz
+test cases/unit/73 wrap file url/subprojects/foo.tar.xz
+test cases/unit/74 dep files/foo.c
+test cases/unit/74 dep files/meson.build
+test cases/unit/75 subdir libdir/meson.build
+test cases/unit/75 subdir libdir/subprojects/flub/meson.build
+test cases/unit/8 -L -l order/first.pc
+test cases/unit/8 -L -l order/meson.build
+test cases/unit/8 -L -l order/prog.c
+test cases/unit/8 -L -l order/second.pc
+test cases/unit/9 d dedup/meson.build
+test cases/unit/9 d dedup/prog.c
+test cases/vala/1 basic/meson.build
+test cases/vala/1 basic/prog.vala
+test cases/vala/10 mixed sources/meson.build
+test cases/vala/10 mixed sources/c/foo.c
+test cases/vala/10 mixed sources/c/meson.build
+test cases/vala/10 mixed sources/c/writec.py
+test cases/vala/10 mixed sources/vala/bar.vala
+test cases/vala/11 generated vapi/main.vala
+test cases/vala/11 generated vapi/meson.build
+test cases/vala/11 generated vapi/test.json
+test cases/vala/11 generated vapi/libbar/bar.c
+test cases/vala/11 generated vapi/libbar/bar.h
+test cases/vala/11 generated vapi/libbar/meson.build
+test cases/vala/11 generated vapi/libfoo/foo.c
+test cases/vala/11 generated vapi/libfoo/foo.h
+test cases/vala/11 generated vapi/libfoo/meson.build
+test cases/vala/12 custom output/bar.vala
+test cases/vala/12 custom output/foo.vala
+test cases/vala/12 custom output/meson.build
+test cases/vala/13 find library/meson.build
+test cases/vala/13 find library/test.vala
+test cases/vala/14 target glib version and gresources/meson.build
+test cases/vala/14 target glib version and gresources/test.vala
+test cases/vala/14 target glib version and gresources/gres/meson.build
+test cases/vala/14 target glib version and gresources/gres/test-resources.xml
+test cases/vala/14 target glib version and gresources/gres/test.ui
+test cases/vala/15 static vapi in source tree/meson.build
+test cases/vala/15 static vapi in source tree/test.vala
+test cases/vala/15 static vapi in source tree/vapi/config.vapi
+test cases/vala/16 mixed dependence/app.vala
+test cases/vala/16 mixed dependence/meson.build
+test cases/vala/16 mixed dependence/mixer-glue.c
+test cases/vala/16 mixed dependence/mixer.vala
+test cases/vala/17 plain consumer/app.c
+test cases/vala/17 plain consumer/badger.vala
+test cases/vala/17 plain consumer/meson.build
+test cases/vala/18 vapi consumed twice/app.vala
+test cases/vala/18 vapi consumed twice/beer.vala
+test cases/vala/18 vapi consumed twice/meson.build
+test cases/vala/18 vapi consumed twice/person.vala
+test cases/vala/19 genie/meson.build
+test cases/vala/19 genie/prog.gs
+test cases/vala/2 multiple files/class1.vala
+test cases/vala/2 multiple files/class2.vala
+test cases/vala/2 multiple files/main.vala
+test cases/vala/2 multiple files/meson.build
+test cases/vala/20 genie multiple mixed sources/c_test_one.c
+test cases/vala/20 genie multiple mixed sources/c_test_two.c
+test cases/vala/20 genie multiple mixed sources/init.gs
+test cases/vala/20 genie multiple mixed sources/meson.build
+test cases/vala/20 genie multiple mixed sources/test_one.gs
+test cases/vala/20 genie multiple mixed sources/test_two.gs
+test cases/vala/20 genie multiple mixed sources/vala_test_one.vala
+test cases/vala/20 genie multiple mixed sources/vala_test_two.vala
+test cases/vala/21 type module/foo.vala
+test cases/vala/21 type module/meson.build
+test cases/vala/21 type module/plugin-bar.vala
+test cases/vala/21 type module/plugin-module.vala
+test cases/vala/21 type module/plugin.vala
+test cases/vala/22 same target in directories/Test.vala
+test cases/vala/22 same target in directories/meson.build
+test cases/vala/22 same target in directories/prog.vala
+test cases/vala/22 same target in directories/Subdir/Test.vala
+test cases/vala/22 same target in directories/Subdir/Subdir2/Test.vala
+test cases/vala/22 same target in directories/Subdir2/Test.vala
+test cases/vala/23 thread flags/meson.build
+test cases/vala/23 thread flags/prog.vala
+test cases/vala/24 export dynamic shared module/app.vala
+test cases/vala/24 export dynamic shared module/meson.build
+test cases/vala/24 export dynamic shared module/module.vala
+test cases/vala/25 extract_all_objects/meson.build
+test cases/vala/25 extract_all_objects/prog.vala
+test cases/vala/26 vala and asm/meson.build
+test cases/vala/26 vala and asm/prog.vala
+test cases/vala/26 vala and asm/retval-arm.S
+test cases/vala/26 vala and asm/retval-x86.S
+test cases/vala/26 vala and asm/retval-x86_64.S
+test cases/vala/26 vala and asm/symbol-underscore.h
+test cases/vala/3 dep/gioprog.vala
+test cases/vala/3 dep/meson.build
+test cases/vala/4 config/config.vapi
+test cases/vala/4 config/meson-something-else.vapi
+test cases/vala/4 config/meson.build
+test cases/vala/4 config/prog.vala
+test cases/vala/5 target glib/GLib.Thread.vala
+test cases/vala/5 target glib/meson.build
+test cases/vala/5 target glib/retcode.c
+test cases/vala/6 static library/meson.build
+test cases/vala/6 static library/mylib.vala
+test cases/vala/6 static library/prog.vala
+test cases/vala/6 static library/test.json
+test cases/vala/7 shared library/meson.build
+test cases/vala/7 shared library/test.json
+test cases/vala/7 shared library/lib/meson.build
+test cases/vala/7 shared library/lib/mylib.vala
+test cases/vala/7 shared library/prog/meson.build
+test cases/vala/7 shared library/prog/prog.vala
+test cases/vala/8 generated sources/meson.build
+test cases/vala/8 generated sources/test.json
+test cases/vala/8 generated sources/dependency-generated/enum-types.c.template
+test cases/vala/8 generated sources/dependency-generated/enum-types.h.template
+test cases/vala/8 generated sources/dependency-generated/enums.h
+test cases/vala/8 generated sources/dependency-generated/lib.vala
+test cases/vala/8 generated sources/dependency-generated/main.vala
+test cases/vala/8 generated sources/dependency-generated/meson.build
+test cases/vala/8 generated sources/dependency-generated/null.c
+test cases/vala/8 generated sources/onlygen/maingen.in
+test cases/vala/8 generated sources/onlygen/meson.build
+test cases/vala/8 generated sources/src/config.vala.in
+test cases/vala/8 generated sources/src/copy_file.py
+test cases/vala/8 generated sources/src/meson.build
+test cases/vala/8 generated sources/src/returncode.in
+test cases/vala/8 generated sources/src/test.vala
+test cases/vala/8 generated sources/src/write_wrapper.py
+test cases/vala/8 generated sources/tools/meson.build
+test cases/vala/9 gir/foo.vala
+test cases/vala/9 gir/meson.build
+test cases/vala/9 gir/test.json
+test cases/warning/1 version for string div/meson.build
+test cases/warning/1 version for string div/a/b.c
+test cases/warning/2 languages missing native/meson.build
+test cases/wasm/1 basic/hello.c
+test cases/wasm/1 basic/hello.cpp
+test cases/wasm/1 basic/hello.html
+test cases/wasm/1 basic/meson.build
+test cases/wasm/2 threads/meson.build
+test cases/wasm/2 threads/threads.c
+test cases/wasm/2 threads/threads.cpp
+test cases/windows/1 basic/meson.build
+test cases/windows/1 basic/prog.c
+test cases/windows/1 basic/test.json
+test cases/windows/10 vs module defs generated custom target/meson.build
+test cases/windows/10 vs module defs generated custom target/prog.c
+test cases/windows/10 vs module defs generated custom target/subdir/make_def.py
+test cases/windows/10 vs module defs generated custom target/subdir/meson.build
+test cases/windows/10 vs module defs generated custom target/subdir/somedll.c
+test cases/windows/11 exe implib/meson.build
+test cases/windows/11 exe implib/prog.c
+test cases/windows/11 exe implib/test.json
+test cases/windows/12 resources with custom targets/meson.build
+test cases/windows/12 resources with custom targets/prog.c
+test cases/windows/12 resources with custom targets/res/gen-res.py
+test cases/windows/12 resources with custom targets/res/meson.build
+test cases/windows/12 resources with custom targets/res/myres.rc.in
+test cases/windows/12 resources with custom targets/res/myres_static.rc
+test cases/windows/12 resources with custom targets/res/resource.h
+test cases/windows/12 resources with custom targets/res/sample.ico
+test cases/windows/13 test argument extra paths/meson.build
+test cases/windows/13 test argument extra paths/exe/main.c
+test cases/windows/13 test argument extra paths/exe/meson.build
+test cases/windows/13 test argument extra paths/lib/foo.c
+test cases/windows/13 test argument extra paths/lib/foo.h
+test cases/windows/13 test argument extra paths/lib/meson.build
+test cases/windows/13 test argument extra paths/test/meson.build
+test cases/windows/13 test argument extra paths/test/test_run_exe.py
+test cases/windows/14 resources with custom target depend_files/meson.build
+test cases/windows/14 resources with custom target depend_files/prog.c
+test cases/windows/14 resources with custom target depend_files/ico/gen-ico.py
+test cases/windows/14 resources with custom target depend_files/ico/meson.build
+test cases/windows/14 resources with custom target depend_files/ico/sample.ico.in
+test cases/windows/14 resources with custom target depend_files/res/meson.build
+test cases/windows/14 resources with custom target depend_files/res/myres.rc
+test cases/windows/15 resource scripts with duplicate filenames/meson.build
+test cases/windows/15 resource scripts with duplicate filenames/rsrc.rc
+test cases/windows/15 resource scripts with duplicate filenames/verify.c
+test cases/windows/15 resource scripts with duplicate filenames/a/meson.build
+test cases/windows/15 resource scripts with duplicate filenames/a/rsrc.rc
+test cases/windows/15 resource scripts with duplicate filenames/b/meson.build
+test cases/windows/15 resource scripts with duplicate filenames/b/rsrc.rc
+test cases/windows/15 resource scripts with duplicate filenames/c/meson.build
+test cases/windows/15 resource scripts with duplicate filenames/c/rsrc.rc
+test cases/windows/15 resource scripts with duplicate filenames/exe3/meson.build
+test cases/windows/15 resource scripts with duplicate filenames/exe3/src_dll/main.c
+test cases/windows/15 resource scripts with duplicate filenames/exe3/src_dll/version.rc
+test cases/windows/15 resource scripts with duplicate filenames/exe3/src_exe/main.c
+test cases/windows/15 resource scripts with duplicate filenames/exe3/src_exe/version.rc
+test cases/windows/15 resource scripts with duplicate filenames/exe4/meson.build
+test cases/windows/15 resource scripts with duplicate filenames/exe4/src_dll/main.c
+test cases/windows/15 resource scripts with duplicate filenames/exe4/src_dll/version.rc
+test cases/windows/15 resource scripts with duplicate filenames/exe4/src_exe/main.c
+test cases/windows/15 resource scripts with duplicate filenames/exe4/src_exe/version.rc
+test cases/windows/16 gui app/console_prog.c
+test cases/windows/16 gui app/dummy.c
+test cases/windows/16 gui app/gui_app_tester.py
+test cases/windows/16 gui app/gui_prog.c
+test cases/windows/16 gui app/meson.build
+test cases/windows/2 winmain/meson.build
+test cases/windows/2 winmain/prog.c
+test cases/windows/3 cpp/meson.build
+test cases/windows/3 cpp/prog.cpp
+test cases/windows/4 winmaincpp/meson.build
+test cases/windows/4 winmaincpp/prog.cpp
+test cases/windows/5 resources/meson.build
+test cases/windows/5 resources/prog.c
+test cases/windows/5 resources/inc/meson.build
+test cases/windows/5 resources/inc/resource/resource.h
+test cases/windows/5 resources/res/dummy.c
+test cases/windows/5 resources/res/meson.build
+test cases/windows/5 resources/res/myres.rc
+test cases/windows/5 resources/res/sample.ico
+test cases/windows/6 vs module defs/meson.build
+test cases/windows/6 vs module defs/prog.c
+test cases/windows/6 vs module defs/subdir/meson.build
+test cases/windows/6 vs module defs/subdir/somedll.c
+test cases/windows/6 vs module defs/subdir/somedll.def
+test cases/windows/7 dll versioning/copyfile.py
+test cases/windows/7 dll versioning/exe.orig.c
+test cases/windows/7 dll versioning/lib.c
+test cases/windows/7 dll versioning/meson.build
+test cases/windows/7 dll versioning/test.json
+test cases/windows/8 find program/meson.build
+test cases/windows/8 find program/test-script
+test cases/windows/8 find program/test-script-ext.py
+test cases/windows/9 vs module defs generated/meson.build
+test cases/windows/9 vs module defs generated/prog.c
+test cases/windows/9 vs module defs generated/subdir/meson.build
+test cases/windows/9 vs module defs generated/subdir/somedll.c
+test cases/windows/9 vs module defs generated/subdir/somedll.def.in
+tools/ac_converter.py
+tools/boost_names.py
+tools/cmake2meson.py
+tools/dircondenser.py

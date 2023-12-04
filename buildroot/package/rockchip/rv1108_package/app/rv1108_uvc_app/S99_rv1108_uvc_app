@@ -1,0 +1,32 @@
+#!/bin/sh
+#
+# Start the uvc_app....
+#
+
+
+case "$1" in
+  start)
+	printf "Stoping system_manager: "
+	busybox killall system_manager
+	printf "Stoping face_service: "
+	busybox killall face_service
+	printf "Starting uvc_app: "
+	 /usr/bin/uvc_app -d 0&
+	[ $? = 0 ] && echo "OK" || echo "FAIL"
+	;;
+  stop)
+	printf "Stopping uvc_app: "
+	busybox killall uvc_app
+	[ $? = 0 ] && echo "OK" || echo "FAIL"
+	;;
+  restart|reload)
+	"$0" stop
+	"$0" start
+	;;
+  *)
+	echo "Usage: $0 {start|stop|restart}"
+	exit 1
+esac
+
+exit $?
+

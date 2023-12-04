@@ -1,0 +1,4 @@
+config BR2_PACKAGE_HECTOR_SLAM
+	bool "hector slam"
+	help
+		hector slam

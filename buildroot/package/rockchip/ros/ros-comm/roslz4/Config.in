@@ -1,0 +1,6 @@
+config BR2_PACKAGE_ROSLZ4
+    bool "roslz4"
+    select BR2_PACKAGE_LZ4
+    select BR2_PACKAGE_BZIP2
+    help
+        A Python and C++ implementation of the LZ4 streaming format

@@ -1,0 +1,15 @@
+config BR2_PACKAGE_IPC_DAEMON
+	bool "ipc-daemon app"
+	help
+	  daemon app for ip camera, monitor ipc processes and process system commands
+
+if BR2_PACKAGE_IPC_DAEMON
+
+config BR2_PACKAGE_IPC_DAEMON_MINILOGGER
+	bool "enable ipc-daemon miniloger print"
+	select BR2_PACKAGE_MINILOGGER
+	default y
+	help
+	  Enable ipc-daemon miniloger print.
+
+endif # BR2_PACKAGE_IPC_DAEMON

@@ -1,0 +1,5 @@
+config BR2_PACKAGE_ROSMAKE
+    bool "rosmake"
+    help
+        rosmake is a ros dependency aware build tool which can
+        be used to build all dependencies in the correct order

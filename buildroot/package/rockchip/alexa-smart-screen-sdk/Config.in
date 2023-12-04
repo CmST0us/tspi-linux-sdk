@@ -1,0 +1,4 @@
+config BR2_PACKAGE_ALEXA_SMART_SCREEN_SDK
+	bool "Alexa Smart Screen SDK"
+	help
+	Amazon Alexa Smart Screen SDK

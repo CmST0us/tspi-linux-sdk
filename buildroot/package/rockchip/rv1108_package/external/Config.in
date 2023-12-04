@@ -1,0 +1,10 @@
+if BR2_PACKAGE_RV1108
+
+# BSP packages
+source "package/rockchip/rv1108_package/external/rv1108_minigui/Config.in"
+source "package/rockchip/rv1108_package/external/rv1108_libpng/Config.in"
+source "package/rockchip/rv1108_package/external/rv1108_softapdemo/Config.in"
+source "package/rockchip/rv1108_package/external/rv1108_softapserver/Config.in"
+
+endif
+

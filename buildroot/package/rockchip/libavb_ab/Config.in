@@ -1,0 +1,4 @@
+config BR2_PACKAGE_LIBAVB_AB
+	bool "Rockchip libavb_ab for linux"
+	help
+	  Rockchip libavb_ab for linux.

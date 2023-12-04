@@ -1,0 +1,5 @@
+config BR2_PACKAGE_RKFSMK
+	bool "rockchip librkfsmk"
+	default n
+	help
+	  rockchip librkfsmk

@@ -1,0 +1,7 @@
+config BR2_PACKAGE_VULKAN_LOADER
+	bool "vulkan-loader"
+	depends on BR2_PACKAGE_VULKAN_HEADERS
+	help
+	  The Khronos official Vulkan ICD desktop loader.
+
+	  https://github.com/KhronosGroup/Vulkan-Loader

@@ -1,0 +1,10 @@
+if BR2_PACKAGE_RV1108
+
+# BSP packages
+config BR2_PACKAGE_HAL
+	bool "rv1108 package hal"
+	help
+	    Hardware abstruct layer
+
+endif
+

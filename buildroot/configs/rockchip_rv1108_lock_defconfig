@@ -1,0 +1,9 @@
+#include "rv1108_arm.config"
+#include "rv1108_base.config"
+#include "rv1108_lock.config"
+#include "network.config"
+#include "busybox_minimal.config"
+BR2_PACKAGE_DROPBEAR=n
+BR2_PACKAGE_ADK_MEDIA=y
+BR2_PACKAGE_ADK_MEDIA_WAV_PLAYBACK=y
+BR2_PACKAGE_RV1108_MINIGUI_ENABLE_FREETYPE=y

@@ -1,0 +1,70 @@
+menuconfig BR2_PACKAGE_ROS_SUPPORT_SET
+	bool "ros BSP package"
+    depends on BR2_PACKAGE_PYTHON
+    depends on BR2_PACKAGE_BOOST
+
+if BR2_PACKAGE_ROS_SUPPORT_SET
+choice
+	default BR2_PACKAGE_ROS_INDIGO
+	prompt "ros package support"
+
+config BR2_PACKAGE_ROS_KINETIC
+	bool "kinetic"
+	help
+		used ros with version kinetic
+
+config BR2_PACKAGE_ROS_INDIGO
+	bool "indigo"
+	help
+		used ros with version indigo
+
+endchoice
+source "package/rockchip/ros/geometry2/Config.in"
+source "package/rockchip/ros/vision-opencv/Config.in"
+
+source "package/rockchip/ros/dynamic-reconfigure/Config.in"
+source "package/rockchip/ros/actionlib/Config.in"
+source "package/rockchip/ros/ros-comm/Config.in"
+source "package/rockchip/ros/python-ros/Config.in"
+source "package/rockchip/ros/common-msgs/Config.in"
+source "package/rockchip/ros/roscpp-core/Config.in"
+source "package/rockchip/ros/ros/Config.in"
+source "package/rockchip/ros/ros-comm-msgs/Config.in"
+source "package/rockchip/ros/geometry/Config.in"
+source "package/rockchip/ros/catkin/Config.in.host"
+source "package/rockchip/ros/catkin/Config.in"
+source "package/rockchip/ros/pluginlib/Config.in"
+source "package/rockchip/ros/message-runtime/Config.in"
+source "package/rockchip/ros/console-bridge/Config.in"
+source "package/rockchip/ros/gencpp/Config.in"
+source "package/rockchip/ros/genlisp/Config.in"
+source "package/rockchip/ros/genmsg/Config.in"
+source "package/rockchip/ros/genpy/Config.in"
+source "package/rockchip/ros/angles/Config.in"
+source "package/rockchip/ros/class-loader/Config.in"
+source "package/rockchip/ros/cmake_modules/Config.in"
+source "package/rockchip/ros/rospack/Config.in"
+source "package/rockchip/ros/orocos_kinematics_dynamics/Config.in"
+source "package/rockchip/ros/image-common/Config.in"
+source "package/rockchip/ros/bond-core/Config.in"
+source "package/rockchip/ros/nodelet-core/Config.in"
+
+if BR2_PACKAGE_ROS_KINETIC
+source "package/rockchip/ros/std-msgs/Config_kinetic.in"
+source "package/rockchip/ros/message-generation/Config_kinetic.in"
+source "package/rockchip/ros/geneus/Config.in"
+source "package/rockchip/ros/gennodejs/Config.in"
+source "package/rockchip/ros/libuvc/Config.in"
+source "package/rockchip/ros/libuvc-ros/Config.in"
+
+endif
+
+if BR2_PACKAGE_ROS_INDIGO
+source "package/rockchip/ros/std-msgs/Config_indigo.in"
+source "package/rockchip/ros/message-generation/Config_indigo.in"
+source "package/rockchip/ros/hector-slam/Config.in"
+source "package/rockchip/ros/laser-geometry/Config.in"
+
+endif
+
+endif

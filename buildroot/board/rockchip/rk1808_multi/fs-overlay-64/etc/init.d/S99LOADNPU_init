@@ -1,0 +1,19 @@
+#!/bin/sh
+
+case "$1" in
+	start)
+		abootimg --create /opt/boot.img -k /opt/Image -r /initrd.image -s /opt/resource.img
+		./opt/npu_upgrade /MiniLoaderAll.bin uboot.img trust.img boot.img
+		rm /initrd.image
+		;;
+	stop)
+		;;
+	restart|reload)
+		$0 stop
+		$0 start
+		;;
+	*)
+		echo "Usage: $0 {start|stop|restart}"
+		exit 1
+esac
+exit 0

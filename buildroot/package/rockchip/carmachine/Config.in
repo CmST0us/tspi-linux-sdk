@@ -1,0 +1,5 @@
+config BR2_PACKAGE_CARMACHINE
+	bool "carmachine"
+	depends on BR2_PACKAGE_QT5
+	help
+	  Rockchip carmachine application based on QT

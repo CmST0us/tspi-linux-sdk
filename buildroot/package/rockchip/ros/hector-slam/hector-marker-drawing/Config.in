@@ -1,0 +1,9 @@
+config BR2_PACKAGE_HECTOR_MARKER_DRAWING
+	bool "hector marker drawing"
+	select BR2_PACKAGE_CMAKE_MODULES
+	select BR2_PACKAGE_ROS_COMM_SET
+	select BR2_PACKAGE_ROSCPP
+	select BR2_PACKAGE_COMMON_MSGS
+	select BR2_PACKAGE_VISUALIZATION_MSGS
+	help
+		hector marker drawing

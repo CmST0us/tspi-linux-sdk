@@ -1,0 +1,10 @@
+if BR2_PACKAGE_RV1108
+
+# BSP packages
+config BR2_PACKAGE_PROCESS_UNITS
+	bool "RV1108 package camera stream processing unit"
+	select BR2_PACKAGE_RKFB
+	select BR2_PACKAGE_ROCKCHIP_RGA
+	default n
+endif
+

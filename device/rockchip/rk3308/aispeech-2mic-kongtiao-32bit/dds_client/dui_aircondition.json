@@ -1,0 +1,39 @@
+{
+    "auth":{
+        "productId": "100001463",
+        "deviceProfile": "Yhn7W3QzXThMGBG1qgJcbCmW0hmO7HYdHcfuQPFzJhgnzWrrJhPPWYTdm5qJlpyarJqcjZqL3cXdz8fKm5nNycyZmcbGy5udy52cy8bHzsuZzJ6ZmZrLzMnd092ek5OQiN3FztPdj42Qm4qci7ab3cXdzs/Pz8/Oy8nM3dPdm5qJlpyasZ6Smt3F3Z7Oy8icnpmbms6bnsvNm87Gz83MnsqZzcicy83Iy5rN3dPdjJyQj5rdxaTdnpOT3aKC"
+    },
+    "recorder":{
+        "device":"2mic_loopback",
+        "bits":16,
+        "channels":3,
+        "samplerate":16000
+    },
+    "player":{
+        "device":"default"
+    },
+    "wakeup":{
+        "cfg":{
+            "aecBinPath":"./res/AEC_ch3-2-ch2_1ref_common_20180705_v0.9.4.bin",
+            "wakeupBinPath":"./res/res_dnn_input1_h4_arch1_ft1_svd_acmidea4_lr1e-5.bin",
+            "beamformingBinPath":"./res//UDA_asr_chan2-2-mic2_30mm_20180504.bin",
+            "env":"words=kong tiao kong tiao,kong tiao guan ji,kong tiao kai ji,zhi leng mo shi,zhi re mo shi,shi qi du,shi ba du,shi jiu du,er shi du,sheng gao yi du,jiang di yi du,kai qi bai feng,guan bi bai feng,jian xiao feng su,zeng da feng su;thresh=0.26,0.18,0.18,0.24,0.2,0.30,0.39,0.41,0.46,0.13,0.21,0.16,0.19,0.13,0.14;major=1,0,0,0,0,0,0,0,0,0,0,0,0,0,0;dcheck=1,1,1,0,0,0,0,0,0,0,0,0,0,0,0;",
+            "rollBack":200
+        },
+        "wakeupWord":["kong tiao kong tiao", "kong tiao kai ji", "kong tiao guan ji", "zhi leng moshi", "zhi re mo shi","5","6","7","8","9","10","11","12","13","14","15","16", "shi qi du", "shi ba du", "shi jiu du", "er shi du", "sheng gao yi du", "jiang di yi du", "kai qi bai feng", "guan bi bai feng", "jian xiao feng su", "zeng da feng su"],
+        "wakeupAudio":["./audio/major.wav", "./audio/kongtiaoyikaiji.wav", "./audio/kongtiaoyiguanji.wav", "./audio/zhilengmoshi.wav", "./audio/zhiremoshi.wav","5","6","7","8","9","10","11","12","13","14","15","16", "./audio/shiqidu.wav", "./audio/shibadu.wav", "./audio/shijiudu.wav", "./audio/ershidu.wav", "./audio/shenggaoyidu.wav", "./audio/jiangdiyidu.wav", "./audio/kaibaifeng.wav", "./audio/guanbaifeng.wav", "./audio/jianxiaofengsu.wav", "./audio/zengdafengsu.wav"]
+    },
+    "vad":{
+        "cfg":{
+            "resBinPath":"./res/vad_aihome_v0.7.bin",
+            "pauseTime":300
+        },
+        "startTimeoutPrompt":"./audio/vad_start_timeout2.wav"
+    },
+    "dds":{
+        "productId":"100001463",
+        "aliasKey":"prod",
+        "server":"ws://dds.dui.ai/dds/v1",
+        "deviceProfile":"Yhn7W3QzXThMGBG1qgJcbCmW0hmO7HYdHcfuQPFzJhgnzWrrJhPPWYTdm5qJlpyarJqcjZqL3cXdz8fKm5nNycyZmcbGy5udy52cy8bHzsuZzJ6ZmZrLzMnd092ek5OQiN3FztPdj42Qm4qci7ab3cXdzs/Pz8/Oy8nM3dPdm5qJlpyasZ6Smt3F3Z7Oy8icnpmbms6bnsvNm87Gz83MnsqZzcicy83Iy5rN3dPdjJyQj5rdxaTdnpOT3aKC"
+    }
+}

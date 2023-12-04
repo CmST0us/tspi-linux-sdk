@@ -1,0 +1,8 @@
+config BR2_PACKAGE_XMLRPCPP
+	bool "xmlrpcpp"
+    select BR2_PACKAGE_ROSCPP_CORE_SET
+	select BR2_PACKAGE_CPP_COMMON
+	select BR2_PACKAGE_ROSTIME
+
+	help
+		XmlRpc++ is a C++ implementation of the XML-RPC protocol. This version is heavily modified from the package available on SourceForge in order to support roscpp's threading model. As such, we are maintaining our own fork.

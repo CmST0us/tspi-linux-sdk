@@ -1,0 +1,46 @@
+config BR2_PACKAGE_RKIPC
+	bool "rockchip rkipc"
+	select BR2_PACKAGE_CAMERA_ENGINE_RKAIQ
+	help
+	  rockchip rkipc
+
+choice
+prompt "Platform type"
+	default BR2_PACKAGE_RKIPC_RK3588
+	help
+	  Select a platform type.
+
+config BR2_PACKAGE_RKIPC_LOW_MEMORY
+	bool "Compile for low memory ipc"
+	select BR2_PACKAGE_ROCKIT
+	depends on BR2_PACKAGE_RKIPC
+
+config BR2_PACKAGE_RKIPC_RK3588
+	bool "Compile for rk3588 ipc"
+	select BR2_PACKAGE_ROCKIT
+	select BR2_PACKAGE_WPA_SUPPLICANT
+	depends on BR2_PACKAGE_RKIPC
+
+config BR2_PACKAGE_RKIPC_RK3588_MULTI_IPC
+	bool "Compile for rk3588 multi ipc"
+	select BR2_PACKAGE_ROCKIT
+	select BR2_PACKAGE_WPA_SUPPLICANT
+	depends on BR2_PACKAGE_RKIPC
+
+config BR2_PACKAGE_RKIPC_RV1126
+	bool "Compile for rv1126 ipc"
+	select BR2_PACKAGE_RKMEDIA
+	select BR2_PACKAGE_WPA_SUPPLICANT
+	depends on BR2_PACKAGE_RKIPC
+
+config BR2_PACKAGE_RKIPC_RV1126_BATTERY_IPC
+	bool "Compile for rv1126 battery ipc"
+	select BR2_PACKAGE_VENDOR_STORAGE
+	select BR2_PACKAGE_ROCKIT
+	depends on BR2_PACKAGE_RKIPC
+
+config BR2_PACKAGE_RKIPC_RV1126_SNAPSHOT
+	bool "Compile for rv1126 snapshot"
+	select BR2_PACKAGE_RKMEDIA
+	depends on BR2_PACKAGE_RKIPC
+endchoice

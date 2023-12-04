@@ -1,0 +1,71 @@
+state.rockchiprk809co {
+	control.1 {
+		iface MIXER
+		name 'Playback Path'
+		value OFF
+		comment {
+			access 'read write'
+			type ENUMERATED
+			count 1
+			item.0 OFF
+			item.1 RCV
+			item.2 SPK
+			item.3 HP
+			item.4 HP_NO_MIC
+			item.5 BT
+			item.6 SPK_HP
+			item.7 RING_SPK
+			item.8 RING_HP
+			item.9 RING_HP_NO_MIC
+			item.10 RING_SPK_HP
+		}
+	}
+	control.2 {
+		iface MIXER
+		name 'Capture MIC Path'
+		value 'MIC OFF'
+		comment {
+			access 'read write'
+			type ENUMERATED
+			count 1
+			item.0 'MIC OFF'
+			item.1 'Main Mic'
+			item.2 'Hands Free Mic'
+			item.3 'BT Sco Mic'
+		}
+	}
+	control.3 {
+		iface MIXER
+		name 'Digital Capture Volume'
+		value.0 72
+		value.1 72
+		comment {
+			access 'read write user'
+			type INTEGER
+			count 2
+			range '0 - 120'
+			tlv '0000000100000008fffff44800000029'
+			dbmin -3000
+			dbmax 1920
+			dbvalue.0 -48
+			dbvalue.1 -48
+		}
+	}
+	control.4 {
+		iface MIXER
+		name 'Master Playback Volume'
+		value.0 255
+		value.1 255
+		comment {
+			access 'read write user'
+			type INTEGER
+			count 2
+			range '0 - 255'
+			tlv '0000000100000008fffff83000000003'
+			dbmin -2000
+			dbmax -1235
+			dbvalue.0 -1235
+			dbvalue.1 -1235
+		}
+	}
+}

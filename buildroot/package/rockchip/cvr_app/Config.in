@@ -1,0 +1,8 @@
+config BR2_PACKAGE_CVR_APP
+	bool "cvr app"
+        select BR2_PACKAGE_LVGL
+        select BR2_PACKAGE_RKADK
+        select BR2_PACKAGE_RKFSMK
+	default n
+	help
+	  cvr app

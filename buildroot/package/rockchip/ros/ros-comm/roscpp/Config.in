@@ -1,0 +1,15 @@
+config BR2_PACKAGE_ROSCPP
+	bool "roscpp"
+    select BR2_PACKAGE_ROS_COMM_MSGS_SET
+	select BR2_PACKAGE_ROSGRAPH_MSGS
+    select BR2_PACKAGE_BOOST_SIGNALS
+	select BR2_PACKAGE_CPP_COMMON
+	select BR2_PACKAGE_MESSAGE_GENERATION
+	select BR2_PACKAGE_ROSCONSOLE
+	select BR2_PACKAGE_ROSCPP_SERIALIZATION
+	select BR2_PACKAGE_ROSCPP_TRAITS
+	select BR2_PACKAGE_ROSTIME
+	select BR2_PACKAGE_STD_MSGS
+	select BR2_PACKAGE_XMLRPCPP
+	help
+		roscpp is a C++ implementation of ROS. It provides a client library that enables C++ programmers to quickly interface with ROS Topics, Services, and Parameters. roscpp is the most widely used ROS client library and is designed to be the high-performance library for ROS.

@@ -1,0 +1,12 @@
+config BR2_PACKAGE_PCSX
+        bool "pcsx"
+	depends on BR2_PACKAGE_SDL
+	depends on BR2_PACKAGE_LIBPNG
+	depends on BR2_INSTALL_LIBSTDCPP
+        help
+          pcsx emulator core.
+
+	  https://notaz.gp2x.de/pcsx_rearmed.php
+
+comment "PCSX needs a toolchain w/ C++"
+	depends on !BR2_INSTALL_LIBSTDCPP

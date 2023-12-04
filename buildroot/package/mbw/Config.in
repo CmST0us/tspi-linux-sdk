@@ -1,0 +1,6 @@
+config BR2_PACKAGE_MBW
+	bool "mbw"
+	help
+	  Memory Bandwidth Performance Test
+
+	  https://github.com/raas/mbw

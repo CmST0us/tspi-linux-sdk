@@ -1,0 +1,39 @@
+menuconfig BR2_PACKAGE_ISP2_IPC
+	bool "Rockchip ISP Server"
+	help
+	  Rockchip ISP server
+
+if BR2_PACKAGE_ISP2_IPC
+
+config BR2_PACKAGE_ISP2_IPC_DBUS
+    bool "enable ispserver to use dbus communication"
+    select BR2_PACKAGE_LIBGDBUS
+    help
+      Use dbus communication
+
+config BR2_PACKAGE_ISP2_IPC_DBSERVER
+    bool "enable ispserver to use dbserver"
+    depends on BR2_PACKAGE_ISP2_IPC_DBUS
+    select BR2_PACKAGE_LIBRKDB
+    help
+      Use database to save configuration
+
+config BR2_PACKAGE_ISP2_IPC_MINILOGGER
+    bool "enable ispserver miniloger print"
+    select BR2_PACKAGE_MINILOGGER
+    help
+      Enable ispserver miniloger print.
+
+config BR2_PACKPAG_ISP2_IPC_FORCE_INSTALL_TO_ROOTFS
+    bool "ispserver install to rootfs"
+    default n
+    help
+      Ispserver install to rootfs.
+
+config BR2_PACKPAG_ISP2_IPC_CALL_FUNC
+    bool "enable ispserver call func"
+    default n
+    help
+      Enable ispserver using Call FUNC
+
+endif # BR2_PACKAGE_ISP2_IPC

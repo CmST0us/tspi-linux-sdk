@@ -1,0 +1,8 @@
+config BR2_PACKAGE_MYNT_EYE_D_SDK_SAMPLES
+	bool "MYNT EYE D SDK samples"
+	depends on BR2_PACKAGE_MYNT_EYE_D_SDK
+	default y
+	help
+	  MYNT EYE D SDK (MYNT® EYE Depth Camera) samples.
+
+	  https://github.com/slightech/MYNT-EYE-D-SD

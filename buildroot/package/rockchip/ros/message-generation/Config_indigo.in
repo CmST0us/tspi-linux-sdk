@@ -1,0 +1,9 @@
+config BR2_PACKAGE_MESSAGE_GENERATION
+	bool "message generation for ROS"
+	depends on BR2_PACKAGE_HOST_CATKIN
+	select BR2_PACKAGE_GENMSG
+	select BR2_PACKAGE_GENCPP
+	select BR2_PACKAGE_GENLISP
+	select BR2_PACKAGE_GENPY
+	help
+		Package modeling the build-time dependencies for generating language bindings of messages.

@@ -1,0 +1,163 @@
+if ARCH_ROCKCHIP || COMPILE_TEST
+
+source "drivers/soc/rockchip/Kconfig.cpu"
+
+#
+# Rockchip Soc drivers
+#
+
+config ANDROID_VERSION
+	hex "Android Version"
+	depends on ANDROID
+	default "0x08010000"
+	help
+	  The version of Android kernel supported.
+	  The value is 0xAABBCCRR, corresponding to Android A.B.C release R
+
+config ROCKCHIP_AMP
+	tristate "Rockchip AMP support"
+	help
+	  Say y here to enable Rockchip AMP support.
+	  This option protects resources used by AMP.
+
+config ROCKCHIP_CPUINFO
+	tristate "Rockchip cpuinfo support"
+	depends on (ROCKCHIP_EFUSE || ROCKCHIP_OTP) && (ARM64 || ARM)
+	default y
+	help
+	  Say y here to enable Rockchip cpuinfo support.
+	  Set system_serial_low/high from eFuse ID.
+	  Serial can read from /proc/cpuinfo.
+
+	  If unsure, say N.
+
+config ROCKCHIP_GRF
+	tristate "Rockchip General Register Files support"
+	default y
+	help
+	  The General Register Files are a central component providing
+	  special additional settings registers for a lot of soc-components.
+	  In a lot of cases there also need to be default settings initialized
+	  to make some of them conform to expectations of the kernel.
+
+config ROCKCHIP_HW_DECOMPRESS
+	bool "Rockchip HardWare Decompress Support"
+	help
+	  This driver support Decompress IP built-in Rockchip SoC, support
+	  LZ4, GZIP, ZLIB.
+
+config ROCKCHIP_IPA
+	tristate "Rockchip IPA support"
+	depends on THERMAL && OF
+	default y
+	help
+	  Say y here to enable rockchip IPA.
+	  Add a simple power model for ipa to calculate static power and
+	  dynamic power.
+
+	  If unsure, say N.
+
+config ROCKCHIP_OPP
+	tristate "Rockchip OPP select support"
+	depends on PM_DEVFREQ
+	default y
+	help
+	  Say y here to enable rockchip OPP support.
+
+config ROCKCHIP_PM_DOMAINS
+        tristate "Rockchip generic power domain"
+        depends on PM
+        select PM_GENERIC_DOMAINS
+        help
+          Say y here to enable power domain support.
+          In order to meet high performance and low power requirements, a power
+          management unit is designed or saving power when RK3288 in low power
+          mode. The RK3288 PMU is dedicated for managing the power of the whole chip.
+
+          If unsure, say N.
+
+config ROCKCHIP_PVTM
+	tristate "Rockchip PVTM support"
+	help
+	  Say y here to enable pvtm support.
+	  The Process-Voltage-Temperature Monitor (PVTM) is used to monitor
+	  the chip performance variance caused by chip process, voltage and
+	  temperature.
+
+config ROCKCHIP_RAMDISK
+	bool "Rockchip RAM disk support"
+	help
+	  Saying Y here will allow you to use reserved RAM memory as a block
+	  device.
+
+config ROCKCHIP_SUSPEND_MODE
+	tristate "Rockchip suspend mode config"
+	depends on ROCKCHIP_SIP
+	help
+	  Say Y here if you want to set the suspend mode to the ATF.
+
+config ROCKCHIP_SYSTEM_MONITOR
+	tristate "Rockchip system monitor support"
+	default y
+	help
+	  Say y here to enable rockchip system monitor support.
+
+config ROCKCHIP_MTD_VENDOR_STORAGE
+	bool "Rockchip mtd vendor storage support"
+	depends on MTD
+	default y
+	help
+	  Say y here to enable rockchip mtd vendor storage support.
+
+config ROCKCHIP_VENDOR_STORAGE_UPDATE_LOADER
+	bool "Rockchip vendor storage update loader support"
+	default n
+	help
+	  Say y here to enable rockchip vendor storage update loader support.
+	  The /dev/vendor_storage must set root user access only.
+
+config ROCKCHIP_DEBUG
+	tristate "Rockchip DEBUG"
+	default y
+	help
+	  Print dbgpcsr for every cpu when panic.
+
+config ROCKCHIP_LOW_PERFORMANCE
+	bool "Rockchip low performance support"
+	help
+	  Say y here to enable Rockchip low performance support.
+	  This option make the SoC low power.
+
+config ROCKCHIP_THUNDER_BOOT
+	bool "Rockchip Thunder Boot support"
+	help
+	  Say y here to enable Rockchip thunder boot support.
+	  This option make the kernel boot faster.
+
+config ROCKCHIP_THUNDER_BOOT_MMC
+	bool "Rockchip Thunder Boot from MMC"
+	depends on ROCKCHIP_THUNDER_BOOT
+	help
+	  Say y if boot from MMC.
+
+config ROCKCHIP_THUNDER_BOOT_SFC
+	bool "Rockchip Thunder Boot from SFC"
+	depends on ROCKCHIP_THUNDER_BOOT
+	help
+	  Say y if boot from SPI Flash from SFC controller.
+
+config ROCKCHIP_THUNDER_BOOT_CRYPTO
+	bool "Rockchip Thunder Boot support hardware crypto"
+	depends on ROCKCHIP_THUNDER_BOOT
+	help
+	  Say y if boot need hardware crypto.
+
+config ROCKCHIP_SCHED_PERFORMANCE_BIAS
+	bool "Rockchip task scheduler optimization"
+	depends on SMP && CPU_FREQ_GOV_INTERACTIVE
+	default y
+	help
+	  Say y here to enable rockchip optimize task scheduler for performance bias,
+	  this would cause a little more power consumption.
+
+endif

@@ -1,0 +1,28 @@
+menuconfig BR2_PACKAGE_ROS_COMM_SET
+    bool "ros ros-comm"
+    depends on BR2_PACKAGE_HOST_CATKIN
+
+if BR2_PACKAGE_ROS_COMM_SET
+source "package/rockchip/ros/ros-comm/ros-comm/Config.in"
+source "package/rockchip/ros/ros-comm/roswtf/Config.in"
+source "package/rockchip/ros/ros-comm/rospy/Config.in"
+source "package/rockchip/ros/ros-comm/rostopic/Config.in"
+source "package/rockchip/ros/ros-comm/rosout/Config.in"
+source "package/rockchip/ros/ros-comm/rosnode/Config.in"
+source "package/rockchip/ros/ros-comm/rosservice/Config.in"
+source "package/rockchip/ros/ros-comm/rosparam/Config.in"
+source "package/rockchip/ros/ros-comm/rosgraph/Config.in"
+source "package/rockchip/ros/ros-comm/rosmaster/Config.in"
+source "package/rockchip/ros/ros-comm/rosmsg/Config.in"
+source "package/rockchip/ros/ros-comm/roslaunch/Config.in"
+source "package/rockchip/ros/ros-comm/rosbag/Config.in"
+source "package/rockchip/ros/ros-comm/rosbag-storage/Config.in"
+source "package/rockchip/ros/ros-comm/roslz4/Config.in"
+source "package/rockchip/ros/ros-comm/message-filters/Config.in"
+source "package/rockchip/ros/ros-comm/roscpp/Config.in"
+source "package/rockchip/ros/ros-comm/rosconsole/Config.in"
+source "package/rockchip/ros/ros-comm/rostest/Config.in"
+source "package/rockchip/ros/ros-comm/xmlrpcpp/Config.in"
+source "package/rockchip/ros/ros-comm/topic-tools/Config.in"
+
+endif

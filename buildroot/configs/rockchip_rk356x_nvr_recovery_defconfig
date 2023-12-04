@@ -1,0 +1,3 @@
+#include "recovery_base_nvr.config"
+#include "recovery.config"
+#include "rk356x_arm64.config"

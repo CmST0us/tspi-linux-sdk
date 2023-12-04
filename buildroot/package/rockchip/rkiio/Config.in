@@ -1,0 +1,5 @@
+menuconfig BR2_PACKAGE_RKIIO
+	bool "rkiio"
+	default n
+	help
+	    Rockchip IIO framework

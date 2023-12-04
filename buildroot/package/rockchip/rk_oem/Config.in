@@ -1,0 +1,46 @@
+config BR2_PACKAGE_RK_OEM
+	bool "Rockchip OEM Partition"
+	help
+	  If we want to run some special applications which we do not
+	  to store in root filesystem. Then we store these in the OEM
+	  partition, and mount it on the root directory of "/oem".
+
+if BR2_PACKAGE_RK_OEM
+
+config BR2_PACKAGE_RK_OEM_RESOURCE_DIR
+	string "Rockchip OEM Partition Directory"
+	default ""
+	help
+	  Directory to store the OEM applications and resource.
+
+	  The default is ""
+
+config BR2_PACKAGE_RK_OEM_INSTALL_TARGET_DIR
+	string "Rockchip OEM Files Install Target Directory"
+	default "$(BASE_DIR)/oem"
+	help
+	  Directory to install the files of OEM target.
+
+	  The default is "$(BASE_DIR)/oem"
+
+config BR2_PACKAGE_RK_OEM_ENABLE_DEBUG
+	bool "Enable OEM Target build with debug symbol"
+	default n
+	help
+	  Enable this to build target with debug symbol.
+
+config BR2_PACKAGE_RK_OEM_IMAGE_FILESYSTEM_TYPE
+	string "Rockchip OEM Image filesystem type"
+	default "ext4"
+	help
+	  Make oem.img with filesystem type. Support ext2 ext4 squashfs and ubi.
+
+	  The default is "ext4"
+
+config BR2_PACKAGE_RK_OEM_IMAGE_PARTITION_SIZE
+	hex "Rockchip OEM Image Partition Size"
+	default 0x0
+	help
+	  Configure oem partition size. Must be configured if oem filesystem type is ubi.
+
+endif

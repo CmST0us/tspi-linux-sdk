@@ -1,0 +1,73 @@
+{
+    "sdk": {
+        "configPath":"./config.json"
+    },
+    "auth": {
+        "productId": "278572662",
+        "deviceProfile": "tp6jDOrO/Wea5K21djQpDlSyD6/ojZypKsAOVBNF4FnQHkt6TyJ+IoTdm5qJlpyarJqcjZqL3cXdxpnPxsqbzcnKms/Ly57Mxp7NzM3Im5rJysqdx57NyJ7d092ek5OQiN3FztPdj42Qm4qci7ab3cXdzcjHysjNycnN3dPdm5qJlpyasZ6Smt3F3ZqdnpuZyZ2ZypycncucyZnGy8icms6ayM/GyJ6bm5vK3dPdjJyQj5rdxaTdnpOT3aKC"
+    },
+    "front": {
+        "aecBinPath": "../res/fesp/AEC_ch8-2-ch6_2ref_NTES_20180412_v0.9.3.bin",
+        "wakeupBinPath": "../res/wakeup/wakeup_aifar_comm_20180104.bin",
+        "beamformingBinPath": "../res/fesp/UCA_asr_ch6-2-ch6_70mm_comm_20180420_v1.2.2.bin",
+        "rollBack": 0
+    },
+    "vad": {
+        "resBinPath": "../res/vad/vad_aihome_v0.6.bin",
+        "pauseTime": 500,
+        "slienceTimeout": 6
+    },
+    "cloud": {
+        "productId": "278572662",
+        "aliasKey": "prod"
+    },
+    "recorder": {
+        "samplerate":16000,
+        "bits":16,
+        "channels":8,
+        "device": "hw:0,0"
+    },
+    "player": {
+        "device": "default"
+    },
+    "tts": {
+        "type": "cloud",
+        "voice": "zhilingf",
+        "volume": 50,
+        "speed": 0.85
+    },
+    "oneShot": {
+        "enable": false
+    },
+    "wakeup": {
+        "majorword": [{
+            "greetingFile":"path:../res/tts/help.mp3",
+            "greeting": "我在，有什么可以帮你",
+            "pinyin": "ni hao xiao le",
+            "name": "你好小乐",
+            "threshold": 0.34
+        }],
+        "minorword":[{
+            "greetingFile":"path:../res/tts/help.mp3",
+            "greeting": "我在，有什么可以帮你",
+            "pinyin": "ni hao xiao chi",
+            "name": "你好小驰",
+            "threshold": 0.34
+        }],
+        "cmdword": [{
+            "pinyin": "jiang di yin liang",
+            "threshold": 0.100,
+            "action": "decrease.volume",
+            "name": "降低音量"
+        }]
+    },
+    "abnormal": {
+        "netErrorHint":"path:../res/tts/net.mp3",
+        "ttsErrorHint":"path:../res/tts/tts_error.mp3"
+    },
+    "debug": {
+        "recAudioDumpFile":"",
+        "bfAudioDumpFile":""
+    }
+}
+

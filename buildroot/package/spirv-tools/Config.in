@@ -1,0 +1,7 @@
+config BR2_PACKAGE_SPIRV_TOOLS
+	bool "spirv-tools"
+	depends on BR2_PACKAGE_SPIRV_HEADERS
+	help
+	  An API and commands for processing SPIR-V modules.
+
+	  https://github.com/KhronosGroup/SPIRV-Tools

@@ -1,0 +1,12 @@
+#default to KINETIC
+ROSCPP_SERIALIZATION_VERSION = 0.6.11
+
+ifeq ($(BR2_PACKAGE_ROS_INDIGO),y)
+ROSCPP_SERIALIZATION_VERSION = 0.5.8
+endif
+
+ROSCPP_SERIALIZATION_SITE = $(call github,ros,roscpp_core,$(ROSCPP_SERIALIZATION_VERSION))
+ROSCPP_SERIALIZATION_SUBDIR = roscpp_serialization
+ROSCPP_SERIALIZATION_DEPENDENCIES += cpp_common rostime roscpp_traits
+
+$(eval $(catkin-package))

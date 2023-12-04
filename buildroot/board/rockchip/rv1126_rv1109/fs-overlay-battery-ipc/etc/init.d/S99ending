@@ -1,0 +1,17 @@
+#!/bin/sh
+#
+
+case "$1" in
+	start)
+		echo userspace > /sys/devices/system/cpu/cpufreq/policy0/scaling_governor 
+		echo 600000 > /sys/devices/system/cpu/cpufreq/policy0/scaling_setspeed
+		;;
+	stop)
+		;;
+	*)
+		echo "Usage: $0 {start|stop}"
+		exit 1
+		;;
+esac
+
+exit 0

@@ -1,0 +1,38 @@
+<?xml version="1.0" ?>
+<node>
+  <interface name="rockchip.StorageManager.file">
+
+    <method name="GetDisksStatus">
+      <arg name="param" type="s" direction="in"/>
+      <arg name="result" type="s" direction="out"/>
+    </method>
+
+    <method name="GetFileList">
+      <arg name="param" type="s" direction="in"/>
+      <arg name="result" type="s" direction="out"/>
+    </method>
+
+    <method name="GetMediaPath">
+      <arg name="param" type="s" direction="in"/>
+      <arg name="result" type="s" direction="out"/>
+    </method>
+
+    <method name="DiskFormat">
+      <arg name="param" type="s" direction="in"/>
+      <arg name="result" type="s" direction="out"/>
+    </method>
+
+    <signal name="UpdateDisksStatus">
+      <arg name="param" type="s" direction="in"/>
+    </signal>
+
+    <signal name="UpdateMediaPath">
+      <arg name="param" type="s" direction="in"/>
+    </signal>
+
+    <signal name="FreeSizeNotice">
+      <arg name="param" type="s" direction="in"/>
+    </signal>
+
+  </interface>
+</node>

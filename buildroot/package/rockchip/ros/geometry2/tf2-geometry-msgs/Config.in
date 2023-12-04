@@ -1,0 +1,7 @@
+config BR2_PACKAGE_TF2_GEOMETRY_MSGS
+    bool "tf2-geometry-msgs"
+    depends on BR2_PACKAGE_EIGEN
+    select BR2_PACKAGE_OROCOS_KDL
+    select BR2_PACKAGE_TF2_ROS
+    help
+        tf2-geometry-msgs

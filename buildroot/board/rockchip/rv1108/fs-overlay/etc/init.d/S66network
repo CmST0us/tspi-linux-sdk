@@ -1,0 +1,43 @@
+#!/bin/sh
+#
+# insmod wifi ko....
+#
+
+
+case "$1" in
+  start)
+	if [ -z "`df | grep root`" ]; then
+		exit 1
+	fi
+
+	busybox insmod /root/lib/modules/rfkill-wlan.ko
+	busybox insmod /root/lib/modules/rfkill-bt.ko
+	busybox insmod /root/lib/modules/cfg80211.ko
+	busybox insmod /root/lib/modules/mac80211.ko
+	busybox insmod /root/lib/modules/rkwifi_sys_iface.ko
+	busybox insmod /root/lib/modules/rk_wifi_config.ko
+        wifi_chip=`cat /sys/class/rkwifi/chip`
+        ap_chip=`echo $wifi_chip | grep AP`
+	if [ ! -z $ap_chip ]; then
+		modules_name=bcmdhd.ko
+	else
+		modules_name=`echo $wifi_chip | tr [A-Z] [a-z] | sed 's/rtl//g'`.ko
+	fi
+	busybox insmod /root/lib/modules/${modules_name}
+	[ $? = 0 ] && echo "insmod OK" || echo "insmod FAIL"
+
+	echo wifi_chip=$wifi_chip
+	echo modules_name=$modules_name
+	;;
+  stop)
+	;;
+  restart|reload)
+	"$0" stop
+	"$0" start
+	;;
+  *)
+	echo "Usage: $0 {start|stop|restart}"
+	exit 1
+esac
+
+exit $?

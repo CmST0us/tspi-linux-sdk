@@ -1,0 +1,26 @@
+#!/bin/sh
+#
+
+case "$1" in
+	start)
+		{
+			insmod /vendor/lib/modules/rk_wifi_config.ko
+			insmod /vendor/lib/modules/rfkill.ko
+			insmod /vendor/lib/modules/rfkill-rk.ko
+			insmod /vendor/lib/modules/cfg80211.ko
+			insmod /vendor/lib/modules/mac80211.ko
+			insmod /vendor/lib/modules/bcmdhd_indep_power.ko
+
+			tb_start_wifi.sh &
+		}&
+		;;
+	stop)
+		dhd_priv setsuspendmode 1
+		;;
+	*)
+		echo "Usage: $0 {start|stop}"
+		exit 1
+		;;
+esac
+
+exit 0

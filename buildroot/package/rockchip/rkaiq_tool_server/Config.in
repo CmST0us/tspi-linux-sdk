@@ -1,0 +1,4 @@
+config BR2_PACKAGE_RKAIQ_TOOL_SERVER
+	bool "Rockchip Rkaiq Tool Server"
+	help
+	  Rockchip rkaiq tool server.

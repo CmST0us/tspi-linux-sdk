@@ -1,0 +1,23 @@
+menuconfig BR2_PACKAGE_COMMON_MSGS_SET
+    bool "ros common-msgs"
+    depends on BR2_PACKAGE_HOST_CATKIN
+    select BR2_PACKAGE_ROSCPP_CORE_SET
+    select BR2_PACKAGE_CPP_COMMON
+    select BR2_PACKAGE_ROSCPP_SERIALIZATION
+    select BR2_PACKAGE_MESSAGE_GENERATION
+    select BR2_PACKAGE_MESSAGE_RUNTIME
+    select BR2_PACKAGE_STD_MSGS
+
+if BR2_PACKAGE_COMMON_MSGS_SET
+source "package/rockchip/ros/common-msgs/actionlib-msgs/Config.in"
+source "package/rockchip/ros/common-msgs/geometry-msgs/Config.in"
+source "package/rockchip/ros/common-msgs/sensor-msgs/Config.in"
+source "package/rockchip/ros/common-msgs/common-msgs/Config.in"
+source "package/rockchip/ros/common-msgs/diagnostic-msgs/Config.in"
+source "package/rockchip/ros/common-msgs/nav-msgs/Config.in"
+source "package/rockchip/ros/common-msgs/shape-msgs/Config.in"
+source "package/rockchip/ros/common-msgs/stereo-msgs/Config.in"
+source "package/rockchip/ros/common-msgs/trajectory-msgs/Config.in"
+source "package/rockchip/ros/common-msgs/visualization-msgs/Config.in"
+
+endif

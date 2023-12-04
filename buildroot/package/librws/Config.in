@@ -1,0 +1,6 @@
+config BR2_PACKAGE_LIBRWS
+	bool "librws"
+	help
+	  librws -  Tiny, cross platform websocket client C library.
+
+	  https://github.com/OlehKulykov/librws

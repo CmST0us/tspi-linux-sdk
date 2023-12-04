@@ -1,0 +1,1 @@
+device/rockchip/common/build.sh

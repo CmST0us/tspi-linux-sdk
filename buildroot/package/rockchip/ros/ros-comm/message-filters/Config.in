@@ -1,0 +1,12 @@
+config BR2_PACKAGE_MESSAGE_FILTERS
+    bool "message-filters"
+    select BR2_PACKAGE_ROSCONSOLE
+    select BR2_PACKAGE_ROSCPP
+    select BR2_PACKAGE_XMLRPCPP
+    select BR2_PACKAGE_BOOST_SIGNALS
+    select BR2_PACKAGE_BOOST_THREAD
+    select BR2_PACKAGE_ROSTEST
+    help
+        A set of message filters which take in messages and may
+        output those messages at a later time, based on the
+        conditions that filter needs met

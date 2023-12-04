@@ -1,0 +1,4 @@
+#include "rk3229_arm.config"
+#include "base.config"
+#include "base_extra.config"
+#include "recovery.config"

@@ -1,0 +1,11 @@
+#!/bin/sh -e
+
+echo $@ >> /tmp/log
+case $1 in
+	on)
+		echo "compositor:state:freeze" > /tmp/.weston_drm.conf
+		;;
+	off)
+		echo "compositor:state:on" > /tmp/.weston_drm.conf
+		;;
+esac

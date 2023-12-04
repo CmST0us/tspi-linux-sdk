@@ -1,0 +1,8 @@
+libbd_audio_vdev.so
+md5值：a54c95b604587dfa04fafec4f506eb21
+
+libbd_alsa_audio_client.so
+md5值：33222988b09550be76cc0d0b2c292107
+
+libbdSPILAudioProc.so
+md5值: af1c720dac110c9926cb4e8d2d13b8b8

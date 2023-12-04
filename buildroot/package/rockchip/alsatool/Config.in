@@ -1,0 +1,5 @@
+config BR2_PACKAGE_ALSATOOL
+	bool "Rockchip Alsa tool for linux"
+        select BR2_PACKAGE_ALSA_LIB
+	help
+	  Rockchip alsa tool for linux.

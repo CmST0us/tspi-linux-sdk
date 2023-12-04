@@ -1,0 +1,1 @@
+SUBSYSTEM=="udc",ACTION=="change",DRIVER=="configfs-gadget",RUN+="/usr/bin/usb-hotplug %E{DEVPATH}"

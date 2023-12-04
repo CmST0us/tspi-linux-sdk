@@ -1,0 +1,21 @@
+BEGIN:VCARD
+VERSION:2.1
+N:Smiths;John;;;
+FN:John Smiths
+NICKNAME:Xxxxxxxxxxxxxxxxxxxxxxxx
+ADR;WORK;POSTAL:;;1234 Any Streeet;San Diego;CA;90000;United States of America
+ORG:Widcomm, Inc.
+TITLE:Soft Ware Engin
+ROLE:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+TEL;HOME;VOICE:(858) 123-4567
+TEL;WORK;VOICE:(858) 123-4567
+TEL;WORK;FAX:(858) 123-4567
+TEL;CELL:(858) 123-4567
+URL:
+URL:http://www.Jonh-Smith.com
+EMAIL;INTERNET;PREF:John_Smith@Widcomm.com
+NOTE;ENCODING=QUOTED-PRINTABLE:=0D=0A
+X-GENDER:MALE
+X-IRMC-LUID:0c20eda97
+X-BT-UID:00000000000000000000000000000008
+END:VCARD

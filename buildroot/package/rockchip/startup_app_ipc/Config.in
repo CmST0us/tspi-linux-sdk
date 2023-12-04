@@ -1,0 +1,22 @@
+config BR2_PACKAGE_STARTUP_APP_IPC
+	bool "rockchip startup app for ipc"
+	select BR2_PACKAGE_RKMEDIA
+	select BR2_PACKAGE_RKMEDIA_MINI
+	select BR2_PACKAGE_LIBIPCPROTOCOL
+	help
+	  rockchip startup app for ipc
+
+if BR2_PACKAGE_STARTUP_APP_IPC
+config BR2_PACKAGE_STARTUP_APP_IPC_SANITIZER_DYNAMIC
+	bool "enable startup app sanitizer tools with dynamic linker"
+	select BR2_PACKAGE_ADDRESS_SANITIZER
+	help
+	  Enable startup app for ipc debug on sanitizer with dynamic linker.
+
+config BR2_PACKAGE_STARTUP_APP_IPC_SANITIZER_STATIC
+	bool "enable startup app sanitizer tools with static linker"
+	select BR2_PACKAGE_ADDRESS_SANITIZER
+	help
+	  Enable startup app for ipc debug on sanitizer with static linker.
+
+endif

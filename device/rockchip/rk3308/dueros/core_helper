@@ -1,0 +1,2 @@
+#!bin/sh
+exec gzip - > /data/$1-$2-$3-$4.core.gz

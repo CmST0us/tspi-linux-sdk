@@ -1,0 +1,8 @@
+config BR2_PACKAGE_GSTREAMER1_IEP_DEINTERLACE
+	bool "Gstreamer IEP deinterlace plugins"
+	depends on BR2_PACKAGE_ROCKCHIP_MPP
+	select BR2_PACKAGE_GST1_PLUGINS_BASE
+	help
+	  GStreamer iep offers the hardware deinterlace
+          for Rockchip Platform.
+

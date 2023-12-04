@@ -1,0 +1,4 @@
+config BR2_PACKAGE_CAMERA_ENGINE_CIFISP
+	bool "Rockchip Camera engine for cifisp"
+	help
+	  Rockchip camera engine for cifisp.

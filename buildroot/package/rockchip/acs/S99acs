@@ -1,0 +1,70 @@
+#!/bin/sh
+#
+# Start acs service
+#
+
+
+start() {
+	echo "Start ACS kvs_util!"
+	kvs_util
+	sleep 1
+	device_serial=`cat /var/lib/data/ace/device_info.json | jq .device_serial`
+        ace hal kvs cli -s -k deviceData.idmeSerial -v $device_serial
+	device_type=`cat /var/lib/data/ace/device_info.json | jq .device_type`
+        ace hal kvs cli -s -k deviceData.idmeDeviceType -v $device_type
+	ffs_pid=`cat /var/lib/data/ace/device_info.json | jq .ffs_pid`
+        ace hal kvs cli -s -k deviceData.pid -v $ffs_pid
+	dss_pub_key=`cat /var/lib/data/ace/device_info.json | jq .dss_pub_key`
+        ace hal kvs cli -s -k deviceData.dss_pub_key -v $dss_pub_key
+	client_id=`cat /var/lib/data/ace/device_info.json | jq .client_id`
+        ace hal kvs cli -s -k deviceData.client_id -v $client_id
+	ffs_pin=`cat /proc/sys/kernel/random/uuid | md5sum | cut -c 1-9`
+        ace hal kvs cli -s -k deviceData.ffsPin -v $ffs_pin
+	cert=`cat /var/lib/data/ace/cert.pem`
+	ace hal kvs cli -s -k build_fingerprint -v fucking_fingerprint
+#        ace hal kvs cli -s -k dha.DhaKeyprkey -v fucking_keyprkey
+#        ace hal kvs cli -s -k dha.DhaCertcert -v fucking_DhaCertcert
+#        ace hal kvs cli -s -k dha.DhaCert2cert -v fucking_DhaCert2cert
+	sed -i "/\"deviceSerialNumber\"/c\\\t\"deviceSerialNumber\": $device_serial" /var/lib/data/ace/AlexaClientSDKConfig.json
+	sed -i "/\"clientId\"/c\\\t\"clientId\": $client_id" /var/lib/data/ace/AlexaClientSDKConfig.json
+	product_id=`cat /var/lib/data/ace/device_info.json | jq .product_id`
+	sed -i "/\"productId\"/c\\\t\"productId\": $product_id" /var/lib/data/ace/AlexaClientSDKConfig.json
+	sed -i "/\"manufacturerName\"/c\\\t\"manufacturerName\": \"Rockchip\"" /var/lib/data/ace/AlexaClientSDKConfig.json
+	sed -i "/\"description\"/c\\\t\"description\": \"Rockchip avs reference\"" /var/lib/data/ace/AlexaClientSDKConfig.json
+	echo "Start ACS eventmgr!"
+	ace_eventmgr&
+	sleep 1
+	echo "Start ACS wifisvc!"
+	wifisvc&
+	sleep 1
+	echo "Start ACS tokend!"
+	tokend&
+	sleep 1
+	echo "Start ACS ss_proxy_svc!"
+	ss_proxy_svc&
+	sleep 1
+	echo "Start ACS ffs_test_server"
+	ffs_test_server&
+}
+
+stop() {
+	killall kvs_util ace_eventmgr wifisvc tokend ss_proxy_svc ffs_test_server
+}
+
+case "$1" in
+  start)
+	start
+	;;
+  stop)
+	stop
+	;;
+  restart|reload)
+	stop
+	start
+	;;
+  *)
+	echo "Usage: $0 {start|stop|restart}"
+	exit 1
+esac
+
+exit $?

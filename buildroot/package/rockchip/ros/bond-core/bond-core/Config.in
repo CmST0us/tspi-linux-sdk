@@ -1,0 +1,4 @@
+config BR2_PACKAGE_BOND_CORE
+	bool "bond core"
+	help
+		bond core

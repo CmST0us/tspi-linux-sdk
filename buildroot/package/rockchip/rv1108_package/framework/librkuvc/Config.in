@@ -1,0 +1,12 @@
+if BR2_PACKAGE_RV1108
+
+# BSP packages
+config BR2_PACKAGE_LIBRKUVC
+	bool "rv1108 package librkuvc"
+	select BR2_PACKAGE_LIBION
+	select BR2_PACKAGE_ROCKCHIP_MPP
+	select BR2_PACKAGE_JHEAD
+	select BR2_PACKAGE_ROCKCHIP_RGA
+
+endif
+

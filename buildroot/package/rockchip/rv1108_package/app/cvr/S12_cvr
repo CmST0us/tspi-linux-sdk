@@ -1,0 +1,27 @@
+#!/bin/sh
+#
+# Start the CVR application....
+#
+
+case "$1" in
+  start)
+	printf "Starting CVR application: "
+	cvr &
+	[ $? = 0 ] && echo "OK" || echo "FAIL"
+	;;
+  stop)
+	printf "Stopping CVR application: "
+	busybox killall cvr
+	[ $? = 0 ] && echo "OK" || echo "FAIL"
+	;;
+  restart|reload)
+	"$0" stop
+	"$0" start
+	;;
+  *)
+	echo "Usage: $0 {start|stop|restart}"
+	exit 1
+esac
+
+exit $?
+

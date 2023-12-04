@@ -1,0 +1,9 @@
+config BR2_PACKAGE_ROSGRAPH
+	bool "rosgraph for ros"
+	depends on BR2_PACKAGE_PYTHON
+	depends on BR2_PACKAGE_HOST_CATKIN
+	help
+		rosgraph contains the rosgraph command-line tool,
+		which prints information about the ROS Computation
+		Graph. It also provides an internal library that is
+		used by the graphical version of this tool, rxgraph.

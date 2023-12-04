@@ -1,0 +1,11 @@
+config BR2_PACKAGE_LIBRETRO_BEETLEWSWAN
+        bool "libretro-beetlewswan"
+	depends on BR2_PACKAGE_RETROARCH
+	depends on BR2_INSTALL_LIBSTDCPP
+        help
+          libretro beetlewswan core.
+
+	  http://www.libretro.com
+
+comment "LIBRETRO_BEETLEWSWAN needs a toolchain w/ C++"
+	depends on !BR2_INSTALL_LIBSTDCPP

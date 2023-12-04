@@ -1,0 +1,4 @@
+config BR2_PACKAGE_HOST_DBTOOL
+	bool "rockchip host dbtool"
+	help
+		rockchip dbtool to convert between json file and sqlite db file

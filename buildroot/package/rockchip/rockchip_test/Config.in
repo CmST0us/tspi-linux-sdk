@@ -1,0 +1,10 @@
+config BR2_PACKAGE_ROCKCHIP_TEST
+	bool  "stress test tools"
+	select BR2_PACKAGE_STRESSAPPTEST
+	select BR2_PACKAGE_DHRYSTONE
+	select BR2_PACKAGE_MEMTESTER
+	select BR2_PACKAGE_BASH
+	select BR2_PACKAGE_IPERF
+	select BR2_PACKAGE_SOX
+	help
+		function test for Rockchip stress test

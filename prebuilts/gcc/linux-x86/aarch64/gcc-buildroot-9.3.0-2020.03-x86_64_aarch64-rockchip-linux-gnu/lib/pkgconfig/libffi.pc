@@ -1,0 +1,9 @@
+prefix=/home/yhx/RK356X/SDK/buildroot/output/rockchip_toolchain/host
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+toolexeclibdir=${exec_prefix}/lib/../lib
+
+Name: libffi
+Description: Library supporting Foreign Function Interfaces
+Version: 3.2.1
+Libs: -L${toolexeclibdir} -lffi

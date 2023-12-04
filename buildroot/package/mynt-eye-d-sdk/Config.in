@@ -1,0 +1,6 @@
+# MYNT-EYE-D-SDK
+
+menu "MYNT-EYE-D-SDK"
+	source "package/mynt-eye-d-sdk/mynt-eye-d-sdk/Config.in"
+	source "package/mynt-eye-d-sdk/mynt-eye-d-sdk-samples/Config.in"
+endmenu

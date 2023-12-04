@@ -1,0 +1,88 @@
+config BR2_PACKAGE_RKSCRIPT
+	bool "rockchip script"
+	depends on BR2_PACKAGE_HAS_UDEV
+	help
+	  Rockchip helper scripts.
+
+if BR2_PACKAGE_RKSCRIPT
+
+config BR2_PACKAGE_RKSCRIPT_MOUNTALL
+	bool "rkscript mountall"
+	default y
+	help
+	  Install S21mountall.sh
+
+config BR2_PACKAGE_RKSCRIPT_EXTRA_USB_CONFIG
+	string "extra usb config"
+	help
+	  Extra usb configs.
+
+config BR2_PACKAGE_RKSCRIPT_ADBD
+	bool "adbd"
+	default y if BR2_PACKAGE_ANDROID_TOOLS_ADBD
+	help
+	  Android adbd.
+
+config BR2_PACKAGE_RKSCRIPT_MTP
+	bool "mtp"
+	default y if BR2_PACKAGE_MTP
+	help
+	  Media Transfer Protocal (MTP).
+
+config BR2_PACKAGE_RKSCRIPT_ACM
+	bool "acm"
+	help
+	  USB ACM.
+
+config BR2_PACKAGE_RKSCRIPT_NTB
+	bool "ntb"
+	help
+	  Rockchip NTB.
+
+config BR2_PACKAGE_RKSCRIPT_UMS
+	bool "ums"
+	help
+	  USB mass storage (UMS).
+
+if BR2_PACKAGE_RKSCRIPT_UMS
+
+config BR2_PACKAGE_RKSCRIPT_UMS_PATH
+	string "ums path"
+	default "/userdata/ums_shared.img"
+	help
+	  Block device or image file to share through UMS.
+
+config BR2_PACKAGE_RKSCRIPT_UMS_SIZE
+	string "ums size"
+	default "8"
+	help
+	  UMS's size (MB).
+
+config BR2_PACKAGE_RKSCRIPT_UMS_FSTYPE
+	string "ums fstype"
+	default "fat"
+	help
+	  UMS's filesystem type.
+
+config BR2_PACKAGE_RKSCRIPT_UMS_RO
+	bool "ums ro"
+	default n
+	help
+	  UMS is read-only.
+
+config BR2_PACKAGE_RKSCRIPT_UMS_AUTO_MOUNT
+	bool "ums auto mount"
+	help
+	  Mount when USB disconnected, umount when connected.
+
+	  Warning:
+	  Umounting UMS may failed if it is still in use.
+
+endif
+
+config BR2_PACKAGE_RKSCRIPT_DEFAULT_PCM
+	string "default PCM"
+	help
+	  Alsa's default PCM
+
+endif

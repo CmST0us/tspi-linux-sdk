@@ -1,0 +1,150 @@
+menuconfig BR2_PACKAGE_MEDIASERVER
+	bool "rockchip mediaserver"
+	select BR2_PACKAGE_JSON_FOR_MODERN_CPP
+	select BR2_PACKAGE_RKMEDIA
+	help
+	  rockchip mediaserver
+
+if BR2_PACKAGE_MEDIASERVER
+
+config BR2_PACKAGE_MEDIASERVER_SANITIZER_DYNAMIC
+	bool "enable mediaserver sanitizer tools with dynamic linker"
+	select BR2_PACKAGE_ADDRESS_SANITIZER
+	help
+	  Enable mediaserver debug on sanitizer with dynamic linker.
+
+config BR2_PACKAGE_MEDIASERVER_SANITIZER_STATIC
+	bool "enable mediaserver sanitizer tools with static linker"
+	select BR2_PACKAGE_ADDRESS_SANITIZER
+	help
+	  Enable mediaserver debug on sanitizer with static linker.
+
+config BR2_PACKAGE_MEDIASERVE_BIN
+	bool "Enable mediaserver bin"
+	default y
+	help
+	  rockchip mediaserver options
+
+config BR2_PACKAGE_MEDIASERVE_LIB_EXAMPLE
+	bool "Enable mediaserver lib example"
+	default y if !BR2_PACKAGE_MEDIASERVE_BIN
+	help
+	  rockchip mediaserver options
+
+config BR2_PACKAGE_MEDIASERVE_CONFIG
+	string "mediaserver config"
+	default "none"
+
+config BR2_PACKAGE_MEDIASERVE_DBUS
+	bool "Enable dbus server"
+	select BR2_PACKAGE_DBUS
+	select BR2_PACKAGE_DBUS_CPP
+	select BR2_PACKAGE_LIBRKDB
+	default y
+	help
+	  rockchip mediaserver options
+
+config BR2_PACKAGE_MEDIASERVE_SCHEDULES_MANAGER
+	bool "Enable schedules manager"
+	depends on BR2_PACKAGE_MEDIASERVE_DBUS
+	default y if BR2_PACKAGE_MEDIASERVE_DBUS
+	help
+	  rockchip mediaserver options
+
+config BR2_PACKAGE_MEDIASERVE_LINKAPI
+	bool "Enable link api features"
+	select BR2_PACKAGE_CJSON
+	default n
+	help
+	  rockchip mediaserver options
+
+choice
+prompt "Link api type"
+	default BR2_PACKAGE_MEDIASERVE_LINKAPI_LINKKIT
+	help
+	  Select a link api type.
+
+config BR2_PACKAGE_MEDIASERVE_LINKAPI_LINKKIT
+	bool "Enable linkkit api for aliyun"
+	depends on BR2_PACKAGE_MEDIASERVE_LINKAPI
+
+config BR2_PACKAGE_MEDIASERVE_LINKAPI_TUYA
+	bool "Enable tuya api for tuya"
+	depends on BR2_PACKAGE_MEDIASERVE_LINKAPI
+endchoice
+
+config BR2_PACKAGE_MEDIASERVE_LINKAPI_VENDOR
+	bool "Enable link certificate to be read from vendor storage"
+	depends on BR2_PACKAGE_MEDIASERVE_LINKAPI
+	select BR2_PACKAGE_VENDOR_STORAGE_LIBRARY
+	default n
+	help
+	  rockchip mediaserver options
+
+config BR2_PACKAGE_MEDIASERVE_MINILOGGER
+	bool "Enable miniloger print"
+	select BR2_PACKAGE_MINILOGGER
+	default y
+	help
+	  rockchip mediaserver options
+
+config BR2_PACKAGE_MEDIASERVE_SHM_SERVER
+	bool "Enable shm server"
+	select BR2_PACKAGE_SHM_TOOLS
+	default n
+	help
+	  rockchip mediaserver options
+
+config BR2_PACKAGE_MEDIASERVE_OSD_SERVER
+	bool "Enable osd server"
+	select BR2_PACKAGE_FREETYPE
+	default n
+	help
+	  rockchip mediaserver options
+
+config BR2_PACKAGE_MEDIASERVE_EXIV2_FEATURE
+	bool "Enable exiv2 feature"
+	select BR2_PACKAGE_EXIV2
+	default n
+	help
+	  rockchip mediaserver options
+
+config BR2_PACKAGE_MEDIASERVE_TB
+	bool "Enable thunder boot"
+
+config BR2_PACKAGE_MEDIASERVE_USE_ROCKFACE
+	bool "Enable rockface"
+	select BR2_PACKAGE_RKMEDIA_ROCKFACE
+	default y if !BR2_PACKAGE_MEDIASERVE_TB
+	help
+	  rockchip mediaserver options
+
+if BR2_PACKAGE_MEDIASERVE_USE_ROCKFACE
+config BR2_PACKAGE_MEDIASERVE_USE_ROCKFACE_RECOGNIZE
+	bool "Enable rockface recognize"
+	select BR2_PACKAGE_RKMEDIA_ROCKFACE_RECOGNIZE
+	default y if !BR2_PACKAGE_MEDIASERVE_TB
+	help
+	  rockchip mediaserver recognize options
+endif
+
+config BR2_PACKAGE_MEDIASERVE_USE_ROCKX
+	bool "Enable rockx"
+	select BR2_PACKAGE_ROCKX
+	default y if !BR2_PACKAGE_MEDIASERVE_TB
+	help
+	  rockchip mediaserver options
+
+config BR2_PACKAGE_MEDIASERVE_ZBAR
+	bool "Enable zbar to scan QR code"
+	default y if BR2_PACKAGE_MEDIASERVE_LINKAPI
+	help
+	  rockchip mediaserver options
+
+config BR2_PACKAGE_MEDIASERVE_ENABLE_CY43438
+	bool "Enable cyw43438 api"
+	default n
+	help
+	  rockchip mediaserver options
+
+endif

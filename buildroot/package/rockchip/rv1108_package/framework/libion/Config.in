@@ -1,0 +1,9 @@
+if BR2_PACKAGE_RV1108
+
+# BSP packages
+#none
+config BR2_PACKAGE_LIBION
+	bool "RV1108 package libion"
+
+endif
+

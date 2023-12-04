@@ -1,0 +1,16 @@
+config BR2_PACKAGE_LINUXAB
+	bool "Rockchip LINUXAB for linux"
+	select BR2_PACKAGE_LIBCURL
+	help
+	  Rockchip LINUXAB for linux.
+
+if BR2_PACKAGE_LINUXAB
+choice
+    default BR2_PACKAGE_LINUXAB_SUCCESSFUL_BOOT
+    prompt "Linux A/B bringup features."
+config BR2_PACKAGE_LINUXAB_SUCCESSFUL_BOOT
+    bool "successful_boot"
+config BR2_PACKAGE_LINUXAB_RETRY
+    bool "retry time"
+endchoice
+endif

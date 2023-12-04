@@ -1,0 +1,14 @@
+/.debhelper/
+/debhelper-build-stamp
+/files
+/librockchip-mpp-dev.substvars
+/librockchip-mpp-dev/
+/librockchip-mpp-static.substvars
+/librockchip-mpp-static/
+/librockchip-mpp1.substvars
+/librockchip-mpp1/
+/rockchip-mpp-demos.substvars
+/rockchip-mpp-demos/
+/librockchip-vpu0.substvars
+/librockchip-vpu0/
+/tmp/

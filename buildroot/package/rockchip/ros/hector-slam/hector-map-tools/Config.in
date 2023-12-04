@@ -1,0 +1,6 @@
+config BR2_PACKAGE_HECTOR_MAP_TOOLS
+	bool "hector map tools"
+	select BR2_PACKAGE_COMMON_MSGS_SET
+	select BR2_PACKAGE_NAV_MSGS
+	help
+		hector map tools

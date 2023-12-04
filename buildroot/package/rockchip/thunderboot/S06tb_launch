@@ -1,0 +1,55 @@
+#!/bin/sh
+#
+
+lunch_start()
+{
+	export normal_no_read_back=1
+	echo "Now we are ready to start your first application" > /dev/kmsg
+
+	{
+		insmod /lib/modules/dw_mmc-rockchip.ko
+		insmod /lib/modules/rk_sdmmc_ops.ko
+		insmod /lib/modules/sdmmc_vendor_storage.ko
+	}&
+
+	if [ -f "/lib/modules/snd-soc-es8311.ko" ]; then
+		insmod /lib/modules/snd-soc-es8311.ko
+	elif [ -f "/lib/modules/snd-soc-es7202.ko" ]; then
+		# playback
+		insmod /lib/modules/snd-soc-rk-codec-digital.ko
+		insmod /lib/modules/snd-soc-dummy-codec.ko
+		# capture
+		insmod /lib/modules/snd-soc-es7202.ko
+		insmod /lib/modules/snd-soc-rockchip-pdm.ko
+	else
+		echo "es7202.ko and es8311.ko are not found, the codec driver failed to load"
+	fi
+
+	echo 297000000 > /proc/mpp_service/rkvenc/clk_core
+
+	rkipc > /dev/kmsg 2>&1 &
+	auto_poweroff.sh &
+}
+
+lunch_stop()
+{
+	killall rkipc
+	echo "All applications have been stopped"
+
+	io -4 0xfe020104 0x00840084
+}
+
+case "$1" in
+	start)
+		lunch_start
+		;;
+	stop)
+		lunch_stop
+		;;
+	*)
+		echo "Usage: $0 {start|stop}"
+		exit 1
+		;;
+esac
+
+exit 0

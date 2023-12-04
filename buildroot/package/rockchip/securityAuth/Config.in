@@ -1,0 +1,14 @@
+menuconfig BR2_PACKAGE_SECURITYAUTH
+    bool "securityAuth"
+
+if BR2_PACKAGE_SECURITYAUTH
+choice
+	default BR2_PACKAGE_SECURITYAUTH_3128H
+    prompt "securityAuth support for "
+
+config BR2_PACKAGE_SECURITYAUTH_3128H
+    bool "3128h"
+
+endchoice
+
+endif

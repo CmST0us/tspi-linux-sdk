@@ -1,0 +1,5 @@
+config BR2_PACKAGE_ROSCREATE
+    bool "roscreate"
+    help
+        roscreate contains a tool that assists in the creation
+        of ROS filesystem resources

@@ -1,0 +1,19 @@
+config BR2_PACKAGE_TF
+    bool "tf"
+    depends on BR2_PACKAGE_GEOMETRY2_SET
+    select BR2_PACKAGE_TF2_ROS
+    select BR2_PACKAGE_ANGLES
+    select BR2_PACKAGE_COMMON_MSGS_SET
+    select BR2_PACKAGE_GEOMETRY_MSGS
+    select BR2_PACKAGE_SENSOR_MSGS
+    select BR2_PACKAGE_ROS_COMM_SET
+    select BR2_PACKAGE_MESSAGE_FILTERS
+    select BR2_PACKAGE_ROSCONSOLE
+    select BR2_PACKAGE_ROSCPP
+    select BR2_PACKAGE_ROSCPP_CORE_SET
+    select BR2_PACKAGE_ROSTIME
+    select BR2_PACKAGE_STD_MSGS
+    select BR2_PACKAGE_MESSAGE_GENERATION
+    help
+        tf is a package that lets the user keep track of
+        multiple coordinate frames over time

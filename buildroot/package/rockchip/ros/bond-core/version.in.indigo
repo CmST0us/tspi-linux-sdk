@@ -1,0 +1,3 @@
+VERSION = 1.7.18
+SITE = https://github.com/ros/bond_core/archive
+SOURCE = $(VERSION).tar.gz

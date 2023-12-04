@@ -1,0 +1,17 @@
+config BR2_PACKAGE_PLUGINLIB
+    bool "pluginlib"
+    depends on BR2_PACKAGE_HOST_CATKIN
+    depends on BR2_PACKAGE_CLASS_LOADER
+    depends on BR2_PACKAGE_ROSPACK
+    select BR2_PACKAGE_TINYXML2 if BR2_PACKAGE_ROS_KINETIC
+    select BR2_PACKAGE_GTEST if BR2_PACKAGE_ROS_INDIGO
+    select BR2_PACKAGE_ROS_COMM_SET
+    select BR2_PACKAGE_ROSCONSOLE
+    select BR2_PACKAGE_ROSLIB
+    select BR2_PACKAGE_BOOST_SYSTEM
+    select BR2_PACKAGE_BOOST_FILESYSTEM
+
+    help
+        The pluginlib package provides tools for writing and
+        dynamically loading plugins using the ROS build
+        infrastructure

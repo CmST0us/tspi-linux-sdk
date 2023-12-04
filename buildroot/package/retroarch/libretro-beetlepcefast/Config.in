@@ -1,0 +1,11 @@
+config BR2_PACKAGE_LIBRETRO_BEETLEPCEFAST
+        bool "libretro-beetle-pce-fast"
+	depends on BR2_PACKAGE_RETROARCH
+	depends on BR2_INSTALL_LIBSTDCPP
+        help
+          libretro beetle-pce-fast core.
+
+	  http://www.libretro.com
+
+comment "LIBRETRO_BEETLEPCEFAST needs a toolchain w/ C++"
+	depends on !BR2_INSTALL_LIBSTDCPP

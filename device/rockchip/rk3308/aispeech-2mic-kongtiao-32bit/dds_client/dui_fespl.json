@@ -1,0 +1,39 @@
+{
+    "auth":{
+        "productId": "100001463",
+        "deviceProfile": "Yhn7W3QzXThMGBG1qgJcbCmW0hmO7HYdHcfuQPFzJhgnzWrrJhPPWYTdm5qJlpyarJqcjZqL3cXdz8fKm5nNycyZmcbGy5udy52cy8bHzsuZzJ6ZmZrLzMnd092ek5OQiN3FztPdj42Qm4qci7ab3cXdzs/Pz8/Oy8nM3dPdm5qJlpyasZ6Smt3F3Z7Oy8icnpmbms6bnsvNm87Gz83MnsqZzcicy83Iy5rN3dPdjJyQj5rdxaTdnpOT3aKC"
+    },
+    "recorder":{
+        "device":"2mic_loopback",
+        "bits":16,
+        "channels":3,
+        "samplerate":16000
+    },
+    "player":{
+        "device":"default"
+    },
+    "wakeup":{
+        "cfg":{
+            "aecBinPath":"./res/AEC_ch3-2-ch2_1ref_common_20180705_v0.9.4.bin",
+            "wakeupBinPath":"./res/wakeup_aifar_comm_20180104.bin",
+            "beamformingBinPath":"./res/UDA_asr_chan2-2-mic2_30mm_20180504.bin",
+            "env":"words=ni hao xiao le,ni hao xiao chi;thresh=0.34,0.3;major=1,0;",
+            "rollBack":200
+        },
+        "wakeupWord":["ni hao xiao le", "ni hao xiao chi"],
+        "wakeupAudio":["./audio/wakeup.mp3", "./audio/minor_wakeup.mp3"]
+    },
+    "vad":{
+        "cfg":{
+            "resBinPath":"./res/vad_aihome_v0.7.bin",
+            "pauseTime":200
+        },
+        "startTimeoutPrompt":"./audio/vad_start_timeout2.mp3"
+    },
+    "dds":{
+        "productId":"100001463",
+        "aliasKey":"prod",
+        "server":"ws://dds.dui.ai/dds/v1",
+        "deviceProfile":"Yhn7W3QzXThMGBG1qgJcbCmW0hmO7HYdHcfuQPFzJhgnzWrrJhPPWYTdm5qJlpyarJqcjZqL3cXdz8fKm5nNycyZmcbGy5udy52cy8bHzsuZzJ6ZmZrLzMnd092ek5OQiN3FztPdj42Qm4qci7ab3cXdzs/Pz8/Oy8nM3dPdm5qJlpyasZ6Smt3F3Z7Oy8icnpmbms6bnsvNm87Gz83MnsqZzcicy83Iy5rN3dPdjJyQj5rdxaTdnpOT3aKC"
+    }
+}

@@ -1,0 +1,4 @@
+config BR2_PACKAGE_LXQT_BUILD_TOOLS
+	bool "lxqt-build-tools"
+	help
+	several tools needed to build LXQt

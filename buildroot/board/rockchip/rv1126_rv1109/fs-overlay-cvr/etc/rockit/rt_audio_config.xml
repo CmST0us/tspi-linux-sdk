@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sound>
+    <decode setting="yes">
+        <!-- decode_pcm or multi_pcm-->
+        <mode>multi_pcm</mode>
+        <devices>
+            <device>speaker</device>
+            <device>hdmi</device>
+            <device>spdif</device>
+        </devices>
+        <formats>
+            <format>MP1</format>
+            <format>MP2</format>
+            <format>MP3</format>
+            <format>AAC</format>
+            <format>APE</format>
+            <format>WMALOSSLESS</format>
+            <format>WMAPRO</format>
+            <format>WMAV1</format>
+            <format>WMAV2</format>
+            <format>ADPCM_IMA_QT</format>
+            <format>VORBIS</format>
+            <format>PCM_S16LE</format>
+            <format>PCM_S24LE</format>
+            <format>FLAC</format>
+        </formats>
+    </decode>
+    <bitstream setting="yes">
+        <!-- auto or manual-->
+        <mode>auto</mode>
+        <devices>
+            <device>hdmi</device>
+        </devices>
+        <formats>
+            <format>AC3</format>
+            <format>DTS</format>
+            <format>EAC3</format>
+            <format>TRUEHD</format>
+            <format>MLP</format>
+        </formats>
+    </bitstream>
+</sound>

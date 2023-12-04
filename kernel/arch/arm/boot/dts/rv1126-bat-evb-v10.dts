@@ -1,0 +1,12 @@
+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+/*
+ * Copyright (c) 2021 Rockchip Electronics Co., Ltd.
+ */
+
+/dts-v1/;
+#include "rv1126-bat-evb-v10.dtsi"
+
+/ {
+	model = "Rockchip RV1126 BAT EVB V10 Board";
+	compatible = "rockchip,rv1126-bat-evb-v10", "rockchip,rv1126";
+};

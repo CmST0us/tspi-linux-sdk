@@ -1,0 +1,6 @@
+config BR2_PACKAGE_BOND
+	bool "bond"
+	select BR2_PACKAGE_MESSAGE_GENERATION
+	select BR2_PACKAGE_STD_MSGS
+	help
+		bond

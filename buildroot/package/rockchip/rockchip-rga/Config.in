@@ -1,0 +1,14 @@
+config BR2_PACKAGE_ROCKCHIP_RGA
+	bool "rockchip-rga"
+	select BR2_PACKAGE_LIBDRM
+	help
+	  Rockchip RGA 2D accelerator userspace library.
+
+if BR2_PACKAGE_ROCKCHIP_RGA
+config BR2_PREFER_ROCKCHIP_RGA
+	bool "prefer using rockchip-rga"
+	# HACK: Use ISP3 to detect RGA3
+	default y if !BR2_PACKAGE_ROCKCHIP_HAS_ISP3
+	help
+	  Prefer using rockchip-rga when available.
+endif

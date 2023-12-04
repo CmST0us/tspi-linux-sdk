@@ -1,0 +1,17 @@
+config BR2_PACKAGE_TF2_ROS
+    bool "tf2-ros"
+    select BR2_PACKAGE_TF2
+    select BR2_PACKAGE_TF2_MSGS
+    select BR2_PACKAGE_TF2_PY
+    select BR2_PACKAGE_ACTIONLIB
+    select BR2_PACKAGE_COMMON_MSGS_SET
+    select BR2_PACKAGE_ACTIONLIB_MSGS
+    select BR2_PACKAGE_GEOMETRY_MSGS
+    select BR2_PACKAGE_ROS_COMM_SET
+    select BR2_PACKAGE_MESSAGE_FILTERS
+    select BR2_PACKAGE_ROSCPP
+    select BR2_PACKAGE_ROSGRAPH
+    select BR2_PACKAGE_ROSPY
+
+    help
+        This package contains the ROS bindings for the tf2 library, for both Python and C++.

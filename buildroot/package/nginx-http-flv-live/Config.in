@@ -1,0 +1,7 @@
+config BR2_PACKAGE_NGINX_HTTP_FLV_LIVE
+	bool "nginx-http-flv-live"
+	depends on BR2_PACKAGE_NGINX_HTTP
+	help
+	  nginx http flv live module
+
+	  https://github.com/winshining/nginx-http-flv-module

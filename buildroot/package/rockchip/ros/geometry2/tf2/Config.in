@@ -1,0 +1,16 @@
+config BR2_PACKAGE_TF2
+    bool "tf2"
+    depends on BR2_PACKAGE_HOST_CATKIN
+    select BR2_PACKAGE_TF2_MSGS
+    select BR2_PACKAGE_BOOST_SIGNALS
+    select BR2_PACKAGE_BOOST_THREAD
+    select BR2_PACKAGE_BOOST_SYSTEM
+    select BR2_PACKAGE_ROSCPP_CORE_SET
+    select BR2_PACKAGE_ROSTIME
+    select BR2_PACKAGE_COMMON_MSGS_SET
+    select BR2_PACKAGE_GEOMETRY_MSGS
+    select BR2_PACKAGE_CONSOLE_BRIDGE
+    select BR2_PACKAGE_GTEST
+    help
+        tf2 is the second generation of the transform library, which lets
+        the user keep track of multiple coordinate frames over time.

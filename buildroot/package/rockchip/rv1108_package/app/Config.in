@@ -1,0 +1,15 @@
+if BR2_PACKAGE_RV1108
+
+# BSP packages
+source "package/rockchip/rv1108_package/app/at_server/Config.in"
+source "package/rockchip/rv1108_package/app/device_manager/Config.in"
+source "package/rockchip/rv1108_package/app/face_service/Config.in"
+source "package/rockchip/rv1108_package/app/lock/Config.in"
+source "package/rockchip/rv1108_package/app/pcba_test/Config.in"
+source "package/rockchip/rv1108_package/app/updater/Config.in"
+source "package/rockchip/rv1108_package/app/rv1108_uvc_app/Config.in"
+source "package/rockchip/rv1108_package/app/system_manager/Config.in"
+source "package/rockchip/rv1108_package/app/cvr/Config.in"
+
+endif
+

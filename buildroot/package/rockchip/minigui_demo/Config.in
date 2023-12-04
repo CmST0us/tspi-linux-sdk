@@ -1,0 +1,10 @@
+config BR2_PACKAGE_MINIGUI_DEMO
+	bool "MiniGUI simple demo for bringup"
+	select BR2_PACKAGE_MINIGUI
+	select BR2_PACKAGE_LIBPNG
+	select BR2_PACKAGE_LIBPNG_12
+	select BR2_PACKAGE_MINIGUI_ENABLE_RGA
+	select BR2_PACKAGE_MINIGUI_ENABLE_FREETYPE
+	select BR2_PACKAGE_MINIGUI_ENABLE_PNG
+	help
+	  MiniGUI simple demo for bringup

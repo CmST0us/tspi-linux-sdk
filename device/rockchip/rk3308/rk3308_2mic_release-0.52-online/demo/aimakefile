@@ -1,0 +1,23 @@
+LOCAL_MODULE 		     := demo_main
+LOCAL_SRC_FILES 		 += main.c
+LOCAL_SRC_FILES 		 += music.c
+LOCAL_SRC_DIRS 		     += json
+
+LOCAL_CFLAGS 	:= -rdynamic -g -O0 -Wall -DMG_ENABLE_THREADS  -Wno-unused-variable -fPIC
+LOCAL_CFLAGS 	+= -I.. -Ijson/
+
+LOCAL_LDFLAGS += -Wl,-rpath,../
+LOCAL_LDFLAGS += -L../ -ldds_client
+
+LOCAL_LDFLAGS += -Wl,-rpath,../libs/
+LOCAL_LDFLAGS += -L../libs/ -ldds
+LOCAL_LDFLAGS += -L../libs/ -laudio_play
+LOCAL_LDFLAGS += -lpthread
+
+LOCAL_LDFLAGS += -L../libs/ -lduilite_fespl
+LOCAL_LDFLAGS += -L../libs/ -lauth
+LOCAL_LDFLAGS += -lasound
+
+LOCAL_CXXFLAGS 	:= LOCAL_CFLAGS -rdynamic 
+
+include $(BUILD_EXECUTABLE)

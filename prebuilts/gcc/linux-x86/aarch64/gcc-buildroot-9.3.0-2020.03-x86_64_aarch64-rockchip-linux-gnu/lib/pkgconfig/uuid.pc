@@ -1,0 +1,11 @@
+prefix=/home/yhx/RK356X/SDK/buildroot/output/rockchip_toolchain/host
+exec_prefix=/home/yhx/RK356X/SDK/buildroot/output/rockchip_toolchain/host
+libdir=/home/yhx/RK356X/SDK/buildroot/output/rockchip_toolchain/host/lib
+includedir=/home/yhx/RK356X/SDK/buildroot/output/rockchip_toolchain/host/include
+
+Name: uuid
+Description: Universally unique id library
+Version: 2.31.1
+Requires:
+Cflags: -I${includedir}/uuid
+Libs: -L${libdir} -luuid

@@ -1,0 +1,6 @@
+config BR2_PACKAGE_DIAGNOSTIC_MSGS
+    bool "diagnostic-msgs"
+    help
+        This package holds the diagnostic message which provide
+        the standardized interface for the diagnostic and
+        runtime monitoring systems in ROS

@@ -1,0 +1,20 @@
+config BR2_PACKAGE_FRECON
+	bool "frecon"
+	depends on BR2_INSTALL_LIBSTDCPP
+	depends on BR2_PACKAGE_HAS_UDEV
+	select BR2_PACKAGE_LIBDRM
+	select BR2_PACKAGE_LIBPNG
+	select BR2_PACKAGE_LIBTSM
+	help
+	  This is a terminal emulator that replaces the kernel Virtual
+	  Terminal (VT) console.  It uses the Kernel Mode Setting (KMS)
+	  support in the kernel.  It is similar to the kmscon project:
+            https://www.freedesktop.org/wiki/Software/kmscon
+
+if BR2_PACKAGE_FRECON
+
+config BR2_PACKAGE_FRECON_USE_GETTY
+	bool "use getty"
+	default n if BR2_TARGET_SERIAL_SHELL_SH
+
+endif

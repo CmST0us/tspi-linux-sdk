@@ -1,0 +1,11 @@
+[Unit]
+Description=Simple CGI Server
+After=nss-user-lookup.target
+
+[Service]
+ExecStart=/usr/sbin/fcgiwrap
+User=www-data
+Group=www-data
+
+[Install]
+Also=fcgiwrap.socket

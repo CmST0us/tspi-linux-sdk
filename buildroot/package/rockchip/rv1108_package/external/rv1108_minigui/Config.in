@@ -1,0 +1,25 @@
+if BR2_PACKAGE_RV1108
+
+# BSP packages
+config BR2_PACKAGE_RV1108_MINIGUI
+	bool "RV1108 package minigui"
+	select BR2_PACKAGE_LIBION
+	select BR2_PACKAGE_ROCKCHIP_RGA
+
+if BR2_PACKAGE_RV1108_MINIGUI
+menu "RV1108 package minigui options"
+
+config BR2_PACKAGE_RV1108_MINIGUI_STATIC
+	bool "Enable static lib"
+	default y
+
+config BR2_PACKAGE_RV1108_MINIGUI_ENABLE_FREETYPE
+	bool "Enable freetype support"
+	select BR2_PACKAGE_FREETYPE
+	default n
+
+endmenu
+endif
+
+endif
+

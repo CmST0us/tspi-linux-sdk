@@ -1,0 +1,6 @@
+config BR2_PACKAGE_KDL_CONVERSIONS
+    bool "kdl-conversions"
+    select BR2_PACKAGE_GEOMETRY_MSGS
+    depends on BR2_PACKAGE_OROCOS_KDL
+    help
+        Conversion functions between KDL and geometry_msgs types

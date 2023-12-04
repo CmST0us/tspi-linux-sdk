@@ -1,0 +1,12 @@
+menuconfig BR2_PACKAGE_BOND_CORE_SET
+	bool "ros bond-core"
+	depends on BR2_PACKAGE_HOST_CATKIN
+
+if BR2_PACKAGE_BOND_CORE_SET
+source "package/rockchip/ros/bond-core/bond/Config.in"
+source "package/rockchip/ros/bond-core/bondpy/Config.in"
+source "package/rockchip/ros/bond-core/smclib/Config.in"
+source "package/rockchip/ros/bond-core/bond-core/Config.in"
+source "package/rockchip/ros/bond-core/bondcpp/Config.in"
+source "package/rockchip/ros/bond-core/test-bond/Config.in"
+endif

@@ -1,0 +1,59 @@
+CORP sai
+MicType 0
+MIC_RADIUS 0.0375
+NFFT   512
+In_len      256     
+Fs 16000
+mic_num 4
+speaker_num 1
+doa_once false
+doa_result -1
+amplify 5.5 
+wakeupth 0.25
+wakeupmode 1212
+VAD_amplify 100
+targetAmpOfAsr 1000
+targetAmpOfVad 8000 
+doa_lowFre 100
+doa_highFre 3200
+gsc_aecpost_method 2
+aec_gain_degree 2
+
+#
+AEC_ON 1
+WAKEUP_DENOISE_ON 1
+DEREVERB_ON 1
+ADAPTIVEBEAM_ON 1
+MONOEN_ON 1
+AGC_ON 1
+AECPOST_ON 1
+DOAP 0.5
+OneShot_ON 1
+one_shot_cache_num 1
+asr_AGC_ON 1
+FIX_AGC_WAKE 1			   
+FIX_AGC_ASR 1
+Auto_Vad_End 0
+VadEndFrm 55
+WCTH 0.9       
+ForceFrm 65
+
+BOARD 8
+SAMPLE 256
+
+# optional configs
+LED_ON 0
+#GESTURE_ON 0
+HW default
+CH_MAP 4,5,7,6,0,3,1,2 
+#EXTERNAL_SOURCE 0
+SAMPLE_RATE 16000
+BIT 16
+MIC_SHIFT_BITS 16
+REF_SHIFT_BITS 16
+#FAKE_OUTDIR
+#WOPT_BIN_NAME wopt_6mic_sai.bin
+#WAKEUP_SECONDTIME
+#DUAL_ADC 0
+#DECODE_MODE
+#MERGE_REFS

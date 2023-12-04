@@ -1,0 +1,16 @@
+config BR2_PACKAGE_ROSPY
+    bool "rospy"
+    depends on BR2_PACKAGE_ROSPACK
+    select BR2_PACKAGE_GENPY
+    select BR2_PACKAGE_ROS_SET
+    select BR2_PACKAGE_ROSLIB
+    select BR2_PACKAGE_STD_MSGS
+    select BR2_PACKAGE_ROSGRAPH
+    select BR2_PACKAGE_ROS_COMM_MSGS_SET
+    select BR2_PACKAGE_ROSGRAPH_MSGS
+    select BR2_PACKAGE_ROSCPP
+    select BR2_PACKAGE_PYTHON_PYYAML
+    help
+        rospy is a pure Python client library for ROS. The rospy
+        client API enables Python programmers to quickly interface
+        with ROS Topics, Services, and Parameters

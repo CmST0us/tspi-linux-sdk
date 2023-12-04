@@ -1,0 +1,4 @@
+config BR2_PACKAGE_KWINDOWSYSTEM
+	bool "KDE KWindowSystem"
+	help
+	KWindowSystem provides information about the windowing system and allows interaction with the windowing system

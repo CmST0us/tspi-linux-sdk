@@ -1,0 +1,1 @@
+BoardConfig-rk3326-evb-lp3-v10.mk

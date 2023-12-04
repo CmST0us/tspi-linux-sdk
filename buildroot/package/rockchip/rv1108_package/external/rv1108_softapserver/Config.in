@@ -1,0 +1,17 @@
+if BR2_PACKAGE_RV1108
+
+# BSP packages
+config BR2_PACKAGE_RV1108_SOFTAPSERVER
+	bool "rv1108 package softapserver"
+	help
+
+
+if BR2_PACKAGE_RV1108_SOFTAPSERVER
+config BR2_PACKAGE_RV1108_SOFTAPSERVER_REBOOT_AUTOCONNECT
+        bool "reboot will auto connect"
+        default n
+
+endif
+
+endif
+

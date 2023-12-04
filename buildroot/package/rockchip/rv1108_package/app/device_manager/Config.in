@@ -1,0 +1,28 @@
+if BR2_PACKAGE_RV1108
+
+# BSP packages
+config BR2_PACKAGE_DEVICE_MANAGER
+	bool "rv1108 package device manager"
+	select BR2_PACKAGE_HAL
+
+if BR2_PACKAGE_DEVICE_MANAGER
+menu "device manager setting options"
+
+config BR2_PACKAGE_DEVICE_MANAGER_IPC_NANOMSG
+	bool "ipc nanomsg support"
+	select BR2_PACKAGE_ADK
+	select BR2_PACKAGE_MESSENGER
+
+config BR2_PACKAGE_DEVICE_MANAGER_STORAGE_DEVICE
+        bool "storage device support"
+       default y
+
+config BR2_PACKAGE_DEVICE_MANAGER_WLAN_DEVICE
+       bool "wlan device support"
+       default y
+
+endmenu
+endif
+
+endif
+

@@ -1,0 +1,15 @@
+#include "rk356x_arm64.config"
+#include "audio.config"
+#include "video_mpp.config"
+#include "base.config"
+#include "camera.config"
+#include "gpu_dummy.config"
+BR2_ROOTFS_POST_BUILD_SCRIPT="../device/rockchip/common/post-build.sh board/rockchip/rk356x/post-script-bsp.sh"
+BR2_ROOTFS_POST_SCRIPT_ARGS="$(BR2_DEFCONFIG)"
+BR2_PACKAGE_CAMERA_ENGINE_RKAIQ_IQFILE="ov5695_TongJu_CHT842-MD.xml"
+BR2_PACKAGE_RKNPU=y
+BR2_PACKAGE_RKNPU_USE_RKNN_API=y
+BR2_PACKAGE_ROCKCHIP=y
+BR2_PACKAGE_E2FSPROGS=y
+BR2_PACKAGE_E2FSPROGS_RESIZE2FS=y
+BR2_PACKAGE_BASH=y

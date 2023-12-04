@@ -1,0 +1,7 @@
+config BR2_PACKAGE_BROADCOM_BSA
+    bool "broadcom(ampak) bsa server and app"
+    depends on BR2_PACKAGE_RKWIFIBT_VENDOR = "BROADCOM"
+    help
+	broadcom bsa server and app
+
+

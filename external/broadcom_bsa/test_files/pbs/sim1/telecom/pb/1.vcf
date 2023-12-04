@@ -1,0 +1,19 @@
+BEGIN:VCARD
+VERSION:2.1
+N:Fisher;Jennnifer
+FN:Jennnifer Fisher
+ORG:Scripps Clinic Rancho Bernardo
+TITLE:Family Doctor
+NOTE;ENCODING=QUOTED-PRINTABLE:Bo and Lisa's  Family Doctor
+TEL;WORK;VOICE:
+ADR;WORK:;;15025 Innovation Drive;San Diego;CA;92129;United States of America
+LABEL;WORK;ENCODING=QUOTED-PRINTABLE:15025 Innovation Drive=0D=0ASan Diego, CA 92129=0D=0AUnited States of Americ=
+a
+SOUND:Merry.wav
+URL;WORK:http://www.scrippsclinic.com
+BDAY:20060606
+EMAIL;PREF;INTERNET:jfisher@test.com
+REV:20050520T182529Z
+X-BT-UCI;skype:jwchen
+X-BT-UID:00000000000000000000000000000002
+END:VCARD

@@ -1,0 +1,29 @@
+if [ -f /etc/profile.d/RkEnv.sh ]; then
+	source /etc/profile.d/RkEnv.sh
+else
+	echo "/etc/profile.d/RkEnv.sh Not Found ... ignore"
+	export HOME=/oem
+	export PATH=$PATH:/oem/bin:/oem/usr/bin:/oem/sbin
+	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/oem/usr/lib:/oem/lib
+fi
+
+case "$1" in
+	start)
+		[ -f /oem/RkLunch.sh ] && source /oem/RkLunch.sh
+		#recovery test
+		if [ -e "/oem/rockchip_test/auto_reboot.sh" ]; then
+			mkdir /data/cfg/rockchip_test
+			cp /oem/rockchip_test/auto_reboot.sh /data/cfg/rockchip_test
+			source /data/cfg/rockchip_test/auto_reboot.sh &
+		fi
+		;;
+	stop)
+		[ -f /oem/RkLunch-stop.sh ] && source /oem/RkLunch-stop.sh
+		printf "stop finished\n"
+		;;
+	*)
+		echo "Usage: $0 {start|stop}"
+		exit 1
+		;;
+esac
+exit 0

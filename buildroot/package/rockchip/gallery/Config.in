@@ -1,0 +1,5 @@
+config BR2_PACKAGE_GALLERY
+	bool "gallery"
+	depends on BR2_PACKAGE_QT5
+	help
+	  Rockchip gallery application based on QT

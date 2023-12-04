@@ -1,0 +1,4 @@
+config BR2_PACKAGE_ROSCLEAN
+    bool "rosclean"
+    help
+        cleanup filesystem resources

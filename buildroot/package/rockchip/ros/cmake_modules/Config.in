@@ -1,0 +1,5 @@
+config BR2_PACKAGE_CMAKE_MODULES
+	bool "cmake modules for ros"
+	depends on BR2_PACKAGE_HOST_CATKIN
+	help
+		cmake modules for ros

@@ -1,0 +1,7 @@
+config BR2_PACKAGE_FATRESIZE
+	bool "fatresize"
+	depends on BR2_PACKAGE_PARTED
+	help
+	  Resize an FAT16/FAT32 volume non-destructively.
+
+	  https://github.com/ya-mouse/fatresize

@@ -1,0 +1,5 @@
+config BR2_PACKAGE_GEOMETRY2
+    bool "geometry2"
+    depends on BR2_PACKAGE_HOST_CATKIN
+    help
+        A metapackage to bring in the default packages second generation Transform Library in ros, tf2.
