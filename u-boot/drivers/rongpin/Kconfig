@@ -1,0 +1,3 @@
+
+config RP_POWER
+	bool "Example Start the rp_powerq driver in the u-boot phase"
