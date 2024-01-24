@@ -1,0 +1,13 @@
+drd/tests/boost_thread
+gdbserver_tests/hgtls
+memcheck/tests/dw4
+memcheck/tests/leak_cpp_interior
+memcheck/tests/varinfo1
+memcheck/tests/varinfo2
+memcheck/tests/varinfo3
+memcheck/tests/varinfo4
+memcheck/tests/varinfo5
+memcheck/tests/varinfo6
+memcheck/tests/varinforestrict
+helgrind/tests/hg05_race2
+helgrind/tests/tc20_verifywrap

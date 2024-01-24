@@ -1,0 +1,48 @@
+From 194688cb3ddc3d331b3d254b41cb6ae55d55f0f8 Mon Sep 17 00:00:00 2001
+From: Khem Raj <raj.khem@gmail.com>
+Date: Fri, 7 Jul 2017 16:41:23 -0700
+Subject: [PATCH] chromium: musl: Adjust default pthread stack size
+
+Signed-off-by: Khem Raj <raj.khem@gmail.com>
+Upstream-Status: Pending
+---
+ chromium/base/threading/platform_thread_linux.cc              | 3 ++-
+ .../third_party/blink/renderer/platform/wtf/stack_util.cc     | 4 ++--
+ 2 files changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/chromium/base/threading/platform_thread_linux.cc b/chromium/base/threading/platform_thread_linux.cc
+index c1a705e2b89..f322fdb8352 100644
+--- a/chromium/base/threading/platform_thread_linux.cc
++++ b/chromium/base/threading/platform_thread_linux.cc
+@@ -377,7 +377,8 @@ void TerminateOnThread() {}
+ 
+ size_t GetDefaultThreadStackSize(const pthread_attr_t& attributes) {
+ #if !defined(THREAD_SANITIZER)
+-  return 0;
++  // use 8mb like glibc to avoid running out of space
++  return (1 << 23);
+ #else
+   // ThreadSanitizer bloats the stack heavily. Evidence has been that the
+   // default stack size isn't enough for some browser tests.
+diff --git a/chromium/third_party/blink/renderer/platform/wtf/stack_util.cc b/chromium/third_party/blink/renderer/platform/wtf/stack_util.cc
+index 71b901f4044..f33aba04bc3 100644
+--- a/chromium/third_party/blink/renderer/platform/wtf/stack_util.cc
++++ b/chromium/third_party/blink/renderer/platform/wtf/stack_util.cc
+@@ -29,7 +29,7 @@ size_t GetUnderestimatedStackSize() {
+ // FIXME: On Mac OSX and Linux, this method cannot estimate stack size
+ // correctly for the main thread.
+ 
+-#elif defined(__GLIBC__) || defined(OS_ANDROID) || defined(OS_FREEBSD) || \
++#elif defined(OS_LINUX) || defined(OS_ANDROID) || defined(OS_FREEBSD) || \
+     defined(OS_FUCHSIA)
+   // pthread_getattr_np() can fail if the thread is not invoked by
+   // pthread_create() (e.g., the main thread of blink_unittests).
+@@ -97,7 +97,7 @@ return Threading::ThreadStackSize();
+ }
+ 
+ void* GetStackStart() {
+-#if defined(__GLIBC__) || defined(OS_ANDROID) || defined(OS_FREEBSD) || \
++#if defined(OS_LINUX) || defined(OS_ANDROID) || defined(OS_FREEBSD) || \
+     defined(OS_FUCHSIA)
+   pthread_attr_t attr;
+   int error;

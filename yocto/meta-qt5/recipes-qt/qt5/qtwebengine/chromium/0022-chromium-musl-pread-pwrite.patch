@@ -1,0 +1,32 @@
+From 2ee1af42a550fa258a2061452ff2ad2c30c91f9e Mon Sep 17 00:00:00 2001
+From: Khem Raj <raj.khem@gmail.com>
+Date: Sun, 23 Dec 2018 16:58:04 -0800
+Subject: [PATCH] chromium: musl: pread pwrite
+
+Redefine pread/pwrite in terms of 64bit variants on musl
+since 32bit variants don't exist and aliases are not defined in
+libc either
+
+Upstream-Status: Submitted [https://codereview.chromium.org/1743093002/]
+Signed-off-by: Khem Raj <raj.khem@gmail.com>
+---
+ chromium/third_party/lss/linux_syscall_support.h | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/chromium/third_party/lss/linux_syscall_support.h b/chromium/third_party/lss/linux_syscall_support.h
+index e4ac22644c0..f56203ccce4 100644
+--- a/chromium/third_party/lss/linux_syscall_support.h
++++ b/chromium/third_party/lss/linux_syscall_support.h
+@@ -1258,6 +1258,12 @@ struct kernel_statfs {
+ #ifndef __NR_getrandom
+ #define __NR_getrandom          318
+ #endif
++
++#undef __NR_pread
++#define __NR_pread __NR_pread64
++#undef __NR_pwrite
++#define __NR_pwrite __NR_pwrite64
++
+ /* End of x86-64 definitions                                                 */
+ #elif defined(__mips__)
+ #if _MIPS_SIM == _MIPS_SIM_ABI32

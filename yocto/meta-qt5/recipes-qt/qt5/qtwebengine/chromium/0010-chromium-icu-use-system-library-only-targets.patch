@@ -1,0 +1,89 @@
+From 8a0c927cdc9705e2a1c29d63c87d32e8cb089510 Mon Sep 17 00:00:00 2001
+From: Andrej Valek <andrej.valek@siemens.com>
+Date: Fri, 17 Apr 2020 09:43:32 +0200
+Subject: [PATCH] chromium: icu: use system library only targets
+
+ - use bundled one for native/v8 internal builds
+
+Complete system ICU library using requires ICU dev package
+be installed on host. Enabling dependency on native package
+is not enough due to V8 hosttools toolchain. V8 toolchain
+is not using native sysroot, only a host packages.
+On the other hand webenegine does not produce external
+native artifacts. So external system ICU linking is not
+needed.
+
+Upstream-Status: Pending
+Signed-off-by: Andrej Valek <andrej.valek@siemens.com>
+Signed-off-by: Martin Jansa <Martin.Jansa@gmail.com>
+---
+ chromium/third_party/icu/BUILD.gn | 18 ++++++++++++++----
+ 1 file changed, 14 insertions(+), 4 deletions(-)
+
+diff --git a/chromium/third_party/icu/BUILD.gn b/chromium/third_party/icu/BUILD.gn
+index 2430d3e48e5..5d00226667d 100644
+--- a/chromium/third_party/icu/BUILD.gn
++++ b/chromium/third_party/icu/BUILD.gn
+@@ -8,9 +8,13 @@ import("//build/config/linux/pkg_config.gni")
+ import("//build/shim_headers.gni")
+ import("//third_party/icu/config.gni")
+ import("//third_party/icu/sources.gni")
++import("//v8/gni/snapshot_toolchain.gni")
+ 
+ declare_args() {
+   use_system_icu = false
++
++  # Use only target icu library, when system using is enabled
++  use_system_icu_target_only = false
+ }
+ 
+ if (is_android) {
+@@ -24,6 +28,12 @@ if (is_mac && !icu_is_in_fuchsia) {
+ assert(!icu_disable_thin_archive || !is_component_build,
+        "icu_disable_thin_archive only works in static library builds")
+ 
++if (use_system_icu) {
++  # Use system library only for target, otherwise use bundled
++  if ((current_toolchain != host_toolchain) && (current_toolchain != v8_snapshot_toolchain)) {
++    use_system_icu_target_only = true
++  }
++}
+ # Meta target that includes both icuuc and icui18n. Most targets want both.
+ # You can depend on the individually if you need to.
+ group("icu") {
+@@ -413,7 +423,7 @@ config("system_icu_config") {
+   }
+ }
+ 
+-if (use_system_icu) {
++if (use_system_icu_target_only) {
+   pkg_config("system_icui18n") {
+     packages = [ "icu-i18n" ]
+   }
+@@ -626,7 +636,7 @@ shim_headers("icuuc_shim") {
+ }
+ 
+ config("icu_config") {
+-  if (use_system_icu) {
++  if (use_system_icu_target_only) {
+     configs = [ ":system_icu_config"]
+   } else {
+     configs = [ ":bundled_icu_config"]
+@@ -634,7 +644,7 @@ config("icu_config") {
+ }
+ 
+ group("icuuc") {
+-  if (use_system_icu) {
++  if (use_system_icu_target_only) {
+     deps = [ ":icuuc_shim" ]
+     public_configs = [
+       ":system_icu_config",
+@@ -646,7 +656,7 @@ group("icuuc") {
+ }
+ 
+ group("icui18n") {
+-  if (use_system_icu) {
++  if (use_system_icu_target_only) {
+     deps = [ ":icui18n_shim" ]
+     public_configs = [
+       ":system_icu_config",

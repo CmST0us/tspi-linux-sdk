@@ -1,0 +1,48 @@
+From dfd1f8f5d4ac5ae62597aad0d6ec9b680f1a6545 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Andreas=20M=C3=BCller?= <schnitzeltony@googlemail.com>
+Date: Wed, 4 Jun 2014 11:28:16 +0200
+Subject: [PATCH] add noqtwebkit configuration
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Upstream-Status: Inappropriate [configuration]
+
+Signed-off-by: Andreas Müller <schnitzeltony@googlemail.com>
+Signed-off-by: Martin Jansa <Martin.Jansa@gmail.com>
+---
+ src/assistant/assistant/assistant.pro | 4 ++--
+ src/designer/src/plugins/plugins.pro  | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/src/assistant/assistant/assistant.pro b/src/assistant/assistant/assistant.pro
+index 5da0b007..9571697f 100644
+--- a/src/assistant/assistant/assistant.pro
++++ b/src/assistant/assistant/assistant.pro
+@@ -1,4 +1,4 @@
+-qtHaveModule(webkitwidgets):!contains(QT_CONFIG, static) {
++qtHaveModule(webkitwidgets):!contains(QT_CONFIG, static):!contains(CONFIG, noqtwebkit) {
+     BROWSER = qtwebkit
+ } else {
+     BROWSER = qtextbrowser
+@@ -77,7 +77,7 @@ SOURCES += aboutdialog.cpp \
+     openpagesmanager.cpp \
+     openpagesswitcher.cpp
+ 
+-equals(BROWSER, "qtwebkit") {
++equals(BROWSER, "qtwebkit"):!contains(CONFIG, noqtwebkit) {
+     DEFINES += BROWSER_QTWEBKIT
+     QT += webkitwidgets
+     SOURCES += helpviewer_qwv.cpp
+diff --git a/src/designer/src/plugins/plugins.pro b/src/designer/src/plugins/plugins.pro
+index 500a1534..b60fa2d9 100644
+--- a/src/designer/src/plugins/plugins.pro
++++ b/src/designer/src/plugins/plugins.pro
+@@ -1,6 +1,6 @@
+ TEMPLATE = subdirs
+ 
+ # qtHaveModule(opengl): SUBDIRS += tools/view3d
+-qtHaveModule(webkitwidgets): SUBDIRS += qwebview
++qtHaveModule(webkitwidgets):!contains(CONFIG, noqtwebkit): SUBDIRS += qwebview
+ win32: qtHaveModule(axcontainer): SUBDIRS += activeqt
+ qtHaveModule(quickwidgets): SUBDIRS += qquickwidget

@@ -1,0 +1,32 @@
+From be5c73c72d1efa90ba440957d6f5ff3278c25545 Mon Sep 17 00:00:00 2001
+From: Samuel Stirtzel <s.stirtzel@googlemail.com>
+Date: Wed, 1 Aug 2012 13:21:51 +0200
+Subject: [PATCH] Fix MALIIT_INSTALL_PRF to allow the build with openembedded
+
+Upstream-Status: Inappropriate [configuration]
+
+Signed-off-by: Samuel Stirtzel <s.stirtzel@googlemail.com>
+
+---
+ config.pri | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/config.pri b/config.pri
+index 8f24864..94d595a 100644
+--- a/config.pri
++++ b/config.pri
+@@ -144,9 +144,11 @@ noxcb {
+     DEFINES += NOXCB
+ }
+ 
+-MALIIT_INSTALL_PRF = $$[QT_INSTALL_DATA]/mkspecs/features
+-local-install {
+-    MALIIT_INSTALL_PRF = $$replace(MALIIT_INSTALL_PRF, $$[QT_INSTALL_PREFIX], $$PREFIX)
++isEmpty(MALIIT_INSTALL_PRF) {
++    MALIIT_INSTALL_PRF = $$[QT_INSTALL_DATA]/mkspecs/features
++    local-install {
++        MALIIT_INSTALL_PRF = $$replace(MALIIT_INSTALL_PRF, $$[QT_INSTALL_PREFIX], $$PREFIX)
++    }
+ }
+ 
+ defineTest(outputFile) {

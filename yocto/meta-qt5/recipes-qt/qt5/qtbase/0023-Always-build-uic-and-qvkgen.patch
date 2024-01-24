@@ -1,0 +1,29 @@
+From 5f415fb09ea64765e60d1d52721064f53545a413 Mon Sep 17 00:00:00 2001
+From: Martin Jansa <Martin.Jansa@gmail.com>
+Date: Sat, 16 Nov 2013 00:32:30 +0100
+Subject: [PATCH] Always build uic and qvkgen
+
+Even if we are not building gui or widgets. This tool is needed later
+as a native tool when compiling the target.
+
+Change-Id: I257668ac28c22b192e7ec7736e6c23fa3be6bab6
+Signed-off-by: Mikko Levonmaa <mikko.levonmaa@palm.com>
+Signed-off-by: Martin Jansa <Martin.Jansa@gmail.com>
+Upstream-Status: Pending
+---
+ src/src.pro | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/src.pro b/src/src.pro
+index 8990109743..105feee924 100644
+--- a/src/src.pro
++++ b/src/src.pro
+@@ -244,7 +244,7 @@ qtConfig(gui) {
+         }
+     }
+ }
+-SUBDIRS += src_plugins
++SUBDIRS += src_plugins src_tools_uic src_tools_qvkgen
+ 
+ nacl: SUBDIRS -= src_network src_testlib
+ 

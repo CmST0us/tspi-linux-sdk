@@ -1,0 +1,157 @@
+From 8f7ac021d483eca1b181fd9f0551f317aa7c5965 Mon Sep 17 00:00:00 2001
+From: Martin Jansa <Martin.Jansa@gmail.com>
+Date: Mon, 15 Apr 2013 04:29:32 +0200
+Subject: [PATCH] Add linux-oe-g++ platform
+
+* This qmake.conf unlike other platforms reads most variables from
+  shell environment, because it's easier for qt recipes to export
+  *FLAGS or CC specific for given recipe
+
+* configure: extend setBootstrapVariable to convert $$(...) operator
+  to $(...) operator to work in qmake's Makefiles
+
+* configure.prf: Allow to add extra arguments to make
+  sometimes we would like to add -e or define some variable and respect it from both
+  Makefiles used in configure tests and also Makefiles to build the application
+
+Upstream-Status: Inappropriate [embedded specific]
+                 too OE specific, probably cannot be upstreamed
+
+Change-Id: I0591ed5da0d61d7cf1509d420e6b293582f1863c
+Signed-off-by: Martin Jansa <Martin.Jansa@gmail.com>
+
+---
+ configure                            |  2 +-
+ mkspecs/features/configure.prf       |  4 +--
+ mkspecs/features/qt.prf              |  6 ++---
+ mkspecs/features/qt_functions.prf    |  2 +-
+ mkspecs/linux-oe-g++/qmake.conf      | 40 ++++++++++++++++++++++++++++
+ mkspecs/linux-oe-g++/qplatformdefs.h |  1 +
+ 6 files changed, 48 insertions(+), 7 deletions(-)
+ create mode 100644 mkspecs/linux-oe-g++/qmake.conf
+ create mode 100644 mkspecs/linux-oe-g++/qplatformdefs.h
+
+diff --git a/configure b/configure
+index b6c9b462f2..4e3fcd41d1 100755
+--- a/configure
++++ b/configure
+@@ -708,7 +708,7 @@ fi
+ # is where the resulting variable is written to
+ setBootstrapVariable()
+ {
+-    getQMakeConf "$1" | echo ${2-$1} = `if [ -n "$3" ]; then sed "$3"; else cat; fi` >> "$mkfile"
++    getQMakeConf "$1" | sed 's:\$\$(:\$(:' | echo ${2-$1} = `if [ -n "$3" ]; then sed "$3"; else cat; fi` >> "$mkfile"
+ }
+ 
+ # build qmake
+diff --git a/mkspecs/features/configure.prf b/mkspecs/features/configure.prf
+index 934a18a924..0f5b1b6333 100644
+--- a/mkspecs/features/configure.prf
++++ b/mkspecs/features/configure.prf
+@@ -46,14 +46,14 @@ defineTest(qtCompileTest) {
+     }
+ 
+     # Clean up after previous run
+-    exists($$test_out_dir/Makefile):qtRunLoggedCommand("$$test_cmd_base $$QMAKE_MAKE distclean")
++    exists($$test_out_dir/Makefile):qtRunLoggedCommand("$$test_cmd_base $$QMAKE_MAKE $$(QMAKE_MAKE_ARGS) distclean")
+ 
+     mkpath($$test_out_dir)|error()
+ 
+     !isEmpty (QMAKE_QTCONF): qtconfarg = -qtconf $$QMAKE_QTCONF
+ 
+     qtRunLoggedCommand("$$test_cmd_base $$system_quote($$system_path($$QMAKE_QMAKE)) $$qtconfarg -spec $$QMAKESPEC $$qmake_configs $$shell_quote($$test_dir)") {
+-        qtRunLoggedCommand("$$test_cmd_base $$QMAKE_MAKE") {
++        qtRunLoggedCommand("$$test_cmd_base $$QMAKE_MAKE $$(QMAKE_MAKE_ARGS)") {
+             log("yes$$escape_expand(\\n)")
+             msg = "test $$1 succeeded"
+             write_file($$QMAKE_CONFIG_LOG, msg, append)
+diff --git a/mkspecs/features/qt.prf b/mkspecs/features/qt.prf
+index 69d1954306..37f7c9c4a2 100644
+--- a/mkspecs/features/qt.prf
++++ b/mkspecs/features/qt.prf
+@@ -151,7 +151,7 @@ import_plugins:qtConfig(static) {
+             plug_name = $$QMAKE_PREFIX_STATICLIB$${plug}$$qtPlatformTargetSuffix().$$QMAKE_EXTENSION_STATICLIB
+             plug_path = $$eval(QT_PLUGIN.$${plug}.PATH)
+             isEmpty(plug_path): \
+-                plug_path = $$[QT_INSTALL_PLUGINS/get]
++                plug_path = $$[QT_INSTALL_PLUGINS]
+             LIBS += $$plug_path/$$plug_type/$$plug_name
+         } else {
+             LIBS += -l$${plug}$$qtPlatformTargetSuffix()
+@@ -274,8 +274,8 @@ for(ever) {
+ # static builds: link qml import plugins into the target.
+ contains(all_qt_module_deps, qml): \
+         qtConfig(static):import_plugins:!host_build:!no_import_scan {
+-    exists($$[QT_INSTALL_QML/get]): \
+-        QMLPATHS *= $$[QT_INSTALL_QML/get]
++    exists($$[QT_INSTALL_QML]): \
++        QMLPATHS *= $$[QT_INSTALL_QML]
+ 
+     # run qmlimportscanner
+     qtPrepareTool(QMLIMPORTSCANNER, qmlimportscanner, , system)
+diff --git a/mkspecs/features/qt_functions.prf b/mkspecs/features/qt_functions.prf
+index 7777e615bd..8d792fa70a 100644
+--- a/mkspecs/features/qt_functions.prf
++++ b/mkspecs/features/qt_functions.prf
+@@ -87,7 +87,7 @@ defineTest(qtHaveModule) {
+ defineTest(qtPrepareTool) {
+     cmd = $$eval(QT_TOOL.$${2}.binary)
+     isEmpty(cmd) {
+-        cmd = $$[QT_HOST_BINS]/$$2
++        cmd = $$[QT_HOST_BINS/get]/$$2
+         exists($${cmd}.pl) {
+             $${1}_EXE = $${cmd}.pl
+             cmd = perl -w $$system_path($${cmd}.pl)
+diff --git a/mkspecs/linux-oe-g++/qmake.conf b/mkspecs/linux-oe-g++/qmake.conf
+new file mode 100644
+index 0000000000..087e13bb91
+--- /dev/null
++++ b/mkspecs/linux-oe-g++/qmake.conf
+@@ -0,0 +1,40 @@
++#
++# qmake configuration for linux-g++ with modifications for building with OpenEmbedded
++#
++
++MAKEFILE_GENERATOR = UNIX
++CONFIG += incremental
++QMAKE_INCREMENTAL_STYLE = sublib
++
++include(../common/linux.conf)
++
++# QMAKE_<TOOL> (moc, uic, rcc) are gone, overwrite only ar, objcopy and strip
++QMAKE_AR              = $$(OE_QMAKE_AR) cqs
++QMAKE_OBJCOPY         = $$(OE_QMAKE_OBJCOPY)
++QMAKE_STRIP           = $$(OE_QMAKE_STRIP)
++
++include(../common/gcc-base-unix.conf)
++
++# *FLAGS from gcc-base.conf
++QMAKE_CFLAGS                += $$(OE_QMAKE_CFLAGS)
++QMAKE_CXXFLAGS              += $$(OE_QMAKE_CXXFLAGS)
++QMAKE_LFLAGS                += $$(OE_QMAKE_LDFLAGS)
++
++include(../common/g++-unix.conf)
++
++# tc settings from g++-base.conf
++QMAKE_CC       = $$(OE_QMAKE_CC)
++QMAKE_CXX      = $$(OE_QMAKE_CXX)
++
++QMAKE_LINK         = $$(OE_QMAKE_LINK)
++QMAKE_LINK_SHLIB   = $$(OE_QMAKE_LINK)
++QMAKE_LINK_C       = $$(OE_QMAKE_LINK)
++QMAKE_LINK_C_SHLIB = $$(OE_QMAKE_LINK)
++QMAKE_CFLAGS_ISYSTEM =
++# for the SDK
++isEmpty(QMAKE_QT_CONFIG):QMAKE_QT_CONFIG = $$(OE_QMAKE_QT_CONFIG)
++
++include(../oe-device-extra.pri)
++
++load(device_config)
++load(qt_config)
+diff --git a/mkspecs/linux-oe-g++/qplatformdefs.h b/mkspecs/linux-oe-g++/qplatformdefs.h
+new file mode 100644
+index 0000000000..5d22fb4101
+--- /dev/null
++++ b/mkspecs/linux-oe-g++/qplatformdefs.h
+@@ -0,0 +1 @@
++#include "../linux-g++/qplatformdefs.h"

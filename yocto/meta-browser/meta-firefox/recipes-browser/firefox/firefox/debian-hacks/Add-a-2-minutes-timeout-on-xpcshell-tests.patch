@@ -1,0 +1,48 @@
+From 16d5eeab623fd5b3524f44d600c44e1dc628a0c4 Mon Sep 17 00:00:00 2001
+From: Mike Hommey <mh@glandium.org>
+Date: Mon, 27 Dec 2010 10:44:28 +0100
+Subject: [PATCH] Add a 2 minutes timeout on xpcshell tests
+
+---
+ testing/xpcshell/runxpcshelltests.py | 21 ++++++++++++++++++---
+ 1 file changed, 18 insertions(+), 3 deletions(-)
+
+diff --git a/testing/xpcshell/runxpcshelltests.py b/testing/xpcshell/runxpcshelltests.py
+index 333cee8196..f28c2be087 100755
+--- a/testing/xpcshell/runxpcshelltests.py
++++ b/testing/xpcshell/runxpcshelltests.py
+@@ -13,6 +13,7 @@ import os
+ import pipes
+ import random
+ import re
++import select
+ import shutil
+ import signal
+ import sys
+@@ -715,9 +716,23 @@ class XPCShellTestThread(Thread):
+             if self.interactive:
+                 self.log.info("%s | Process ID: %d" % (name, self.proc_ident))
+ 
+-            # Communicate returns a tuple of (stdout, stderr), however we always
+-            # redirect stderr to stdout, so the second element is ignored.
+-            process_output, _ = self.communicate(proc)
++            if self.pStdout == PIPE:
++                process_stdout = ""
++                while True:
++                    (r, w, e) = select.select([proc.stdout], [], [], 120)
++                    if len(r) == 0:
++                        process_stdout += "TEST-UNEXPECTED-FAIL | %s | application timed out after 120 seconds with no output" % (test)
++                        proc.kill()
++                        break
++                    line = proc.stdout.read(1)
++                    if line == "":
++                        break
++                    process_stdout += line
++                proc.wait()
++            else:
++                # Communicate returns a tuple of (stdout, stderr), however we always
++                # redirect stderr to stdout, so the second element is ignored.
++                process_output, _ = self.communicate(proc)
+ 
+             if self.interactive:
+                 # Not sure what else to do here...

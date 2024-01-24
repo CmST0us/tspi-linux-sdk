@@ -1,0 +1,176 @@
+From 5f8c7d6fae3acd2aeb36ff982a83f3f7090596b7 Mon Sep 17 00:00:00 2001
+From: Khem Raj <raj.khem@gmail.com>
+Date: Fri, 19 Mar 2021 20:16:00 -0700
+Subject: [PATCH] Fix tab crashes on musl
+
+Upstream-Status: Inappropriate [musl-specific]
+Signed-off-by: Khem Raj <raj.khem@gmail.com>
+
+---
+ .../syscall_parameters_restrictions.cc        | 22 +++++--------------
+ .../linux/seccomp-bpf-helpers/syscall_sets.cc |  5 +++--
+ .../system_headers/arm64_linux_syscalls.h     |  4 ++++
+ .../linux/system_headers/arm_linux_syscalls.h |  4 ++++
+ sandbox/linux/system_headers/linux_syscalls.h |  1 +
+ .../system_headers/mips64_linux_syscalls.h    |  4 ++++
+ .../system_headers/mips_linux_syscalls.h      |  4 ++++
+ .../system_headers/x86_64_linux_syscalls.h    |  4 ++++
+ 8 files changed, 30 insertions(+), 18 deletions(-)
+
+diff --git a/sandbox/linux/seccomp-bpf-helpers/syscall_parameters_restrictions.cc b/sandbox/linux/seccomp-bpf-helpers/syscall_parameters_restrictions.cc
+index 2500a56acd..a5cf928bde 100644
+--- a/sandbox/linux/seccomp-bpf-helpers/syscall_parameters_restrictions.cc
++++ b/sandbox/linux/seccomp-bpf-helpers/syscall_parameters_restrictions.cc
+@@ -133,21 +133,11 @@ namespace sandbox {
+ // present (as in newer versions of posix_spawn).
+ ResultExpr RestrictCloneToThreadsAndEPERMFork() {
+   const Arg<unsigned long> flags(0);
+-
+-  // TODO(mdempsky): Extend DSL to support (flags & ~mask1) == mask2.
+-  const uint64_t kAndroidCloneMask = CLONE_VM | CLONE_FS | CLONE_FILES |
+-                                     CLONE_SIGHAND | CLONE_THREAD |
+-                                     CLONE_SYSVSEM;
+-  const uint64_t kObsoleteAndroidCloneMask = kAndroidCloneMask | CLONE_DETACHED;
+-
+-  const uint64_t kGlibcPthreadFlags =
+-      CLONE_VM | CLONE_FS | CLONE_FILES | CLONE_SIGHAND | CLONE_THREAD |
+-      CLONE_SYSVSEM | CLONE_SETTLS | CLONE_PARENT_SETTID | CLONE_CHILD_CLEARTID;
+-  const BoolExpr glibc_test = flags == kGlibcPthreadFlags;
+-
+-  const BoolExpr android_test =
+-      AnyOf(flags == kAndroidCloneMask, flags == kObsoleteAndroidCloneMask,
+-            flags == kGlibcPthreadFlags);
++  const int required = CLONE_VM | CLONE_FS | CLONE_FILES | CLONE_SIGHAND |
++                       CLONE_THREAD | CLONE_SYSVSEM;
++  const int safe = CLONE_SETTLS | CLONE_PARENT_SETTID | CLONE_CHILD_CLEARTID |
++                   CLONE_DETACHED;
++  const BoolExpr thread_clone_ok = (flags&~safe)==required;
+ 
+   // The following two flags are the two important flags in any vfork-emulating
+   // clone call. EPERM any clone call that contains both of them.
+@@ -157,7 +147,7 @@ ResultExpr RestrictCloneToThreadsAndEPERMFork() {
+       AnyOf((flags & (CLONE_VM | CLONE_THREAD)) == 0,
+             (flags & kImportantCloneVforkFlags) == kImportantCloneVforkFlags);
+ 
+-  return If(IsAndroid() ? android_test : glibc_test, Allow())
++  return If(thread_clone_ok, Allow())
+       .ElseIf(is_fork_or_clone_vfork, Error(EPERM))
+       .Else(CrashSIGSYSClone());
+ }
+diff --git a/sandbox/linux/seccomp-bpf-helpers/syscall_sets.cc b/sandbox/linux/seccomp-bpf-helpers/syscall_sets.cc
+index 21087322e4..b48ffc1e13 100644
+--- a/sandbox/linux/seccomp-bpf-helpers/syscall_sets.cc
++++ b/sandbox/linux/seccomp-bpf-helpers/syscall_sets.cc
+@@ -423,6 +423,7 @@ bool SyscallSets::IsAllowedProcessStartOrDeath(int sysno) {
+ #if defined(__i386__)
+     case __NR_waitpid:
+ #endif
++    case __NR_set_tid_address:
+       return true;
+     case __NR_clone:  // Should be parameter-restricted.
+     case __NR_setns:  // Privileged.
+@@ -435,7 +436,6 @@ bool SyscallSets::IsAllowedProcessStartOrDeath(int sysno) {
+ #if defined(__i386__) || defined(__x86_64__) || defined(__mips__)
+     case __NR_set_thread_area:
+ #endif
+-    case __NR_set_tid_address:
+     case __NR_unshare:
+ #if !defined(__mips__) && !defined(__aarch64__)
+     case __NR_vfork:
+@@ -549,6 +549,8 @@ bool SyscallSets::IsAllowedAddressSpaceAccess(int sysno) {
+     case __NR_mlock:
+     case __NR_munlock:
+     case __NR_munmap:
++    case __NR_mremap:
++    case __NR_membarrier:
+       return true;
+     case __NR_madvise:
+     case __NR_mincore:
+@@ -566,7 +568,6 @@ bool SyscallSets::IsAllowedAddressSpaceAccess(int sysno) {
+     case __NR_modify_ldt:
+ #endif
+     case __NR_mprotect:
+-    case __NR_mremap:
+     case __NR_msync:
+     case __NR_munlockall:
+     case __NR_readahead:
+diff --git a/sandbox/linux/system_headers/arm64_linux_syscalls.h b/sandbox/linux/system_headers/arm64_linux_syscalls.h
+index 03d28567a3..5715a69bc4 100644
+--- a/sandbox/linux/system_headers/arm64_linux_syscalls.h
++++ b/sandbox/linux/system_headers/arm64_linux_syscalls.h
+@@ -1215,4 +1215,8 @@
+ #define __NR_landlock_restrict_self 446
+ #endif
+ 
++#if !defined(__NR_membarrier)
++#define __NR_membarrier 283
++#endif
++
+ #endif  // SANDBOX_LINUX_SYSTEM_HEADERS_ARM64_LINUX_SYSCALLS_H_
+diff --git a/sandbox/linux/system_headers/arm_linux_syscalls.h b/sandbox/linux/system_headers/arm_linux_syscalls.h
+index bb1335e6d2..7e8150820a 100644
+--- a/sandbox/linux/system_headers/arm_linux_syscalls.h
++++ b/sandbox/linux/system_headers/arm_linux_syscalls.h
+@@ -1617,6 +1617,10 @@
+ #define __NR_landlock_restrict_self (__NR_SYSCALL_BASE + 446)
+ #endif
+ 
++#if !defined(__NR_membarrier)
++#define __NR_membarrier (__NR_SYSCALL_BASE+389)
++#endif
++
+ // ARM private syscalls.
+ #if !defined(__ARM_NR_BASE)
+ #define __ARM_NR_BASE (__NR_SYSCALL_BASE + 0xF0000)
+diff --git a/sandbox/linux/system_headers/linux_syscalls.h b/sandbox/linux/system_headers/linux_syscalls.h
+index 438147b401..6b67cbcedc 100644
+--- a/sandbox/linux/system_headers/linux_syscalls.h
++++ b/sandbox/linux/system_headers/linux_syscalls.h
+@@ -10,6 +10,7 @@
+ #define SANDBOX_LINUX_SYSTEM_HEADERS_LINUX_SYSCALLS_H_
+ 
+ #include "build/build_config.h"
++#include <sys/syscall.h>
+ 
+ #if defined(__x86_64__)
+ #include "sandbox/linux/system_headers/x86_64_linux_syscalls.h"
+diff --git a/sandbox/linux/system_headers/mips64_linux_syscalls.h b/sandbox/linux/system_headers/mips64_linux_syscalls.h
+index 0f9ab41b6e..448351699f 100644
+--- a/sandbox/linux/system_headers/mips64_linux_syscalls.h
++++ b/sandbox/linux/system_headers/mips64_linux_syscalls.h
+@@ -1415,4 +1415,8 @@
+ #define __NR_landlock_restrict_self (__NR_Linux + 446)
+ #endif
+ 
++#if !defined(__NR_membarrier)
++#define __NR_membarrier (__NR_Linux  318)
++#endif
++
+ #endif  // SANDBOX_LINUX_SYSTEM_HEADERS_MIPS64_LINUX_SYSCALLS_H_
+diff --git a/sandbox/linux/system_headers/mips_linux_syscalls.h b/sandbox/linux/system_headers/mips_linux_syscalls.h
+index 9664858a93..259751f93c 100644
+--- a/sandbox/linux/system_headers/mips_linux_syscalls.h
++++ b/sandbox/linux/system_headers/mips_linux_syscalls.h
+@@ -1697,4 +1697,8 @@
+ #define __NR_landlock_restrict_self (__NR_Linux + 446)
+ #endif
+ 
++#if !defined(__NR_membarrier)
++#define __NR_membarrier (__NR_Linux  358)
++#endif
++
+ #endif  // SANDBOX_LINUX_SYSTEM_HEADERS_MIPS_LINUX_SYSCALLS_H_
+diff --git a/sandbox/linux/system_headers/x86_64_linux_syscalls.h b/sandbox/linux/system_headers/x86_64_linux_syscalls.h
+index fe59d1ae35..37e677f7e9 100644
+--- a/sandbox/linux/system_headers/x86_64_linux_syscalls.h
++++ b/sandbox/linux/system_headers/x86_64_linux_syscalls.h
+@@ -1438,5 +1438,9 @@
+ #define __NR_landlock_restrict_self 446
+ #endif
+ 
++#if !defined(__NR_membarrier)
++#define __NR_membarrier 324
++#endif
++
+ #endif  // SANDBOX_LINUX_SYSTEM_HEADERS_X86_64_LINUX_SYSCALLS_H_
+ 

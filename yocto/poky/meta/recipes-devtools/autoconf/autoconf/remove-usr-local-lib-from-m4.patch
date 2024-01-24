@@ -1,0 +1,34 @@
+From a08643ac3fef884900d6cfa161f0acec3ef104d1 Mon Sep 17 00:00:00 2001
+From: Ross Burton <ross.burton@intel.com>
+Date: Thu, 12 Mar 2020 17:25:37 +0000
+Subject: [PATCH 1/7] remove-usr-local-lib-from-m4.patch
+
+Upstream-Status: Inappropriate [oe specific]
+Signed-off-by: Ross Burton <ross.burton@intel.com>
+---
+ lib/autoconf/functions.m4 | 9 ---------
+ 1 file changed, 9 deletions(-)
+
+diff --git a/lib/autoconf/functions.m4 b/lib/autoconf/functions.m4
+index 12f60b99..07da7941 100644
+--- a/lib/autoconf/functions.m4
++++ b/lib/autoconf/functions.m4
+@@ -801,15 +801,6 @@ if test $ac_have_func = no; then
+     [LIBS="-lutil $LIBS" ac_have_func=yes ac_cv_func_getloadavg_setgid=yes])
+ fi
+ 
+-if test $ac_have_func = no; then
+-  # There is a commonly available library for RS/6000 AIX.
+-  # Since it is not a standard part of AIX, it might be installed locally.
+-  ac_getloadavg_LIBS=$LIBS
+-  LIBS="-L/usr/local/lib $LIBS"
+-  AC_CHECK_LIB(getloadavg, getloadavg,
+-	       [LIBS="-lgetloadavg $LIBS"], [LIBS=$ac_getloadavg_LIBS])
+-fi
+-
+ # Make sure it is really in the library, if we think we found it,
+ # otherwise set up the replacement function.
+ AC_CHECK_FUNCS(getloadavg, [],
+-- 
+2.25.1
+

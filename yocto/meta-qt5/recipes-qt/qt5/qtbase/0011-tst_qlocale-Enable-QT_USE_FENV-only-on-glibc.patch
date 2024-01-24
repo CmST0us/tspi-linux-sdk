@@ -1,0 +1,26 @@
+From eaf5d2ec9953b8bd299f486fc96d85d2f114c40d Mon Sep 17 00:00:00 2001
+From: Khem Raj <raj.khem@gmail.com>
+Date: Sun, 3 Sep 2017 10:11:50 -0700
+Subject: [PATCH] tst_qlocale: Enable QT_USE_FENV only on glibc
+
+musl does not have feenableexcept function
+
+Signed-off-by: Khem Raj <raj.khem@gmail.com>
+Upstream-Status: Pending
+---
+ tests/auto/corelib/text/qlocale/tst_qlocale.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tests/auto/corelib/text/qlocale/tst_qlocale.cpp b/tests/auto/corelib/text/qlocale/tst_qlocale.cpp
+index 6ff6995440..1f36c6fefa 100644
+--- a/tests/auto/corelib/text/qlocale/tst_qlocale.cpp
++++ b/tests/auto/corelib/text/qlocale/tst_qlocale.cpp
+@@ -46,7 +46,7 @@
+ #include <private/qlocale_tools_p.h>
+ #include <qnumeric.h>
+ 
+-#if defined(Q_OS_LINUX) && !defined(__UCLIBC__)
++#if defined(Q_OS_LINUX) && defined(__GLIBC__)
+ #    define QT_USE_FENV
+ #endif
+ 

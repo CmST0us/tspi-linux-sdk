@@ -1,0 +1,43 @@
+From c4d1caad764372d2a852fb837e7c37e168c65f0c Mon Sep 17 00:00:00 2001
+From: Samuli Piippo <samuli.piippo@qt.io>
+Date: Mon, 18 Feb 2019 10:45:03 +0200
+Subject: [PATCH] linguist-tools cmake: allow overriding the location for
+ lupdate and lrelease
+
+Upstream-Status: Pending
+Signed-off-by: Martin Jansa <Martin.Jansa@gmail.com>
+---
+ src/linguist/Qt5LinguistToolsConfig.cmake.in | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/src/linguist/Qt5LinguistToolsConfig.cmake.in b/src/linguist/Qt5LinguistToolsConfig.cmake.in
+index 2e99bc76..e6f4f7ed 100644
+--- a/src/linguist/Qt5LinguistToolsConfig.cmake.in
++++ b/src/linguist/Qt5LinguistToolsConfig.cmake.in
+@@ -47,7 +47,7 @@ if (NOT TARGET Qt5::lrelease)
+ !!IF isEmpty(CMAKE_BIN_DIR_IS_ABSOLUTE)
+     set(imported_location \"${_qt5_linguisttools_install_prefix}/$${CMAKE_BIN_DIR}lrelease$$CMAKE_BIN_SUFFIX\")
+ !!ELSE
+-    set(imported_location \"$${CMAKE_BIN_DIR}lrelease$$CMAKE_BIN_SUFFIX\")
++    set(imported_location \"${OE_QMAKE_PATH_EXTERNAL_HOST_BINS}/lrelease${OE_QMAKE_BIN_SUFFIX}\")
+ !!ENDIF
+     _qt5_LinguistTools_check_file_exists(${imported_location})
+ 
+@@ -62,7 +62,7 @@ if (NOT TARGET Qt5::lupdate)
+ !!IF isEmpty(CMAKE_BIN_DIR_IS_ABSOLUTE)
+     set(imported_location \"${_qt5_linguisttools_install_prefix}/$${CMAKE_BIN_DIR}lupdate$$CMAKE_BIN_SUFFIX\")
+ !!ELSE
+-    set(imported_location \"$${CMAKE_BIN_DIR}lupdate$$CMAKE_BIN_SUFFIX\")
++    set(imported_location \"${OE_QMAKE_PATH_EXTERNAL_HOST_BINS}/lupdate${OE_QMAKE_BIN_SUFFIX}\")
+ !!ENDIF
+     _qt5_LinguistTools_check_file_exists(${imported_location})
+ 
+@@ -77,7 +77,7 @@ if (NOT TARGET Qt5::lconvert)
+ !!IF isEmpty(CMAKE_BIN_DIR_IS_ABSOLUTE)
+     set(imported_location \"${_qt5_linguisttools_install_prefix}/$${CMAKE_BIN_DIR}lconvert$$CMAKE_BIN_SUFFIX\")
+ !!ELSE
+-    set(imported_location \"$${CMAKE_BIN_DIR}lconvert$$CMAKE_BIN_SUFFIX\")
++    set(imported_location \"${OE_QMAKE_PATH_EXTERNAL_HOST_BINS}/lconvert${OE_QMAKE_BIN_SUFFIX}\")
+ !!ENDIF
+     _qt5_LinguistTools_check_file_exists(${imported_location})
+ 

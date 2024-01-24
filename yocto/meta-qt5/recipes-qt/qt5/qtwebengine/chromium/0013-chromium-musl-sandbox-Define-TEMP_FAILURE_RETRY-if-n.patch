@@ -1,0 +1,34 @@
+From a7bb1b5b26caa4b3c374c3d3f74f0dfe522d854f Mon Sep 17 00:00:00 2001
+From: Khem Raj <raj.khem@gmail.com>
+Date: Fri, 7 Jul 2017 14:01:12 -0700
+Subject: [PATCH] chromium: musl: sandbox: Define TEMP_FAILURE_RETRY if not
+ defined
+
+Musl does not define this Macro
+
+Signed-off-by: Khem Raj <raj.khem@gmail.com>
+Upstream-Status: Pending
+---
+ chromium/sandbox/linux/suid/sandbox.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/chromium/sandbox/linux/suid/sandbox.c b/chromium/sandbox/linux/suid/sandbox.c
+index 5fdb4817af8..e5b9431daa0 100644
+--- a/chromium/sandbox/linux/suid/sandbox.c
++++ b/chromium/sandbox/linux/suid/sandbox.c
+@@ -46,6 +46,15 @@ static bool DropRoot();
+ 
+ #define HANDLE_EINTR(x) TEMP_FAILURE_RETRY(x)
+ 
++#ifndef TEMP_FAILURE_RETRY
++# define TEMP_FAILURE_RETRY(expression) \
++	(__extension__			\
++	 ({ long int __result;		\
++	  do __result = (long int) (expression); \
++	  while (__result == -1L && errno == EINTR); \
++	  __result; }))
++#endif
++
+ static void FatalError(const char* msg, ...)
+     __attribute__((noreturn, format(printf, 1, 2)));
+ 

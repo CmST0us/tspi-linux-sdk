@@ -1,0 +1,29 @@
+From 7f9421b4609d8a1f9590152fb3976de22e9a1b12 Mon Sep 17 00:00:00 2001
+From: Khem Raj <raj.khem@gmail.com>
+Date: Sat, 1 Feb 2020 12:17:23 -0800
+Subject: [PATCH] chromium: Link v8 with libatomic on x86
+
+Fixes
+| v8_base_without_compiler_jumbo_47.cc:(.text._ZN2v88internal4wasm12_GLOBAL__N_123ExecuteCompilationUnitsERKSt10shared_ptrINS2_22BackgroundCompileTokenEEPNS0_8CountersEiNS2_19CompileBaselineOnlyE+0x29a): undefined reference to `__atomic_l
+oad'
+
+Upstream-Status: Pending
+Signed-off-by: Khem Raj <raj.khem@gmail.com>
+---
+ chromium/v8/BUILD.gn | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/chromium/v8/BUILD.gn b/chromium/v8/BUILD.gn
+index ba99c75140b..33cf943bcba 100644
+--- a/chromium/v8/BUILD.gn
++++ b/chromium/v8/BUILD.gn
+@@ -3862,7 +3862,8 @@ v8_source_set("v8_base_without_compiler") {
+   if (v8_current_cpu == "mips" || v8_current_cpu == "mipsel" ||
+       v8_current_cpu == "mips64" || v8_current_cpu == "mips64el" ||
+       v8_current_cpu == "ppc" || v8_current_cpu == "ppc64" ||
+-      v8_current_cpu == "s390" || v8_current_cpu == "s390x") {
++      v8_current_cpu == "s390" || v8_current_cpu == "s390x" ||
++      v8_current_cpu == "x86") {
+     libs += [ "atomic" ]
+   }
+ 

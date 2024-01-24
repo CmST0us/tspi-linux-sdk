@@ -1,0 +1,28 @@
+From e142cbdc339bcc73c3f41f512b67ddf7a694337e Mon Sep 17 00:00:00 2001
+From: Jiri Slaby <jslaby@suse.cz>
+Date: Thu, 11 Jul 2019 09:35:13 +0200
+Subject: [PATCH] chromium: fix build after y2038 changes in glibc
+
+SIOCGSTAMP is defined in linux/sockios.h since kernel 5.2. Include that
+file wherever needed.
+
+Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+Signed-off-by: Martin Jansa <Martin.Jansa@gmail.com>
+
+Upstream-Status: Pending
+---
+ chromium/third_party/webrtc/rtc_base/physical_socket_server.cc | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/chromium/third_party/webrtc/rtc_base/physical_socket_server.cc b/chromium/third_party/webrtc/rtc_base/physical_socket_server.cc
+index cf6e7927951..e5df6f9d92c 100644
+--- a/chromium/third_party/webrtc/rtc_base/physical_socket_server.cc
++++ b/chromium/third_party/webrtc/rtc_base/physical_socket_server.cc
+@@ -70,6 +70,7 @@ typedef void* SockOptArg;
+ #endif  // WEBRTC_POSIX
+ 
+ #if defined(WEBRTC_POSIX) && !defined(WEBRTC_MAC) && !defined(__native_client__)
++#include <linux/sockios.h>
+ 
+ int64_t GetSocketRecvTimestamp(int socket) {
+   struct timeval tv_ioctl;
