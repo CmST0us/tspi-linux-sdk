@@ -1,0 +1,78 @@
+Release Notes
+[V1.1.8]
+Date:   7/14/2023
+enhancement:
+  1. Optimize Makefile macro definition
+  2. support ipq5018 platform nss feature
+  3. support for Linux Kernel 5.19
+fix:
+  1. fix memory issue on rk3568/rk3588
+
+[V1.1.7]
+Date:   1/11/2022
+enhancement:
+  1. improve spin lock
+  2. the memory leak when remove device
+  3. direct mode, retry to send skb packet failed
+  4. add flow ctrl for direct mode
+fix:
+
+
+[V1.1.6]
+Date:   4/7/2022
+enhancement:
+  1. sipa transmission adds flow control function
+fix:
+
+
+[V1.1.5]
+Date:   18/5/2022
+enhancement:
+  1. support modem remove and rescan
+fix:
+
+[V1.1.4]
+Date:   18/11/2021
+enhancement:
+  1. support dhcp when mode of network is normal
+fix:
+  
+[V1.1.3]
+Date:   16/11/2021
+enhancement:
+  1. support iommu or smmu
+fix: 
+
+[V1.1.2]
+Date:   22/10/2021
+enhancement:
+fix:
+    1. fix host's stuck when operating the network card 
+
+[V1.1.1]
+Date:   27/8/2021
+enhancement:
+fix:
+  1. fix some compile errors in low version kernel
+  2. fix some compile error in x86 device
+  3. set default mtu as 1500
+
+[V1.1.0.2]
+Date:   27/8/2021
+enhancement:
+fix:
+  1. fix some compile errors in low version kernel
+  2. fix some compile error in x86 device
+
+[V1.1.0.1]
+Date:   27/8/2021 
+enhancement:
+fix:
+  1. fix a compile error 
+  2. set default mtu as 1500
+
+[V1.1.0.0]
+Date:   21/6/2021 
+enhancement:
+  1. initital base version
+fix:

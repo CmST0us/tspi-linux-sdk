@@ -1,0 +1,21 @@
+
+menu "rongpin support"
+
+config RP_POWER
+	tristate "rongpin power_ctrl support"
+	default y
+	help 
+		rp_power_ctrl
+
+config RP_GPIO
+	default y
+	tristate "rongpin rp gpio_ctl support"
+
+config RP_STM706
+        tristate "rongpin rp stm706 support"
+        default y
+
+config RP_FAN
+        default y
+        tristate "rongpin rp fan_ctl support"
+endmenu
