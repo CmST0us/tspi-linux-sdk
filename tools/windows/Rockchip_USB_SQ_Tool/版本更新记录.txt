@@ -1,0 +1,30 @@
+V1.0 初始版本：
+1. 支持 USB2.0 芯片 RK3228/RK3288/RK3308/RK3308B-S/RK3326/RK3326S/RK3328/RK3399/RK356X/RK3588/RK3588S/PX30/PX30S
+2. 支持 USB2.0 Device/Host 眼图测试命令的查询；
+3. 支持 USB2.0 Device/Host High-speed 发送信号的 Pre-emphasize、Height、ODT、Slew Rate 等调整；
+4. 支持 USB2.0 Device/Host High-speed 接收信号的 Squelch 调整；
+5. 支持 USB2.0 Host 断开阈值 Disconnect Detection 调整；
+6. 支持 USB2.0 Device Vbus 检测阈值 B_SessionValid 调整；
+7. 支持 USB2.0 PHY Tuning 命令自动生成对应代码；
+8. 支持 USB3.1 PHY  Tx Compliance Test 命令查询和 Tx 信号 Tuning（仅支持 RK3588）； 
+
+V1.1 版本更新点：
+1. 修复了第一次进入PX30S或RK3326S 的Tuning界面，读取寄存器命令的地址错误问题
+
+V1.2 版本更新点：
+1. 新增 RV1106/RV1103 芯片的支持
+
+V1.3 版本更新点：
+1. 新增 RK3588 squelch参数调试项
+2. 修复 RK3588 USB2.0 PHY Host Disconnect Detection 的 io 命令地址错误问题
+3. 修复 RV1103/RV1106 USB2.0 PHY Tuning 项的 io 命令地址错误问题
+4. 新增 RV1106/RV1103 Squelch 100mV 和 87.5mV 档位；
+
+V1.4 版本更新点：
+1. 新增 RV1126/RV1109/RK3128/RK3126/RK3036 芯片的支持；
+
+V1.5 版本更新点：
+1. 新增RK3528/RK3562 芯片的支持；
+2. 新增RK3566/RK3568 USB 3.1 Tuning的支持；
+3. 修复控件无法自适应放大缩小的问题；
+4. 修复打开子窗口后主窗口无法操作问题；

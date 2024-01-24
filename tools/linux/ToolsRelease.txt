@@ -1,0 +1,20 @@
+
+Linux 系统工具
+
+工具名称			| 工具用途
+-------------------------------|-------------------------------------------
+boot_merger			| 打包或解包loader工具
+Firmware_Merger		| SPI NOR固件打包工具(生成的固件可以用于烧录器)
+Linux_DDR_Bandwidth_Tool	| DDR带宽统计工具
+Linux_Diff_Firmware		| OTA差分包工具
+Linux_Pack_Firmware		| 固件打包工具(打包成updata.img)
+Linux_SecureBoot		| 固件签名工具
+Linux_SecurityAVB		| AVB签名工具
+Linux_SecurityDM		| DM签名工具
+Linux_Upgrade_Tool		| 烧录固件工具
+pin_debug_tool			| GPIO调试工具
+programmimg_image_tool		| 打包SPI NOR/SPI NAND/SLC NAND/eMMC的烧录器固件
+rk_ddrbin_tool			| rk的ddrbin调试工具
+rk_sign_tool			| Secureboot签名工具
+
+联系Email:liuyi@rock-chips.com
