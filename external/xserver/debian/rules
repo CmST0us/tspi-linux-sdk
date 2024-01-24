@@ -1,0 +1,147 @@
+#!/usr/bin/make -f
+
+include debian/rules.flags
+
+include /usr/share/dpkg/architecture.mk
+
+%:
+	dh $@ --with quilt
+
+override_dh_autoreconf-arch: abibumpcheck
+	dh_autoreconf
+
+override_dh_autoreconf-indep:
+	dh_autoreconf
+	mkdir -p build-source
+	tar \
+	--owner=0 --group=0 \
+        --transform 's,^,xorg-server/,' \
+	--exclude=debian \
+	--exclude=autom4te.cache \
+	--exclude=build-source \
+	--sort=name \
+	--mtime=@$(SOURCE_DATE_EPOCH) \
+	--clamp-mtime \
+	--mode=u+rw,go+r,go-w,a-s \
+        -cf - * | xz > build-source/xorg-server.tar.xz
+
+override_dh_auto_configure:
+	dh_auto_configure --builddirectory=debian/build/main -- \
+		$(confflags) \
+		$(confflags_main) \
+		$(vars)
+	dh_auto_configure --builddirectory=debian/build/udeb -- \
+		$(confflags) \
+		$(confflags_udeb) \
+		$(vars)
+
+override_dh_auto_build:
+	dh_auto_build --builddirectory=debian/build/main
+	dh_auto_build --builddirectory=debian/build/udeb
+
+override_dh_auto_test:
+	dh_auto_test -- -j1 VERBOSE=1
+
+override_dh_auto_install:
+	dh_auto_install --builddirectory=debian/build/main \
+		--destdir=debian/tmp/main
+	dh_auto_install --builddirectory=debian/build/udeb \
+		--destdir=debian/tmp/udeb
+
+	# oh, yuck.
+	find debian/tmp/*/usr/lib/xorg -type f -name '*.la' -delete
+
+	# remove modules not needed in d-i
+	rm -rf debian/tmp/udeb/usr/lib/xorg/modules/multimedia
+	rm -f debian/tmp/udeb/usr/lib/xorg/modules/libxaa.so
+	rm -f debian/tmp/udeb/usr/lib/xorg/modules/libexa.so
+	rm -f debian/tmp/udeb/usr/lib/xorg/modules/libwfb.so
+	rm -f debian/tmp/udeb/usr/lib/xorg/modules/libxf8_16bpp.so
+
+	# we don't ship these from the udeb build, needed for dh_install
+	# --fail-missing
+	rm -rf debian/tmp/udeb/var/lib/xkb/README.compiled
+	rm -rf debian/tmp/udeb/usr/bin/X
+	rm -rf debian/tmp/udeb/usr/include
+	rm -rf debian/tmp/udeb/usr/share/aclocal
+	rm -rf debian/tmp/udeb/usr/share/man
+	rm -rf debian/tmp/udeb/usr/lib/*/pkgconfig
+
+	install -m 755 debian/local/xvfb-run debian/tmp/main/usr/bin
+	install debian/local/xvfb-run.1 debian/tmp/main/usr/share/man/man1
+ifneq ($(DEB_HOST_ARCH_OS), linux)
+	install -d debian/tmp/main/usr/share/X11/xorg.conf.d
+	install -m 644 debian/local/10-*.conf debian/tmp/main/usr/share/X11/xorg.conf.d
+	install -d debian/tmp/udeb/usr/share/X11/xorg.conf.d
+	install -m 644 debian/local/10-*.conf debian/tmp/udeb/usr/share/X11/xorg.conf.d
+endif
+
+# Only read the first line, the rest of the file is used to determine
+# when the minimal version is to be bumped:
+SERVERMINVER = debian/serverminver
+serverminver = $(shell head -1 $(SERVERMINVER))
+
+.PHONY: abibumpcheck
+abibumpcheck: debian/serverminver
+	@echo Checking for the need of an ABI bump
+	# Build an updated version of the file:
+	head -1 $(SERVERMINVER) > $(SERVERMINVER).new
+	perl -ne 'print "$$1:$$2.$$3\n" if /^#define\s+(ABI_(?:VIDEODRV|XINPUT)_VERSION)\s+SET_ABI_VERSION\(\s*(\d+)\s*,\s*(\d+)\s*\)/' hw/xfree86/common/xf86Module.h|sort >> $(SERVERMINVER).new
+	# Compare both files:
+	@if ! cmp --quiet $(SERVERMINVER) $(SERVERMINVER).new; then \
+	echo "serverminver bump required, ABI changed!";\
+	echo "When bumping major or minor, always bump required xorg-server minimum";\
+	echo "version too, the newly built drivers are not backwards compatible!";\
+	diff -u $(SERVERMINVER) $(SERVERMINVER).new; \
+	exit 1; \
+	else \
+	echo "ABI unchanged"; \
+	rm -f $(SERVERMINVER).new; \
+	fi
+
+override_dh_fixperms-arch:
+	dh_fixperms
+	chown root:root $(CURDIR)/debian/xserver-xorg-legacy/usr/lib/xorg/Xorg.wrap
+	chmod ug+s $(CURDIR)/debian/xserver-xorg-legacy/usr/lib/xorg/Xorg.wrap
+
+override_dh_install:
+	dh_install -pxserver-xorg-core-udeb --sourcedir=debian/tmp/udeb
+	dh_install --remaining-packages --sourcedir=debian/tmp/main
+	install -d $(CURDIR)/debian/xserver-xorg-dev/usr/share/xserver-xorg
+	# Extract only the major ABI version:
+	set -e; \
+		abi_videodrv=`PKG_CONFIG_PATH=debian/tmp/main/usr/lib/$(DEB_HOST_MULTIARCH)/pkgconfig pkg-config --variable=abi_videodrv xorg-server|cut -d . -f 1`; \
+		test -n "$$abi_videodrv"; echo videoabi=xorg-video-abi-$$abi_videodrv > debian/xserver-xorg-core.substvars && \
+		echo "xorg-video-abi-$$abi_videodrv, xserver-xorg-core (>= $(serverminver))" > debian/xserver-xorg-dev/usr/share/xserver-xorg/videodrvdep
+	set -e; \
+		abi_xinput=`PKG_CONFIG_PATH=debian/tmp/main/usr/lib/$(DEB_HOST_MULTIARCH)/pkgconfig pkg-config --variable=abi_xinput xorg-server|cut -d . -f 1`; \
+		test -n "$$abi_xinput"; echo inputabi=xorg-input-abi-$$abi_xinput >> debian/xserver-xorg-core.substvars && \
+		echo "xorg-input-abi-$$abi_xinput, xserver-xorg-core (>= $(serverminver))" > debian/xserver-xorg-dev/usr/share/xserver-xorg/xinputdep
+
+	# The udeb uses the same substvars:
+	cp debian/xserver-xorg-core.substvars debian/xserver-xorg-core-udeb.substvars
+
+	# save the configure flags so that packages like vnc, tightvnc, tigervnc
+	# know how the package was built.
+	echo 'xserver_confflags = $(confflags) $(confflags_main)' \
+		> debian/xserver-xorg-dev/usr/share/xserver-xorg/configure_flags.mk
+
+	install -m 755 -d debian/xserver-xorg-core/usr/share/bug/xserver-xorg-core
+	install -m 755 debian/xserver-xorg-core.bug.script debian/xserver-xorg-core/usr/share/bug/xserver-xorg-core/script
+ifeq ($(DEB_HOST_ARCH_OS), linux)
+	install -d debian/xserver-xorg-core/lib/udev/rules.d
+	install -m 644 debian/local/64-xorg-xkb.rules debian/xserver-xorg-core/lib/udev/rules.d
+	install -d debian/xserver-xorg-core-udeb/lib/udev/rules.d
+	install -m 644 debian/local/64-xorg-xkb.rules debian/xserver-xorg-core-udeb/lib/udev/rules.d
+endif
+
+override_dh_missing-indep:
+	dh_missing -i -X udeb/
+
+override_dh_missing-arch:
+	dh_missing --fail-missing
+
+override_dh_clean:
+	dh_clean
+	rm -rf debian/build
+	rm -rf build-source

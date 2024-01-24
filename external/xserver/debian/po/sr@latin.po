@@ -1,0 +1,61 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2011
+# This file is distributed under the same license as the PACKAGE package.
+# Zlatan Todoric <zlatan.todoric@gmail.com>, 2011.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: xorg@packages.debian.org\n"
+"POT-Creation-Date: 2009-06-02 20:32+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Zlatan Todoric <zlatan.todoric@gmail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: Serbian latin\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Root Only"
+msgstr "Samo glavni korisnik"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Console Users Only"
+msgstr "Samo za korisnike konzole"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Anybody"
+msgstr "Svako"
+
+#. Type: select
+#. Description
+#: ../xserver-xorg-legacy.templates:2002
+msgid "Users allowed to start the X server:"
+msgstr "Korisnici kojima je dozvoljeno pokretanje X servera:"
+
+#. Type: select
+#. Description
+#: ../xserver-xorg-legacy.templates:2002
+msgid ""
+"Because the X server runs with superuser privileges, it may be unwise to "
+"permit any user to start it, for security reasons.  On the other hand, it is "
+"even more unwise to run general-purpose X client programs as root, which is "
+"what may happen if only root is permitted to start the X server.  A good "
+"compromise is to permit the X server to be started only by users logged in "
+"to one of the virtual consoles."
+msgstr ""
+"Zbog pokretanja X servera sa superkorisničkim privilegijam, nije "
+"preporučljivodozvoliti korisnicima da ga pokrenu, iz sigurnosnih razloga. S "
+"druge strane, jošmanje je preporučljivo pokrenuti X klijenta opšte namjene "
+"kao glavni korisnik, štose može desiti ako je samo glavnom korisniku "
+"dozvoljeno da pokrene X server.Kompromis bi bio dozvoliti pokretanje X "
+"servera od strane korisnika koji su samoulogovani na jednu od virtuelnih "
+"konzola."

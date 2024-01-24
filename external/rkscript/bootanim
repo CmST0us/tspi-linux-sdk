@@ -1,0 +1,129 @@
+#!/bin/sh
+#
+# Usage:
+# bootanim start [timeout]
+# bootanim stop
+#
+# Example hook:
+# root@RK3588:/# more /etc/bootanim.d/gst-bootanim.sh
+# #!/bin/sh
+# touch ${TAG_FILE:-/dev/null}
+# gst-play-1.0 /etc/bootanim.d/bootanim.mp4 -q --no-interactive&
+
+export TAG_FILE=/tmp/.bootanim
+rm -f $TAG_FILE
+
+SCRIPT=/usr/bin/bootanim
+HOOK_DIR=/etc/bootanim.d/
+PID_FILE=/tmp/bootanim.pid
+LOG_FILE=/tmp/bootanim.log
+TIMEOUT=${2:-${BOOTANIM_DEFAULT_TIMEOUT:-5}}
+
+pid_by_sid()
+{
+	sed "s/(.*)//" /proc/*/stat | cut -d' ' -f1,6 | grep -w "$1$" |
+		cut -d' ' -f1 || true
+}
+
+sid_by_pid()
+{
+	sed "s/(.*)//" /proc/$1/stat | cut -d' ' -f6
+}
+
+bootanim_init()
+{
+	# Save bootanim's pid
+	echo $$ > $PID_FILE
+
+	# Freeze display service
+	touch /dev/null $XSERVER_FREEZE_DISPLAY $WESTON_FREEZE_DISPLAY
+}
+
+bootanim_deinit()
+{
+	# Unfreeze display service
+	rm -rf $XSERVER_FREEZE_DISPLAY $WESTON_FREEZE_DISPLAY
+
+	rm -rf "$PID_FILE"
+}
+
+bootanim_start()
+{
+	[ -d $HOOK_DIR ] || return
+
+	echo "Starting bootanim..."
+
+	bootanim_init
+
+	# Start bootanim hooks
+	for hook in $(find $HOOK_DIR -maxdepth 1 -name "*.sh"); do
+		echo "Starting hook: $hook..."
+		$hook
+		echo "Started hook: $hook..."
+	done
+
+	if [ ! -e "$TAG_FILE" ]; then
+		echo "No animation started..."
+		bootanim_deinit
+		return
+	fi
+
+	# Timeout killer
+	sleep $TIMEOUT
+	bootanim_stop
+}
+
+children_pid()
+{
+	[ -f $PID_FILE ] || return
+
+	SID=$(cat $PID_FILE)
+	[ "$SID" ] || return
+
+	pid_by_sid $SID | grep -wv $SID || true
+}
+
+bootanim_stop()
+{
+	echo "Stopping bootanim..."
+
+	# Parse children pid
+	CPID=$(children_pid)
+
+	if [ -z "$CPID" ]; then
+		bootanim_deinit
+		return
+	fi
+
+	{
+		# Pause animation -> unfreeze display -> kill animation
+		kill -STOP $CPID &>/dev/null || true
+		bootanim_deinit
+		sleep .1
+		kill -9 $CPID &>/dev/null || true
+	}&
+	wait
+}
+
+case "$1" in
+	start|"")
+		# Make sure that we own this session (pid equals sid)
+		if [ $(sid_by_pid $$) != $$ ] ||
+			[ $(realpath "$0") != $SCRIPT ] ; then
+			setsid $SCRIPT $@
+		else
+			{
+				bootanim_stop || true
+				bootanim_start
+			} 2>&1 | tee -a $LOG_FILE&
+		fi
+		;;
+	stop)
+		bootanim_stop 2>&1 | tee -a $LOG_FILE
+		;;
+	*)
+		echo "Usage: $0 [start|stop]"
+		;;
+esac
+
+:

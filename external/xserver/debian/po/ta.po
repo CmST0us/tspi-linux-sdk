@@ -1,0 +1,70 @@
+# translation of ta.po to TAMIL
+#
+#    Translators, if you are not familiar with the PO format, gettext
+#    documentation is worth reading, especially sections dedicated to
+#    this format, e.g. by running:
+#         info -n '(gettext)PO Files'
+#         info -n '(gettext)Header Entry'
+#    Some information specific to po-debconf are available at
+#            /usr/share/doc/po-debconf/README-trans
+#         or http://www.debian.org/intl/l10n/po-debconf/README-trans#
+#    Developers do not need to manually edit POT or PO files.
+#
+# drtvasudevan <agnihot3@gmail.com>, 2006, 2007.
+# Dr.T.Vasudevan <agnihot3@gmail.com>, 2007.
+# Dr.T.Vasudevan <agnihot3@gmail.com>, 2008.
+msgid ""
+msgstr ""
+"Project-Id-Version: ta\n"
+"Report-Msgid-Bugs-To: xorg@packages.debian.org\n"
+"POT-Creation-Date: 2009-06-02 20:32+0200\n"
+"PO-Revision-Date: 2007-04-06 15:48+0530\n"
+"Last-Translator: Dr.T.Vasudevan <agnihot3@gmail.com>\n"
+"Language-Team: TAMIL <ubuntu-l10n-tam@lists.ubuntu.com>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Root Only"
+msgstr "மூலம் (ரூட்) மட்டும்"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Console Users Only"
+msgstr "முனைய பயனாளர்களுக்கு மட்டும்"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Anybody"
+msgstr "எல்லாருக்கும்"
+
+#. Type: select
+#. Description
+#: ../xserver-xorg-legacy.templates:2002
+msgid "Users allowed to start the X server:"
+msgstr "எக்ஸ் சேவையகத்தை துவக்க அனுமதியுள்ள பயனாளர்கள்:"
+
+#. Type: select
+#. Description
+#: ../xserver-xorg-legacy.templates:2002
+msgid ""
+"Because the X server runs with superuser privileges, it may be unwise to "
+"permit any user to start it, for security reasons.  On the other hand, it is "
+"even more unwise to run general-purpose X client programs as root, which is "
+"what may happen if only root is permitted to start the X server.  A good "
+"compromise is to permit the X server to be started only by users logged in "
+"to one of the virtual consoles."
+msgstr ""
+"எக்ஸ் சேவையகம் சூப்பர் பயனர் அனுமதிகளுடன் இயங்குவதால் பாதுகாப்பு கருதி எல்லா பயனர்களையும் "
+"அதை இயக்க அனுமதிப்பது உசிதமில்லை. அதே சமயம் பொதுவான எக்ஸ் கிளையன் நிரல்களை ரூட்டாக "
+"இயக்குவது அதை விட உசிதமில்லாதது. ரூட்டை மட்டும் எக்ஸ் சேவையகத்தை இயக்க அனுமதித்தால் "
+"அப்படித்தான் நடக்கும். ஆகவே ஒரு நல்ல வழி பயனர்களால் துவக்கப் பட்ட மெய்நிகர் முனையங்களில் "
+"ஒன்றில் எக்ஸ் சேவையகத்தை துவக்க அனுமதிப்பதுதான்."
+

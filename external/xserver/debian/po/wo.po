@@ -1,0 +1,61 @@
+# translation of xorg_po_wo.po to Wolof
+# This file is distributed under the same license as the PACKAGE package.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER.
+#
+# Mouhamadou Mamoune Mbacke <mouhamadoumamoune@gmail.com>, 2006, 2008.
+msgid ""
+msgstr ""
+"Project-Id-Version: xorg_po_wo\n"
+"Report-Msgid-Bugs-To: xorg@packages.debian.org\n"
+"POT-Creation-Date: 2009-06-02 20:32+0200\n"
+"PO-Revision-Date: 2008-09-30 13:25+0200\n"
+"Last-Translator: Mouhamadou Mamoune Mbacke <mouhamadoumamoune@gmail.com>\n"
+"Language-Team: Wolof <en@li.org>\n"
+"Language: wo\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Root Only"
+msgstr "Root Rekk"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Console Users Only"
+msgstr "Jëfandikukat yu Konsol Rekk"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Anybody"
+msgstr "Kumu mana doon"
+
+#. Type: select
+#. Description
+#: ../xserver-xorg-legacy.templates:2002
+msgid "Users allowed to start the X server:"
+msgstr "Jëfandikukat yiñu may ñu tambule serwóor X:"
+
+#. Type: select
+#. Description
+#: ../xserver-xorg-legacy.templates:2002
+msgid ""
+"Because the X server runs with superuser privileges, it may be unwise to "
+"permit any user to start it, for security reasons.  On the other hand, it is "
+"even more unwise to run general-purpose X client programs as root, which is "
+"what may happen if only root is permitted to start the X server.  A good "
+"compromise is to permit the X server to be started only by users logged in "
+"to one of the virtual consoles."
+msgstr ""
+"Binga xamee ne serwóor X dafay dox ak sañsañu superuser, doonul lu xellu di "
+"may ñéppu ñukoy mana tambule, ngir kaaraangey sistem bi. Ba tay doonul yit "
+"lu xellu rugge root ba noppi di doxal prograam kiliyaŋ yu X, ta loolu mooy "
+"am bu fekkee dangaa def ne root rekk mooy mana tambule serwóor X. Jubna lool "
+"nak nga def ne serwóor X kikoy mana tambule day doon ku duggee ci benn ci "
+"konsol wirtuwel yi."
+

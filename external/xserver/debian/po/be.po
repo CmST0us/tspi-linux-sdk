@@ -1,0 +1,58 @@
+# translation of xorg_be.po to Belarusian
+# Pavel Piatruk <piatruk.p@gmail.com>, 2008.
+# Version xorg 1:7.3+12
+msgid ""
+msgstr ""
+"Project-Id-Version: xorg_be\n"
+"Report-Msgid-Bugs-To: xorg@packages.debian.org\n"
+"POT-Creation-Date: 2009-06-02 20:32+0200\n"
+"PO-Revision-Date: 2008-06-09 12:18+0300\n"
+"Last-Translator: Pavel Piatruk <piatruk.p@gmail.com>\n"
+"Language-Team: Belarusian <i18n@mova.org>\n"
+"Language: be\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Root Only"
+msgstr "Толькі Root"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Console Users Only"
+msgstr "Толькі карыстальнікі кансолі"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Anybody"
+msgstr "Усе"
+
+#. Type: select
+#. Description
+#: ../xserver-xorg-legacy.templates:2002
+msgid "Users allowed to start the X server:"
+msgstr "Карыстальнікі, якім дазволена запускаць X-сервер:"
+
+#. Type: select
+#. Description
+#: ../xserver-xorg-legacy.templates:2002
+msgid ""
+"Because the X server runs with superuser privileges, it may be unwise to "
+"permit any user to start it, for security reasons.  On the other hand, it is "
+"even more unwise to run general-purpose X client programs as root, which is "
+"what may happen if only root is permitted to start the X server.  A good "
+"compromise is to permit the X server to be started only by users logged in "
+"to one of the virtual consoles."
+msgstr ""
+"X-сервер працуе з прывілеямі супер-карыстальніка, таму з прычын бяспекі лепш "
+"не дазваляць запускаць яго любому карыстальніку. З іншага боку, яшчэ горш "
+"сітуацыя, калі ўсе кліенцкія X-праграмы працуюць з прывілеямі супер-"
+"карыстальніка - так будзе, калі толькі супер-карыстальніку будзе дазволена "
+"стартаваць X-сервер. Найлепшае выйсце - дазволіць запуск X-сервера толькі "
+"тым карыстальнікам, што зайшлі ў адну з віртуальных кансоляў."

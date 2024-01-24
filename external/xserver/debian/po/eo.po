@@ -1,0 +1,61 @@
+# debconf templates for the xorg package
+# Esperanto translation.
+# Copyright (C) 2008 FSF
+# This file is distributed under the same license as the xorg package.
+# Felipe Castro <fefcas@gmailcom>, 2008.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: xorg\n"
+"Report-Msgid-Bugs-To: xorg@packages.debian.org\n"
+"POT-Creation-Date: 2009-06-02 20:32+0200\n"
+"PO-Revision-Date: 2008-10-19 20:00-0300\n"
+"Last-Translator: Felipe Castro <fefcas@gmail.com>\n"
+"Language-Team: Esperanto <debian-l10n-esperanto@lists.debian.org>\n"
+"Language: eo\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Root Only"
+msgstr "Nur 'Root'"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Console Users Only"
+msgstr "Nur Konzol-Uzantoj"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Anybody"
+msgstr "Iu ajn"
+
+#. Type: select
+#. Description
+#: ../xserver-xorg-legacy.templates:2002
+msgid "Users allowed to start the X server:"
+msgstr "Uzantoj permesitaj ekigi la X-servilon:"
+
+#. Type: select
+#. Description
+#: ../xserver-xorg-legacy.templates:2002
+msgid ""
+"Because the X server runs with superuser privileges, it may be unwise to "
+"permit any user to start it, for security reasons.  On the other hand, it is "
+"even more unwise to run general-purpose X client programs as root, which is "
+"what may happen if only root is permitted to start the X server.  A good "
+"compromise is to permit the X server to be started only by users logged in "
+"to one of the virtual consoles."
+msgstr ""
+"Ĉar la X-servilo funkcias kun superaj privilegioj, eble estas malprudente "
+"permesi ke iu ajn uzanto ekigu ĝin, pro sekurecaj kialoj. Tamen, estas eĉ "
+"pli malprudente lanĉi ĝeneralajn klient-programojn per 'root', kio ĝuste "
+"povas okazi kiam nur 'root' estas permesata ekigi la X-servilon. Bona "
+"ekvilibro oni atingas permesante ke la X-servilo estu ekigebla nur por "
+"uzantoj ensalutitaj en unu el la virtualaj konzoloj."
+

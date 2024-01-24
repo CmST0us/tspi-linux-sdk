@@ -1,0 +1,93 @@
+libdrm-cursor (1.4.1-1) unstable; urgency=medium
+
+  * Fix set_cursor stalls when racing with unplugging
+  * Fix set cursor error when drm fd changed
+  * Support changing cursor size again
+
+ -- Jeffy Chen <jeffy.chen@rock-chips.com>  Fri, 14 Apr 2023 10:14:08 +0800
+
+libdrm-cursor (1.4.0-1) unstable; urgency=medium
+
+  * debian: Stop installing ld.so.preload
+  * Fix more compile warnings
+  * Walk all EGL configs when choosing
+  * Support cursor scaling
+  * Use AFBC when LINEAR not avaiable
+
+ -- Jeffy Chen <jeffy.chen@rock-chips.com>  Thu, 29 Sep 2022 10:32:38 +0800
+
+libdrm-cursor (1.3.0-1) unstable; urgency=medium
+
+  * Fix min-interval overflow when setting max fps > 1000
+  * Fix compile warning
+  * Fix error out when monitor disconnected
+  * Support using linear when AFBC also supported
+  * Prefer linear by default
+  * Fix more compile warnings
+
+ -- Jeffy Chen <jeffy.chen@rock-chips.com>  Wed, 01 Dec 2021 15:48:26 +0800
+
+libdrm-cursor (1.2.3-1) unstable; urgency=medium
+
+  * Only verify the first cursor set request
+  * Update cursor offsets before handling any requests
+  * debian: Allow error in prerm stage
+
+ -- Jeffy Chen <jeffy.chen@rock-chips.com>  Thu, 09 Sep 2021 11:41:45 +0800
+
+libdrm-cursor (1.2.2-1) unstable; urgency=medium
+
+  * Update CRTC status when setting cursor
+  * Prefer non-modifier gbm API when not using modifier
+  * Avoid moving cursor in error state
+  * Support edge pre-moving
+  * Use the same log APIs for egl
+  * Fix invalid cursor size in first commit
+
+ -- Jeffy Chen <jeffy.chen@rock-chips.com>  Wed, 04 Aug 2021 15:27:16 +0800
+
+libdrm-cursor (1.2.0-1) unstable; urgency=medium
+
+  * Cache CRTC size
+  * Rework atomic API flow
+  * Add timestamp in drm logs
+  * Support limiting cursor FPS
+  * Force legacy drm API for cursor planes
+  * Use legacy drm API when kernel supports async commit
+  * Support disabling atomic drm API
+
+ -- Jeffy Chen <jeffy.chen@rock-chips.com>  Mon, 26 Jul 2021 12:16:50 +0800
+
+libdrm-cursor (1.1.3-1) unstable; urgency=medium
+
+  * Add COPYING
+  * meson: Not installing test program by default
+  * Support hiding cursors
+  * meson: Install sample configure file
+
+ -- Jeffy Chen <jeffy.chen@rock-chips.com>  Fri, 23 Jul 2021 15:04:28 +0800
+
+libdrm-cursor (1.1.2-1) unstable; urgency=medium
+
+  * Support setting atomic cap for Xorg
+  * Prefer async atomic API
+
+ -- Jeffy Chen <jeffy.chen@rock-chips.com>  Wed, 14 Jul 2021 10:08:25 +0800
+
+libdrm-cursor (1.1.1-1) unstable; urgency=medium
+
+  * Support num-surfaces config
+
+ -- Jeffy Chen <jeffy.chen@rock-chips.com>  Tue, 13 Jul 2021 11:50:32 +0800
+
+libdrm-cursor (1.1.0-1) unstable; urgency=medium
+
+  * Support /etc/drm-cursor.conf
+
+ -- Jeffy Chen <jeffy.chen@rock-chips.com>  Fri, 18 Jun 2021 18:53:01 +0800
+
+libdrm-cursor (1.0.0-1) unstable; urgency=medium
+
+  * Initial release
+
+ -- Jeffy Chen <jeffy.chen@rock-chips.com>  Sun, 15 Jun 2021 08:38:16 +0000

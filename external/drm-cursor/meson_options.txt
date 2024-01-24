@@ -1,0 +1,4 @@
+option('prefer-afbc', type: 'boolean', value: 'false',
+       description: 'Prefer ARM AFBC modifier (default: false)')
+option('install-test', type: 'boolean', value: 'false',
+       description: 'Install test program (default: false)')

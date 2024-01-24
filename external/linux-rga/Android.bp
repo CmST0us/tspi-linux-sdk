@@ -1,0 +1,73 @@
+bootstrap_go_package {
+    name: "soong-librga",
+    pkgPath: "android/soong/librga",
+    deps: [
+        "blueprint",
+        "blueprint-pathtools",
+        "soong",
+        "soong-android",
+        "soong-cc",
+        "soong-genrule",
+    ],
+    srcs: [
+          "Android.go",
+    ],
+    pluginFor: ["soong_build"],
+}
+
+cc_librga {
+   name: "cc_librga_defaults"
+}
+
+cc_library_shared {
+    name: "librga",
+    defaults: [
+        "cc_librga_defaults"
+    ],
+
+    vendor_available: true,
+
+    header_libs: [
+        "gl_headers",
+        "libgui_headers",
+        "libhardware_headers",
+        "libbinder_headers",
+        "liblog_headers",
+    ],
+    srcs: [
+        "core/utils/android_utils/src/android_utils.cpp",
+        "core/utils/drm_utils/src/drm_utils.cpp",
+        "core/utils/utils.cpp",
+        "core/RockchipRga.cpp",
+        "core/GrallocOps.cpp",
+        "core/NormalRga.cpp",
+        "core/NormalRgaApi.cpp",
+        "core/RgaApi.cpp",
+        "core/RgaUtils.cpp",
+        "core/rga_sync.cpp",
+        "im2d_api/src/im2d_log.cpp",
+        "im2d_api/src/im2d_impl.cpp",
+        "im2d_api/src/im2d.cpp",
+    ],
+    export_include_dirs: [
+        "include",
+        "im2d_api",
+    ],
+    include_dirs: [
+        "hardware/rockchip/librga/core/hardware",
+        "hardware/rockchip/librga/core/utils",
+        "hardware/rockchip/librga/core/3rdparty/libdrm/include/drm",
+        "frameworks/native/libs/nativewindow/include",
+    ],
+
+    shared_libs: [
+        "liblog",
+        "libui",
+        "libutils",
+        "libcutils",
+        "libhardware",
+        "libsync",
+    ],
+
+    cflags: ["-Wno-error"] +["-DLOG_TAG=\"librga\""] + ["-DRK_DRM_GRALLOC=1"] + ["-DANDROID_8"] + ["-DANDROID_7_DRM"] + ["-DUSE_AHARDWAREBUFFER=1"] + ["-DANDROID"],
+}

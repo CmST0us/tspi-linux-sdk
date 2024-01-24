@@ -1,0 +1,55 @@
+# Dauren Sarsenov <daur88@inbox.ru>, 2009
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: xorg@packages.debian.org\n"
+"POT-Creation-Date: 2009-06-02 20:32+0200\n"
+"PO-Revision-Date: 2009-03-24 14:50+0600\n"
+"Last-Translator: Dauren Sarsenov <daur88@inbox.ru>\n"
+"Language-Team: Kazakh <kk_KZ@googlegroups.com>\n"
+"Language: kk\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Root Only"
+msgstr "Root қана"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Console Users Only"
+msgstr "Консольдік пайдаланушылар ғана"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Anybody"
+msgstr "Әркім"
+
+#. Type: select
+#. Description
+#: ../xserver-xorg-legacy.templates:2002
+msgid "Users allowed to start the X server:"
+msgstr "X серверін бастай алатындар:"
+
+#. Type: select
+#. Description
+#: ../xserver-xorg-legacy.templates:2002
+msgid ""
+"Because the X server runs with superuser privileges, it may be unwise to "
+"permit any user to start it, for security reasons.  On the other hand, it is "
+"even more unwise to run general-purpose X client programs as root, which is "
+"what may happen if only root is permitted to start the X server.  A good "
+"compromise is to permit the X server to be started only by users logged in "
+"to one of the virtual consoles."
+msgstr ""
+"X Сервер суперпайдаланушы құқықтарымен жұмыс істейтіндіктен, жүйені әркім "
+"жүктей алмауы керек. Сонымен қатар жалпы мақсаттардағы X клиент "
+"бағдарламасын root атынан жүктеуге де болмайды. Сондықтан X серверін виртуал "
+"консольдің біреуіне кірген пайдаланушылар ғана бастай алуы керек."
+

@@ -1,0 +1,73 @@
+#
+#    Translators, if you are not familiar with the PO format, gettext
+#    documentation is worth reading, especially sections dedicated to
+#    this format, e.g. by running:
+#         info -n '(gettext)PO Files'
+#         info -n '(gettext)Header Entry'
+#
+#    Some information specific to po-debconf are available at
+#            /usr/share/doc/po-debconf/README-trans
+#         or http://www.debian.org/intl/l10n/po-debconf/README-trans
+#
+#    Developers do not need to manually edit POT or PO files.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: xorg.pot\n"
+"Report-Msgid-Bugs-To: xorg@packages.debian.org\n"
+"POT-Creation-Date: 2009-06-02 20:32+0200\n"
+"PO-Revision-Date: 2008-06-30 09:48+0530\n"
+"Last-Translator: Jurmey Rabgay(Bongop)   (DIT,BHUTAN) <jur_gay@yahoo.co.uk>\n"
+"Language-Team: dzongkha <pgeyleg@dit.gov.bt>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2;plural=(n!=1)\n"
+"X-Poedit-Country: bhutan\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-Bookmarks: -1,-1,-1,95,-1,-1,-1,-1,-1,-1\n"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Root Only"
+msgstr "རྩ་བ་རྐྱངམ་ཅིག་"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Console Users Only"
+msgstr "མ་སྒྲོམ་ལག་ལེན་པ་ཚུ་རྐྱངམ་ཅིག"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Anybody"
+msgstr "ག་འབད་རུང་།"
+
+#. Type: select
+#. Description
+#: ../xserver-xorg-legacy.templates:2002
+msgid "Users allowed to start the X server:"
+msgstr "ལག་ལེན་པ་ཚུ་ཨེགསི་སར་བར་འགོ་བཙུགས་ཆོག:"
+
+#. Type: select
+#. Description
+#: ../xserver-xorg-legacy.templates:2002
+msgid ""
+"Because the X server runs with superuser privileges, it may be unwise to "
+"permit any user to start it, for security reasons.  On the other hand, it is "
+"even more unwise to run general-purpose X client programs as root, which is "
+"what may happen if only root is permitted to start the X server.  A good "
+"compromise is to permit the X server to be started only by users logged in "
+"to one of the virtual consoles."
+msgstr ""
+"ཨེགསི་སར་བར་འདི་ ལག་ལེན་པ་གཙོ་བོའི་ཁེ་དབང་ཚུ་གི་ཐོག་ལས་ གཡོག་བཀོལཝ་ཨིནམ་ལས་ སྲུང་སྐྱོབས་ཀྱི་རྒྱུ་མཚན་"
+"ལུ་བརྟེན་ཏེ་ འགོ་བཙུགས་ནིའི་དོན་ལས་ ལག་ལེན་པ་གང་རུང་ཅིག་ལུ་གནང་བ་བྱིན་ནིའི་དོན་ལུ་ འདི་ལེགས་ཤོམ་མེན་"
+"འོང་། གཅིག་ལས་འབད་བ་ཅིན་ འདི་ཡོངས་ཁྱབ་དགོས་དོན་ ཨེགསི་ཞབས་ཏོག་སྤྱོད་མིའི་ལས་རིམ་འདི་ རྩ་བ་སྦེ་གཡོག་"
+"བཀོལ་ནིའི་དོན་ལུ་ ཧེང་བཀལ་རང་ལེགས་ཤོམ་མེེདཔ་ཨིན་ དེ་ཡང་ ཨེགསི་སར་བར་འགོ་བཙུགས་ནིའི་དོན་ལུ་ རྩ་བ་"
+"རྐྱངམ་ཅིག་ལུ་གནང་བ་བྱིན་ཏེ་ཡོད་པ་ཅིན་ ག་ཅི་འབད་འོང་། ནང་འགྲིགས་ལེགས་ཤོམ་འདི་ཡང་ བར་ཅུ་ཡལ་མ་སྒྲོམ་"
+"གཅིག་ལུ་ ནང་བསྐྱོད་འབད་ཡོད་པའི་ལག་ལེན་པ་གིས་རྐྱངམ་ཅིག་འགོ་བཙུགས་ནི་ལུ་ ཨེགསི་སར་བར་ལུ་གནང་བ་བྱིན་"
+"ནི་འདི་ཨིན།"
+

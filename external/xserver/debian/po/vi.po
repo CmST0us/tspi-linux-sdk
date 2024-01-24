@@ -1,0 +1,62 @@
+# Vietnamese translation for Xorg.
+# Copyright © Branden Robinson, 2000-2004
+# Clytie Siddall <clytie@riverland.net.au>, 2005-2008.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: xorg 1:7.3+12\n"
+"Report-Msgid-Bugs-To: xorg@packages.debian.org\n"
+"POT-Creation-Date: 2009-06-02 20:32+0200\n"
+"PO-Revision-Date: 2008-06-09 18:47+0930\n"
+"Last-Translator: Clytie Siddall <clytie@riverland.net.au>\n"
+"Language-Team: Vietnamese <vi-VN@googlegroups.com>\n"
+"Language: vi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: LocFactoryEditor 1.7b3\n"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Root Only"
+msgstr "Chỉ người chủ"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Console Users Only"
+msgstr "Chỉ người dùng bàn giáo tiếp"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Anybody"
+msgstr "Bất kỳ ai"
+
+#. Type: select
+#. Description
+#: ../xserver-xorg-legacy.templates:2002
+msgid "Users allowed to start the X server:"
+msgstr "Người dùng có quyền khởi chạy trình phục vụ X:"
+
+#. Type: select
+#. Description
+#: ../xserver-xorg-legacy.templates:2002
+msgid ""
+"Because the X server runs with superuser privileges, it may be unwise to "
+"permit any user to start it, for security reasons.  On the other hand, it is "
+"even more unwise to run general-purpose X client programs as root, which is "
+"what may happen if only root is permitted to start the X server.  A good "
+"compromise is to permit the X server to be started only by users logged in "
+"to one of the virtual consoles."
+msgstr ""
+"Vì trình phục vụ X chạy với quyền của người siêu dùng (superuser), có thể "
+"không phải là ý kiến tốt nếu bạn cho phép bất cứ người dùng nào khởi chạy "
+"nó, vì lý do bảo mật. Mặt khác, cũng là nguy hiểm khi chạy chương trình "
+"khách X thường dụng dưới người chủ — kết quả nếu chỉ người chủ có quyền khởi "
+"chạy trình phục vụ X. Một sự nhân nhượng hợp lý là cho phép trình phục vụ X "
+"được khởi chạy chỉ bởi người dùng đã đăng nhập vào một của những bàn giao "
+"tiếp ảo."
+

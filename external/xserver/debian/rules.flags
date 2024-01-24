@@ -1,0 +1,163 @@
+DEB_HOST_ARCH_OS ?= $(shell dpkg-architecture -qDEB_HOST_ARCH_OS)
+
+VENDOR = $(shell dpkg-vendor --query Vendor)
+SUPPORT = https://www.debian.org/support
+
+SOURCE_NAME    :=  xorg-server
+SOURCE_VERSION := $(shell git log --oneline -1 | tr -d '"')
+SOURCE_DATE_EPOCH ?= $(shell dpkg-parsechangelog -S Timestamp)
+
+# disable-static is so we don't get libfoo.a for modules.  now if only we could
+# kill the .las.
+confflags += \
+	--libexecdir=\$${prefix}/lib/xorg \
+	--with-module-dir=\$${prefix}/lib/xorg/modules \
+	--with-serverconfig-path=\$${libexecdir} \
+	--disable-static \
+	--without-dtrace \
+	--disable-strict-compilation \
+	--disable-debug \
+	--with-int10=x86emu \
+	--with-os-name="$(DEB_HOST_ARCH_OS)" \
+	--with-os-vendor="$(VENDOR)" \
+	--with-builderstring="$(SOURCE_NAME) $(SOURCE_VERSION) ($(SUPPORT))" \
+	--with-xkb-path=/usr/share/X11/xkb \
+	--with-xkb-output=/var/lib/xkb \
+	--with-shared-memory-dir=/dev/shm \
+	--enable-mitshm \
+	--enable-xres \
+	--disable-xcsecurity \
+	--enable-dbe \
+	--disable-xf86bigfont \
+	--enable-dpms \
+	--enable-xorg \
+	--disable-linux-acpi \
+	--disable-linux-apm \
+	--disable-xquartz \
+	--disable-xwin \
+	--disable-install-setuid
+
+confflags_main = \
+	--with-default-font-path="/usr/share/fonts/X11/misc,/usr/share/fonts/X11/cyrillic,/usr/share/fonts/X11/100dpi/:unscaled,/usr/share/fonts/X11/75dpi/:unscaled,/usr/share/fonts/X11/Type1,/usr/share/fonts/X11/100dpi,/usr/share/fonts/X11/75dpi,built-ins" \
+	--enable-composite \
+	--enable-record \
+	--enable-xv \
+	--enable-xvmc \
+	--enable-dga \
+	--enable-screensaver \
+	--enable-xdmcp \
+	--enable-xdm-auth-1 \
+	--enable-glx \
+	--enable-present \
+	--enable-xinerama \
+	--enable-xf86vidmode \
+	--enable-xace \
+	--enable-xfree86-utils \
+	--enable-suid-wrapper \
+	--enable-dmx \
+	--enable-xvfb \
+	--enable-xnest \
+	--enable-kdrive \
+	--enable-xephyr \
+	--with-sha1=libgcrypt \
+	--enable-xcsecurity \
+	$(void)
+
+confflags_udeb = \
+	--with-default-font-path="built-ins" \
+	--disable-composite \
+	--disable-record \
+	--disable-xv \
+	--disable-xvmc \
+	--enable-dga \
+	--disable-screensaver \
+	--disable-xdmcp \
+	--disable-xdm-auth-1 \
+	--disable-glx \
+	--disable-dri \
+	--disable-dri2 \
+	--disable-glamor \
+	--disable-xinerama \
+	--disable-xf86vidmode \
+	--disable-xace \
+	--disable-xselinux \
+	--disable-xfree86-utils \
+	--disable-xwayland \
+	--disable-systemd-logind \
+	--without-systemd-daemon \
+	--disable-suid-wrapper \
+	--disable-dmx \
+	--disable-xvfb \
+	--disable-xnest \
+	--disable-kdrive \
+	--disable-xephyr \
+	--with-sha1=libnettle \
+	$(void)
+
+ifeq ($(DEB_HOST_ARCH_OS), linux)
+	confflags_main += \
+		--enable-dri3 \
+		--enable-xselinux \
+		--enable-xwayland \
+		--enable-systemd-logind \
+		--with-systemd-daemon
+else
+	confflags_main += \
+		--disable-dri3 \
+		--disable-xselinux \
+		--disable-xwayland \
+		--disable-systemd-logind \
+		--without-systemd-daemon
+endif
+
+ifeq ($(DEB_HOST_ARCH_OS), hurd)
+	confflags_main += --disable-dri --disable-dri2
+	confflags_main += --disable-glamor
+	confflags += --disable-xshmfence
+else
+	confflags_main += --enable-dri --enable-dri2
+	confflags_main += --enable-glamor
+	confflags += --enable-xshmfence
+endif
+
+confflags += --disable-config-hal
+ifeq ($(DEB_HOST_ARCH_OS), linux)
+	confflags += --enable-config-udev
+else ifeq ($(DEB_HOST_ARCH_OS), kfreebsd)
+	confflags += --disable-config-udev --enable-config-devd
+	libs = $(shell pkg-config --libs libbsd-overlay)
+	cppflags = $(shell pkg-config --cflags libbsd-overlay)
+else # hurd
+	confflags += --disable-config-udev
+endif
+
+# some archs don't have libunwind
+ifneq (,$(filter $(DEB_HOST_ARCH), amd64 arm64 armel armhf hppa i386 ia64 mips64 mips64el mipsel powerpc powerpcspe ppc64 ppc64el sh4))
+	confflags_main += --enable-libunwind
+else
+	confflags_main += --disable-libunwind
+endif
+confflags_udeb += --disable-libunwind
+
+# linux: libdrm needed for kms (hw/xfree86/os-support/linux/lnx_platform.c)
+#        even in udeb
+# kfreebsd: libdrm for dri in main build
+# hurd: no libdrm
+ifeq ($(DEB_HOST_ARCH_OS), linux)
+	confflags_main += --enable-libdrm
+	confflags_udeb += --enable-libdrm
+else ifeq ($(DEB_HOST_ARCH_OS), kfreebsd)
+	confflags_main += --enable-libdrm
+	confflags_udeb += --disable-libdrm
+else # hurd
+	confflags_main += --disable-libdrm
+	confflags_udeb += --disable-libdrm
+endif
+
+ifneq (,$(filter nocheck, $(DEB_BUILD_OPTIONS)))
+	confflags += --disable-unit-tests
+else
+	confflags += --enable-unit-tests
+endif
+
+vars = $(shell DEB_BUILD_MAINT_OPTIONS="hardening=+pie" DEB_LDFLAGS_MAINT_APPEND="-Wl,-Bsymbolic" DEB_CPPFLAGS_MAINT_APPEND="-DPRE_RELEASE=0 $(cppflags)" dpkg-buildflags --export=configure) LIBS="$(libs)"

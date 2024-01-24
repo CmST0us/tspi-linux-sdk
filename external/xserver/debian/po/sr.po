@@ -1,0 +1,60 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2011
+# This file is distributed under the same license as the xorg package.
+# Zlatan Todoric <zlatan.todoric@gmail.com>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: xorg@packages.debian.org\n"
+"POT-Creation-Date: 2009-06-02 20:32+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Zlatan Todoric <zlatan.todoric@gmail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: Serbian cyrillic\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Root Only"
+msgstr "Само главни корисник"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Console Users Only"
+msgstr "Само за кориснике конзоле"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Anybody"
+msgstr "Свако"
+
+#. Type: select
+#. Description
+#: ../xserver-xorg-legacy.templates:2002
+msgid "Users allowed to start the X server:"
+msgstr "Корисници којима је дозвољено покретање Х сервера:"
+
+#. Type: select
+#. Description
+#: ../xserver-xorg-legacy.templates:2002
+msgid ""
+"Because the X server runs with superuser privileges, it may be unwise to "
+"permit any user to start it, for security reasons.  On the other hand, it is "
+"even more unwise to run general-purpose X client programs as root, which is "
+"what may happen if only root is permitted to start the X server.  A good "
+"compromise is to permit the X server to be started only by users logged in "
+"to one of the virtual consoles."
+msgstr ""
+"Због покретања Х сервера са суперкорисничким привилегијам, није "
+"препоручљиводозволити корисницима да га покрену, из сигурносних разлога. С "
+"друге стране, јошмање је препоручљиво покренути Х клијента опште намјене као "
+"главни корисник, што се може десити ако је само главном кориснику дозвољено "
+"да покрене Х сервер.Компромис би био дозволити покретање Х сервера од стране "
+"корисника који су самоулоговани на једну од виртуелних конзола."

@@ -1,0 +1,62 @@
+# Debian Installer xserver-xorg.
+# Translation to Finnish.
+# Copyright (C) 2006 Tapio Lehtonen
+# This file is distributed under the same license as the xserver-xorg package.
+# Tapio Lehtonen <tale@debian.org>, 2006.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: xorg\n"
+"Report-Msgid-Bugs-To: xorg@packages.debian.org\n"
+"POT-Creation-Date: 2009-06-02 20:32+0200\n"
+"PO-Revision-Date: 2008-07-18 18:15-0000\n"
+"Last-Translator: Esko Arajärvi <edu@iki.fi>\n"
+"Language-Team: Finnish <debian-l10n-finnish@lists.debian.org>\n"
+"Language: fi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Country: FINLAND\n"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Root Only"
+msgstr "Vain pääkäyttäjä"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Console Users Only"
+msgstr "Vain konsolikäyttäjät"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Anybody"
+msgstr "Kaikki"
+
+#. Type: select
+#. Description
+#: ../xserver-xorg-legacy.templates:2002
+msgid "Users allowed to start the X server:"
+msgstr "Käyttäjät, jotka saavat käynnistää X-palvelimen:"
+
+#. Type: select
+#. Description
+#: ../xserver-xorg-legacy.templates:2002
+msgid ""
+"Because the X server runs with superuser privileges, it may be unwise to "
+"permit any user to start it, for security reasons.  On the other hand, it is "
+"even more unwise to run general-purpose X client programs as root, which is "
+"what may happen if only root is permitted to start the X server.  A good "
+"compromise is to permit the X server to be started only by users logged in "
+"to one of the virtual consoles."
+msgstr ""
+"Tietoturvasyistä on huono ajatus antaa kaikille oikeudet X-palvelimen "
+"käynnistämiseen, koska sitä ajetaan pääkäyttäjän oikeuksilla. Toisaalta on "
+"vielä huonompi ajatus suorittaa yleiskäyttöisiä X:n asiakasohjelmia "
+"pääkäyttäjänä, mikä on tilanne, jos vain pääkäyttäjä saa käynnistää X-"
+"palvelimen. Hyvä ratkaisu on sallia X-palvelimen käynnistys ainoastaan "
+"käyttäjille, jotka ovat kirjautuneet jollekin virtuaalikonsolille."
+

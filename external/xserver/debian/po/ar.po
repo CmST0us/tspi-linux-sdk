@@ -1,0 +1,62 @@
+# translation of ar.po to Arabic
+# xserver-xorg translation
+# Copyright (C) 2006 The Arabeyes Project
+# This file is distributed under the same license as the xserver-xorg package.
+#
+# Ossama M. Khayat <okhayat@yahoo.com>, 2006, 2007, 2008.
+msgid ""
+msgstr ""
+"Project-Id-Version: ar\n"
+"Report-Msgid-Bugs-To: xorg@packages.debian.org\n"
+"POT-Creation-Date: 2009-06-02 20:32+0200\n"
+"PO-Revision-Date: 2008-06-12 03:41+0300\n"
+"Last-Translator: Ossama M. Khayat <okhayat@yahoo.com>\n"
+"Language-Team: Arabic <support@arabeyes.org>\n"
+"Language: ar\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms: nplurals=4; plural=n%100==1 || n==0 ? 0 : n%100==2 ? 2 : n"
+"%100>=3 && n%100<=10 ? 2 : 3;\n"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Root Only"
+msgstr "المستخدم root فقط"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Console Users Only"
+msgstr "مستخدمي الطرفية فقط"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Anybody"
+msgstr "أي أحد"
+
+#. Type: select
+#. Description
+#: ../xserver-xorg-legacy.templates:2002
+msgid "Users allowed to start the X server:"
+msgstr "المستخدمين المسموح لهم تشغيل خادم X:"
+
+#. Type: select
+#. Description
+#: ../xserver-xorg-legacy.templates:2002
+msgid ""
+"Because the X server runs with superuser privileges, it may be unwise to "
+"permit any user to start it, for security reasons.  On the other hand, it is "
+"even more unwise to run general-purpose X client programs as root, which is "
+"what may happen if only root is permitted to start the X server.  A good "
+"compromise is to permit the X server to be started only by users logged in "
+"to one of the virtual consoles."
+msgstr ""
+"لأن خادم X يعمل بصلاحية المستخدم الخارق، فقد لا يكون من الحكمة السماح لأي "
+"مستخدم بتشغيله، لأسباب أمنية. من ناحية أخرى، فليس من الحكمة أيضاً تشغيل برامج "
+"X العامة كمستخدم root، والذي قد يحدث إن كان المستخدم root هو الوحيد الذي "
+"يمكنه تشغيل خادم X. لذا، فإن الحل الأمثل لهذه المعضلة هو السماح فقط لمستخدمي "
+"النظام عبر أحد الطرفيات الوهمية."

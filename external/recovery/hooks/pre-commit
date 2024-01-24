@@ -1,0 +1,33 @@
+#!/bin/sh
+
+echo "[git-hook]: before commit, format code use astyle ..."
+
+ASTYLE_PARAMETERS="--style=linux \
+    --indent=spaces=4 \
+    --indent-labels \
+    --min-conditional-indent=0 \
+    --max-instatement-indent=80 \
+    --pad-oper \
+    --pad-header \
+    --keep-one-line-blocks \
+    --keep-one-line-statements \
+    --convert-tabs\
+    --suffix=none"
+
+if ! astyle --version 2>/dev/null; then
+    echo "astyle is missing, please install it: sudo apt-get install astyle"
+    exit 1
+fi
+
+format_file=$(find . -type f | grep -E "\.c$|\.h$")
+astyle --quiet $ASTYLE_PARAMETERS $format_file
+
+if git status -s | grep -q "^ M "; then
+    echo "[git-hook]: code changed after formating, please commit again."
+    git status
+    echo "if you have completed all file formatting but there are still files in the workspace "
+    echo "use --no-verify to skip hook"
+    exit 1
+fi
+
+echo "[git-hook]: nothing change after formating, commit continues."

@@ -1,0 +1,10 @@
+*.o
+*.elf
+*.o.*
+*.lds
+*.d
+*.ta
+*.dmp
+*.map
+*.patch
+/out

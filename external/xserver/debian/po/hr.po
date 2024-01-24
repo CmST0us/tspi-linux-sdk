@@ -1,0 +1,56 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Debian installer HR\n"
+"Report-Msgid-Bugs-To: xorg@packages.debian.org\n"
+"POT-Creation-Date: 2009-06-02 20:32+0200\n"
+"PO-Revision-Date: 2008-09-06 19:15+0200\n"
+"Last-Translator: Josip Rodin <joy+ditrans@linux.hr>\n"
+"Language-Team: Croatian <lokalizacija@linux.hr>\n"
+"Language: hr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-2\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Root Only"
+msgstr "Samo root"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Console Users Only"
+msgstr "Samo konzolni korisnici"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Anybody"
+msgstr "Bilo tko"
+
+#. Type: select
+#. Description
+#: ../xserver-xorg-legacy.templates:2002
+msgid "Users allowed to start the X server:"
+msgstr "Korisnici koji smiju pokrenuti X server:"
+
+#. Type: select
+#. Description
+#: ../xserver-xorg-legacy.templates:2002
+msgid ""
+"Because the X server runs with superuser privileges, it may be unwise to "
+"permit any user to start it, for security reasons.  On the other hand, it is "
+"even more unwise to run general-purpose X client programs as root, which is "
+"what may happen if only root is permitted to start the X server.  A good "
+"compromise is to permit the X server to be started only by users logged in "
+"to one of the virtual consoles."
+msgstr ""
+"Zbog èinjenice ¹to X server radi s privilegijama administratorskog "
+"korisnika, vjerojatno nije pametno dopustiti svakom korisniku da ga pokreæe, "
+"iz sigurnosnih razloga. S druge strane, jo¹ manje je pametno pokretati X "
+"klijentske programe opæe namjene kao root, a to se mo¾e dogoditi ako samo "
+"root korisniku dopustite pokretanje X servera. Dobar kompromis je dozvoliti "
+"pokretanje X servera samo korisnicima koji su ulogirani na jednu od "
+"virtualnih konzola."
+

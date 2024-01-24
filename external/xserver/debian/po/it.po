@@ -1,0 +1,85 @@
+# debconf templates for xorg-x11 package
+# Italian translation
+#
+# $Id: it.po 1042 2006-01-09 07:55:08Z ender $
+#
+# Copyrights:
+# Branden Robinson, 2000-2004
+# Matteo Dell'Amico, 2002
+# Emanuele Aina, 2002
+# Luca Monducci, 2004
+# Danilo Piazzalunga, 2004-2005
+# Stefano Canepa, 2006, 2007
+# Milo Casagrande, 2008
+#
+# This file is distributed under the same license as the xorg-x11 package.
+# Please see debian/copyright.
+#
+#    Translators, if you are not familiar with the PO format, gettext
+#    documentation is worth reading, especially sections dedicated to
+#    this format, e.g. by running:
+#         info -n '(gettext)PO Files'
+#         info -n '(gettext)Header Entry'
+#
+#    Some information specific to po-debconf are available at
+#            /usr/share/doc/po-debconf/README-trans
+#         or http://www.debian.org/intl/l10n/po-debconf/README-trans
+#
+#    Developers do not need to manually edit POT or PO files.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: xorg-x11 6.8.2.dfsg.1-10\n"
+"Report-Msgid-Bugs-To: xorg@packages.debian.org\n"
+"POT-Creation-Date: 2009-06-02 20:32+0200\n"
+"PO-Revision-Date: 2008-06-17 22:22+0200\n"
+"Last-Translator: Milo Casagrande <milo_casagrande@yahoo.it>\n"
+"Language-Team: debian-l10n-italian <debian-l10n-italian@lists.debian.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Root Only"
+msgstr "Solo root"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Console Users Only"
+msgstr "Solo gli utenti della console"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Anybody"
+msgstr "Chiunque"
+
+#. Type: select
+#. Description
+#: ../xserver-xorg-legacy.templates:2002
+msgid "Users allowed to start the X server:"
+msgstr "Utenti con il permesso di avviare il server X:"
+
+#. Type: select
+#. Description
+#: ../xserver-xorg-legacy.templates:2002
+msgid ""
+"Because the X server runs with superuser privileges, it may be unwise to "
+"permit any user to start it, for security reasons.  On the other hand, it is "
+"even more unwise to run general-purpose X client programs as root, which is "
+"what may happen if only root is permitted to start the X server.  A good "
+"compromise is to permit the X server to be started only by users logged in "
+"to one of the virtual consoles."
+msgstr ""
+"Dato che il server X viene eseguito con i privilegi di super utente, può "
+"essere poco consigliabile, per ragioni di sicurezza, permettere a qualsiasi "
+"utente di eseguirlo. D'altra parte, se solo a root fosse permesso di avviare "
+"il server X, sarebbe necessario eseguire come root i programmi client X (e "
+"ciò sarebbe ancora peggio). Un buon compromesso consiste nel permettere che "
+"il server X possa essere avviato solo dagli utenti collegati a una delle "
+"console virtuali."
+

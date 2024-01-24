@@ -1,0 +1,59 @@
+# Gujarati translation of xorg.
+# Copyright (C) 2008 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Kartik Mistry <kartik.mistry@gmail.com>, 2008.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: xorg-gu\n"
+"Report-Msgid-Bugs-To: xorg@packages.debian.org\n"
+"POT-Creation-Date: 2009-06-02 20:32+0200\n"
+"PO-Revision-Date: 2008-07-23 23:40+0530\n"
+"Last-Translator: Kartik Mistry <kartik.mistry@gmail.com>\n"
+"Language-Team: Gujarati <utkarsh.team@magnettechnologies.com>\n"
+"Language: gu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Root Only"
+msgstr "ફક્ત રૂટ"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Console Users Only"
+msgstr "ફક્ત કોન્સોલ વપરાશકર્તાઓ"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Anybody"
+msgstr "કોઇપણ"
+
+#. Type: select
+#. Description
+#: ../xserver-xorg-legacy.templates:2002
+msgid "Users allowed to start the X server:"
+msgstr "X સર્વર શરૂ કરવા માટે માન્ય વપરાશકર્તાઓ:"
+
+#. Type: select
+#. Description
+#: ../xserver-xorg-legacy.templates:2002
+msgid ""
+"Because the X server runs with superuser privileges, it may be unwise to "
+"permit any user to start it, for security reasons.  On the other hand, it is "
+"even more unwise to run general-purpose X client programs as root, which is "
+"what may happen if only root is permitted to start the X server.  A good "
+"compromise is to permit the X server to be started only by users logged in "
+"to one of the virtual consoles."
+msgstr ""
+"X સર્વર સુપરયુઝર હક સાથે ચાલવાનાં કારણે, કોઇપણ વપરાશકર્તા તેને ચાલુ કરી શકે તે, સલામતીનાં "
+"કારણોસર સલાહ ભર્યું નથી.  બીજી બાજુ, સામાન્ય-વપરાશનાં X ક્લાયન્ટ કાર્યક્રમો રૂટ તરીકે "
+"ચલાવવા એ પણ ડહ્યાપણભર્યું નથી, જે મોટાભાગે રૂટને X સર્વર શરૂ કરવાની પરવાનગી આપવામાં આવે "
+"ત્યારે થાય છે.  સારી સમજૂતી એ છે કે માત્ર પ્રવેશ કરેલ વપરાશકર્તાઓને તેમનાં વર્ચ્યુઅલ કોન્સોલ્સ "
+"વડે X સર્વર શરૂ કરવાની પરવાનગી આપવામાં આવે."
+

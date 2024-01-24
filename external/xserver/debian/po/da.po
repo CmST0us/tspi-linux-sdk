@@ -1,0 +1,98 @@
+# #-#-#-#-#  xorg-da.po (xfree86_4.3.0-3_da)  #-#-#-#-#
+# Branden Robinson, 2000--2004.
+# Dennis Haney, 2002.
+# Morten Brix Pedersen <morten@wtf.dk>, 2003.
+# Claus Hindsgaul <claus_h@image.dk>, 2004.
+# Claus Hindsgaul <claus.hindsgaul@gmail.com>, 2006.
+# debconf templates for xfree86 package
+# Danish translation
+# $Id: da.po 1763M 2004-10-11 07:13:16Z (local) $#
+# Copyrights:#
+# This file is distributed under the same license as the xfree86 package.
+# Please see debian/copyright.#
+#    Translators, if you are not familiar with the PO format, gettext
+#    documentation is worth reading, especially sections dedicated to
+#    this format, e.g. by running:
+#         info -n '(gettext)PO Files'
+#         info -n '(gettext)Header Entry'#
+#    Some information specific to po-debconf are available at
+#            /usr/share/doc/po-debconf/README-trans
+#         or http://www.debian.org/intl/l10n/po-debconf/README-trans#
+#    Developers do not need to manually edit POT or PO files.#
+# #-#-#-#-#  da.po (xfree86_4.3.0-3_da)  #-#-#-#-#
+# debconf templates for xfree86 package
+# Danish translation#
+# $Id: da.po 1763M 2004-10-11 07:13:16Z (local) $#
+# Copyrights:#
+# This file is distributed under the same license as the xfree86 package.
+# Please see debian/copyright.#
+#    Translators, if you are not familiar with the PO format, gettext
+#    documentation is worth reading, especially sections dedicated to
+#    this format, e.g. by running:
+#         info -n '(gettext)PO Files'
+#         info -n '(gettext)Header Entry'#
+#    Some information specific to po-debconf are available at
+#            /usr/share/doc/po-debconf/README-trans
+#         or http://www.debian.org/intl/l10n/po-debconf/README-trans#
+#    Developers do not need to manually edit POT or PO files.#
+msgid ""
+msgstr ""
+"Project-Id-Version: xfree86_4.3.0-3_da\n"
+"Report-Msgid-Bugs-To: xorg@packages.debian.org\n"
+"POT-Creation-Date: 2009-06-02 20:32+0200\n"
+"PO-Revision-Date: 2006-07-04 13:46+0200\n"
+"Last-Translator: Claus Hindsgaul <claus.hindsgaul@gmail.com>\n"
+"Language-Team: Danish\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+"#-#-#-#-#  xorg-da.po (xfree86_4.3.0-3_da)  #-#-#-#-#\n"
+"X-Generator: KBabel 1.11.2\n"
+"Plural-Forms:  nplurals=2; plural=(n != 1);\n"
+"#-#-#-#-#  da.po (xfree86_4.3.0-3_da)  #-#-#-#-#\n"
+"X-Generator: KBabel 1.11.2\n"
+"Plural-Forms:  nplurals=2; plural=(n != 1);\n"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Root Only"
+msgstr "Kun root"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Console Users Only"
+msgstr "Kun konsolbrugere"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Anybody"
+msgstr "Alle"
+
+#. Type: select
+#. Description
+#: ../xserver-xorg-legacy.templates:2002
+msgid "Users allowed to start the X server:"
+msgstr "Brugere, der må starte X-serveren:"
+
+#. Type: select
+#. Description
+#: ../xserver-xorg-legacy.templates:2002
+msgid ""
+"Because the X server runs with superuser privileges, it may be unwise to "
+"permit any user to start it, for security reasons.  On the other hand, it is "
+"even more unwise to run general-purpose X client programs as root, which is "
+"what may happen if only root is permitted to start the X server.  A good "
+"compromise is to permit the X server to be started only by users logged in "
+"to one of the virtual consoles."
+msgstr ""
+"Da X-serveren kører med superbruger-rettigheder kan det af sikkerhedsgrunde "
+"være en dårlig idé at tillade enhver at starte den. På den anden side er det "
+"endnu dårligere at køre normale X-programmer som root, hvilket netop er, "
+"hvad der kan blive resultatet, hvis kun root må starte X-serveren. Et godt "
+"kompromis er at kun tillade brugere der er logget ind på en virtuel konsol "
+"at starte X-serveren."
+

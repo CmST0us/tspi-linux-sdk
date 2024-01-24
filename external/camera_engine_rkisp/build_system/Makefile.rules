@@ -1,0 +1,38 @@
+export ROOT_DIR:=$(CURDIR)
+export BUILD_SYSTEM:=$(CURDIR)/build_system
+
+OUTDIR?=$(CURDIR)/build/
+export BUILD_DIR:=$(abspath $(OUTDIR))
+export BUILD_OUTPUT_STATIC_LIBS:=$(BUILD_DIR)/lib/
+export BUILD_OUTPUT_SHARED_LIBS:=$(BUILD_DIR)/lib/
+export BUILD_OUTPUT_BIN:=$(BUILD_DIR)/bin/
+
+export BUILD_OUTPUT_EXTERNAL_LIBS:=$(BUILD_DIR)/ext/rkisp/usr/lib
+export BUILD_OUTPUT_RKISP_LIBS:=$(BUILD_DIR)/ext/rkisp/lib
+export BUILD_OUTPUT_GLIB_LIBS:=$(BUILD_DIR)/ext/rkisp/usr/lib/glib-2.0
+export BUILD_OUTPUT_GSTREAMER_LIBS:=$(BUILD_DIR)/ext/rkisp/usr/lib/gstreamer-1.0
+
+export BUILD_OUTPUT_RKISP_INC:=$(BUILD_DIR)/ext/rkisp/usr/include
+export BUILD_OUTPUT_GLIB_INC:=$(BUILD_DIR)/ext/rkisp/usr/include/glib-2.0
+export BUILD_OUTPUT_GSTREAMER_INC:=$(BUILD_DIR)/ext/rkisp/usr/include/gstreamer-1.0
+
+export STATIC_LIB_SUFFIX:=.a
+export SHARED_LIB_SUFFIX:=.so
+
+export CLEAR_VARS:= $(BUILD_SYSTEM)/clear_vars.mk
+export BUILD_STATIC_LIBRARY:=$(BUILD_SYSTEM)/build_static_library.mk
+export BUILD_SHARED_LIBRARY:=$(BUILD_SYSTEM)/build_shared_library.mk
+export BUILD_EXECUTABLE:=$(BUILD_SYSTEM)/build_executable.mk
+export allSubdirMakefiles:=$(BUILD_SYSTEM)/definitions.mk
+export TARGET_GCC:=$(CROSS_COMPILE)gcc
+export TARGET_GPP:=$(CROSS_COMPILE)g++
+export TARGET_AR:=$(CROSS_COMPILE)ar
+export TARGET_LD:=$(CROSS_COMPILE)ld
+
+$(shell mkdir -p $(BUILD_OUTPUT_STATIC_LIBS))
+$(shell mkdir -p $(BUILD_OUTPUT_SHARED_LIBS))
+$(shell mkdir -p $(BUILD_OUTPUT_BIN))
+
+define quiet-cmd-echo-build
+    ${Q}echo "  [$1]  $2"
+endef

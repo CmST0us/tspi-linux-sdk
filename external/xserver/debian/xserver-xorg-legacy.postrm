@@ -1,0 +1,36 @@
+#!/bin/sh
+# Debian xserver-xorg-legacy package post-removal script
+# Copyright 1998--2001, 2003 Branden Robinson.
+# Licensed under the GNU General Public License, version 2.  See the file
+# /usr/share/common-licenses/GPL or <https://www.gnu.org/copyleft/gpl.txt>.
+# Acknowlegements to Stephen Early, Mark Eichin, and Manoj Srivastava.
+
+
+set -e
+
+THIS_PACKAGE=xserver-xorg-legacy
+THIS_SCRIPT=postrm
+CONFIG_DIR=/etc/X11
+XWRAPPER_CONFIG="$CONFIG_DIR/Xwrapper.config"
+CONFIG_AUX_DIR=/var/lib/x11
+XWRAPPER_CONFIG_CHECKSUM="$CONFIG_AUX_DIR/${XWRAPPER_CONFIG##*/}.md5sum"
+XWRAPPER_CONFIG_ROSTER="$CONFIG_AUX_DIR/${XWRAPPER_CONFIG##*/}.roster"
+
+#INCLUDE_SHELL_LIB#
+
+# clean up non-conffile configuration files and related materials on purge
+if [ "$1" = "purge" ]; then
+  rm -f "$XWRAPPER_CONFIG_ROSTER"
+  rm -f "$XWRAPPER_CONFIG"
+  rm -f "$XWRAPPER_CONFIG_CHECKSUM"
+
+  for DIR in "$CONFIG_DIR" "$CONFIG_AUX_DIR"; do
+      rmdir "$DIR" 2> /dev/null || true
+  done
+fi
+
+#DEBHELPER#
+
+exit 0
+
+# vim:set ai et sts=2 sw=2 tw=80:

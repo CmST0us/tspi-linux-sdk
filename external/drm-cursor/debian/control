@@ -1,0 +1,24 @@
+Source: libdrm-cursor
+Priority: optional
+Maintainer: Jeffy Chen <jeffy.chen@rock-chips.com>
+Build-Depends: debhelper (>= 9),
+               meson,
+               pkg-config,
+               libgbm-dev,
+               libegl1-mesa-dev,
+               libgles2-mesa-dev
+Standards-Version: 3.9.8
+Section: libs
+Homepage: https://github.com/JeffyCN/libdrm-cursor
+Vcs-Git: https://github.com/JeffyCN/libdrm-cursor
+Vcs-Browser: https://github.com/JeffyCN/libdrm-cursor
+
+Package: libdrm-cursor-dev
+Section: libdevel
+Architecture: any
+Description: A hook of drm cursor APIs to fake cursor plane.
+
+Package: libdrm-cursor
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: A hook of drm cursor APIs to fake cursor plane.

@@ -1,0 +1,28 @@
+From 272537ae14a04911fcf2fec51492fa0f91c4a676 Mon Sep 17 00:00:00 2001
+From: Julien Cristau <jcristau@debian.org>
+Date: Wed, 29 Aug 2012 20:16:40 +0200
+Subject: [PATCH] Revert "Unload submodules."
+
+This reverts commit 0d4bb5442ceb8e8e4a8de6cfc4203cae469eee72.
+
+This doesn't seem to work quite well.  See Debian bug#686152.
+---
+ hw/xfree86/common/xf86Helper.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
+
+--- a/hw/xfree86/common/xf86Helper.c
++++ b/hw/xfree86/common/xf86Helper.c
+@@ -1524,7 +1524,13 @@ xf86LoadOneModule(const char *name, void
+ void
+ xf86UnloadSubModule(void *mod)
+ {
++    /*
++     * This is disabled for now.  The loader isn't smart enough yet to undo
++     * relocations.
++     */
++#if 0
+     UnloadSubModule(mod);
++#endif
+ }
+ 
+ Bool

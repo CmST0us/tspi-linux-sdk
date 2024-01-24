@@ -1,0 +1,59 @@
+# Thai translation of xserver-xorg.
+# Copyright (C) 2006-2008 Software in the Public Interest, Inc.
+# This file is distributed under the same license as the xserver-xorg package.
+# Theppitak Karoonboonyanan <thep@linux.thai.net>, 2006-2008.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: xserver-xorg\n"
+"Report-Msgid-Bugs-To: xorg@packages.debian.org\n"
+"POT-Creation-Date: 2009-06-02 20:32+0200\n"
+"PO-Revision-Date: 2008-06-09 12:09+0700\n"
+"Last-Translator: Theppitak Karoonboonyanan <thep@linux.thai.net>\n"
+"Language-Team: Thai <thai-l10n@googlegroups.com>\n"
+"Language: th\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Root Only"
+msgstr "root เท่านั้น"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Console Users Only"
+msgstr "ผู้ใช้คอนโซลเท่านั้น"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Anybody"
+msgstr "ใครก็ได้"
+
+#. Type: select
+#. Description
+#: ../xserver-xorg-legacy.templates:2002
+msgid "Users allowed to start the X server:"
+msgstr "ผู้ใช้ที่อนุญาตให้เรียกเซิร์ฟเวอร์เอ็กซ์ขึ้นมาทำงานได้:"
+
+#. Type: select
+#. Description
+#: ../xserver-xorg-legacy.templates:2002
+msgid ""
+"Because the X server runs with superuser privileges, it may be unwise to "
+"permit any user to start it, for security reasons.  On the other hand, it is "
+"even more unwise to run general-purpose X client programs as root, which is "
+"what may happen if only root is permitted to start the X server.  A good "
+"compromise is to permit the X server to be started only by users logged in "
+"to one of the virtual consoles."
+msgstr ""
+"เนื่องจากเซิร์ฟเวอร์เอ็กซ์ทำงานด้วยอภิสิทธิ์ผู้ดูแลระบบ จึงอาจไม่ฉลาดนักที่จะให้ใครก็ได้เรียกใช้งาน "
+"ด้วยเหตุผลเรื่องการรักษาความปลอดภัย แต่ในทางกลับกัน อาจจะไม่ฉลาดยิ่งกว่า "
+"ที่จะเรียกโปรแกรมไคลเอนต์ของเอ็กซ์วินโดว์ด้วยผู้ใช้ root ซึ่งเป็นสิ่งที่อาจเกิดขึ้นถ้าอนุญาตให้ root "
+"เท่านั้นที่เรียกเซิร์ฟเวอร์เอ็กซ์ได้ การประนีประนอมที่ดีที่สุด "
+"คืออนุญาตให้เฉพาะผู้ใช้ที่เข้าระบบที่คอนโซลเท่านั้นเรียกเซิร์ฟเวอร์เอ็กซ์ได้"
+

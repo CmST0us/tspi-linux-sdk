@@ -1,0 +1,146 @@
+#!/bin/sh
+
+PATH="/sbin:$PATH"
+CONFIG_DIR=/etc/X11
+SERVER_BINARY=/usr/bin/Xorg
+SERVER_SYMLINK="$CONFIG_DIR/X"
+XORGCONFIG="$CONFIG_DIR/xorg.conf"
+XORGCONFIG_DIR="$CONFIG_DIR/xorg.conf.d"
+CONFIG_AUX_DIR=/var/lib/x11
+X11R6_LIBS=/usr/X11R6/lib
+LOCAL_LIBS=/usr/local/lib
+
+# Pretty echo, underline the specified string:
+pecho() {
+    echo "$@"
+    echo "$@"|sed 's/./-/g'
+}
+
+exec >&3
+
+if [ -e "$SERVER_SYMLINK" ]; then
+    pecho "X server symlink status:"
+    ls -dl "$SERVER_SYMLINK"
+    ls -dl "$(readlink "$SERVER_SYMLINK")"
+else
+    echo "$SERVER_SYMLINK does not exist."
+fi
+
+if ! [ -L "$SERVER_SYMLINK" ]; then
+    echo "$SERVER_SYMLINK is not a symlink."
+fi
+
+if ! [ -x "$SERVER_SYMLINK" ]; then
+    echo "$SERVER_SYMLINK is not executable."
+fi
+
+echo
+
+if ldd "$SERVER_BINARY" | grep -qs "$LOCAL_LIBS"; then
+   pecho "The server is using local libraries!"
+   ldd "$SERVER_BINARY" | grep "$LOCAL_LIBS"
+   echo
+fi
+
+if ldd "$SERVER_BINARY" | grep -qs "$X11R6_LIBS"; then
+   pecho "The server is using obsolete libraries!"
+   ldd "$SERVER_BINARY" | grep "$X11R6_LIBS"
+   echo
+fi
+
+if dpkg-divert --list | grep -qs -i libgl; then
+    pecho "Diversions concerning libGL are in place"
+    dpkg-divert --list | grep -i libgl
+    echo
+fi
+
+if which lspci > /dev/null 2>&1; then
+    pecho "VGA-compatible devices on PCI bus:"
+    LC_ALL=C lspci -nn | grep 'VGA compatible controller'
+else
+    echo "The lspci command was not found; not including PCI data."
+fi
+
+echo
+
+if [ -e "$XORGCONFIG" ]; then
+    pecho "Xorg X server configuration file status:"
+    ls -dl "$XORGCONFIG"
+    echo
+    pecho "Contents of $XORGCONFIG:"
+    iconv -c -t ascii "$XORGCONFIG"
+else
+    echo "$XORGCONFIG does not exist."
+fi
+
+echo
+
+if [ -d "$XORGCONFIG_DIR" ]; then
+    pecho "Contents of $XORGCONFIG_DIR:"
+    ls -l "$XORGCONFIG_DIR"
+else
+    echo "$XORGCONFIG_DIR does not exist."
+fi
+
+echo
+
+KMS_CONFS_DIR=/etc/modprobe.d
+KMS_CONFS=$(ls $KMS_CONFS_DIR/*-kms.conf 2>/dev/null)
+
+if [ -n "$KMS_CONFS" ]; then
+    pecho "KMS configuration files:"
+    for CONF in $KMS_CONFS; do
+      echo "$CONF:"
+      # Indent, and get rid of empty lines:
+      sed 's/^/  /' < "$CONF"|egrep -v '^\s*$'
+    done
+else
+    echo "$KMS_CONFS_DIR contains no KMS configuration files."
+fi
+
+echo
+
+KERNEL_VERSION=/proc/version
+
+if [ -e "$KERNEL_VERSION" ]; then
+    pecho "Kernel version ($KERNEL_VERSION):"
+    cat /proc/version
+else
+    echo "No kernel version found (missing $KERNEL_VERSION)."
+fi
+
+echo
+
+XORG_LOGS=$(ls -dt /var/log/Xorg.*.log $HOME/.local/share/xorg/Xorg.*.log 2>/dev/null)
+
+if [ -n "$XORG_LOGS" ]; then
+    pecho "Xorg X server log files on system:"
+    ls -dlrt /var/log/Xorg.*.log $HOME/.local/share/xorg/Xorg.*.log 2>/dev/null
+    echo
+    for LOG in $XORG_LOGS; do
+        if [ -f "$LOG" ]; then
+            pecho "Contents of most recent Xorg X server log file ($LOG):"
+            cat "$LOG"
+            # the log files are large; only show the most recent
+            break
+        fi
+    done
+else
+    echo "No Xorg X server log files found."
+fi
+
+echo
+
+if [ -x /bin/udevadm ]; then
+    pecho "udev information:"
+    /bin/udevadm info --export-db | awk -F '\n' -v RS='\n\n' '/E: ID_INPUT/ { print; print "" }'
+    echo
+fi
+
+if [ -x /bin/dmesg ]; then
+    pecho "DRM Information from dmesg:"
+    dmesg | egrep -i 'drm|agp'
+    echo
+fi
+
+# vim:set ai et sts=4 sw=4 tw=0:

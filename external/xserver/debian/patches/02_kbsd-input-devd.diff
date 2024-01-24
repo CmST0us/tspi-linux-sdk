@@ -1,0 +1,536 @@
+>From d96e2bd2a2b48ede527ad7071d3e0eeda9861b73 Mon Sep 17 00:00:00 2001
+From: Robert Millan <rmh@debian.org>
+Date: Mon, 24 Feb 2014 23:22:57 +0100
+Subject: [PATCH] Add devd config backend for FreeBSD (and GNU/kFreeBSD)
+
+Based on original code by Baptiste Daroussin, with some fixes made
+by Koop Mast and myself.
+
+Signed-off-by: Robert Millan <rmh@freebsd.org>
+
+v2 - Emilio Pozuelo Monfort <pochu@debian.org>
+
+ - Ported to NotifyFd API.
+---
+ config/Makefile.am              |    4 +
+ config/config-backends.h        |    5 +
+ config/config.c                 |    5 +
+ config/devd.c                   |  387 +++++++++++++++++++++++++++++++++++++++
+ configure.ac                    |   16 ++
+ hw/xfree86/common/xf86Config.c  |    7 +-
+ hw/xfree86/common/xf86Globals.c |    3 +-
+ include/dix-config.h.in         |    3 +
+ 8 files changed, 427 insertions(+), 3 deletions(-)
+ create mode 100644 config/devd.c
+
+--- a/config/Makefile.am
++++ b/config/Makefile.am
+@@ -34,6 +34,10 @@ if CONFIG_WSCONS
+ libconfig_la_SOURCES += wscons.c
+ endif # CONFIG_WSCONS
+ 
++if CONFIG_DEVD
++libconfig_la_SOURCES += devd.c
++endif
++
+ endif # !CONFIG_HAL
+ 
+ endif # !CONFIG_UDEV
+--- a/config/config-backends.h
++++ b/config/config-backends.h
+@@ -44,3 +44,8 @@ void config_hal_fini(void);
+ int config_wscons_init(void);
+ void config_wscons_fini(void);
+ #endif
++
++#ifdef CONFIG_DEVD
++int config_devd_init(void);
++void config_devd_fini(void);
++#endif
+--- a/config/config.c
++++ b/config/config.c
+@@ -55,6 +55,9 @@ config_init(void)
+ #elif defined(CONFIG_WSCONS)
+     if (!config_wscons_init())
+         ErrorF("[config] failed to initialise wscons\n");
++#elif defined(CONFIG_DEVD)
++    if (!config_devd_init())
++        ErrorF("[config] failed to initialise devd\n");
+ #endif
+ }
+ 
+@@ -67,6 +70,8 @@ config_fini(void)
+     config_hal_fini();
+ #elif defined(CONFIG_WSCONS)
+     config_wscons_fini();
++#elif defined(CONFIG_DEVD)
++    config_devd_fini();
+ #endif
+ }
+ 
+--- /dev/null
++++ b/config/devd.c
+@@ -0,0 +1,375 @@
++/*
++ * Copyright © 2012 Baptiste Daroussin
++ * Copyright © 2014 Robert Millan
++ *
++ * Permission is hereby granted, free of charge, to any person obtaining a
++ * copy of this software and associated documentation files (the "Software"),
++ * to deal in the Software without restriction, including without limitation
++ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
++ * and/or sell copies of the Software, and to permit persons to whom the
++ * Software is furnished to do so, subject to the following conditions:
++ *
++ * The above copyright notice and this permission notice (including the next
++ * paragraph) shall be included in all copies or substantial portions of the
++ * Software.
++ *
++ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
++ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
++ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
++ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
++ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
++ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
++ * DEALINGS IN THE SOFTWARE.
++ *
++ * Author: Baptiste Daroussin <bapt@FreeBSD.org>
++ */
++
++#ifdef HAVE_DIX_CONFIG_H
++#include <dix-config.h>
++#endif
++
++#include <sys/types.h>
++#include <sys/socket.h>
++#include <sys/sysctl.h>
++#include <sys/un.h>
++
++#include <ctype.h>
++#include <errno.h>
++#include <fcntl.h>
++#include <stdlib.h>
++#include <stdio.h>
++#include <stdarg.h>
++#include <stdbool.h>
++#include <unistd.h>
++
++#include "input.h"
++#include "inputstr.h"
++#include "hotplug.h"
++#include "config-backends.h"
++#include "os.h"
++
++#define DEVD_SOCK_PATH "/var/run/devd.pipe"
++
++#define DEVD_EVENT_ADD		'+'
++#define DEVD_EVENT_REMOVE	'-'
++
++static int sock_devd = -1;
++
++struct hw_type {
++    const char *driver;
++    int flag;
++    const char *xdriver;
++};
++
++static struct hw_type hw_types[] = {
++    {"ukbd", ATTR_KEYBOARD, "kbd"},
++    {"atkbd", ATTR_KEYBOARD, "kbd"},
++    {"ums", ATTR_POINTER, "mouse"},
++    {"psm", ATTR_POINTER, "mouse"},
++    {"uhid", ATTR_POINTER, "mouse"},
++    {"joy", ATTR_JOYSTICK, NULL},
++    {"atp", ATTR_TOUCHPAD, NULL},
++    {"uep", ATTR_TOUCHSCREEN, NULL},
++    {NULL, -1, NULL},
++};
++
++static bool
++sysctl_exists(const char *format, ...)
++{
++    va_list args;
++    char *name = NULL;
++    size_t len;
++    int ret;
++
++    if (format == NULL)
++        return false;
++
++    va_start(args, format);
++    vasprintf(&name, format, args);
++    va_end(args);
++
++    ret = sysctlbyname(name, NULL, &len, NULL, 0);
++
++    if (ret == -1)
++        len = 0;
++
++    free(name);
++    return (len > 0);
++}
++
++static char *
++sysctl_get_str(const char *format, ...)
++{
++    va_list args;
++    char *name = NULL;
++    char *dest = NULL;
++    size_t len;
++
++    if (format == NULL)
++        return NULL;
++
++    va_start(args, format);
++    vasprintf(&name, format, args);
++    va_end(args);
++
++    if (sysctlbyname(name, NULL, &len, NULL, 0) == 0) {
++        dest = malloc(len + 1);
++        if (!dest)
++            goto unwind;
++        if (sysctlbyname(name, dest, &len, NULL, 0) == 0)
++            dest[len] = '\0';
++        else {
++            free(dest);
++            dest = NULL;
++        }
++    }
++
++ unwind:
++    free(name);
++    return dest;
++}
++
++static void
++device_added(char *devname)
++{
++    char path[PATH_MAX];
++    char *vendor;
++    char *product = NULL;
++    char *config_info = NULL;
++    char *walk;
++    InputOption *options = NULL;
++    InputAttributes attrs = { };
++    DeviceIntPtr dev = NULL;
++    int i, rc;
++    int fd;
++
++    for (i = 0; hw_types[i].driver != NULL; i++) {
++        if (strncmp(devname, hw_types[i].driver,
++                    strlen(hw_types[i].driver)) == 0 &&
++            isdigit(*(devname + strlen(hw_types[i].driver)))) {
++            attrs.flags |= hw_types[i].flag;
++            break;
++        }
++    }
++    if (hw_types[i].driver == NULL) {
++        LogMessageVerb(X_INFO, 10, "config/devd: ignoring device %s\n",
++                       devname);
++        return;
++    }
++    if (hw_types[i].xdriver == NULL) {
++        LogMessageVerb(X_INFO, 10, "config/devd: ignoring device %s\n",
++                       devname);
++        return;
++    }
++    snprintf(path, sizeof(path), "/dev/%s", devname);
++
++    options = input_option_new(NULL, "_source", "server/devd");
++    if (!options)
++        return;
++
++    vendor =
++        sysctl_get_str("dev.%s.%s.%%desc", hw_types[i].driver,
++                       devname + strlen(hw_types[i].driver));
++    if (vendor == NULL) {
++        attrs.vendor = strdup("(unnamed)");
++        attrs.product = strdup("(unnamed)");
++    }
++    else {
++        if ((walk = strchr(vendor, ' ')) != NULL) {
++            walk[0] = '\0';
++            walk++;
++            product = walk;
++            if ((walk = strchr(product, ',')) != NULL)
++                walk[0] = '\0';
++        }
++
++        attrs.vendor = strdup(vendor);
++        if (product) 
++            attrs.product = strdup(product);
++        else
++            attrs.product = strdup("(unnamed)");
++
++        options = input_option_new(options, "name", xstrdup(attrs.product));
++
++        free(vendor);
++    }
++    attrs.usb_id = NULL;
++    attrs.device = strdup(path);
++    options = input_option_new(options, "driver", hw_types[i].xdriver);
++    if (attrs.flags & ATTR_KEYBOARD) {
++        /*
++         * Don't pass device option if keyboard is attached to console (open fails),
++         * thus activating special logic in xf86-input-keyboard.
++         */
++        fd = open(path, O_RDONLY | O_NONBLOCK | O_EXCL);
++        if (fd > 0) {
++            close(fd);
++            options = input_option_new(options, "device", xstrdup(path));
++        }
++    }
++    else {
++        options = input_option_new(options, "device", xstrdup(path));
++    }
++
++    if (asprintf(&config_info, "devd:%s", devname) == -1) {
++        config_info = NULL;
++        goto unwind;
++    }
++
++    if (device_is_duplicate(config_info)) {
++        LogMessage(X_WARNING, "config/devd: device %s already added. "
++                   "Ignoring.\n", attrs.product);
++        goto unwind;
++    }
++
++    options = input_option_new(options, "config_info", config_info);
++    LogMessage(X_INFO, "config/devd: adding input device %s (%s)\n",
++               attrs.product, path);
++
++    rc = NewInputDeviceRequest(options, &attrs, &dev);
++
++    if (rc != Success)
++        goto unwind;
++
++ unwind:
++    free(config_info);
++    input_option_free_list(&options);
++
++    free(attrs.usb_id);
++    free(attrs.product);
++    free(attrs.device);
++    free(attrs.vendor);
++}
++
++static void
++device_removed(char *devname)
++{
++    char *value;
++
++    if (asprintf(&value, "devd:%s", devname) == -1)
++        return;
++
++    remove_devices("devd", value);
++
++    free(value);
++}
++
++static ssize_t
++socket_getline(int fd, char **out)
++{
++    char *buf, *newbuf;
++    ssize_t ret, cap, sz = 0;
++    char c;
++
++    cap = 1024;
++    buf = malloc(cap * sizeof(char));
++    if (!buf)
++        return -1;
++
++    for (;;) {
++        ret = read(sock_devd, &c, 1);
++        if (ret < 1) {
++            if (errno == EINTR)
++                continue;
++            free(buf);
++            return -1;
++        }
++
++        if (c == '\n')
++            break;
++
++        if (sz + 1 >= cap) {
++            cap *= 2;
++            newbuf = realloc(buf, cap * sizeof(char));
++            if (!newbuf) {
++                free(buf);
++                return -1;
++            }
++            buf = newbuf;
++        }
++        buf[sz] = c;
++        sz++;
++    }
++
++    buf[sz] = '\0';
++    if (sz >= 0)
++        *out = buf;
++    else
++        free(buf);
++
++    return sz;                  /* number of bytes in the line, not counting the line break */
++}
++
++static void
++socket_handler(int fd, int ready, void *data)
++{
++    char *line = NULL;
++    char *walk;
++
++    if (socket_getline(sock_devd, &line) < 0)
++        return;
++
++    walk = strchr(line + 1, ' ');
++    if (walk != NULL)
++        walk[0] = '\0';
++
++    switch (*line) {
++    case DEVD_EVENT_ADD:
++        device_added(line + 1);
++        break;
++    case DEVD_EVENT_REMOVE:
++        device_removed(line + 1);
++        break;
++    default:
++        break;
++    }
++    free(line);
++}
++
++int
++config_devd_init(void)
++{
++    struct sockaddr_un devd;
++    char devicename[1024];
++    int i, j;
++
++    /* first scan the sysctl to determine the hardware if needed */
++
++    for (i = 0; hw_types[i].driver != NULL; i++) {
++        for (j = 0; sysctl_exists("dev.%s.%i.%%desc", hw_types[i].driver, j);
++             j++) {
++            snprintf(devicename, sizeof(devicename), "%s%i", hw_types[i].driver,
++                     j);
++            device_added(devicename);
++        }
++
++    }
++    sock_devd = socket(AF_UNIX, SOCK_STREAM, 0);
++    if (sock_devd < 0) {
++        ErrorF("config/devd: Fail opening stream socket");
++        return 0;
++    }
++
++    devd.sun_family = AF_UNIX;
++    strlcpy(devd.sun_path, DEVD_SOCK_PATH, sizeof(devd.sun_path));
++
++    if (connect(sock_devd, (struct sockaddr *) &devd, sizeof(devd)) < 0) {
++        close(sock_devd);
++        ErrorF("config/devd: Fail to connect to devd");
++        return 0;
++    }
++
++    SetNotifyFd(sock_devd, socket_handler, X_NOTIFY_READ, NULL);
++
++    return 1;
++}
++
++void
++config_devd_fini(void)
++{
++    if (sock_devd < 0)
++        return;
++
++    RemoveNotifyFd(sock_devd);
++    close(sock_devd);
++}
+--- a/configure.ac
++++ b/configure.ac
+@@ -566,6 +566,7 @@ AC_ARG_ENABLE(dpms,           AS_HELP_ST
+ AC_ARG_ENABLE(config-udev,    AS_HELP_STRING([--enable-config-udev], [Build udev support (default: auto)]), [CONFIG_UDEV=$enableval], [CONFIG_UDEV=auto])
+ AC_ARG_ENABLE(config-udev-kms,    AS_HELP_STRING([--enable-config-udev-kms], [Build udev kms support (default: auto)]), [CONFIG_UDEV_KMS=$enableval], [CONFIG_UDEV_KMS=auto])
+ AC_ARG_ENABLE(config-hal,     AS_HELP_STRING([--disable-config-hal], [Build HAL support (default: auto)]), [CONFIG_HAL=$enableval], [CONFIG_HAL=auto])
++AC_ARG_ENABLE(config-devd,    AS_HELP_STRING([--disable-config-devd], [Build devd support (default: auto)]), [CONFIG_DEVD=$enableval], [CONFIG_DEVD=auto])
+ AC_ARG_ENABLE(config-wscons,  AS_HELP_STRING([--enable-config-wscons], [Build wscons config support (default: auto)]), [CONFIG_WSCONS=$enableval], [CONFIG_WSCONS=auto])
+ AC_ARG_ENABLE(xfree86-utils,     AS_HELP_STRING([--enable-xfree86-utils], [Build xfree86 DDX utilities (default: enabled)]), [XF86UTILS=$enableval], [XF86UTILS=yes])
+ AC_ARG_ENABLE(vgahw,          AS_HELP_STRING([--enable-vgahw], [Build Xorg with vga access (default: enabled)]), [VGAHW=$enableval], [VGAHW=yes])
+@@ -950,6 +951,21 @@ if test "x$CONFIG_WSCONS" = xyes; then
+ 	AC_DEFINE(CONFIG_WSCONS, 1, [Use wscons for input auto configuration])
+ fi
+ 
++if test "x$CONFIG_DEVD" = xauto; then
++	case $host_os in
++		freebsd* | kfreebsd*-gnu)
++			CONFIG_DEVD=yes;
++			;;
++		*)
++			CONFIG_DEVD=no;
++			;;
++	esac
++fi
++AM_CONDITIONAL(CONFIG_DEVD, [test "x$CONFIG_DEVD" = xyes])
++if test "x$CONFIG_DEVD" = xyes; then
++	AC_DEFINE(CONFIG_DEVD, 1, [Use devd for input auto configuration])
++fi
++
+ 
+ AC_MSG_CHECKING([for glibc...])
+ AC_PREPROC_IFELSE([AC_LANG_SOURCE([
+@@ -2429,7 +2445,7 @@ AC_SUBST([prefix])
+ 
+ AC_CONFIG_COMMANDS([sdksyms], [touch hw/xfree86/sdksyms.dep])
+ 
+-if test "x$CONFIG_HAL" = xno && test "x$CONFIG_UDEV" = xno; then
++if test "x$CONFIG_HAL" = xno && test "x$CONFIG_UDEV" = xno && test "x$CONFIG_DEVD" = xno; then
+     AC_MSG_WARN([
+              ***********************************************
+              Neither HAL nor udev backend will be enabled.
+--- a/hw/xfree86/common/xf86Config.c
++++ b/hw/xfree86/common/xf86Config.c
+@@ -1257,15 +1257,18 @@ checkCoreInputDevices(serverLayoutPtr se
+     }
+ 
+     if (!xf86Info.forceInputDevices && !(foundPointer && foundKeyboard)) {
+-#if defined(CONFIG_HAL) || defined(CONFIG_UDEV) || defined(CONFIG_WSCONS)
++#if defined(CONFIG_HAL) || defined(CONFIG_UDEV) || defined(CONFIG_WSCONS) || \
++    defined(CONFIG_DEVD)
+         const char *config_backend;
+ 
+ #if defined(CONFIG_HAL)
+         config_backend = "HAL";
+ #elif defined(CONFIG_UDEV)
+         config_backend = "udev";
+-#else
++#elif defined(CONFIG_WSCONS)
+         config_backend = "wscons";
++#elif defined(CONFIG_DEVD)
++        config_backend = "devd";
+ #endif
+         xf86Msg(X_INFO, "The server relies on %s to provide the list of "
+                 "input devices.\n\tIf no devices become available, "
+--- a/hw/xfree86/common/xf86Globals.c
++++ b/hw/xfree86/common/xf86Globals.c
+@@ -117,7 +117,8 @@ xf86InfoRec xf86Info = {
+     .miscModInDevEnabled = TRUE,
+     .miscModInDevAllowNonLocal = FALSE,
+     .pmFlag = TRUE,
+-#if defined(CONFIG_HAL) || defined(CONFIG_UDEV) || defined(CONFIG_WSCONS)
++#if defined(CONFIG_HAL) || defined(CONFIG_UDEV) || defined(CONFIG_WSCONS) || \
++    defined(CONFIG_DEVD)
+     .forceInputDevices = FALSE,
+     .autoAddDevices = TRUE,
+     .autoEnableDevices = TRUE,
+--- a/include/dix-config.h.in
++++ b/include/dix-config.h.in
+@@ -433,6 +433,9 @@
+ /* Enable systemd-logind integration */
+ #undef SYSTEMD_LOGIND 1
+ 
++/* Support devd for hotplug */
++#undef CONFIG_DEVD
++
+ /* Have a monotonic clock from clock_gettime() */
+ #undef MONOTONIC_CLOCK
+ 

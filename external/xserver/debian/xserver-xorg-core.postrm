@@ -1,0 +1,14 @@
+#!/bin/sh
+
+set -e
+
+case "$1" in
+purge)
+  rm /var/log/Xorg.*.log || true
+  rm /var/log/Xorg.*.log.old || true
+  ;;
+esac
+
+#DEBHELPER#
+
+# vim:set ai et sts=2 sw=2 tw=0:

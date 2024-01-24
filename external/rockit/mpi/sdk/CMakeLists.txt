@@ -1,0 +1,6 @@
+cmake_minimum_required( VERSION 2.8.8 )
+
+set(ROCKIT_FILE_HEADERS ${CMAKE_CURRENT_LIST_DIR}/include)
+
+install(FILES ${ROCKIT_FILE_LIBS} DESTINATION "lib")
+install(DIRECTORY ${ROCKIT_FILE_HEADERS}/ DESTINATION "include")

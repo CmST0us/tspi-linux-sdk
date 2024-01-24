@@ -1,0 +1,9 @@
+## Patches with a number < 100 are applied in debian.
+## Ubuntu patches start with 100.
+001_fedora_extramodes.patch
+02_kbsd-input-devd.diff
+03_static-nettle.diff
+04_compiler_h_inb_outb_mips.diff
+05_Revert-Unload-submodules.diff
+06_use-intel-only-on-pre-gen4.diff
+07_use-modesetting-driver-by-default-on-GeForce.diff

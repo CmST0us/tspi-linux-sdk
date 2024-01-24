@@ -1,0 +1,31 @@
+xorg-server (2:1.18.3-2) unstable; urgency=medium
+
+  X now defaults to using built-in modesetting video driver on Intel
+  hardware which is "4th gen GMA" and newer, so roughly speaking on hardware
+  from 2007 and up. If this triggers new bugs on your hw, please file them
+  against the xserver.
+
+  Continuing to use the -intel driver is possible by dropping the template
+  xorg.conf to /etc/X11:
+
+  # cp /usr/share/doc/xserver-xorg-video-intel/xorg.conf /etc/X11
+
+ -- Timo Aaltonen <tjaalton@debian.org>  Tue, 19 Jul 2016 04:28:05 +0300
+
+xorg-server (2:1.17.3-1) unstable; urgency=medium
+
+  The Xorg server is no longer setuid root by default.  This change reduces the
+  risk of privilege escalation due to X server bugs, but has some side effects:
+
+  * it relies on logind and libpam-systemd
+  * it relies on a kernel video driver (so the userspace component doesn't
+    touch the hardware directly)
+  * it needs X to run on the virtual console (VT) it was started from
+  * it changes the location for storing the Xorg log from /var/log/ to
+    ~/.local/share/xorg/
+
+  On systems where those are not available, the new xserver-xorg-legacy package
+  is needed to allow X to run with elevated privileges.  See the
+  Xwrapper.config(5) manual page for configuration details.
+
+ -- Julien Cristau <jcristau@debian.org>  Tue, 27 Oct 2015 22:54:11 +0000

@@ -1,0 +1,84 @@
+# translation of ro.po to Română
+# Romanian translation
+# debconf templates for xorg-x11 package
+#
+# $Id: pothead.in 189 2005-06-11 00:04:27Z branden $
+#
+# Copyright:
+#
+# This file is distributed under the same license as the xorg-x11 package.
+# Please see debian/copyright.
+#
+#    Translators, if you are not familiar with the PO format, gettext
+#    documentation is worth reading, especially sections dedicated to
+#    this format, e.g. by running:
+#         info -n '(gettext)PO Files'
+#         info -n '(gettext)Header Entry'
+#
+#    Some information specific to po-debconf is available at
+#            /usr/share/doc/po-debconf/README-trans
+#         or http://www.debian.org/intl/l10n/po-debconf/README-trans
+#
+#    Developers do not need to manually edit POT or PO files.
+#
+# Branden Robinson, 2000--2004.
+# Ruset Zeno <rzeno@cwazy.co.uk>, 2005.
+# Eddy Petrișor <eddy.petrisor@gmail.com>, 2005,2006,2008.
+msgid ""
+msgstr ""
+"Project-Id-Version: ro\n"
+"Report-Msgid-Bugs-To: xorg@packages.debian.org\n"
+"POT-Creation-Date: 2009-06-02 20:32+0200\n"
+"PO-Revision-Date: 2008-06-17 14:03+0300\n"
+"Last-Translator: Eddy Petrișor <eddy.petrisor@gmail.com>\n"
+"Language-Team: Română <debian-l10n-romanian@lists.debian.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms: nplurals=3;plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?"
+"2:1))\n"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Root Only"
+msgstr "Doar root"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Console Users Only"
+msgstr "Doar utilizatorii de consolă"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Anybody"
+msgstr "Oricine"
+
+#. Type: select
+#. Description
+#: ../xserver-xorg-legacy.templates:2002
+msgid "Users allowed to start the X server:"
+msgstr "Utilizatori cărora le este permis să pornească serverul X:"
+
+#. Type: select
+#. Description
+#: ../xserver-xorg-legacy.templates:2002
+msgid ""
+"Because the X server runs with superuser privileges, it may be unwise to "
+"permit any user to start it, for security reasons.  On the other hand, it is "
+"even more unwise to run general-purpose X client programs as root, which is "
+"what may happen if only root is permitted to start the X server.  A good "
+"compromise is to permit the X server to be started only by users logged in "
+"to one of the virtual consoles."
+msgstr ""
+"Deoarece serverul X rulează cu privilegii de superutilizator, nu este "
+"probabil înțelept să i se permită oricărui utilizator să-l pornească, din "
+"motive de securitate. Pe de altă parte, este și mai puțin înțelept să se "
+"ruleze clienții X de uz general ca și root, lucru probabil dacă se permite "
+"doar ca root să pornească serverul X. Un bun compromis este permiterea "
+"pornirii pentru utilizatorii autentificați la una din consolele virtuale."
+

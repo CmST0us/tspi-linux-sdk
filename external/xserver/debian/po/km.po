@@ -1,0 +1,70 @@
+# translation of km.po to
+# translation of xserver-xorg_debian_po_km.po to
+#
+#    Translators, if you are not familiar with the PO format, gettext
+#    documentation is worth reading, especially sections dedicated to
+#    this format, e.g. by running:
+#         info -n '(gettext)PO Files'
+#         info -n '(gettext)Header Entry'
+#    Some information specific to po-debconf are available at
+#            /usr/share/doc/po-debconf/README-trans
+#         or http://www.debian.org/intl/l10n/po-debconf/README-trans#
+#    Developers do not need to manually edit POT or PO files.
+#
+# Khoem Sokhem <khoemsokhem@khmeros.info>, 2006.
+# auk piseth <piseth_dv@khmeros.info>, 2006.
+msgid ""
+msgstr ""
+"Project-Id-Version: km\n"
+"Report-Msgid-Bugs-To: xorg@packages.debian.org\n"
+"POT-Creation-Date: 2009-06-02 20:32+0200\n"
+"PO-Revision-Date: 2006-10-03 08:13+0700\n"
+"Last-Translator: Khoem Sokhem <khoemsokhem@khmeros.info>\n"
+"Language-Team:  KhmerOS <khos-discuss@forum.org.kh>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.2\n"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Root Only"
+msgstr "បាន​តែ Root"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Console Users Only"
+msgstr "បាន​តែ​អ្នក​ប្រើ​កុងសូល​"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Anybody"
+msgstr "ផ្សេងទៀត"
+
+#. Type: select
+#. Description
+#: ../xserver-xorg-legacy.templates:2002
+msgid "Users allowed to start the X server:"
+msgstr "អ្នក​ប្រើ​បាន​អនុញ្ញាត​ឲ្យ​ចាប់​ផ្តើម​ម៉ាស៊ីន​បម្រើ​ X ៖"
+
+#. Type: select
+#. Description
+#: ../xserver-xorg-legacy.templates:2002
+msgid ""
+"Because the X server runs with superuser privileges, it may be unwise to "
+"permit any user to start it, for security reasons.  On the other hand, it is "
+"even more unwise to run general-purpose X client programs as root, which is "
+"what may happen if only root is permitted to start the X server.  A good "
+"compromise is to permit the X server to be started only by users logged in "
+"to one of the virtual consoles."
+msgstr ""
+"ដោយសារ​ម៉ាស៊ីន​បម្រើ​ X រត់ជាមួយ​​សិទ្ធ​អ្នក​ប្រើ​ជាន់​ខ្ពស់​, ​ចំពោះ​មូលហេតុ​ដែលមាន​សុវត្ថិភាព វា​ប្រហែល​ជា​​មិន​"
+"អនុញ្ញាត​ឲ្យ​អ្នក​ប្រើ​ណាមួយ​​ចាប់​ផ្តើម​វា​ទេ ​។ មួយ​វិញ​ទៀត​ គោលបំណង​ទូទៅ​នៃ​កម្មវិធី​ម៉ាស៊ីន​ភ្ញៀវ​ X មាន​សិទ្ធ​ជា "
+"root ដែល​នឹង​មាន​អ្វីអាចនឹង​កើត​ឡើង​ ប្រសិនបើ មានតែ​ root ដែល​អាច​អនុញ្ញាត​ឲ្យ​ចាប់ផ្តើ​ម​ម៉ាស៊ីន​បម្រើ​ X "
+"បាននោះ ។ ការព្រមព្រៀង​​ល្អ​បានអនុញ្ញាត​ឲ្យ​ម៉ាស៊ីន​បម្រើ X ត្រូវបាន​ចាប់​ផ្តើម​តាម​​អ្នក​ប្រើ​ដែល​បាន​ចូល​ក្នុង​"
+"កុងសូល​និម្មិត​មួយ​ ។"
+

@@ -1,0 +1,70 @@
+# xserver-xorg translation to Malayalam
+# Copyright (c) 2006 xorg package's copyright holder
+#    Translators, if you are not familiar with the PO format, gettext
+#    documentation is worth reading, especially sections dedicated to
+#    this format, e.g. by running:
+#         info -n '(gettext)PO Files'
+#         info -n '(gettext)Header Entry'
+#    Some information specific to po-debconf are available at
+#            /usr/share/doc/po-debconf/README-trans
+#         or http://www.debian.org/intl/l10n/po-debconf/README-trans#
+#    Developers do not need to manually edit POT or PO files.
+#
+# Praveen|പ്രവീണ്‍ A|എ <pravi.a@gmail.com>, 2006.
+msgid ""
+msgstr ""
+"Project-Id-Version: xserver-xorg_ml\n"
+"Report-Msgid-Bugs-To: xorg@packages.debian.org\n"
+"POT-Creation-Date: 2009-06-02 20:32+0200\n"
+"PO-Revision-Date: 2008-06-18 17:59+0530\n"
+"Last-Translator: Praveen|പ്രവീണ്‍ A|എ <pravi.a@gmail.com>\n"
+"Language-Team: Swathanthra|സ്വതന്ത്ര Malayalam|മലയാളം Computing|കമ്പ്യൂട്ടിങ്ങ് <smc-"
+"discuss@googlegroups.com>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Root Only"
+msgstr "റൂട്ട് മാത്രം"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Console Users Only"
+msgstr "കണ്‍സോള്‍ ഉപയോക്താക്കള്‍ മാത്രം"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Anybody"
+msgstr "ആരും"
+
+#. Type: select
+#. Description
+#: ../xserver-xorg-legacy.templates:2002
+msgid "Users allowed to start the X server:"
+msgstr "എക്സ് സേവകന്‍ തുടങ്ങാന്‍ അനുമതിയുള്ള ഉപയോക്താക്കള്‍:"
+
+#. Type: select
+#. Description
+#: ../xserver-xorg-legacy.templates:2002
+msgid ""
+"Because the X server runs with superuser privileges, it may be unwise to "
+"permit any user to start it, for security reasons.  On the other hand, it is "
+"even more unwise to run general-purpose X client programs as root, which is "
+"what may happen if only root is permitted to start the X server.  A good "
+"compromise is to permit the X server to be started only by users logged in "
+"to one of the virtual consoles."
+msgstr ""
+"എക്സ് സേവകന്‍ സൂപര്‍ ഉപയോക്താവിന്റെ പദവികളോടെയാണ് ഓടുന്നത് എന്നതിനാല്‍ സുരക്ഷാ കാരണങ്ങളാല്‍ ഏത് "
+"ഉപയോക്താവിനും ഇത് തുടങ്ങാന്‍ അനുമതി നല്കുന്നത് ബുദ്ധിശുന്യമായേക്കാം. എന്നാല്‍ പൊതുവായുള്ള-"
+"കാര്യങ്ങള്‍ക്കുള്ള എക്സ് ക്ലയന്റ് പ്രോഗ്രാമുകള്‍ റൂട്ടായി ഓടിക്കുന്നത് ഇതിലധികം ബുദ്ധിശുന്യമാണ്, അതാണ് "
+"റൂട്ടിന് മാത്രം എക്സ് സേവകന്‍ തുടങ്ങാന്‍ അനുമതി നല്കിയാല്‍ സംഭവിക്കാന്‍ പോകുന്നത്. ഒരു നല്ല വിട്ടുവീഴ്ച "
+"വിര്‍ച്വല്‍ കണ്‍സോളിലേതെങ്കിലുമൊന്നില്‍ ലോഗിന്‍ ചെയ്തിട്ടുള്ള ഉപയോക്താക്കള്‍ക്ക് മാത്രം എക്സ് സേവകന്‍ "
+"തുടങ്ങാന്‍ അനുമതി നല്കുക എന്നത്."
+

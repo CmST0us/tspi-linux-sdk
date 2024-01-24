@@ -1,0 +1,60 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: xorg\n"
+"Report-Msgid-Bugs-To: xorg@packages.debian.org\n"
+"POT-Creation-Date: 2009-06-02 20:32+0200\n"
+"PO-Revision-Date: 2006-08-14 11:05+0200\n"
+"Last-Translator: Priti Patil <prithisd@gmail.com>\n"
+"Language-Team:  Marathi <janabhaaratii@cdacmumbai.in>\n"
+"Language: mr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Root Only"
+msgstr "फक्त मूल"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Console Users Only"
+msgstr "फक्त कन्सोल वापरकर्ते"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Anybody"
+msgstr "कोणीही"
+
+#. Type: select
+#. Description
+#: ../xserver-xorg-legacy.templates:2002
+msgid "Users allowed to start the X server:"
+msgstr "वापरकर्त्यांना एक्स परिसेवक सुरू करता येईल:"
+
+#. Type: select
+#. Description
+#: ../xserver-xorg-legacy.templates:2002
+msgid ""
+"Because the X server runs with superuser privileges, it may be unwise to "
+"permit any user to start it, for security reasons.  On the other hand, it is "
+"even more unwise to run general-purpose X client programs as root, which is "
+"what may happen if only root is permitted to start the X server.  A good "
+"compromise is to permit the X server to be started only by users logged in "
+"to one of the virtual consoles."
+msgstr ""
+"एक्स परिसेवक सुपरयुझरचे हक्क असणारा कोणीही सुरू करू शकत असल्याने, सर्वच वापरकर्त्यांना तो "
+"सुरू करण्याची अनुमती देणे सुरक्षिततेच्या दृष्टीकोनातून उचित होणार नाही.  तथापी, सामान्य "
+"वापराचे एक्स अशील प्रोग्राम मूल असताना चालवणे अधिकच अनुचित होईल, जे एक्स परिसेवक सुरू "
+"करण्याची परवानगी फक्त मूल लाच दिल्यास घडू शकेल. अाभासी कन्सोलांपैकी एकावर सत्रारंभ "
+"केलेल्या वापरकर्त्यांनाच एक्स परिसेवक सुरू करण्याची अनुमती देणे ही यातील चांगली तडजोड ठरू "
+"शकेल."
+

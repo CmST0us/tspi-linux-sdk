@@ -1,0 +1,79 @@
+# debconf templates for xorg-x11 package
+# Catalan translation
+#
+# $Id: ca.po 1042 2006-01-09 07:55:08Z ender $
+#
+# Copyrights:
+# Branden Robinson, 2000-2004
+# Ivan Vilata i Balaguer <net.selidor@ivan>, 2002-2006
+#
+# This file is distributed under the same license as the xorg-x11 package.
+# Please see debian/copyright.
+#
+#    Translators, if you are not familiar with the PO format, gettext
+#    documentation is worth reading, especially sections dedicated to
+#    this format, e.g. by running:
+#         info -n '(gettext)PO Files'
+#         info -n '(gettext)Header Entry'
+#
+#    Some information specific to po-debconf are available at
+#            /usr/share/doc/po-debconf/README-trans
+#         or http://www.debian.org/intl/l10n/po-debconf/README-trans
+#
+#    Developers do not need to manually edit POT or PO files.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: xorg 1:7.3+12\n"
+"Report-Msgid-Bugs-To: xorg@packages.debian.org\n"
+"POT-Creation-Date: 2009-06-02 20:32+0200\n"
+"PO-Revision-Date: 2008-06-09 09:35+0200\n"
+"Last-Translator: Ivan Vilata i Balaguer <ivan@selidor.net>\n"
+"Language-Team: Catalan <debian-l10n-catalan@lists.debian.org>\n"
+"Language: ca\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Root Only"
+msgstr "Només root"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Console Users Only"
+msgstr "Només usuaris de la consola"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Anybody"
+msgstr "Qualsevol"
+
+#. Type: select
+#. Description
+#: ../xserver-xorg-legacy.templates:2002
+msgid "Users allowed to start the X server:"
+msgstr "Usuaris que poden iniciar el servidor X:"
+
+#. Type: select
+#. Description
+#: ../xserver-xorg-legacy.templates:2002
+msgid ""
+"Because the X server runs with superuser privileges, it may be unwise to "
+"permit any user to start it, for security reasons.  On the other hand, it is "
+"even more unwise to run general-purpose X client programs as root, which is "
+"what may happen if only root is permitted to start the X server.  A good "
+"compromise is to permit the X server to be started only by users logged in "
+"to one of the virtual consoles."
+msgstr ""
+"Com que el servidor X corre amb privilegis de superusuari, podria no ser "
+"assenyat que qualsevol usuari l’iniciara, per motius de seguretat.  D’altra "
+"banda, encara té menys seny emprar programes client X de propòsit general "
+"com a root, cosa que ocorreria si només root puguera iniciar el servidor X.  "
+"Un bon compromís és deixar iniciar el servidor X només a aquells usuaris que "
+"hagen entrat al sistema per una de les consoles virtuals."
+

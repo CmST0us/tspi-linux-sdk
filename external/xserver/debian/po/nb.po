@@ -1,0 +1,63 @@
+# translation of xserver-xorg_debian.po to Norwegian Bokmål
+#
+# This file is distributed under the same license as the package.
+#
+# Bjørn Steensrud <bjornst@powertech.no>, 2006.
+# Hans Fredrik Nordhaug <hans@nordhaug.priv.no>, 2008.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: xserver-xorg_debian_nb\n"
+"Report-Msgid-Bugs-To: xorg@packages.debian.org\n"
+"POT-Creation-Date: 2009-06-02 20:32+0200\n"
+"PO-Revision-Date: 2008-08-31 22:50+0200\n"
+"Last-Translator: Hans Fredrik Nordhaug <hans@nordhaug.priv.no>\n"
+"Language-Team: Norwegian Bokmål <i18n-nb@lister.ping.uio.no>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.2\n"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Root Only"
+msgstr "Bare root"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Console Users Only"
+msgstr "Bare konsoll-brukere"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Anybody"
+msgstr "Alle"
+
+#. Type: select
+#. Description
+#: ../xserver-xorg-legacy.templates:2002
+msgid "Users allowed to start the X server:"
+msgstr "Brukere som har lov til å starte X-tjeneren:"
+
+#. Type: select
+#. Description
+#: ../xserver-xorg-legacy.templates:2002
+msgid ""
+"Because the X server runs with superuser privileges, it may be unwise to "
+"permit any user to start it, for security reasons.  On the other hand, it is "
+"even more unwise to run general-purpose X client programs as root, which is "
+"what may happen if only root is permitted to start the X server.  A good "
+"compromise is to permit the X server to be started only by users logged in "
+"to one of the virtual consoles."
+msgstr ""
+"Fordi X-tjeneren kjører med priviliegier som superbruker, er det kanskje "
+"uklokt av sikkerhetsgrunner å la alle starte den. På den annen side er det "
+"enda mer uklokt å kjøre alminnelige X klientprogrammer som root, og det kan "
+"skje dersom bare root får lov til å starte X-tjeneren. En god middelvei er å "
+"tillate bare brukere som er logget inn på et av de virtuelle konsollene å "
+"starte X-tjeneren."
+

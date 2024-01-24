@@ -1,0 +1,276 @@
+gstreamer1.0-rockchip (1.14-4) stable; urgency=medium
+
+  * mppdec: Sort functions
+    ...
+
+ -- Caesar Wang <wxt@rock-chips.com>  Thu, 20 May 2021 09:55:00 +0800
+
+gstreamer1.0-rockchip (1.14-1) testing; urgency=medium
+
+  [ Randy Li ]
+  * rockchipmpp: add H.264 encoder class
+  * rockchipmpp: add build rules for H.264 encoder
+  * rockchipmpp: add mpp buffer allocator
+  * rockchipmpp: decoder: add a buffer pool
+  * rockchipmpp: add video decoder
+  * rockchipmpp: decoder: drop those invalid decoded result
+  * rockchipmpp: register video decoder in plugin
+  * rockchipmpp: add video decoder in build rules
+  * build: update rules to build properly decoder plugin
+  * debian: build: update debian version and changelog
+  * build: fix a error in build rules for rksink
+  * rockchipmpp: update the encoder API
+  * rockchipmpp: fix the alignment problem with smaller base
+  * rockchipmpp: allocating buffers using the frame info from mpp
+
+  [ Jacob Chen ]
+  * rksink: copy kmsutils to rkimagesink
+  * rksink: kmssink: comment gst_kms_sink_sync
+
+  [ Randy Li ]
+  * rksink: remove kmssink
+  * kms: kms from gst-plugins-bad
+  * kmssink: support 10 bit color depth pixel format
+
+  [ Jacob Chen ]
+  * build: add rksink
+
+  [ ayaka ]
+  * rksink: fix the error in build rules
+  * rkvideo: split the two elements into different plugins
+
+  [ Randy Li ]
+  * rockchipmpp: terminate future decoding when state change
+  * rockchipmpp: update the license of a missing header file
+
+  [ ayaka ]
+  * Revert "rockchipmpp: terminate future decoding when state change"
+
+  [ Randy Li ]
+  * rockchipmpp: decoder: drop more frames
+  * rockchipmpp: allow VP9 codec format
+
+  [ ayaka ]
+  * rockchipmpp: fix a critical issue with pad from upstream
+  * build: update configure script and remove m4 files
+  * add some i18n header and place for glib-compat
+
+  [ Jacob Chen ]
+  * build: update rules for rkximagesink/eglglessink
+  * eglgles: remove this plugins
+
+  [ Randy Li ]
+  * build: update some searching rules with upstream
+
+  [ Jacob Chen ]
+  * rkximage: fix wrong display size
+  * rkximage: workaround for vop scale limition
+
+  [ Randy Li ]
+  * rkximage: remove unused function
+
+  [ ayaka ]
+  * tests: add examples files
+
+  [ Randy Li ]
+  * rockchipmpp: allocate more size for encoder
+
+  [ ayaka ]
+  * rockchipmpp: remove duplicate and typo in the previous commit
+  * tests: examples: add a fast exit method
+
+  [ Randy Li ]
+  * tests: examples: fix the steps of the exit
+
+  [ ayaka ]
+  * rockchipmpp: release the buffer meta data
+  * tests: examples: allow setting the video and audio sink in player
+  * Revert "tests: examples: allow setting the video and audio sink in player"
+  * rockchipmpp: support more GstStateChange
+
+  [ Jacob Chen ]
+  * rkximagesink: use even for framebuffer width/height
+
+  [ ayaka ]
+  * rockchipmpp: drop frame when the mpp can't process it
+
+  [ Randy Li ]
+  * kms: remove it from src
+
+  [ Jacob Chen ]
+  * build: rename drmrockchip to rkximage
+
+  [ Randy Li ]
+  * rockchipmpp: fixup for the rate control of encoder
+  * rockchipmpp: remove the support of MPEG-2/MPEG-4
+
+  [ Jacob Chen ]
+  * rkximagesink: stop using ctrl_fd
+
+  [ ayaka ]
+  * rockchipmpp: keep input metadata for decoder
+
+  [ Randy Li ]
+  * rockchipmpp: allocate the correct buffer size for NV16
+  * rockchipmpp: support more formats for encoder
+  * build: fix some error in build rules
+
+  [ ayaka ]
+  * rockchipmpp: keep input metadata for decoder
+  * tests: examples: add more features to ayamero
+
+  [ Randy Li ]
+  * tests: move the playing operation
+  * rockchipmpp: increase the default quality settings
+  * rockchipmpp: add support for MPEG-1/2/4
+  * rockchipmpp: place the caps of the src port in a safe way
+  * rockchipmpp: only mapping the buffer when it is needed
+  * rockchipmpp: write extra info for echo I frame
+
+  [ ayaka ]
+  * rockchipmpp: add simple jpeg encoder
+  * rockchipmpp: add bare buffer pool
+  * rockchipmpp: add jpeg decoder
+  * rockchipmpp: deattach decoder output group on destroy
+
+  [ Randy Li ]
+  * rockchipmpp: a better way to stop the thread
+  * rockchipmpp: fixup for the interlace mode
+  * TEST: add appsink sample program
+  * TEST: build the appsink test program
+
+  [ ayaka ]
+  * [WIP]: rockchipmpp: fix color output format
+
+  [ Randy Li ]
+  * app sink
+
+ -- Randy Li <randy.li@rock-chips.com>  Fri, 27 Apr 2018 02:09:47 +0000
+
+gstreamer1.0-rockchip (1.10-5) testing; urgency=medium
+
+  [ Jacob Chen ]
+  * build: fix egl lib link missing
+  * rksink: HACK: drop pixel when display 4096 vdieo
+
+  [ Randy Li ]
+  * vpudec: drop the invalid buffer to avoid the screen mess
+  * [WIP]: mppvideoenc: a multiple thread version
+  * [WIP]: mppvideoenc: the first ugly version
+  * rockchipmpp: add build rules
+  * rockchipmpp: add to top build rule
+  * rockchipmpp: make the mppvideoenc as the abstract class
+  * rockchipmpp: add H.264 encoder class
+  * rockchipmpp: add build rules for H.264 encoder
+  * [WIP]: rockchipmpp: encoder: update API
+  * rockchipmpp: add mpp buffer allocator
+  * rockchipmpp: decoder: add a buffer pool
+  * rockchipmpp: add video decoder
+  * rockchipmpp: decoder: drop those invalid decoded result
+  * rockchipmpp: register video decoder in plugin
+  * rockchipmpp: add video decoder in build rules
+  * build: update rules to build properly decoder plugin
+
+ -- Randy Li <randy.li@rock-chips.com>  Thu, 23 Feb 2017 07:00:56 +0000
+
+gstreamer1.0-rockchip (1.10-4) stable; urgency=medium
+
+  [ Randy Li ]
+  * videorga: vpuenc: remove stub class
+
+  [ Jacob Chen ]
+  * vpudec: add rkximagesink
+  * vpudec: ximagesink: clean code
+  * vpudec: ximagesink: add display ratio
+  * vpudec: ximagesink: correct stride
+  * vpudec: ximagesink:  check display position in event thread
+  * vpudec: ximagesink: use a timer to throttle and redraw when paused
+  * vpudec: ximagesink: add render rectangle support
+  * vpudec: eglglesink/ximagesink: move to child folder
+  * vpudec: eglglessink: only use it in 1080p
+  * vpudec: ximagesink: remove throttle
+  * vpudec: ximagesinl: fix buffer count
+  * vpudec: ximagesinl: clear window first when expose
+  * vpudec: eglglessink: add zero-copy texture support for NV12
+  * Revert "vpudec: eglglessink: only use it in 1080p"
+  * vpudec: rkximagesink: adjust for fake 4k ui
+
+  [ Randy Li ]
+  * vpudec: remove EGL invoked video sink from this directory
+  * kms: move to the rksink
+  * rkvideo: move all the video sink to this plugin package
+  * build: debian: build and install new rkvideo plugin
+
+  [ Jacob Chen ]
+  * rkvideo: rename GstXImageSink to GstRkXImageSink
+
+  [ Randy Li ]
+  * debian: install new rkvideo plugin
+  * TEST: kmssink: print frame count
+
+  [ Jacob Chen ]
+  * rkvideo: eglglessink: use gst_data_queue_push_force
+  * rkvideo: rkximagesink: fix display_ratio
+
+  [ Randy Li ]
+  * vpudec: support dynamic update input caps
+  * build: debian: remove stub dbg package
+  * vpudec: remove unused eos filed
+  * vpudec: adjust the buffer pool lifetime
+  * vpudec: disable force check for profile
+
+  [ Jacob Chen ]
+  * rkvideo: rkximagesink: fix display bug in fake 4k
+
+  [ Randy Li ]
+  * vpudec: clean up the code
+  * rksink: clean up the code
+
+  [ Jacob Chen ]
+  * build: don't build eglsink and rkximagesink without x11
+
+  [ Randy Li ]
+  * vpudec: force the rockchip mpp to exit at the last packet
+
+ -- Randy Li <randy.li@rock-chips.com>  Wed, 15 Feb 2017 01:45:42 +0000
+
+gstreamer1.0-rockchip (1.10-3) testing; urgency=medium
+
+  * vpudec: remove codec_data
+  * vpudec: bufferpool: remove allocate vpu_frame every times
+  * vpudec: add an allocator for buffers from vpu_display_pool
+  * vpudec: use GstVpuAllocator in GstVpuBufferpool
+  * vpudec: build: add gstvpuallocator
+  * vpudec: rename the vpu codec context field
+  * vpudec: adapt new buffer operating procedures
+  * vpumeta: stop using the vpumeta data
+
+ -- Randy Li <randy.li@rock-chips.com>  Wed, 21 Dec 2016 07:31:44 +0000
+
+gstreamer1.0-rockchip (1.10-2) testing; urgency=medium
+
+  * vpudec: add missing copyright information in a files
+  * vpudec: support flush() method in decoder
+  * vpudec: kmssink: support P010_10LE
+  * vpumeta: change the type of index field for invalid index
+  * vpudec: support 10 bits video color depth and P010_10LE output
+  * vpudec: not block the stop operation
+  * Revert "vpudec: not block the stop operation"
+  * vpudec: put the decoder getting output frame task to pad
+  * vpudec: add new method to handle statechange
+  * vpumeta: free vpumem from the mpp allocator
+  * vpudec: fix the bug in exit and cleanup
+
+ -- Randy Li <randy.li@rock-chips.com>  Thu, 15 Dec 2016 03:17:28 +0000
+
+gstreamer1.0-rockchip (1.10-1) testing; urgency=medium
+
+  * build: update the package name
+
+ -- Randy Li <randy.li@rock-chips.com>  Thu, 24 Nov 2016 06:23:55 +0000
+
+gstreamer1.0-rockchip (1.8-3) unstable; urgency=medium
+
+  * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
+
+ -- Randy Li <randy.li@rock-chips.com>  Thu, 17 Nov 2016 07:59:00 +0000

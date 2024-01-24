@@ -1,0 +1,27 @@
+#!/bin/bash
+
+case "$1" in
+	start)
+		if [ -e "/userdata/rockchip-test/power_lost_test.sh" ]; then
+			echo "start test flash power lost"
+			source /userdata/rockchip-test/power_lost_test.sh &
+		fi
+		if [ -e "/userdata/rockchip-test/auto_reboot.sh" ]; then
+			echo "start auto-reboot"
+			source /userdata/rockchip-test/auto_reboot.sh `cat /userdata/rockchip-test/reboot_total_cnt`&
+		fi
+
+		;;
+	stop)
+		echo "stop auto-reboot finished"
+		;;
+	restart|reload)
+		$0 stop
+		$0 start
+		;;
+	*)
+		echo "Usage: $0 {start|stop|restart}"
+		exit 1
+esac
+
+exit 0

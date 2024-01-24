@@ -1,0 +1,15 @@
+CMakeCache.txt
+CMakeFiles/
+Makefile
+cmake_install.cmake
+install_manifest.txt
+librga.so
+rgaImDemo
+.vscode/
+*.patch
+build/
+build_linux/
+build_android_ndk/
+.DS_Store
+local_*
+*.cpp.*

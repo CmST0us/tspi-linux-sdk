@@ -1,0 +1,53 @@
+From 0946e6ade4b7b4c5e2aaf79365aea70e5c354d75 Mon Sep 17 00:00:00 2001
+From: David Wu <david.wu@rock-chips.com>
+Date: Sun, 05 Mar 2023 20:43:16 +0800
+Subject: [PATCH] arm64: dts: rockchip: rk3568: Add stmmac uio nodes
+
+Signed-off-by: David Wu <david.wu@rock-chips.com>
+Change-Id: I6a7d4c1000b9ed604042b5dc5d32c9cddb4ad433
+---
+
+diff --git a/arch/arm64/boot/dts/rockchip/rk3566.dtsi b/arch/arm64/boot/dts/rockchip/rk3566.dtsi
+index 60c299e..58c3050 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3566.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3566.dtsi
+@@ -54,6 +54,7 @@
+ /delete-node/ &gmac0_clkin;
+ /delete-node/ &gmac0_xpcsclk;
+ /delete-node/ &gmac0;
++/delete-node/ &gmac_uio0;
+ /delete-node/ &pcie30_phy_grf;
+ /delete-node/ &pcie30phy;
+ /delete-node/ &pcie3x1;
+diff --git a/arch/arm64/boot/dts/rockchip/rk3568.dtsi b/arch/arm64/boot/dts/rockchip/rk3568.dtsi
+index 2f9174d..a80b504 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3568.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3568.dtsi
+@@ -1765,6 +1765,13 @@
+ 		status = "disabled";
+ 	};
+ 
++	gmac_uio1: uio@fe010000 {
++		compatible = "rockchip,uio-gmac";
++		reg = <0x0 0xfe010000 0x0 0x10000>;
++		rockchip,ethernet = <&gmac1>;
++		status = "disabled";
++	};
++
+ 	gmac1: ethernet@fe010000 {
+ 		compatible = "rockchip,rk3568-gmac", "snps,dwmac-4.20a";
+ 		reg = <0x0 0xfe010000 0x0 0x10000>;
+@@ -2510,6 +2517,13 @@
+ 		};
+ 	};
+ 
++	gmac_uio0: uio@fe2a0000 {
++		compatible = "rockchip,uio-gmac";
++		reg = <0x0 0xfe2a0000 0x0 0x10000>;
++		rockchip,ethernet = <&gmac0>;
++		status = "disabled";
++	};
++
+ 	gmac0: ethernet@fe2a0000 {
+ 		compatible = "rockchip,rk3568-gmac", "snps,dwmac-4.20a";
+ 		reg = <0x0 0xfe2a0000 0x0 0x10000>;

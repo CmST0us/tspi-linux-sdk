@@ -1,0 +1,10 @@
+[Unit]
+Description=Enable ASYNC_COMMIT for Rockchip BSP kernel > 4.4
+DefaultDependencies=no
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/async-commit
+
+[Install]
+WantedBy=sysinit.target

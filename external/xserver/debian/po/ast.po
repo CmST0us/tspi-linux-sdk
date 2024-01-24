@@ -1,0 +1,64 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: xorg_po\n"
+"Report-Msgid-Bugs-To: xorg@packages.debian.org\n"
+"POT-Creation-Date: 2009-06-02 20:32+0200\n"
+"PO-Revision-Date: 2009-01-12 08:33+0100\n"
+"Last-Translator: Marcos Alvarez Costales <marcos.alvarez.costales@gmail."
+"com>\n"
+"Language-Team: Asturian <softast-xeneral@lists.sourceforge.net>\n"
+"Language: ast\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-Language: Asturian\n"
+"X-Poedit-Country: SPAIN\n"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Root Only"
+msgstr "Namái root"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Console Users Only"
+msgstr "Namái usuarios de consola"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Anybody"
+msgstr "Cualesquiera"
+
+#. Type: select
+#. Description
+#: ../xserver-xorg-legacy.templates:2002
+msgid "Users allowed to start the X server:"
+msgstr "Usuarios a los que se-yos permite arrancar el sirvidor de X:"
+
+#. Type: select
+#. Description
+#: ../xserver-xorg-legacy.templates:2002
+msgid ""
+"Because the X server runs with superuser privileges, it may be unwise to "
+"permit any user to start it, for security reasons.  On the other hand, it is "
+"even more unwise to run general-purpose X client programs as root, which is "
+"what may happen if only root is permitted to start the X server.  A good "
+"compromise is to permit the X server to be started only by users logged in "
+"to one of the virtual consoles."
+msgstr ""
+"Darréu que'l servidor X execútase con privilexos de superusuariu, pue nun "
+"ser enforma prudente dexar que cualesquier usuariu lu arranque, por sides de "
+"seguridá. Per otru llau, ye entá más imprudente executar programes veceru de "
+"X de forma xeneral como root, lo cual pue asoceder si namái se permite a "
+"root aniciar el sirvidor X. Un compromisu ente dambos casos ye permitir "
+"que'l sirvidor X lu anicien namái usuarios que tengan entrao per una de les "
+"consoles virtuales."

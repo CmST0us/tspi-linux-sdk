@@ -1,0 +1,66 @@
+# debconf templates for xorg-x11 package
+#
+# $Id: xorg.po,v 1.26 2006/02/15 09:47:09 arteek Exp $
+#
+# Copyright:
+# 2006 Bartosz Feñski <fenio@debian.org>
+# 2006 Artur Szymañski <arteek@wp.pl>
+#
+# This file is distributed under the same license as the xorg-x11 package.
+# Please see debian/copyright.
+msgid ""
+msgstr ""
+"Project-Id-Version: 6.9.0.dfsg.1-2+SVN\n"
+"Report-Msgid-Bugs-To: xorg@packages.debian.org\n"
+"POT-Creation-Date: 2009-06-02 20:32+0200\n"
+"PO-Revision-Date: 2008-08-31 22:49+0200\n"
+"Last-Translator: Bartosz Fenski <fenio@debian.org>\n"
+"Language-Team: Polish <pddp@debian.linux.org.pl>\n"
+"Language: pl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-2\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Root Only"
+msgstr "Tylko root"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Console Users Only"
+msgstr "Tylko u¿ytkownicy konsoli"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Anybody"
+msgstr "Ka¿dy u¿ytkownik"
+
+#. Type: select
+#. Description
+#: ../xserver-xorg-legacy.templates:2002
+msgid "Users allowed to start the X server:"
+msgstr "U¿ytkownicy mog±cy uruchamiaæ serwer X:"
+
+#. Type: select
+#. Description
+#: ../xserver-xorg-legacy.templates:2002
+msgid ""
+"Because the X server runs with superuser privileges, it may be unwise to "
+"permit any user to start it, for security reasons.  On the other hand, it is "
+"even more unwise to run general-purpose X client programs as root, which is "
+"what may happen if only root is permitted to start the X server.  A good "
+"compromise is to permit the X server to be started only by users logged in "
+"to one of the virtual consoles."
+msgstr ""
+"Poniewa¿ serwer X dzia³a z przywilejami speru¿ytkownika, ze wzglêdu na "
+"bezpieczeñstwo systemu nierozs±dnie jest dawaæ prawa jego uruchamiania "
+"ka¿demu u¿ytkownikowi. Z drugiej za¶ strony, jeszcze mniej rozs±dnie jest "
+"uruchamianie programów klienckich X ogólnego przeznaczenia jako u¿ytkownik "
+"root, co mo¿e siê zdarzyæ je¶li tylko root bêdzie móg³ uruchomiæ serwer X. "
+"Dobrym kompromisem jest zezwolenie na uruchamianie serwera X tylko "
+"u¿ytkownikom zalogowanym na jednej z wirtualnych konsol (u¿ytkownik konsoli)."
+

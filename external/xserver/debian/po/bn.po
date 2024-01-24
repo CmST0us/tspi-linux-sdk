@@ -1,0 +1,60 @@
+# Bengali translation of xorg.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Md. Rezwan Shahid <rezwan@ankur.org.bd>, 2009.
+msgid ""
+msgstr ""
+"Project-Id-Version: xorg\n"
+"Report-Msgid-Bugs-To: xorg@packages.debian.org\n"
+"POT-Creation-Date: 2009-06-02 20:32+0200\n"
+"PO-Revision-Date: 2009-04-15 12:27+0600\n"
+"Last-Translator: Md. Rezwan Shahid <rezwan@ankur.org.bd>\n"
+"Language-Team: Bengali <ankur-bd-l10n@googlegroups.com>\n"
+"Language: bn\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: WordForge 0.5-beta1\n"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Root Only"
+msgstr "শুধুমাত্র রুট"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Console Users Only"
+msgstr "শুধুমাত্র কনসোল ব্যবহারকারী"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Anybody"
+msgstr "যেকেউ"
+
+#. Type: select
+#. Description
+#: ../xserver-xorg-legacy.templates:2002
+msgid "Users allowed to start the X server:"
+msgstr "যেসকল ব্যবহারকারী X সার্ভার চালু করতে অনুমতিপ্রাপ্ত:"
+
+#. Type: select
+#. Description
+#: ../xserver-xorg-legacy.templates:2002
+msgid ""
+"Because the X server runs with superuser privileges, it may be unwise to "
+"permit any user to start it, for security reasons.  On the other hand, it is "
+"even more unwise to run general-purpose X client programs as root, which is "
+"what may happen if only root is permitted to start the X server.  A good "
+"compromise is to permit the X server to be started only by users logged in "
+"to one of the virtual consoles."
+msgstr ""
+"যেহেতু X সার্ভার সুপারইউজার সুবিধাসহ রান করে, যেকোনো ব্যবহারকারীকে এটি চালু করতে "
+"দেয়া বুদ্ধিমানের কাজ হবে না (নিরাপত্তার জন্য)। আবার, সাধারন কারনে X ক্লায়েন্ট "
+"প্রোগ্রাম চালানোর জন্য রুট হিসেবে লগ-ইন করা ঠিক নয় (যদি শুধুমাত্র রুটের অনুমতি থাকে X "
+"সার্ভার চালু করার তখন এটি ঘটে)। একটি ভালো সমাধান হতে পারে, X সার্ভার শুধুমাত্র সেই "
+"ব্যবহারকারীদের দ্বারা চালু করা যাবে যারা যেকোনো একটি ভার্চুয়াল কনসোলে লগ-ইন করা "
+"আছে।"

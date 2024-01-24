@@ -1,0 +1,65 @@
+# debconf templates for xorg-x11 package
+# Slovak translation
+# $Id: sk.po 1042 2006-01-09 07:55:08Z ender $
+#
+# Copyrights:
+# Branden Robinson, 2000-2004
+# Miroslav Kure <kurem@debian.cz>, 2004.
+# Peter Mann <Peter.Mann@tuke.sk>, 2005, 2008.
+# Ivan Masár <helix84@centrum.sk>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: xorg-x11\n"
+"Report-Msgid-Bugs-To: xorg@packages.debian.org\n"
+"POT-Creation-Date: 2009-06-02 20:32+0200\n"
+"PO-Revision-Date: 2009-04-10 12:53+0100\n"
+"Last-Translator: Ivan Masár <helix84@centrum.sk>\n"
+"Language-Team: Slovak <sk-i18n@lists.linux.sk>\n"
+"Language: sk\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Root Only"
+msgstr "Len root"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Console Users Only"
+msgstr "Len konzoloví používatelia"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Anybody"
+msgstr "Ktokoľvek"
+
+#. Type: select
+#. Description
+#: ../xserver-xorg-legacy.templates:2002
+msgid "Users allowed to start the X server:"
+msgstr "Používatelia,ktorí môžu spustiť X server:"
+
+#. Type: select
+#. Description
+#: ../xserver-xorg-legacy.templates:2002
+msgid ""
+"Because the X server runs with superuser privileges, it may be unwise to "
+"permit any user to start it, for security reasons.  On the other hand, it is "
+"even more unwise to run general-purpose X client programs as root, which is "
+"what may happen if only root is permitted to start the X server.  A good "
+"compromise is to permit the X server to be started only by users logged in "
+"to one of the virtual consoles."
+msgstr ""
+"Pretože X server je spustený s právami superpoužívateľa, nie je z hľadiska "
+"bezpečnosti veľmi rozumné dať možnosť jeho spustenia používateľom. Na druhej "
+"strane ešte horšie je spustenie všeobecného X klienta ako používateľ root, "
+"čo sa stane vtedy, ak povolíte spustenie X servera iba používateľovi root. "
+"Rozumným kompromisom je teda povolenie spustenia X servera iba používateľom "
+"prihláseným na virtuálnej konzole."
+

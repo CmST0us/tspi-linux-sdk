@@ -1,0 +1,6 @@
+usr/include/xorg
+usr/lib/*/pkgconfig/xorg-server.pc
+usr/share/aclocal
+
+../../debian/local/dh_xsf_substvars usr/bin
+../../debian/local/xsf.pm /usr/share/perl5/Debian/Debhelper/Sequence/

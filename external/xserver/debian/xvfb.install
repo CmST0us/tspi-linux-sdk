@@ -1,0 +1,4 @@
+usr/bin/Xvfb
+usr/bin/xvfb-run
+usr/share/man/man1/xvfb-run.1
+usr/share/man/man1/Xvfb.1

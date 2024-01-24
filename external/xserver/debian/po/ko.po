@@ -1,0 +1,58 @@
+# Sunjae Park <darehanl@gmail.com>, 2006.
+# Changwoo Ryu <cwryu@debian.org>, 2008.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: xserver-xorg\n"
+"Report-Msgid-Bugs-To: xorg@packages.debian.org\n"
+"POT-Creation-Date: 2009-06-02 20:32+0200\n"
+"PO-Revision-Date: 2008-07-20 12:34+0900\n"
+"Last-Translator: Changwoo Ryu <cwryu@debian.org>\n"
+"Language-Team: Korean <debian-l10n-korean@lists.debian.org>\n"
+"Language: ko\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Root Only"
+msgstr "루트 사용자만"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Console Users Only"
+msgstr "콘솔 사용자만"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Anybody"
+msgstr "아무나"
+
+#. Type: select
+#. Description
+#: ../xserver-xorg-legacy.templates:2002
+msgid "Users allowed to start the X server:"
+msgstr "X 서버를 띄울 권한이 있는 사용자:"
+
+#. Type: select
+#. Description
+#: ../xserver-xorg-legacy.templates:2002
+msgid ""
+"Because the X server runs with superuser privileges, it may be unwise to "
+"permit any user to start it, for security reasons.  On the other hand, it is "
+"even more unwise to run general-purpose X client programs as root, which is "
+"what may happen if only root is permitted to start the X server.  A good "
+"compromise is to permit the X server to be started only by users logged in "
+"to one of the virtual consoles."
+msgstr ""
+"X 서버는 수퍼유저 권한을 가진 채로 실행되기 때문에 보안상 아무 사용자나 X 서"
+"버를 실행시킬 수 있도록 하는 것이 안 좋을 수 있습니다. 반면, 루트 사용자만 X "
+"서버를 실행시킬 수 있을 경우 일반적인 X 클라이언트 프로그램도 루트 사용자로 "
+"실행되기 때문에 더 안 좋을 수 있습니다. 버추얼 콘솔로 로그인된 사용자만 X 서"
+"버를 실행시킬 수 있도록 하는 것이 적당할 수 있습니다."
+

@@ -1,0 +1,15 @@
+# Configure file for libdrm-cursor.
+#
+# debug=1
+# log-file=
+# hide=1 # hide cursors
+# atomic=0 # disable atomic drm API
+# max-fps=60
+# allow-overlay=1 # allowing overlay planes
+# prefer-afbc=0 # prefer plane with AFBC modifier supported
+# num-surfaces=8 # num of egl surfaces to avoid edge moving corruption
+# prefer-plane=65
+# prefer-planes=61,65
+# crtc-blocklist=64,83 
+# scale=2.5x1
+# scale-from=64x64/1920x1080 # expected cursor size / screen size

@@ -1,0 +1,67 @@
+# debconf templates for xorg-x11 package
+# Portuguese translation
+#
+# $Id: pt.po 1042 2006-01-09 07:55:08Z ender $
+#
+# Copyright:
+# Branden Robinson, 2000-2004
+# Eduardo Silva <jobezone@yahoo.com>, 2005
+# Miguel Figueiredo <elmig@debianpt.org>, 2006-2008
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: xserver-xorg_debian_po\n"
+"Report-Msgid-Bugs-To: xorg@packages.debian.org\n"
+"POT-Creation-Date: 2009-06-02 20:32+0200\n"
+"PO-Revision-Date: 2008-06-09 21:23+0100\n"
+"Last-Translator: Miguel Figueiredo <elmig@debianpt.org>\n"
+"Language-Team: Portuguese <traduz@debianPT.org>\n"
+"Language: pt\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Root Only"
+msgstr "Apenas Root"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Console Users Only"
+msgstr "Apenas Utilizadores de Consola"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Anybody"
+msgstr "Todos"
+
+#. Type: select
+#. Description
+#: ../xserver-xorg-legacy.templates:2002
+msgid "Users allowed to start the X server:"
+msgstr "Utilizadores autorizados a iniciar o servidor X:"
+
+#. Type: select
+#. Description
+#: ../xserver-xorg-legacy.templates:2002
+msgid ""
+"Because the X server runs with superuser privileges, it may be unwise to "
+"permit any user to start it, for security reasons.  On the other hand, it is "
+"even more unwise to run general-purpose X client programs as root, which is "
+"what may happen if only root is permitted to start the X server.  A good "
+"compromise is to permit the X server to be started only by users logged in "
+"to one of the virtual consoles."
+msgstr ""
+"Como o servidor X corre com privilégios de super-utilizador, por razões de "
+"segurança, pode ser imprudente permitir que qualquer utilizador o inicie.  "
+"Por outro lado, é ainda mais imprudente correr programas clientes de X de "
+"carácter geral como root, que é o que poderá acontecer se apenas o root "
+"tiver permissões para iniciar o servidor X.  Um bom compromisso é permitir "
+"que o servidor X seja iniciado apenas por utilizadores que tenham iniciado "
+"uma sessão numa das consolas virtuais."
+

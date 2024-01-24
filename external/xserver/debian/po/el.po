@@ -1,0 +1,84 @@
+# translation of xorg_po_el.po to
+# debconf templates for xorg-x11 package
+# Greek translation
+#
+# $Id: el.po 1042 2006-01-09 07:55:08Z ender $
+#
+# Copyrights:
+#
+# This file is distributed under the same license as the xorg-x11 package.
+# Please see debian/copyright.
+#
+#    Translators, if you are not familiar with the PO format, gettext
+#    documentation is worth reading, especially sections dedicated to
+#    this format, e.g. by running:
+#         info -n '(gettext)PO Files'
+#         info -n '(gettext)Header Entry'
+#
+#    Some information specific to po-debconf are available at
+#            /usr/share/doc/po-debconf/README-trans
+#         or http://www.debian.org/intl/l10n/po-debconf/README-trans
+#
+#    Developers do not need to manually edit POT or PO files.
+#
+# Branden Robinson, 2000-2004.
+# Konstantinos Margaritis <markos@debian.org>, 2004.
+# QUAD-nrg.net <yodesy@quad-nrg.net>, 2006.
+msgid ""
+msgstr ""
+"Project-Id-Version: xorg_po_el\n"
+"Report-Msgid-Bugs-To: xorg@packages.debian.org\n"
+"POT-Creation-Date: 2009-06-02 20:32+0200\n"
+"PO-Revision-Date: 2008-08-24 17:39+0300\n"
+"Last-Translator: \n"
+"Language-Team:  <en@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms:  nplurals=2; plural=(n != 1);\n"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Root Only"
+msgstr "Μόνο ο χρήστης root"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Console Users Only"
+msgstr "Μόνο από την κονσόλα"
+
+#. Type: select
+#. Choices
+#: ../xserver-xorg-legacy.templates:2001
+msgid "Anybody"
+msgstr "Οποιοσδήποτε"
+
+#. Type: select
+#. Description
+#: ../xserver-xorg-legacy.templates:2002
+msgid "Users allowed to start the X server:"
+msgstr "Χρήστες που επιτρέπεται να ξεκινούν τον εξυπηρετητή Χ:"
+
+#. Type: select
+#. Description
+#: ../xserver-xorg-legacy.templates:2002
+msgid ""
+"Because the X server runs with superuser privileges, it may be unwise to "
+"permit any user to start it, for security reasons.  On the other hand, it is "
+"even more unwise to run general-purpose X client programs as root, which is "
+"what may happen if only root is permitted to start the X server.  A good "
+"compromise is to permit the X server to be started only by users logged in "
+"to one of the virtual consoles."
+msgstr ""
+"Λόγω του ότι ο εξυπηρετητής X τρέχει ως χρήστης root, με τα αντίστοιχα "
+"δικαιώματα, για λόγους ασφαλείας δε συνιστάται η εκκίνησή του από άπλό "
+"χρήστη.  Ωστόσο, ακόμη πιο επικίνδυνο για την ασφάλεια είναι η εκτέλεση "
+"απλών προγραμμάτων στα X ως χρήστης root, το οποίο μπορεί να συμβεί αν ο "
+"χρήστης root επιτρέπεται να εκκινήσει τον εξυπηρετητή X.  Μια μέση οδός "
+"είναι να επιτρέπεται η εκκίνηση του εξυπηρετητή X μόνο από τους χρήστες που "
+"έχουν συνδεθεί στο σύστημα σε μία από τις εικονικές κονσόλες."
+

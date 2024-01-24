@@ -1,0 +1,22 @@
+# These debconf templates have been proofread by the debian-l10n-english
+# team.
+#
+# Please consider interacting with the team if you intend
+# to modify the templates or add new templates
+
+Template: xserver-xorg-legacy/xwrapper/allowed_users
+Type: select
+__Choices: Root Only, Console Users Only, Anybody
+Default: Console Users Only
+_Description: Users allowed to start the X server:
+ Because the X server runs with superuser privileges, it may be unwise to
+ permit any user to start it, for security reasons.  On the other hand, it is
+ even more unwise to run general-purpose X client programs as root, which is
+ what may happen if only root is permitted to start the X server.  A good
+ compromise is to permit the X server to be started only by users logged in to
+ one of the virtual consoles.
+
+Template: xserver-xorg-legacy/xwrapper/actual_allowed_users
+Type: string
+Description: for internal use
+ This template is never shown to the user and does not require translation.
