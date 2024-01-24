@@ -1,0 +1,33 @@
+#
+
+menu "Loader (u-boot)"
+
+config RK_UBOOT_CFG
+	string "u-boot defconfig"
+	default "evb-px3se" if RK_CHIP_FAMILY = "px3se"
+	default "rk3126" if RK_CHIP = "rk3126c"
+	default "rk3128x" if RK_CHIP_FAMILY = "rk3128h"
+	default "evb-rk3229" if RK_CHIP_FAMILY = "rk3229"
+	default "evb-px30" if RK_CHIP_FAMILY = "rk3358"
+	default "rv1126" if RK_CHIP_FAMILY = "rv1126_rv1109"
+	default RK_CHIP_FAMILY if RK_CHIP_FAMILY = "rk3308" || \
+		RK_CHIP_FAMILY = "rk3588"
+	default RK_CHIP
+
+config RK_UBOOT_CFG_FRAGMENTS
+	string "u-boot defconfig fragments (without .config suffix)"
+
+config RK_UBOOT_OPTS
+	string "u-boot compile options"
+	default "--sz-uboot 1024 2 --sz-trust 1024 2" if RK_CHIP_FAMILY = "rk312x"
+
+config RK_UBOOT_TRUST_INI
+	string "u-boot trust ini config"
+
+config RK_UBOOT_SPL_INI
+	string "u-boot spl ini config"
+
+config RK_UBOOT_SPL_CFG
+	string "u-boot spl defconfig"
+
+endmenu # Loader

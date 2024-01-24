@@ -1,0 +1,36 @@
+#
+
+comment "Recovery depends on linux kernel"
+	depends on RK_KERNEL_CFG = ""
+
+if RK_KERNEL_CFG != ""
+
+menu "Recovery (buildroot)"
+
+config RK_RECOVERY_BASE_CFG
+	string "buildroot recovery base cfg (rockchip_<cfg>_recovery_defconfig)"
+	default RK_CHIP if RK_CHIP_FAMILY = "rk3566_rk3568"
+	default RK_CHIP_FAMILY
+	help
+	  Base name of buildroot defconfig for recovery.
+	  Set "" for no recovery.
+
+if RK_RECOVERY_BASE_CFG != ""
+
+config RK_RECOVERY_CFG
+	string
+	default "rockchip_${RK_RECOVERY_BASE_CFG}_recovery"
+
+if RK_USE_FIT_IMG
+
+config RK_RECOVERY_FIT_ITS
+	string "its script for FIT recovery image"
+	default "boot4recovery.its"
+
+endif
+
+endif
+
+endmenu # Recovery
+
+endif

@@ -1,0 +1,1 @@
+../scripts/post-locale.sh

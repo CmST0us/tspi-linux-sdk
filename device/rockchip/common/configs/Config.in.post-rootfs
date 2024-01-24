@@ -1,0 +1,259 @@
+#
+
+menu "Post rootfs installs"
+
+choice
+	prompt "hostname"
+
+config RK_ROOTFS_HOSTNAME_DEFAULT
+	bool "auto"
+	help
+	  Use "<chip>-<OS>" for non-debian OS.
+
+config RK_ROOTFS_HOSTNAME_ORIGINAL
+	bool "original"
+
+config RK_ROOTFS_HOSTNAME_CUSTOM
+	bool "custom"
+
+endchoice # hostname
+
+if RK_ROOTFS_HOSTNAME_CUSTOM
+
+config RK_ROOTFS_HOSTNAME
+	string "custom hostname"
+	default RK_CHIP
+
+endif
+
+choice
+	prompt "locale"
+
+config RK_ROOTFS_LOCALE_DEFAULT
+	bool "auto"
+	help
+	  Use "en_US.UTF-8" for non-debian OS.
+
+config RK_ROOTFS_LOCALE_ORIGINAL
+	bool "original"
+
+config RK_ROOTFS_LOCALE_CUSTOM
+	bool "custom"
+
+endchoice # locale
+
+if RK_ROOTFS_LOCALE_CUSTOM
+
+config RK_ROOTFS_LOCALE
+	string "custom locale"
+	default "en_US.UTF-8"
+
+endif
+
+choice
+	prompt "extra fonts"
+
+config RK_EXTRA_FONTS_DEFAULT
+	bool "auto"
+	help
+	  Install extra fonts for yocto OS.
+
+config RK_EXTRA_FONTS_ENABLED
+	bool "install"
+
+config RK_EXTRA_FONTS_DISABLED
+	bool "not install"
+
+endchoice # extra fonts
+
+choice
+	prompt "disk helpers"
+
+config RK_DISK_HELPERS_DEFAULT
+	bool "auto"
+	help
+	  Install mount-all for buildroot OS.
+	  Install resize-all for non-buildroot OS.
+
+config RK_DISK_HELPERS_MOUNTALL
+	bool "mount all partitions"
+
+config RK_DISK_HELPERS_RESIZEALL
+	bool "resize all partitions"
+
+config RK_DISK_HELPERS_DISABLED
+	bool "not install"
+
+endchoice # disk helpers
+
+config RK_ROOTFS_UDEV_RULES
+	bool "Rockchip udev rules"
+	default y
+
+comment "USB gadget depends on linux kernel"
+	depends on RK_KERNEL_CFG = ""
+
+if RK_KERNEL_CFG != ""
+
+choice
+	prompt "USB gadget"
+
+config RK_USB_DEFAULT
+	bool "auto"
+	help
+	  Install USB gadget on non-buildroot OS.
+
+config RK_USB_ENABLED
+	bool "install"
+
+config RK_USB_DISABLED
+	bool "not install"
+
+endchoice # USB gadget
+
+if !RK_USB_DISABLED
+
+menu "USB gadget"
+
+config RK_USB_ADBD
+	bool "adbd"
+	default y
+	help
+	  Android adbd.
+
+if RK_USB_ADBD
+
+config RK_USB_ADBD_TCP_PORT
+	int "adbd tcp port"
+	default 5555
+
+config RK_USB_ADBD_BASH
+	bool "adbd prefer using bash"
+	default y
+
+config RK_USB_ADBD_PASSWORD
+	string "adbd password"
+	default ""
+
+config RK_USB_ADBD_RSA_KEY
+	string "adbd RSA key"
+	default ""
+
+endif
+
+config RK_USB_MTP
+	bool "mtp"
+	help
+	  Media Transfer Protocal (MTP).
+
+config RK_USB_ACM
+	bool "acm"
+
+config RK_USB_NTB
+	bool "ntb"
+	help
+	  Rockchip NTB.
+
+config RK_USB_UVC
+	bool "uvc"
+
+config RK_USB_UAC1
+	bool "uac1"
+
+config RK_USB_UAC2
+	bool "uac2"
+
+config RK_USB_HID
+	bool "hid"
+
+config RK_USB_RNDIS
+	bool "rndis"
+
+config RK_USB_UMS
+	bool "ums"
+	help
+	  USB mass storage (UMS).
+
+if RK_USB_UMS
+
+config RK_USB_UMS_FILE
+	string "ums file"
+	default "/userdata/ums_shared.img"
+	help
+	  Block device or image file to share through UMS.
+
+config RK_USB_UMS_SIZE
+	string "ums size"
+	default "256M"
+	help
+	  UMS's size.
+
+config RK_USB_UMS_FSTYPE
+	string "ums fstype"
+	default "vfat"
+	help
+	  UMS's filesystem type.
+
+config RK_USB_UMS_MOUNT
+	bool "ums mount"
+	default n
+	help
+	  Mount when USB disconnected, umount when connected.
+
+	  Warning:
+	  Umounting UMS may failed if it is still in use.
+
+config RK_USB_UMS_MOUNTPOINT
+	string "ums mountpoint"
+	default "/mnt/ums"
+	help
+	  UMS's mountpoint.
+
+config RK_USB_UMS_RO
+	bool "ums ro"
+	default n
+	help
+	  UMS is read-only.
+
+endif
+
+config RK_USB_EXTRA
+	string "extra USB gadget configs"
+	default ""
+
+config RK_USB_HOOKS
+	string "hook scripts"
+	default ""
+
+endmenu # USB gadget
+
+endif
+
+endif
+
+comment "wifi/BT depends on linux kernel"
+	depends on RK_KERNEL_CFG = ""
+
+if RK_KERNEL_CFG != ""
+
+config RK_WIFIBT_CHIP
+	string "wifi/BT chip"
+	default "ALL_AP"
+	help
+	  ALL_AP for Realtek and AP6XXX, ALL_CY for Realtek and CYWXXX.
+	  Set "" for no WIFI/BT.
+
+config RK_WIFIBT_TTY
+	string "BT serial port"
+	depends on RK_WIFIBT_CHIP != ""
+	default "ttyS0"
+
+endif
+
+config RK_ROOTFS_PREBUILT_TOOLS
+	bool "prebuilt tools"
+
+config RK_ROOTFS_OVERLAY_DIRS
+	string "rootfs overlay dirs"
+
+endmenu # Post-rootfs

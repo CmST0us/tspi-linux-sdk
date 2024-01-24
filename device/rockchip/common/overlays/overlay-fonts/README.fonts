@@ -1,0 +1,10 @@
+Prebuilt fonts
+
+Prebuilt from Rockchip buildroot 2018 SDK:
+4e2f5a2c9ae gdb: Bump to buildroot upstream
+
+Using rockchip_rk3588_defconfig with addition configs:
+BR2_PACKAGE_FONTCONFIG=y
+BR2_PACKAGE_DEJAVU=y
+BR2_PACKAGE_LIBERATION=y
+BR2_PACKAGE_SOURCE_HAN_SANS_CN=y

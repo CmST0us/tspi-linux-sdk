@@ -1,0 +1,49 @@
+#
+
+mainmenu "Rockchip Linux SDK Configuration"
+
+config RK_DEFCONFIG_FROM_ENV
+	string
+	option env="RK_DEFCONFIG"
+
+config RK_DEFCONFIG
+	string "Location to save defconfig"
+	default RK_DEFCONFIG_FROM_ENV if RK_DEFCONFIG_FROM_ENV != ""
+	default "defconfig"
+	help
+	  When running 'make savedefconfig', the defconfig file will be
+	  saved in this location.
+
+config RK_CHIP_FAMILY_FROM_ENV
+	string
+	option env="RK_CHIP_FAMILY"
+
+config RK_CHIP_FAMILY
+	string "SoC family"
+	default RK_CHIP_FAMILY_FROM_ENV if RK_CHIP_FAMILY_FROM_ENV != ""
+	help
+	  Rockchip SoC family, available chip familys are in
+	  <SDK>/device/rockchip/.
+
+config RK_CHIP_FROM_ENV
+	string
+	option env="RK_CHIP"
+
+config RK_CHIP
+	string "SoC"
+	default RK_CHIP_FROM_ENV if RK_CHIP_FROM_ENV != ""
+	default RK_CHIP_FAMILY
+	help
+	  Rockchip SoC.
+
+source "Config.in.rootfs"
+source "Config.in.loader"
+source "Config.in.kernel"
+source "Config.in.boot"
+source "Config.in.recovery"
+source "Config.in.pcba"
+source "Config.in.security"
+source "Config.in.extra-part"
+source "Config.in.firmware"
+source "Config.in.update"
+source "Config.in.others"

@@ -1,0 +1,59 @@
+#
+
+menu "Firmware"
+
+choice
+	prompt "package-file"
+
+config RK_PACKAGE_FILE_DEFAULT
+	bool "auto"
+	help
+	  Auto-generated.
+
+config RK_PACKAGE_FILE_CUSTOM
+	bool "custom"
+	help
+	  Use custom package-file under <CHIP_DIR>/.
+
+endchoice # package-file
+
+if RK_PACKAGE_FILE_CUSTOM
+
+config RK_PACKAGE_FILE
+	string "custom package-file"
+	default "package-file"
+	help
+	  Name of custom package-file under <CHIP_DIR>/.
+
+endif
+
+config RK_PARAMETER
+	string "parameter"
+	default "parameter-ab.txt" if RK_AB_UPDATE
+	default "parameter.txt"
+	help
+	  Name of parameter file under <CHIP_DIR>/.
+
+comment "Misc image depends on recovery"
+	depends on RK_RECOVERY_CFG = ""
+
+if RK_RECOVERY_CFG != ""
+
+config RK_MISC_IMG
+	string "misc image"
+	default "blank-misc.img" if RK_AB_UPDATE
+	default "wipe_all-misc.img"
+	help
+	  Name of misc image under <RK_IMAGE_DIR>/.
+	  Set "" for no misc.
+
+endif
+
+if RK_KERNEL_CFG != ""
+
+config RK_USE_FIT_IMG
+	bool "use FIT (Flattened Image Tree) image"
+
+endif
+
+endmenu # Firmware

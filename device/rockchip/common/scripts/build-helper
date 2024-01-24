@@ -1,0 +1,175 @@
+#!/bin/bash
+
+[ -z "$DEBUG" ] || set -x
+
+# Make sure that we are sourced and called inside of RK build scripts.
+if [ "$BASH_SOURCE" = "$0" -o -z "$RK_SESSION" ];then
+	echo "$(realpath "$0") is not supposed to be executed directly"
+	exit 1
+fi
+
+err_handler()
+{
+	ret=${1:-$?}
+	[ "$ret" -eq 0 ] && return
+
+	echo "ERROR: Running $0 - ${2:-${FUNCNAME[1]}} failed!"
+	echo "ERROR: exit code $ret from line ${BASH_LINENO[0]}:"
+	echo "    ${3:-$BASH_COMMAND}"
+	echo "ERROR: call stack:"
+	for i in $(seq 1 $((${#FUNCNAME[@]} - 1))); do
+		SOURCE="${BASH_SOURCE[$i]}"
+		LINE=${BASH_LINENO[$(( $i - 1 ))]}
+		echo "    $(basename "$SOURCE"): ${FUNCNAME[$i]}($LINE)"
+	done
+	exit $ret
+}
+trap 'err_handler' ERR
+set -eE
+
+run_command()
+{
+	if [ "$DRY_RUN" ]; then
+		echo "$@"
+	else
+		echo "+ $@"
+		$@
+	fi
+}
+
+try_func()
+{
+	type $1 >/dev/null 2>/dev/null || return 0
+
+	# Don't log these hooks
+	case "${1%_hook}" in
+		init | pre_build)
+			$@
+			return 0
+			;;
+	esac
+
+	if [ "$DRY_RUN" ]; then
+		DRY_FUNC=$1_dry
+		type $DRY_FUNC >/dev/null 2>/dev/null || return 0
+
+		shift
+		$DRY_FUNC $@
+		return 0
+	fi
+
+	LOG_FILE="$(start_log ${LOG_FILE_NAME%%_*} $LOG_FILE_NAME)"
+	echo -e "# run func: $@\n" >> "$LOG_FILE"
+	$@ 2>&1 | tee -a "$LOG_FILE"
+
+	FUNC_RET=${PIPESTATUS[0]}
+	if [ $FUNC_RET -ne 0 ]; then
+		err_handler $FUNC_RET "${FUNCNAME[0]} $*" "$@"
+		exit $FUNC_RET
+	fi
+}
+
+try_hook()
+{
+	FUNC=$1
+	shift
+	CMDS="$1"
+	shift
+
+	if echo "$CMDS" | grep -qE "^default( |$)"; then
+		OPTS="default $@"
+	else
+		OPTS="$@ default"
+	fi
+
+	type $FUNC >/dev/null 2>/dev/null || return 0
+
+	for opt in $OPTS; do
+		IS_DRY_RUN=$(echo $opt | grep -E ":cmds(:|$)" || true)
+		for cmd in $CMDS; do
+			# NOTE: There might be patterns in commands
+			ARGS="$(echo $opt | grep -E "^$cmd(:|$)" | \
+				xargs -d ':' || true)"
+			[ "$ARGS" ] || continue
+
+			DRY_RUN=${DRY_RUN:-${IS_DRY_RUN:+1}} \
+				try_func $FUNC $ARGS
+		done
+	done
+}
+
+core_usage()
+{
+	usage_hook | sed -e 's/\[:/ \[/g' -e 's/:/ /g'
+}
+
+usage()
+{
+	echo "Usage: $0 [OPTIONS]"
+	core_usage
+	echo -e "clean                            \tcleanup"
+	echo -e "help                             \tusage"
+	exit 1
+}
+
+cd "$SDK_DIR"
+
+LOG_FILE_NAME="$(basename "${0%.sh}")-$1_$(date +"%F_%H-%M-%S")"
+
+case "$1" in
+	help | h | -h | --help | \?) usage ;;
+	usage)
+		usage_hook
+		exit 0
+		;;
+	support-cmds)
+		shift
+		{
+			ALL_CMDS="$INIT_CMDS $PRE_BUILD_CMDS $BUILD_CMDS \
+				$POST_BUILD_CMDS"
+			for stage in ${@:-all}; do
+				case $stage in
+					init) echo "$INIT_CMDS" ;;
+					pre-build) echo "$PRE_BUILD_CMDS" ;;
+					build) echo "$BUILD_CMDS" ;;
+					post-build) echo "$POST_BUILD_CMDS" ;;
+					all) echo "$ALL_CMDS" ;;
+				esac
+			done
+		} | xargs -n 1 | grep -v "^default$" | xargs || true
+		exit 0
+		;;
+	clean)
+		try_func clean_hook
+		exit 0
+		;;
+	init)
+		shift
+		try_hook init_hook "$INIT_CMDS" $@
+		exit 0
+		;;
+	pre-build)
+		shift
+		try_hook pre_build_hook "$PRE_BUILD_CMDS" $@
+		exit 0
+		;;
+	build)
+		shift
+		try_hook build_hook "$BUILD_CMDS" $@
+		exit 0
+		;;
+	post-build)
+		shift
+		try_hook post_build_hook "$POST_BUILD_CMDS" $@
+		exit 0
+		;;
+esac
+
+if [ "$DRY_RUN" ]; then
+	echo "Environment 'DRY_RUN' ignored!"
+	unset DRY_RUN
+fi
+
+if [ "$2" = cmds ]; then
+	export DRY_RUN=1
+fi

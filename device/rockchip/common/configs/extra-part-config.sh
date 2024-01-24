@@ -1,0 +1,1 @@
+../scripts/extra-part-config.sh
