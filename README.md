@@ -32,6 +32,7 @@ adb forward tcp:2222 tcp:22
 ## Build
 
 Build 基础Ubuntu镜像
+**注意在构建Ubuntu时，需要输入电脑的root密码**
 ```
 ./build.sh 
 ```
@@ -40,7 +41,7 @@ Build 基础Ubuntu镜像
 
 ### 使用 update.img
 
-注意带日期的文件才是最终的update.img
+**注意带日期的文件才是最终的update.img**
 ```
 mv rockdev/<带日期的update.img> rockdev/update.img
 sudo ./rkflash.sh updateimg
