@@ -1,0 +1,19 @@
+#!/bin/sh
+
+# Log some extra information at the beginning of a suspend/resume cycle.
+
+echo "!!!!!!!!!!!wifi $1 $2" > /dev/kmsg
+
+case "$1-$2" in
+       pre-hibernate|pre-suspend)
+		hciconfig hci0 down
+		ifconfig wlan0 down
+               ;;
+       post-hibernate|post-suspend)
+		kilall brcm_patchram_plus1
+		ifconfig wlan0 up
+		bt_pcba_test&
+               ;;
+       *) exit $NA
+               ;;
+esac

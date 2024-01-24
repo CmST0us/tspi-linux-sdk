@@ -1,0 +1,129 @@
+From 8bd80ba5d98890bb18270ab94d4c18ab010c6b2e Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Fri, 5 Jul 2019 15:16:42 +0800
+Subject: [PATCH 1/3] Support limiting move interval
+
+Set "moveInterval" in the rc.xml's resize section, eg.
+<moveInterval>50</moveInterval> to limit move interval.
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ openbox/config.c     |  4 ++++
+ openbox/config.h     |  2 ++
+ openbox/moveresize.c | 37 +++++++++++++++++++++++++++++++++++--
+ 3 files changed, 41 insertions(+), 2 deletions(-)
+
+diff --git a/openbox/config.c b/openbox/config.c
+index dad5d1bf..d5129bc6 100644
+--- a/openbox/config.c
++++ b/openbox/config.c
+@@ -65,6 +65,7 @@ GSList *config_desktops_names;
+ guint   config_screen_firstdesk;
+ guint   config_desktop_popup_time;
+ 
++gboolean         config_move_interval;
+ gboolean         config_resize_redraw;
+ gint             config_resize_popup_show;
+ ObResizePopupPos config_resize_popup_pos;
+@@ -820,6 +821,8 @@ static void parse_resize(xmlNodePtr node, gpointer d)
+ 
+     node = node->children;
+ 
++    if ((n = obt_xml_find_node(node, "moveInterval")))
++        config_move_interval = obt_xml_node_int(n);
+     if ((n = obt_xml_find_node(node, "drawContents")))
+         config_resize_redraw = obt_xml_node_bool(n);
+     if ((n = obt_xml_find_node(node, "popupShow"))) {
+@@ -1115,6 +1118,7 @@ void config_startup(ObtXmlInst *i)
+ 
+     obt_xml_register(i, "desktops", parse_desktops, NULL);
+ 
++    config_move_interval = 16; /* default is 16 ms(60fps) */
+     config_resize_redraw = TRUE;
+     config_resize_popup_show = 1; /* nonpixel increments */
+     config_resize_popup_pos = OB_RESIZE_POS_CENTER;
+diff --git a/openbox/config.h b/openbox/config.h
+index 96a66cf1..59447b2d 100644
+--- a/openbox/config.h
++++ b/openbox/config.h
+@@ -103,6 +103,8 @@ extern ObPlaceMonitor config_primary_monitor;
+ /*! User-specified margins around the edge of the screen(s) */
+ extern StrutPartial config_margins;
+ 
++/*! duration(ms) to perform moving */
++extern gboolean config_move_interval;
+ /*! When true windows' contents are refreshed while they are resized; otherwise
+   they are not updated until the resize is complete */
+ extern gboolean config_resize_redraw;
+diff --git a/openbox/moveresize.c b/openbox/moveresize.c
+index d12a64de..0a301caf 100644
+--- a/openbox/moveresize.c
++++ b/openbox/moveresize.c
+@@ -68,6 +68,8 @@ static guint waiting_for_sync;
+ #ifdef SYNC
+ static guint sync_timer = 0;
+ #endif
++static glong last_move_time = 0;
++static guint move_timer = 0;
+ 
+ static ObPopup *popup = NULL;
+ 
+@@ -328,6 +330,9 @@ void moveresize_end(gboolean cancel)
+         if (sync_timer) g_source_remove(sync_timer);
+         sync_timer = 0;
+ #endif
++    } else {
++        if (move_timer) g_source_remove(move_timer);
++        move_timer = 0;
+     }
+ 
+     /* don't use client_move() here, use the same width/height as
+@@ -370,6 +375,15 @@ void moveresize_end(gboolean cancel)
+     moveresize_client = NULL;
+ }
+ 
++static gboolean move_func(gpointer data)
++{
++    client_configure(moveresize_client, cur_x, cur_y, cur_w, cur_h,
++                     TRUE, FALSE, FALSE);
++
++    move_timer = 0;
++    return FALSE; /* don't repeat */
++}
++
+ static void do_move(gboolean keyboard, gint keydist)
+ {
+     gint resist;
+@@ -380,8 +394,27 @@ static void do_move(gboolean keyboard, gint keydist)
+     if (!keyboard) resist = config_resist_edge;
+     resist_move_monitors(moveresize_client, resist, &cur_x, &cur_y);
+ 
+-    client_configure(moveresize_client, cur_x, cur_y, cur_w, cur_h,
+-                     TRUE, FALSE, FALSE);
++    if (!config_move_interval) {
++        client_configure(moveresize_client, cur_x, cur_y, cur_w, cur_h,
++                         TRUE, FALSE, FALSE);
++    } else if (!move_timer) {
++        GTimeVal curr_tm;
++        glong now_ms, next_ms;
++
++        g_get_current_time(&curr_tm);
++        now_ms = curr_tm.tv_sec * 1000 + curr_tm.tv_usec / 1000;
++        next_ms = last_move_time + config_move_interval;
++
++        if (next_ms <= now_ms) {
++            client_configure(moveresize_client, cur_x, cur_y, cur_w, cur_h,
++                             TRUE, FALSE, FALSE);
++            last_move_time = now_ms;
++        } else {
++            move_timer = g_timeout_add(config_move_interval, move_func, NULL);
++            last_move_time = next_ms;
++        }
++    }
++
+     if (config_resize_popup_show == 2) /* == "Always" */
+         popup_coords(moveresize_client, "%d x %d",
+                      moveresize_client->frame->area.x,
+-- 
+2.17.1
+

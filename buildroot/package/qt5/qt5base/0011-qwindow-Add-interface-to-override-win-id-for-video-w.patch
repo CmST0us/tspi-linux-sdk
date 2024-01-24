@@ -1,0 +1,32 @@
+From c1fe551662dc30aa67ae6725088c4c472ac0bfef Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Fri, 30 Nov 2018 17:50:55 +0800
+Subject: [PATCH 11/28] qwindow: Add interface to override win id for video
+ window
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ src/gui/kernel/qwindow.h | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/src/gui/kernel/qwindow.h b/src/gui/kernel/qwindow.h
+index 7aae7fff..0cb46424 100644
+--- a/src/gui/kernel/qwindow.h
++++ b/src/gui/kernel/qwindow.h
+@@ -404,6 +404,13 @@ template <> inline const QWindow *qobject_cast<const QWindow*>(const QObject *o)
+ Q_GUI_EXPORT QDebug operator<<(QDebug, const QWindow *);
+ #endif
+ 
++// Inherit this to overrid window id for video window
++class Q_GUI_EXPORT QVideoWindowAbstractInterface
++{
++public:
++    virtual WId videoWinId() const = 0;
++};
++
+ QT_END_NAMESPACE
+ 
+ #endif // QWINDOW_H
+-- 
+2.20.1
+

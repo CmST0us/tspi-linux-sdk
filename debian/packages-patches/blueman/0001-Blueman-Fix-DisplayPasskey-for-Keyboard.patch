@@ -1,0 +1,26 @@
+From d8939a462f9fcae064f1287e6b2398e60ad69b5e Mon Sep 17 00:00:00 2001
+From: Caesar Wang <wxt@rock-chips.com>
+Date: Wed, 21 Dec 2022 09:26:30 +0800
+Subject: [PATCH] Blueman: Fix DisplayPasskey for Keyboard
+
+Signed-off-by: Caesar Wang <wxt@rock-chips.com>
+---
+ blueman/main/applet/BluezAgent.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/blueman/main/applet/BluezAgent.py b/blueman/main/applet/BluezAgent.py
+index 2696c75..a7e56e2 100644
+--- a/blueman/main/applet/BluezAgent.py
++++ b/blueman/main/applet/BluezAgent.py
+@@ -82,7 +82,7 @@ class BluezAgent(DbusService):
+         self.add_method("RequestPinCode", ("o",), "s", self._on_request_pin_code, is_async=True)
+         self.add_method("DisplayPinCode", ("o", "s"), "", self._on_display_pin_code)
+         self.add_method("RequestPasskey", ("o",), "u", self._on_request_passkey, is_async=True)
+-        self.add_method("DisplayPasskey", ("o", "u", "y"), "", self._on_display_passkey)
++        self.add_method("DisplayPasskey", ("o", "u", "q"), "", self._on_display_passkey)
+         self.add_method("RequestConfirmation", ("o", "u"), "", self._on_request_confirmation, is_async=True)
+         self.add_method("RequestAuthorization", ("o",), "", self._on_request_authorization, is_async=True)
+         self.add_method("AuthorizeService", ("o", "s"), "", self._on_authorize_service, is_async=True)
+-- 
+2.34.1
+

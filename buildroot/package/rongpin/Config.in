@@ -1,0 +1,2 @@
+source "package/rongpin/deviceTest/Config.in"
+source "package/rongpin/mobileNet/Config.in"

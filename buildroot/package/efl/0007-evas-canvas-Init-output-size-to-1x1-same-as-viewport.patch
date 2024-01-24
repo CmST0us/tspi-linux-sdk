@@ -1,0 +1,28 @@
+From d93a65b1fb2ae66fa5f363475b77e8b7c21d5017 Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Mon, 4 Jul 2022 11:50:29 +0800
+Subject: [PATCH 07/10] evas: canvas: Init output size to 1x1(same as viewport)
+
+For later size check.
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ src/lib/evas/canvas/evas_main.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/src/lib/evas/canvas/evas_main.c b/src/lib/evas/canvas/evas_main.c
+index 4bdc7e3..5bf3e74 100644
+--- a/src/lib/evas/canvas/evas_main.c
++++ b/src/lib/evas/canvas/evas_main.c
+@@ -331,6 +331,8 @@ _evas_canvas_efl_object_constructor(Eo *eo_obj, Evas_Public_Data *e)
+ 
+    e->evas = eo_obj;
+    e->output.render_method = RENDER_METHOD_INVALID;
++   e->output.w = 1;
++   e->output.h = 1;
+    e->viewport.w = 1;
+    e->viewport.h = 1;
+    e->framespace.x = 0;
+-- 
+2.20.1
+

@@ -1,0 +1,345 @@
+From 9171c2495b1a05eabaeb0afeee629682cc6f5bac Mon Sep 17 00:00:00 2001
+From: Adhemerval Zanella <adhemerval.zanella@linaro.org>
+Date: Mon, 5 Oct 2020 17:30:05 -0300
+Subject: [PATCH 15/20] posix: Fix -Warray-bounds instances building
+ timer_create [BZ #26687]
+
+GCC 11 -Warray-bounds triggers invalid warnings when building
+Linux timer_create.c:
+
+../sysdeps/unix/sysv/linux/timer_create.c: In function '__timer_create_new':
+../sysdeps/unix/sysv/linux/timer_create.c:83:17: warning: array subscript 'struct timer[0]' is partly outside array bounds of 'unsigned char[8]' [-Warray-bounds]
+   83 |             newp->sigev_notify = (evp != NULL
+      |                 ^~
+../sysdeps/unix/sysv/linux/timer_create.c:59:47: note: referencing an object of size 8 allocated by 'malloc'
+   59 |         struct timer *newp = (struct timer *) malloc (offsetof (struct timer,
+      |                                               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   60 |                                                                 thrfunc));
+      |                                                                 ~~~~~~~~~
+
+The struct allocated for !SIGEV_THREAD timers only requires two 'int'
+fields (sigev_notify and ktimerid) and the offsetof trick tries minimize
+the memory usage by only allocation the required size.  However,
+although the resulting size is suffice for !SIGEV_THREAD time, accessing
+the partially allocated object is error-prone and UB.
+
+This patch fixes both issues by embedding the information whether
+the timer if a SIGEV_THREAD in the returned 'timer_t'.  For
+!SIGEV_THREAD, the resulting 'timer_t' is the returned kernel timer
+identifer (kernel_timer_t), while for SIGEV_THREAD it uses the fact
+malloc returns at least _Alignof (max_align_t) pointers plus that
+valid kernel_timer_t are always positive to set MSB bit of the returned
+'timer_t' to indicate the timer handles a SIGEV_THREAD.
+
+It allows to remove the memory allocation for !SIGEV_THREAD and also
+remove the 'sigev_notify' field from 'struct timer'.
+
+Checked on x86_64-linux-gnu and i686-linux-gnu.
+
+(cherry picked from commit 7a887dd537cd00fe3cdf42b788b3f0e3b430b0ed)
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ sysdeps/unix/sysv/linux/kernel-posix-timers.h | 52 ++++++++++---
+ sysdeps/unix/sysv/linux/timer_create.c        | 74 ++++++-------------
+ sysdeps/unix/sysv/linux/timer_delete.c        | 15 ++--
+ sysdeps/unix/sysv/linux/timer_getoverr.c      |  8 +-
+ sysdeps/unix/sysv/linux/timer_gettime.c       |  4 +-
+ sysdeps/unix/sysv/linux/timer_settime.c       |  4 +-
+ 6 files changed, 76 insertions(+), 81 deletions(-)
+
+diff --git a/sysdeps/unix/sysv/linux/kernel-posix-timers.h b/sysdeps/unix/sysv/linux/kernel-posix-timers.h
+index 31f51997..ad998235 100644
+--- a/sysdeps/unix/sysv/linux/kernel-posix-timers.h
++++ b/sysdeps/unix/sysv/linux/kernel-posix-timers.h
+@@ -43,21 +43,11 @@ extern pthread_mutex_t __active_timer_sigev_thread_lock attribute_hidden;
+ /* Type of timers in the kernel.  */
+ typedef int kernel_timer_t;
+ 
+-
+-/* Internal representation of timer.  */
++/* Internal representation of SIGEV_THREAD timer.  */
+ struct timer
+ {
+-  /* Notification mechanism.  */
+-  int sigev_notify;
+-
+-  /* Timer ID returned by the kernel.  */
+   kernel_timer_t ktimerid;
+ 
+-  /* All new elements must be added after ktimerid.  And if the thrfunc
+-     element is not the third element anymore the memory allocation in
+-     timer_create needs to be changed.  */
+-
+-  /* Parameters for the thread to be started for SIGEV_THREAD.  */
+   void (*thrfunc) (sigval_t);
+   sigval_t sival;
+   pthread_attr_t attr;
+@@ -65,3 +55,43 @@ struct timer
+   /* Next element in list of active SIGEV_THREAD timers.  */
+   struct timer *next;
+ };
++
++
++/* For !SIGEV_THREAD, the resulting 'timer_t' is the returned kernel timer
++   identifer (kernel_timer_t), while for SIGEV_THREAD it uses the fact malloc
++   returns at least _Alignof (max_align_t) pointers plus that valid
++   kernel_timer_t are always positive to set the MSB bit of the returned
++   'timer_t' to indicate the timer handles a SIGEV_THREAD.  */
++
++static inline timer_t
++kernel_timer_to_timerid (kernel_timer_t ktimerid)
++{
++  return (timer_t) ((intptr_t) ktimerid);
++}
++
++static inline timer_t
++timer_to_timerid (struct timer *ptr)
++{
++  return (timer_t) (INTPTR_MIN | (uintptr_t) ptr >> 1);
++}
++
++static inline bool
++timer_is_sigev_thread (timer_t timerid)
++{
++  return (intptr_t) timerid < 0;
++}
++
++static inline struct timer *
++timerid_to_timer (timer_t timerid)
++{
++  return (struct timer *)((uintptr_t) timerid << 1);
++}
++
++static inline kernel_timer_t
++timerid_to_kernel_timer (timer_t timerid)
++{
++  if (timer_is_sigev_thread (timerid))
++    return timerid_to_timer (timerid)->ktimerid;
++  else
++    return (kernel_timer_t) ((uintptr_t) timerid);
++}
+diff --git a/sysdeps/unix/sysv/linux/timer_create.c b/sysdeps/unix/sysv/linux/timer_create.c
+index a49a546e..ad4b0d46 100644
+--- a/sysdeps/unix/sysv/linux/timer_create.c
++++ b/sysdeps/unix/sysv/linux/timer_create.c
+@@ -52,16 +52,6 @@ timer_create (clockid_t clock_id, struct sigevent *evp, timer_t *timerid)
+       {
+ 	struct sigevent local_evp;
+ 
+-	/* We avoid allocating too much memory by basically
+-	   using struct timer as a derived class with the
+-	   first two elements being in the superclass.  We only
+-	   need these two elements here.  */
+-	struct timer *newp = (struct timer *) malloc (offsetof (struct timer,
+-								thrfunc));
+-	if (newp == NULL)
+-	  /* No more memory.  */
+-	  return -1;
+-
+ 	if (evp == NULL)
+ 	  {
+ 	    /* The kernel has to pass up the timer ID which is a
+@@ -69,31 +59,17 @@ timer_create (clockid_t clock_id, struct sigevent *evp, timer_t *timerid)
+ 	       the kernel to determine it.  */
+ 	    local_evp.sigev_notify = SIGEV_SIGNAL;
+ 	    local_evp.sigev_signo = SIGALRM;
+-	    local_evp.sigev_value.sival_ptr = newp;
++	    local_evp.sigev_value.sival_ptr = NULL;
+ 
+ 	    evp = &local_evp;
+ 	  }
+ 
+ 	kernel_timer_t ktimerid;
+-	int retval = INLINE_SYSCALL (timer_create, 3, syscall_clockid, evp,
+-				     &ktimerid);
+-
+-	if (retval != -1)
+-	  {
+-	    newp->sigev_notify = (evp != NULL
+-				  ? evp->sigev_notify : SIGEV_SIGNAL);
+-	    newp->ktimerid = ktimerid;
+-
+-	    *timerid = (timer_t) newp;
+-	  }
+-	else
+-	  {
+-	    /* Cannot allocate the timer, fail.  */
+-	    free (newp);
+-	    retval = -1;
+-	  }
++	if (INLINE_SYSCALL_CALL (timer_create, syscall_clockid, evp,
++				 &ktimerid) == -1)
++	  return -1;
+ 
+-	return retval;
++	*timerid = kernel_timer_to_timerid (ktimerid);
+       }
+     else
+       {
+@@ -106,20 +82,18 @@ timer_create (clockid_t clock_id, struct sigevent *evp, timer_t *timerid)
+ 	    return -1;
+ 	  }
+ 
+-	struct timer *newp;
+-	newp = (struct timer *) malloc (sizeof (struct timer));
++	struct timer *newp = malloc (sizeof (struct timer));
+ 	if (newp == NULL)
+ 	  return -1;
+ 
+ 	/* Copy the thread parameters the user provided.  */
+ 	newp->sival = evp->sigev_value;
+ 	newp->thrfunc = evp->sigev_notify_function;
+-	newp->sigev_notify = SIGEV_THREAD;
+ 
+ 	/* We cannot simply copy the thread attributes since the
+ 	   implementation might keep internal information for
+ 	   each instance.  */
+-	(void) pthread_attr_init (&newp->attr);
++	pthread_attr_init (&newp->attr);
+ 	if (evp->sigev_notify_attributes != NULL)
+ 	  {
+ 	    struct pthread_attr *nattr;
+@@ -137,8 +111,7 @@ timer_create (clockid_t clock_id, struct sigevent *evp, timer_t *timerid)
+ 	  }
+ 
+ 	/* In any case set the detach flag.  */
+-	(void) pthread_attr_setdetachstate (&newp->attr,
+-					    PTHREAD_CREATE_DETACHED);
++	pthread_attr_setdetachstate (&newp->attr, PTHREAD_CREATE_DETACHED);
+ 
+ 	/* Create the event structure for the kernel timer.  */
+ 	struct sigevent sev =
+@@ -150,27 +123,24 @@ timer_create (clockid_t clock_id, struct sigevent *evp, timer_t *timerid)
+ 	/* Create the timer.  */
+ 	INTERNAL_SYSCALL_DECL (err);
+ 	int res;
+-	res = INTERNAL_SYSCALL (timer_create, err, 3,
+-				syscall_clockid, &sev, &newp->ktimerid);
+-	if (! INTERNAL_SYSCALL_ERROR_P (res, err))
++	res = INTERNAL_SYSCALL_CALL (timer_create, syscall_clockid, &sev,
++				     &newp->ktimerid);
++	if (INTERNAL_SYSCALL_ERROR_P (res, err))
+ 	  {
+-	    /* Add to the queue of active timers with thread
+-	       delivery.  */
+-	    pthread_mutex_lock (&__active_timer_sigev_thread_lock);
+-	    newp->next = __active_timer_sigev_thread;
+-	    __active_timer_sigev_thread = newp;
+-	    pthread_mutex_unlock (&__active_timer_sigev_thread_lock);
+-
+-	    *timerid = (timer_t) newp;
+-	    return 0;
++	    free (newp);
++	    __set_errno (INTERNAL_SYSCALL_ERRNO (res, err));
++	    return -1;
+ 	  }
+ 
+-	/* Free the resources.  */
+-	free (newp);
+-
+-	__set_errno (INTERNAL_SYSCALL_ERRNO (res, err));
++	/* Add to the queue of active timers with thread delivery.  */
++	pthread_mutex_lock (&__active_timer_sigev_thread_lock);
++	newp->next = __active_timer_sigev_thread;
++	__active_timer_sigev_thread = newp;
++	pthread_mutex_unlock (&__active_timer_sigev_thread_lock);
+ 
+-	return -1;
++	*timerid = timer_to_timerid (newp);
+       }
+   }
++
++  return 0;
+ }
+diff --git a/sysdeps/unix/sysv/linux/timer_delete.c b/sysdeps/unix/sysv/linux/timer_delete.c
+index e1eb1db5..be459dc3 100644
+--- a/sysdeps/unix/sysv/linux/timer_delete.c
++++ b/sysdeps/unix/sysv/linux/timer_delete.c
+@@ -32,15 +32,15 @@ int
+ timer_delete (timer_t timerid)
+ {
+ #undef timer_delete
+-  struct timer *kt = (struct timer *) timerid;
+-
+-  /* Delete the kernel timer object.  */
+-  int res = INLINE_SYSCALL (timer_delete, 1, kt->ktimerid);
++  kernel_timer_t ktimerid = timerid_to_kernel_timer (timerid);
++  int res = INLINE_SYSCALL_CALL (timer_delete, ktimerid);
+ 
+   if (res == 0)
+     {
+-      if (kt->sigev_notify == SIGEV_THREAD)
++      if (timer_is_sigev_thread (timerid))
+ 	{
++	  struct timer *kt = timerid_to_timer (timerid);
++
+ 	  /* Remove the timer from the list.  */
+ 	  pthread_mutex_lock (&__active_timer_sigev_thread_lock);
+ 	  if (__active_timer_sigev_thread == kt)
+@@ -58,10 +58,9 @@ timer_delete (timer_t timerid)
+ 		  prevp = prevp->next;
+ 	    }
+ 	  pthread_mutex_unlock (&__active_timer_sigev_thread_lock);
+-	}
+ 
+-      /* Free the memory.  */
+-      (void) free (kt);
++	  free (kt);
++	}
+ 
+       return 0;
+     }
+diff --git a/sysdeps/unix/sysv/linux/timer_getoverr.c b/sysdeps/unix/sysv/linux/timer_getoverr.c
+index 26f23e1d..0dfcbe81 100644
+--- a/sysdeps/unix/sysv/linux/timer_getoverr.c
++++ b/sysdeps/unix/sysv/linux/timer_getoverr.c
+@@ -31,10 +31,6 @@ int
+ timer_getoverrun (timer_t timerid)
+ {
+ #undef timer_getoverrun
+-  struct timer *kt = (struct timer *) timerid;
+-
+-  /* Get the information from the kernel.  */
+-  int res = INLINE_SYSCALL (timer_getoverrun, 1, kt->ktimerid);
+-
+-  return res;
++  kernel_timer_t ktimerid = timerid_to_kernel_timer (timerid);
++  return INLINE_SYSCALL_CALL (timer_getoverrun, ktimerid);
+ }
+diff --git a/sysdeps/unix/sysv/linux/timer_gettime.c b/sysdeps/unix/sysv/linux/timer_gettime.c
+index 10a19d9e..a3e1981a 100644
+--- a/sysdeps/unix/sysv/linux/timer_gettime.c
++++ b/sysdeps/unix/sysv/linux/timer_gettime.c
+@@ -32,10 +32,10 @@ int
+ timer_gettime (timer_t timerid, struct itimerspec *value)
+ {
+ #undef timer_gettime
+-  struct timer *kt = (struct timer *) timerid;
++  kernel_timer_t ktimerid = timerid_to_kernel_timer (timerid);
+ 
+   /* Delete the kernel timer object.  */
+-  int res = INLINE_SYSCALL (timer_gettime, 2, kt->ktimerid, value);
++  int res = INLINE_SYSCALL (timer_gettime, 2, ktimerid, value);
+ 
+   return res;
+ }
+diff --git a/sysdeps/unix/sysv/linux/timer_settime.c b/sysdeps/unix/sysv/linux/timer_settime.c
+index 7c938bd4..7038e2a7 100644
+--- a/sysdeps/unix/sysv/linux/timer_settime.c
++++ b/sysdeps/unix/sysv/linux/timer_settime.c
+@@ -33,10 +33,10 @@ timer_settime (timer_t timerid, int flags, const struct itimerspec *value,
+ 	       struct itimerspec *ovalue)
+ {
+ #undef timer_settime
+-  struct timer *kt = (struct timer *) timerid;
++  kernel_timer_t ktimerid = timerid_to_kernel_timer (timerid);
+ 
+   /* Delete the kernel timer object.  */
+-  int res = INLINE_SYSCALL (timer_settime, 4, kt->ktimerid, flags,
++  int res = INLINE_SYSCALL (timer_settime, 4, ktimerid, flags,
+ 			    value, ovalue);
+ 
+   return res;
+-- 
+2.20.1
+

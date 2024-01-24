@@ -1,0 +1,50 @@
+From 0464abb571f35d7086222b007dd5f1a2303b2f32 Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Tue, 12 Jul 2022 12:29:57 +0800
+Subject: [PATCH 05/10] xdg-shell{,-v6}: Fix crash when unbind early
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ src/modules/wl_desktop_shell/xdg.c  | 7 +++++--
+ src/modules/wl_desktop_shell/xdg6.c | 7 +++++--
+ 2 files changed, 10 insertions(+), 4 deletions(-)
+
+diff --git a/src/modules/wl_desktop_shell/xdg.c b/src/modules/wl_desktop_shell/xdg.c
+index 4892eaa70..0f8c973ec 100644
+--- a/src/modules/wl_desktop_shell/xdg.c
++++ b/src/modules/wl_desktop_shell/xdg.c
+@@ -1454,8 +1454,11 @@ _xdg_client_destroy(E_Client *ec, Eina_Bool do_list)
+ 
+         client = wl_resource_get_client(ec->comp_data->surface);
+         res = eina_hash_find(xdg_shell_resources, &client);
+-        v = wl_resource_get_user_data(res);
+-        v->surfaces = eina_list_remove(v->surfaces, shd->surface);
++        if (res)
++          {
++             v = wl_resource_get_user_data(res);
++             v->surfaces = eina_list_remove(v->surfaces, shd->surface);
++          }
+      }
+    if (ec->comp_data->shell.surface)
+      e_shell_surface_destroy(ec->comp_data->shell.surface);
+diff --git a/src/modules/wl_desktop_shell/xdg6.c b/src/modules/wl_desktop_shell/xdg6.c
+index ce236023e..a4a85251c 100644
+--- a/src/modules/wl_desktop_shell/xdg6.c
++++ b/src/modules/wl_desktop_shell/xdg6.c
+@@ -1429,8 +1429,11 @@ _xdg6_client_destroy(E_Client *ec, Eina_Bool do_list)
+ 
+         client = wl_resource_get_client(ec->comp_data->surface);
+         res = eina_hash_find(xdg_shell_resources, &client);
+-        v = wl_resource_get_user_data(res);
+-        v->surfaces = eina_list_remove(v->surfaces, shd->surface);
++        if (res)
++          {
++             v = wl_resource_get_user_data(res);
++             v->surfaces = eina_list_remove(v->surfaces, shd->surface);
++          }
+      }
+    if (ec->comp_data->shell.surface)
+      e_shell_surface_destroy(ec->comp_data->shell.surface);
+-- 
+2.20.1
+

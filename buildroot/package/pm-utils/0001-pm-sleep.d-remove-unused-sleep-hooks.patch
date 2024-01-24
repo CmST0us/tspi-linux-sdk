@@ -1,0 +1,1053 @@
+From 338c2cab495d3d3d62cb7094b7dad78aea7f53eb Mon Sep 17 00:00:00 2001
+From: Yu YongZhen <yuyz@rock-chips.com>
+Date: Wed, 25 Apr 2018 09:25:18 +0800
+Subject: [PATCH] pm:sleep.d: remove unused sleep hooks
+
+---
+ pm/sleep.d/00powersave              |  13 --
+ pm/sleep.d/01grub                   |  34 ---
+ pm/sleep.d/49bluetooth              |  35 ---
+ pm/sleep.d/55NetworkManager         |  42 ----
+ pm/sleep.d/75modules                |  31 ---
+ pm/sleep.d/90clock                  |  27 ---
+ pm/sleep.d/94cpufreq                |  46 ----
+ pm/sleep.d/95led                    |  16 --
+ pm/sleep.d/98video-quirk-db-handler | 450 ------------------------------------
+ pm/sleep.d/99video                  | 219 ------------------
+ pm/sleep.d/Makefile.am              |  12 +-
+ pm/sleep.d/Makefile.in              |  12 +-
+ 12 files changed, 2 insertions(+), 935 deletions(-)
+ delete mode 100644 pm/sleep.d/00powersave
+ delete mode 100644 pm/sleep.d/01grub
+ delete mode 100755 pm/sleep.d/49bluetooth
+ delete mode 100755 pm/sleep.d/55NetworkManager
+ delete mode 100755 pm/sleep.d/75modules
+ delete mode 100755 pm/sleep.d/90clock
+ delete mode 100755 pm/sleep.d/94cpufreq
+ delete mode 100755 pm/sleep.d/95led
+ delete mode 100755 pm/sleep.d/98video-quirk-db-handler
+ delete mode 100755 pm/sleep.d/99video
+
+diff --git a/pm/sleep.d/00powersave b/pm/sleep.d/00powersave
+deleted file mode 100644
+index bf0f98b..0000000
+--- a/pm/sleep.d/00powersave
++++ /dev/null
+@@ -1,13 +0,0 @@
+-#!/bin/sh
+-
+-. "${PM_FUNCTIONS}"
+-
+-command_exists pm-powersave || exit $NA
+-
+-case $1 in
+-    suspend|hibernate) pm-powersave false ;;
+-    resume|thaw)       pm-powersave ;;
+-    *) exit $NA ;;
+-esac
+-exit 0
+-    
+\ No newline at end of file
+diff --git a/pm/sleep.d/01grub b/pm/sleep.d/01grub
+deleted file mode 100644
+index db1d53b..0000000
+--- a/pm/sleep.d/01grub
++++ /dev/null
+@@ -1,34 +0,0 @@
+-#!/bin/sh
+-# Ensure grub will load the correct kernel on resume from hibernate,
+-# TODO: This is rather redhat specific, and very grub specific.
+-
+-default_resume_kernel()
+-{
+-        [ "$1" = "suspend" ] && return $NA
+-	case $(uname -m) in
+-		i?86|x86_64|athlon)
+-	    		;;
+-		*) # this is only valid for x86 and x86_64
+-			return $NA
+-	    		;;
+-	esac
+-
+-	[ -x /sbin/grubby -a -x /sbin/grub ] || return $NA
+-	[ -e "/boot/vmlinuz-$(uname -r)" ] || return 1
+-	out=$(/sbin/grubby --info /boot/vmlinuz-$(uname -r) |grep index)
+-	[ -n "${out}" ] || return 1
+-	current=${out#index=}
+-	echo "savedefault --default=${current} --once" | \
+-		/sbin/grub --device-map=/boot/grub/device.map \
+-		--batch --no-floppy --no-curses >/dev/null
+-
+-	return 0
+-}
+-
+-case "$1" in
+-	hibernate|suspend)
+-		default_resume_kernel $2
+-		;;
+-	*) exit $NA
+-		;;
+-esac
+diff --git a/pm/sleep.d/49bluetooth b/pm/sleep.d/49bluetooth
+deleted file mode 100755
+index d46ba49..0000000
+--- a/pm/sleep.d/49bluetooth
++++ /dev/null
+@@ -1,35 +0,0 @@
+-#!/bin/sh
+-# IBM specific hack to disable/enable bluetooth.
+-# TODO: Doesn't the working USB suspend/resume functionality
+-#       make this code more or less obsolete?
+-
+-. "${PM_FUNCTIONS}"
+-
+-[ -f /proc/acpi/ibm/bluetooth ] || exit $NA
+-
+-suspend_bluetooth()
+-{
+-	if grep -q enabled /proc/acpi/ibm/bluetooth; then
+-		savestate ibm_bluetooth enable
+-		echo disable > /proc/acpi/ibm/bluetooth
+-	else
+-		savestate ibm_bluetooth disable
+-	fi
+-}
+-
+-resume_bluetooth()
+-{
+-	state_exists ibm_bluetooth || return
+-	restorestate ibm_bluetooth > /proc/acpi/ibm/bluetooth
+-}
+-
+-case "$1" in
+-	hibernate|suspend)
+-		suspend_bluetooth
+-		;;
+-	thaw|resume)
+-		resume_bluetooth
+-		;;
+-	*) exit $NA
+-		;;
+-esac
+diff --git a/pm/sleep.d/55NetworkManager b/pm/sleep.d/55NetworkManager
+deleted file mode 100755
+index f3c6df5..0000000
+--- a/pm/sleep.d/55NetworkManager
++++ /dev/null
+@@ -1,42 +0,0 @@
+-#!/bin/sh
+-# If we are running NetworkManager, tell it we are going to sleep.
+-# TODO: Make NetworkManager smarter about how to handle sleep/resume
+-#       If we are asleep for less time than it takes for TCP to reset a
+-#       connection, and we are assigned the same IP on resume, we should
+-#       not break established connections.  Apple can do this, and it is
+-#       rather nifty.
+-
+-. "${PM_FUNCTIONS}"
+-
+-suspend_nm()
+-{
+-	# Tell NetworkManager to shut down networking
+-        printf "Having NetworkManager put all interaces to sleep..."
+-	dbus_send --system                         \
+-		--dest=org.freedesktop.NetworkManager  \
+-		/org/freedesktop/NetworkManager        \
+-		org.freedesktop.NetworkManager.sleep && \
+-	    echo Done. || echo Failed.
+-}
+-
+-resume_nm()
+-{
+-	# Wake up NetworkManager and make it do a new connection
+-	printf "Having NetworkManager wake interfaces back up..."
+-        dbus_send --system                        \
+-		--dest=org.freedesktop.NetworkManager \
+-		/org/freedesktop/NetworkManager       \
+-		org.freedesktop.NetworkManager.wake && \
+-	    echo Done. || echo Failed.
+-}
+-
+-case "$1" in
+-	hibernate|suspend)
+-		suspend_nm
+-		;;
+-	thaw|resume)
+-		resume_nm
+-		;;
+-	*) exit $NA
+-		;;
+-esac
+diff --git a/pm/sleep.d/75modules b/pm/sleep.d/75modules
+deleted file mode 100755
+index 261e70d..0000000
+--- a/pm/sleep.d/75modules
++++ /dev/null
+@@ -1,31 +0,0 @@
+-#!/bin/sh
+-# Unload requested modules.
+-
+-. "${PM_FUNCTIONS}"
+-
+-suspend_modules()
+-{
+-	[ -z "$SUSPEND_MODULES" ] && return $NA
+-	for x in $SUSPEND_MODULES ; do
+-	        printf "Unloading kernel module %s..." "$x"
+-		modunload $x && echo Done. || echo Failed.
+-	done
+-	return 0
+-}
+-
+-resume_modules()
+-{
+-	modreload
+-	echo "Reloaded unloaded modules."
+-}
+-
+-case "$1" in
+-	hibernate|suspend)
+-		suspend_modules
+-		;;
+-	thaw|resume)
+-		resume_modules
+-		;;
+-	*) exit $NA
+-		;;
+-esac
+diff --git a/pm/sleep.d/90clock b/pm/sleep.d/90clock
+deleted file mode 100755
+index d81e2a6..0000000
+--- a/pm/sleep.d/90clock
++++ /dev/null
+@@ -1,27 +0,0 @@
+-#!/bin/sh
+-# Synchronize system time with hardware time.
+-# Modern kernels handle this correctly so we skip this hook by default.
+-
+-. "${PM_FUNCTIONS}"
+-
+-suspend_clock()
+-{
+-        printf "Saving system time to hardware clock..."
+-	/sbin/hwclock --systohc >/dev/null 2>&1 0<&1 && echo Done. || \
+-	    echo Failed.
+-}
+-
+-resume_clock()
+-{
+-        printf "Loading system time from hardware clock..."
+-	/sbin/hwclock --hctosys >/dev/null 2>&1 0<&1 && echo Done. || \
+-	    echo Failed.
+-}
+-
+-is_set "$NEED_CLOCK_SYNC" || exit $NA
+-
+-case "$1" in
+-	hibernate|suspend) suspend_clock ;;
+-	thaw|resume) resume_clock ;;
+-	*) exit $NA ;;
+-esac
+diff --git a/pm/sleep.d/94cpufreq b/pm/sleep.d/94cpufreq
+deleted file mode 100755
+index 6807681..0000000
+--- a/pm/sleep.d/94cpufreq
++++ /dev/null
+@@ -1,46 +0,0 @@
+-#!/bin/sh
+-# Ensure cpu governor is set to something sane.
+-# TODO: Which of the cpu governors is still insane?  File bugs against
+-#       those that are.
+-
+-. "${PM_FUNCTIONS}"
+-
+-[ -d /sys/devices/system/cpu/ ] || exit $NA
+-
+-hibernate_cpufreq()
+-{
+-	( cd /sys/devices/system/cpu/
+-	for x in cpu[0-9]*; do
+-		# if cpufreq is a symlink, it is handled by another cpu. Skip.
+-		[ -L "$x/cpufreq" ] && continue
+-		gov="$x/cpufreq/scaling_governor"
+-		# if we do not have a scaling_governor file, skip.
+-		[ -f "$gov" ] || continue
+-		# if our temporary governor is not available, skip.
+-		grep -q "$TEMPORARY_CPUFREQ_GOVERNOR" \
+-			"$x/cpufreq/scaling_available_governors" || continue
+-		savestate "${x}_governor" < "$gov"
+-		echo "$TEMPORARY_CPUFREQ_GOVERNOR" > "$gov"
+-	done )
+-}
+-
+-thaw_cpufreq()
+-{
+-	( cd /sys/devices/system/cpu/
+-	for x in cpu[0-9]*/cpufreq/scaling_governor ; do
+-		[ -f "$x" ] || continue
+-		state_exists "${x%%/*}_governor" || continue
+-		restorestate "${x%%/*}_governor" > "$x"
+-	done )
+-}
+-
+-case "$1" in
+-	suspend|hibernate)
+-		hibernate_cpufreq
+-		;;
+-	resume|thaw)
+-		thaw_cpufreq
+-		;;
+-	*) exit $NA
+-		;;
+-esac
+diff --git a/pm/sleep.d/95led b/pm/sleep.d/95led
+deleted file mode 100755
+index b4bb970..0000000
+--- a/pm/sleep.d/95led
++++ /dev/null
+@@ -1,16 +0,0 @@
+-#!/bin/sh
+-# On an IBM system. make the suspend LED blink.
+-# TODO: Merge with 95led?  Should be trivial.
+-
+-[ -f /proc/acpi/ibm/led ] || exit $NA
+-
+-case "$1" in
+-	hibernate|suspend)
+-		echo "7 blink" >/proc/acpi/ibm/led
+-		;;
+-	thaw|resume) 
+-		echo "7 off" >/proc/acpi/ibm/led
+-		;;
+-	*) exit $NA
+-		;;
+-esac
+diff --git a/pm/sleep.d/98video-quirk-db-handler b/pm/sleep.d/98video-quirk-db-handler
+deleted file mode 100755
+index e9ea3ca..0000000
+--- a/pm/sleep.d/98video-quirk-db-handler
++++ /dev/null
+@@ -1,450 +0,0 @@
+-#!/bin/bash
+-# Prototype video quirk database handler that does not rely on HAL.
+-
+-shopt -s extglob
+-
+-. "${PM_FUNCTIONS}"
+-
+-[[ $PM_DEBUG ]] && { 
+-    export PS4='${BASH_SOURCE}@${LINENO}(${FUNCNAME[0]}): ';
+-    set -x
+-}
+-
+-possible_video_quirks=" --quirk-dpms-on
+-	   --quirk-dpms-suspend
+-	   --quirk-s3-mode
+-	   --quirk-s3-bios
+-	   --quirk-vbe-post
+-	   --quirk-vbe-post
+-	   --quirk-vga-mode-3
+-	   --quirk-vbemode-restore
+-	   --quirk-vbestate-restore
+-	   --quirk-reset-brightness
+-	   --quirk-radeon-off
+-	   --quirk-no-fb
+-	   --quirk-save-pci"
+-
+-possible_system_properties="system.firmware.version 
+-        system.firmware.vendor
+-	system.firmware.release_date
+-        system.hardware.vendor
+-	system.hardware.product 
+-        system.hardware.version
+-	system.board.product 
+-        system.board.version 
+-        system.board.vendor
+-	system.hardware.primary_video.vendor
+-	system.hardware.primary_video.product
+-	system.hardware.primary_video.driver
+-	system.hardware.primary_video.using_kms
+-	system.kernel.version"
+-
+-has_video_parameters() {
+-    local p params=$(get_parameters)
+-    [[ $params ]] || return 1
+-    for p in $params; do
+-	[[ $possible_video_quirks = *$p* ]] && return
+-    done
+-    return 1
+-}
+-
+-# video specific helper functions.
+-
+-# Are we using the nVidia binary driver?
+-using_nvidia() {  [[ -d /sys/module/nvidia ]]; }
+-
+-# How about the ATI one?
+-using_fglrx() { [[ -d /sys/module/fglrx ]]; }
+-
+-# OK, what about a driver that is using kernel modesetting?
+-using_kms() { grep -q -E '(nouveau|drm)fb' /proc/fb; }
+-
+-# Get some video related values when HAL has not gotten them for us, or 
+-# HAL is not available.
+-videoget() {
+-    local dev pci
+-    pci="/sys/bus/pci/devices"
+-    for dev in "$pci"/*; do
+-	[[ -f "${dev}/class" ]] || continue
+-	[[ "$(cat "${dev}/class")" = "0x030000" ]] || continue
+-	case $1 in
+-	    vendor) RES="$(cat "${dev}/vendor")" ;;
+-	    device) RES="$(cat "${dev}/device")" ;;
+-	    driver) 
+-		if [[ -L ${dev}/driver ]]; then
+-		    RES="$(readlink "${dev}/driver")"
+-		    RES="${RES##*/}"
+-		elif using_nvidia; then
+-		    RES=nvidia
+-		elif using_fglrx; then
+-		    RES=fglrx
+-		fi
+-		;;
+-	    using_kms)
+-		if using_kms; then
+-		    RES=true
+-		else
+-		    RES=false
+-		fi
+-		;;
+-	esac
+-	break
+-    done
+-}
+-
+-# Get some important information about this system.
+-
+-# If we have /sys/class/dmi/id, life is easy, and we do not need to 
+-# depend on HAL or dmidecode.
+-_dmisysget() {
+-    [[ -r /sys/class/dmi/id/$1 ]] || RES=""
+-    read RES < "/sys/class/dmi/id/$1"
+-}
+-
+-dmisysget() {
+-    case $1 in 
+-	system.firmware.vendor) _dmisysget bios_vendor ;;
+-	system.firmware.version) _dmisysget bios_version ;;
+-	system.firmware.release_date) _dmisysget bios_date ;;
+-	system.hardware.vendor) _dmisysget sys_vendor ;;
+-	system.hardware.product) _dmisysget product_name ;;
+-	system.hardware.version) _dmisysget product_version ;;
+-	system.board.product) _dmisysget board_name ;;
+-	system.board.version) _dmisysget board_version ;;
+-	system.board.vendor) _dmisysget board_vendor ;;
+-	system.hardware.primary_video.vendor) videoget vendor ;;
+-	system.hardware.primary_video.product) videoget device ;;
+-	system.hardware.primary_video.driver) videoget driver ;;
+-	system.hardware.primary_video.using_kms) videoget using_kms ;;
+-	system.kernel.version) RES=$(uname -r) ;;
+-	*) return 1
+-    esac
+-}
+-
+-# Get system information using dmidecode.  Slow and ugly, but
+-# should be supported just about everywhere.
+-_dmidecodeget() {
+-    RES=$(dmidecode -s $1)
+-}
+-
+-dmidecodeget() {
+-    case $1 in 
+-	system.firmware.vendor) _dmidecodeget bios-vendor ;;
+-	system.firmware.version) _dmidecodeget bios-version ;;
+-	system.firmware.release_date) _dmidecodeget bios-release-date;;
+-	system.hardware.vendor) _dmidecodeget system-manufacturer;;
+-	system.hardware.product) _dmidecodeget system-product-name;;
+-	system.hardware.version) _dmidecodeget system-version;;
+-	system.board.product) _dmidecodeget baseboard-product-name;;
+-	system.board.version) _dmidecodeget baseboard-version;;
+-	system.board.vendor) _dmidecodeget baseboard-manufacturer;;
+-	*) return 1
+-    esac
+-}
+-
+-# If we have HAL, it has already done most of the work for us.
+-halget() {
+-    local hgp="hal-get-property --udi /org/freedesktop/Hal/devices/computer --key" 
+-    case $1 in
+-	system.firmware.version) RES=$($hgp "$1") ;;
+-	system.firmware.vendor) RES=$($hgp "$1") ;;
+-	system.firmware.release_date) RES=$($hgp "$1") ;;
+-	system.hardware.vendor) RES=$($hgp "$1") ;;
+-	system.hardware.product) RES=$($hgp "$1") ;;
+-	system.hardware.version) RES=$($hgp "$1") ;;
+-	system.board.product) RES=$($hgp "$1") ;;
+-	system.board.version) RES=$($hgp "$1") ;;
+-	system.board.vendor) RES=$($hgp "$1") ;;
+-	*) return 1
+-    esac
+-}
+-
+-canonicalize_dmivar() {
+-    [[ $1 =~ ^[a-z._-]+$ && $possible_system_properties = *$1* ]] || return 1
+-    echo "${1//[-.]/_}"
+-}
+-
+-# Precache the DMI and other information we will need as shell variables.
+-# This will make things easier when we start running for real.
+-precache_dmivars() {
+-    local p q f
+-    for q in $possible_system_properties; do
+-	p=$(canonicalize_dmivar $q) || return 1
+-	RES=""
+-	for f in dmisysget halget dmidecodeget; do
+-	    "$f" "$q" && break || continue 2
+-	done
+-	RES="${RES##+( )}"
+-	RES="${RES%%+( )}"
+-	read "$p" <<<$RES
+-    done
+-    RES=""
+-}
+-
+-# Use bash variable indirection to set RES to the actual parameter
+-# we are looking for. Sanity check the variable we were passed to
+-# keep things sane.
+-getprop() {
+-    RES=""
+-    local p
+-    if ! p=$(canonicalize_dmivar $1); then
+-	echo "Unable to obtain DMI information for $1" >&2
+-	exit 1
+-    fi
+-    RES="${!p}"
+-}
+-
+-# test to see if the parameter passed is a decimal or hexidecimal number
+-# Note the complete lack of floating point support.
+-isnum() {
+-    [[ $1 =~ ^[0-9]+\$  || $1 =~ ^0[xX][0-9a-fA-F]+\$ ]]
+-}
+-
+-# for all the matching functions, 
+-# $2 = the given constant (or regular expression),
+-# $1 = the raw data grabbed from HAL or dmidecode or wherever
+-
+-regex() { [[ $1 =~ ${2//;/|} ]]; }
+-
+-regex_ncase() {
+-    local r
+-    shopt -s nocasematch
+-    regex "$1" "$2"
+-    r=$?
+-    shopt -u nocasematch
+-    return $r
+-}
+-
+-regex_inverse() { ! regex "$1" "$2"; }
+-compare_eq() { [[ $1 = $2 ]]; }
+-compare_ne() { [[ $1 != $2 ]]; }
+-compare_gt() { [[ $1 > $2 ]]; }
+-compare_ge() { compare_eq "$@" || compare_gt "$@"; }
+-compare_lt() { [[ $1 < $2 ]]; }
+-compare_le() { compare_eq "$@" || compare_lt "$@"; }
+-numeric_compare_eq() { (( $1 == $2 )); }
+-numeric_compare_ne() { (( $1 != $2 )); }
+-numeric_compare_gt() { (( $1 > $2 )); }
+-numeric_compare_ge() { (( $1 >= $2 )); }
+-numeric_compare_lt() { (( $1 < $2 )); }
+-numeric_compare_le() { (( $1 <= $2 )); }
+-numeric_compare_eq_list() {
+-    local key val
+-	# $1 = key val to compare
+-	# $2 = list to compare to
+-    key=$1
+-    val="${2//;/ }"
+-    for x in $val; do
+-	(( $key == $x )) && return 0
+-    done
+-    return 1
+-}
+-
+-# Helper function for nVidia g80 gpus.  They require extra special handling 
+-# when not using the nVidia binary driver.
+-have_nvidia_g80() {
+-    numeric_compare_eq $system_hardware_primary_video_vendor 0x10de || return
+-    numeric_compare_eq_list $system_hardware_primary_video_product \
+-	'0x190;0x191;0x192;0x193;0x194;0x195;0x196;0x197;0x198;0x199;0x19a;0x19b;0x19c;0x19d;0x19e;0x19f;0x400;0x401;0x402;0x403;0x404;0x405;0x406;0x407;0x408;0x409;0x40a;0x40b;0x40c;0x40d;0x40e;0x40f;0x420;0x421;0x422;0x423;0x424;0x425;0x426;0x427;0x428;0x429;0x42a;0x42b;0x42c;0x42d;0x42e;0x42f' || return
+-}
+-
+-# Helper function for recent Intel framebuffer drivers.
+-have_smart_intel() {
+-    local kernel_rev=$system_kernel_revision
+-    local driver=$system_hardware_primary_video_driver
+-    # currently, intel kernel modesetting is not quite smart enough
+-    # we still need acpi s3 kernel modesetting hooks, so don't remove those
+-    # options if they were passed.
+-    [[ $driver = i915 && ( $kernel_rev > 2.6.26 || $kernel_rev = 2.6.26 ) ]]
+-}
+-
+-# find the appropriate quirks for this system using the native-format
+-# quirks database. Since the database is tree-ish, we use some stupid
+-# recursion tricks.
+-
+-# $1 = whether to ignore what we are reading
+-_find_native() {
+-    local action key matcher regex
+-    while read action key matcher regex; do
+-	[[ $action && ${action:0:1} != '#' ]] || continue
+-	case $action in
+-	    match) 
+-		if [[ $1 = ignore ]]; then
+-		    _find_native $1
+-		else
+-		    getprop "$key"
+-		    [[ $matcher && $regex ]] || find_native ignore
+-		# if this matcher matches, look at nodes farther out. 
+-		    if $matcher "$RES" "$regex"; then
+-			_find_native work
+-		    else
+-			_find_native ignore
+-		    fi
+-		fi
+-		;;
+-	    endmatch)
+-		[[ $found ]] && return 0 || return 1 ;;
+-	    addquirk) [[ $1 = ignore ]] && continue
+-		found=true
+-		add_parameters "$key"
+-		;;
+-	    delquirk) [[ $1 = ignore ]]&& continue
+-		found=true
+-		remove_parameters "$key"
+-		;;
+-	esac
+-    done
+-}
+-
+-find_native() (
+-    [[ -f $1 ]] || return 1
+-    exec <"$1"
+-    _find_native work
+-     res=$?
+-     get_parameters
+-     return $res
+-)
+-
+-# If we resumed, write out the quirks we used as our last known
+-# working ones for this hardware, kernel, driver, and KMS setting.
+-write_last_known_working() ( 
+-    local matcher quirk
+-    precache_dmivars
+-    exec >"$PM_LKW_QUIRKS"
+-    for prop in system.firmware.version system.firmware.vendor \
+-	system.firmware.release_date system.hardware.vendor \
+-	system.hardware.product system.hardware.version \
+-	system.board.product system.board.version system.board.vendor \
+-	system.hardware.primary_video.vendor \
+-	system.hardware.primary_video.product \
+-	system.hardware.primary_video.driver \
+-	system.hardware.primary_video.using_kms \
+-	system.kernel.version; do
+-	getprop "$prop"
+-	if isnum "$RES"; then
+-	    matcher=numeric_compare_eq
+-	else
+-	    matcher=compare_eq
+-	fi
+-	echo "match $prop $matcher ${RES}"
+-    done
+-    if [[ $QUIRKS ]]; then 
+-	for quirk in $QUIRKS; do
+-	    echo "addquirk $quirk"
+-	done
+-    else
+-	echo "addquirk --quirk-none"
+-    fi
+-    for ((x=1; x<14; x++)); do
+-	echo endmatch
+-    done
+-)
+-
+-case $1 in
+-    suspend|hibernate)
+-        # Aaand.... GO
+-	# cache all the properties we will need.
+-	precache_dmivars
+-
+-	# This logic can also be expressed using entries in the quirkdb,
+-	# but I am too lazy to do that until a final quirk database is 
+-	# formalized.
+-	if has_parameter --quirk-test && has_video_parameters; then
+-	    # The user is explicitly testing video parameters.
+-	    # Use them without the usual filtering. This may cause the system 
+-	    # to blow up, but they explicitly asked for it. 
+-	    remove_parameters --quirk-test
+-	    echo "Quirk testing mode enabled." 
+-	elif using_kms; then
+-            # Using kernel modesetting?  No quirks, and do not change vts.
+-	    remove_parameters $possible_video_quirks
+-	    add_parameters --quirk-no-chvt
+-	    echo "Kernel modesetting video driver detected, not using quirks."
+-	elif using_nvidia; then
+-            # Ditto for nVidia binary drivers
+-	    remove_parameters $possible_video_quirks
+-	    echo "nVidia binary video drive detected, not using quirks."
+-	elif using_fglrx; then
+-	    # fglrx may or may not have to change vts, reports one
+-	    # way or the other welcome.
+-	    remove_parameters $possible_video_quirks
+-	    add_parameters --quirk-none
+-	    echo "ATI Catalyst driver detected, not using quirks."
+-	elif have_nvidia_g80; then
+-            # nVidia G80 GPUs require special handling when not using nvidia
+-	    # binary drivers.  I do not know if noveau requires help or not.
+-	    remove_parameters $possible_video_quirks
+-	    add_parameters --quirk-vbe-post
+-	    echo "nVidia g80 series card detected."
+-	else
+-	    # Go ahead and get our quirks.
+-	    if has_video_parameters; then
+-	        # Parameters from the command line take precedence
+-		# over the database, so do not query it.
+-		echo "Using quirks passed as parameters."
+-	    elif [[ $PM_QUIRKS ]]; then
+-		# If we have $PM_QUIRKS. use it instead of the quirk database
+-		add_parameters $PM_QUIRKS
+-		echo "Using PM_QUIRKS environment variable for quirks."
+-		# If we were not passed any quirks on the command line,
+-		# get them from the database.
+-	    elif QUIRKS=$(find_native "$PM_LKW_QUIRKS"); then
+-		# Known working quirks from our last run are still valid.
+-		# Use them.
+-		add_parameters $QUIRKS
+-		echo "Using last known working set of quirks."
+-	    else
+-		# Our known working quirks from the last run are either
+-		# nonexistent or invalid.  Either way, start over.
+-		rm "$PM_LKW_QUIRKS" >/dev/null 2>&1
+-		for f in "$PM_QUIRKDB"/*.quirkdb
+-		do
+-		    QUIRKS=$(find_native "$f") && break
+-		done
+-		# some default quirks if we did not get any.
+-		if [[ -z $QUIRKS ]]; then 
+-		    QUIRKS="--quirk-vbe-post --quirk-dpms-on 
+-                            --quirk-dpms-suspend --quirk-vbestate-restore
+-			    --quirk-vbemode-restore --quirk-vga-mode-3"
+-		    echo "No quirk database entry for this system, using default."
+-		else
+-		    echo "Using quirks for this system from quirk database."
+-		fi
+-		add_parameters $QUIRKS
+-		savestate video_quirks "$QUIRKS"
+-	    fi
+-	    if have_smart_intel; then
+-	       # Intel without KMS does not require most quirks, no matter
+-	       # what anything else says.  The only ones that seem to 
+-	       # matter are the --quirk-s3 ones, so remove everything else.
+-		remove_parameters --quirk-dpms-on \
+-		    --quirk-dpms-suspend \
+-		    --quirk-vbe-post \
+-		    --quirk-vbe-post \
+-		    --quirk-vga-mode-3 \
+-		    --quirk-vbemode-restore \
+-		    --quirk-vbestate-restore \
+-		    --quirk-reset-brightness \
+-		    --quirk-radeon-off \
+-		    --quirk-no-fb \
+-		    --quirk-save-pci
+-		echo "Cleaning up quirks not needed by Intel video cards."
+-	    fi
+-	fi
+-	;;
+-    thaw|resume)
+-	if state_exists video_quirks; then
+-	    QUIRKS=$(restorestate video_quirks);
+-	    write_last_known_working
+-	    echo "Saving last known working quirks: $QUIRKS"
+-	elif has_parameter --store-quirks-as-lkw; then
+-	    for x in $(get_parameters); do
+-		for y in $possible_video_quirks; do
+-		    [[ $x = $y ]] && QUIRKS=" $QUIRKS $x"
+-		done
+-	    done
+-	    write_last_known_working
+-	    echo "Saving last known working quirks: $QUIRKS"
+-	fi
+-	;;
+-esac
+diff --git a/pm/sleep.d/99video b/pm/sleep.d/99video
+deleted file mode 100755
+index 452a88a..0000000
+--- a/pm/sleep.d/99video
++++ /dev/null
+@@ -1,219 +0,0 @@
+-#!/bin/sh
+-#
+-# Copyright 2006-2007 Richard Hughes <richard@hughsie.com>
+-# Copyright 2007 Peter Jones <pjones@redhat.com>
+-#
+-# This program is free software; you can redistribute it and/or modify
+-# it under the terms of version 2 of the GNU General Public License as
+-# published by the Free Software Foundation.
+-
+-# Handle video quirks.  If you are having suspend/resume issues,
+-# troubleshooting using this hook is probably the best place to start.
+-# If it weren't for video card quirks, suspend/resume on Linux would be 
+-# a whole lot more stable.
+-
+-. "${PM_FUNCTIONS}"
+-
+-for opt in $PM_CMDLINE; do
+-	case "${opt##--quirk-}" in # just quirks, please
+-		dpms-on) 	   QUIRK_DPMS_ON="true" ;;
+-		dpms-suspend) 	   QUIRK_DPMS_SUSPEND="true" ;;
+-		radeon-off) 	   QUIRK_RADEON_OFF="true" ;;
+-		reset-brightness)  QUIRK_RESET_BRIGHTNESS="true" ;;
+-		s3-bios) 	   QUIRK_S3_BIOS="true" ;;
+-		s3-mode) 	   QUIRK_S3_MODE="true" ;;
+-		vbe-post) 	   QUIRK_VBE_POST="true" ;;
+-		vbemode-restore)   QUIRK_VBEMODE_RESTORE="true" ;;
+-		vbestate-restore)  QUIRK_VBESTATE_RESTORE="true" ;;
+-		vga-mode-3) 	   QUIRK_VGA_MODE_3="true" ;;
+-		no-fb) 		   QUIRK_NOFB="true" ;;
+-		save-pci) 	   QUIRK_SAVE_PCI="true" ;;
+-	        no-chvt)           QUIRK_NO_CHVT="true" ;;
+-		none) 		   QUIRK_NONE="true" ;;
+-		*) continue ;;
+-	esac
+-done
+-
+-reset_brightness()
+-{
+-	for bl in /sys/class/backlight/* ; do
+-		[ -f "$bl/brightness" ] || continue
+-		BR="$(cat $bl/brightness)"
+-		echo 0 > "$bl/brightness"
+-		echo "$BR" > "$bl/brightness"
+-	done
+-}
+-
+-if command_exists vbetool; then
+-	vbe() { vbetool "$@"; }
+-else 
+-	vbe() { echo "vbetool not installed!" 1>&2; return 1; }
+-fi
+-
+-if command_exists radeontool; then
+-	radeon() { radeontool "$@"; }
+-else 
+-	radeon() { echo "radeontool not found" 1>&2; return 1; }
+-fi
+-
+-die_if_framebuffer() 
+-{ 
+-	[ -d "/sys/class/graphics/fb0" ] || return
+-	echo "--quirk-no-fb passed, but system is using a framebuffer."
+-	echo "Aborting."
+-	exit 1
+-}
+-
+-
+-save_fbcon()
+-{
+-	local con
+-	for con in /sys/class/graphics/*/state; do
+-		[ -f $con ] || continue
+-		echo 1 >"${con}"
+-	done
+-}
+-
+-resume_fbcon()
+-{
+-	local con
+-	for con in /sys/class/graphics/*/state; do
+-		[ -f $con ] || continue
+-		echo 0 >"${con}"
+-	done
+-}
+-
+-maybe_chvt()
+-{
+-    is_set "$QUIRK_NO_CHVT" && return
+-    fgconsole |savestate console
+-    chvt 63
+-}
+-
+-maybe_deallocvt()
+-{
+-    state_exists console || return 0
+-    chvt $(restorestate console)
+-    deallocvt 63
+-}
+-
+-# Some tiny helper functions for quirk handling
+-quirk() { is_set "$1" && [ -z $QUIRK_NONE ]; }
+-
+-# save/restore vbe state
+-vbe_savestate() { vbe vbestate save |savestate vbestate; }
+-vbe_restorestate() { restorestate vbestate |vbe vbestate restore; }
+-
+-# save/restore the vbe mode
+-vbe_savemode() { vbe vbemode get |savestate vbemode; }
+-vbe_restoremode() 
+-{
+-	# this is a little mode complicated to handle special-casing mode 3.
+-	local vbemode=$(restorestate vbemode)
+-	if [ "$vbemode" = "3" ]; then
+-		vbe vgamode set $vbemode
+-	else 
+-		vbe vbemode set $vbemode
+-	fi
+-}
+-
+-# post the video card
+-vbe_post() 
+-{
+-	local rom="/var/run/video.rom"
+-	# if we do not have a romfile, do not post with it.
+-	[ -f "$rom" ] || unset rom
+-	vbe post $rom
+-	sleep 0.1 
+-}
+-
+-# turn critical bits of radeon cards off/on
+-radeon_off() { radeon dac off; radeon light off; }
+-radeon_on() { radeon dac on; radeon light on; }
+-
+-# save and restore video card PCI config state
+-save_pci() 
+-{
+-	local pci="/sys/bus/pci/devices"
+-	for dev in "${pci}"/*; do
+-		[ -f "${dev}/class" ] || continue
+-		[ $(cat "${dev}/class") = "0x030000" ] || continue
+-		[ -f "${dev}/config" ] || continue
+-		# it is a video card, it has a configuration.  Save it.
+-		savestate "pci_video_${dev##*/}" <${dev}/config
+-	done
+-}
+-
+-restore_pci() 
+-{
+-	local pci="/sys/bus/pci/devices"
+-	for dev in "${pci}"/*; do
+-		state_exists "pci_video_${dev##*/}" || continue
+-		restorestate "pci_video_${dev##*/}" > "${dev}/config"
+-	done
+-}
+-
+-suspend_video()
+-{
+-	# 0=nothing, 1=s3_bios, 2=s3_mode, 3=both
+-	local acpi_flag=0
+-	quirk "${QUIRK_S3_BIOS}" && 		acpi_flag=$(($acpi_flag + 1))
+-	quirk "${QUIRK_S3_MODE}" && 		acpi_flag=$(($acpi_flag + 2))
+-	sysctl -w kernel.acpi_video_flags=$acpi_flag
+-	
+-	quirk "${QUIRK_NOFB}" && 		die_if_framebuffer
+-	quirk "${QUIRK_VBESTATE_RESTORE}" && 	vbe_savestate
+-	quirk "${QUIRK_VBEMODE_RESTORE}" && 	vbe_savemode
+-	quirk "${QUIRK_RADEON_OFF}" && 		radeon_off
+-	quirk "${QUIRK_SAVE_PCI}" && 		save_pci
+-	quirk "${QUIRK_VGA_MODE_3}" && 		vbe vbemode set 3
+-	quirk "${QUIRK_DPMS_SUSPEND}" && 	vbe dpms suspend
+-	save_fbcon
+-}
+-resume_video()
+-{
+-	# We might need to do one or many of these quirks
+-	quirk "${QUIRK_SAVE_PCI}" && 		restore_pci
+-	quirk "${QUIRK_VBE_POST}" && 		vbe_post
+-	quirk "${QUIRK_VBESTATE_RESTORE}" && 	vbe_restorestate
+-	quirk "${QUIRK_VBEMODE_RESTORE}" && 	vbe_restoremode
+-	resume_fbcon 	# also should be handled by a quirk.
+-	quirk "${QUIRK_RADEON_OFF}" && 		radeon_on
+-	quirk "${QUIRK_DPMS_ON}" && 		vbe dpms on
+-	quirk "${QUIRK_RESET_BRIGHTNESS}" && 	reset_brightness
+-	return 0  # avoid spurious hook exit failure message.
+-}
+-
+-help() {
+-	echo  # first echo makes it look nicer.
+-	echo "Video quirk handler options:"
+-	echo
+-	echo "  --quirk-dpms-on"
+-	echo "  --quirk-dpms-suspend"
+-	echo "  --quirk-radeon-off"
+-	echo "  --quirk-reset-brightness"
+-	echo "  --quirk-s3-bios"
+-	echo "  --quirk-s3-mode"
+-	echo "  --quirk-vbe-post"
+-	echo "  --quirk-vbemode-restore"
+-	echo "  --quirk-vbestate-restore"
+-	echo "  --quirk-vga-mode-3"
+-	echo "  --quirk-none"
+-}
+-
+-case "$1" in
+-	suspend) maybe_chvt; suspend_video ;;
+-	hibernate) maybe_chvt
+-		if is_set "$HIBERNATE_RESUME_POST_VIDEO"; then
+-			suspend_video
+-		fi
+-		;;
+-	resume) resume_video; maybe_deallocvt;;
+-	thaw)
+-		if is_set "${HIBERNATE_RESUME_POST_VIDEO}"; then
+-			resume_video
+-		fi
+-		maybe_deallocvt
+-		;;
+-	help) help ;;
+-esac
+diff --git a/pm/sleep.d/Makefile.am b/pm/sleep.d/Makefile.am
+index 2350825..1d7e0fa 100644
+--- a/pm/sleep.d/Makefile.am
++++ b/pm/sleep.d/Makefile.am
+@@ -1,17 +1,7 @@
+ sleepdir = $(libdir)/pm-utils/sleep.d
+ 
+ sleep_SCRIPTS =			\
+-	00logging		\
+-	00powersave		\
+-	01grub			\
+-	49bluetooth		\
+-	55NetworkManager	\
+-	75modules		\
+-	90clock			\
+-	94cpufreq		\
+-	95led			\
+-	98video-quirk-db-handler \
+-	99video
++	00logging
+ 
+ EXTRA_DIST=$(sleep_SCRIPTS)
+ 
+diff --git a/pm/sleep.d/Makefile.in b/pm/sleep.d/Makefile.in
+index d5a9243..c929d17 100644
+--- a/pm/sleep.d/Makefile.in
++++ b/pm/sleep.d/Makefile.in
+@@ -155,17 +155,7 @@ top_builddir = @top_builddir@
+ top_srcdir = @top_srcdir@
+ sleepdir = $(libdir)/pm-utils/sleep.d
+ sleep_SCRIPTS = \
+-	00logging		\
+-	00powersave		\
+-	01grub			\
+-	49bluetooth		\
+-	55NetworkManager	\
+-	75modules		\
+-	90clock			\
+-	94cpufreq		\
+-	95led			\
+-	98video-quirk-db-handler \
+-	99video
++	00logging
+ 
+ EXTRA_DIST = $(sleep_SCRIPTS)
+ all: all-am
+-- 
+1.9.1
+

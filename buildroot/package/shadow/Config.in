@@ -1,0 +1,81 @@
+menuconfig BR2_PACKAGE_SHADOW
+	bool "shadow"
+	depends on BR2_TOOLCHAIN_HEADERS_AT_LEAST_4_14
+	help
+	  Utilities to deal with user accounts.
+
+	  https://github.com/shadow-maint/shadow
+
+if BR2_PACKAGE_SHADOW
+
+config BR2_PACKAGE_SHADOW_SHADOWGRP
+	bool "shadowgrp"
+	default y
+	help
+	  Enable shadow group support.
+
+if BR2_PACKAGE_LINUX_PAM
+
+config BR2_PACKAGE_SHADOW_ACCOUNT_TOOLS_SETUID
+	bool "account-tools-setuid"
+	help
+	  Install the user and group management tools setuid and authenticate the
+	  callers.
+
+endif # BR2_PACKAGE_LINUX_PAM
+
+config BR2_PACKAGE_SHADOW_UTMPX
+	bool "utmpx"
+	help
+	  Enable loggin in utmpx / wtmpx.
+
+config BR2_PACKAGE_SHADOW_SUBORDINATE_IDS
+	bool "subordinate-ids"
+	default y
+	help
+	  Support subordinate ids.
+
+config BR2_PACKAGE_SHADOW_SHA_CRYPT
+	bool "sha-crypt"
+	default y
+	help
+	  Allow the SHA256 and SHA512 password encryption algorithms.
+
+config BR2_PACKAGE_SHADOW_BCRYPT
+	bool "bcrypt"
+	help
+	  Allow the bcrypt password encryption algorithm.
+
+config BR2_PACKAGE_SHADOW_YESCRYPT
+	bool "yescrypt"
+	help
+	  Allow the yescrypt password encryption algorithm.
+
+config BR2_PACKAGE_SHADOW_NSCD
+	bool "nscd"
+	default y
+	help
+	  Enable support for nscd.
+
+config BR2_PACKAGE_SHADOW_SSSD
+	bool "sssd"
+	default y
+	help
+	  Define to support flushing of sssd caches.
+
+config BR2_PACKAGE_SHADOW_GROUP_NAME_MAX_LENGTH
+	int "group-name-max-length"
+	default 16
+	help
+	  Set max group name length. (0 equals infinity)
+
+config BR2_PACKAGE_SHADOW_SU
+	bool "su"
+	default y
+	help
+	  Build and install su program.
+
+endif # BR2_PACKAGE_SHADOW
+
+comment "shadow needs a toolchain w/ headers >= 4.14"
+	depends on !BR2_TOOLCHAIN_HEADERS_AT_LEAST_4_14

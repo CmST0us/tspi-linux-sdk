@@ -1,0 +1,39 @@
+From 14e932fe817492a2a053b6b3e912210b1a9a5a2c Mon Sep 17 00:00:00 2001
+From: Joseph Myers <joseph@codesourcery.com>
+Date: Fri, 30 Oct 2020 21:39:12 +0000
+Subject: [PATCH 06/20] Do not use array parameter to new_composite_name (bug
+ 26726)
+
+Among the warnings causing a glibc build with GCC 11 to fail is one
+for a call new_composite_name in setlocale.c.  The newnames argument
+is declared as an array with __LC_LAST elements, but when the category
+argument is not LC_ALL, it actually only has one element.  Since the
+number of elements depends on the first argument to the function, it
+seems clearer to declare the argument as a pointer.
+
+Tested with build-many-glibcs.py for arm-linux-gnueabi, where this
+allows the build to get further.
+
+Reviewed-by: DJ Delorie <dj@redhat.com>
+(cherry picked from commit 5c3b0374ebe0aa4b0a434c0addb4c455886a0986)
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ locale/setlocale.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/locale/setlocale.c b/locale/setlocale.c
+index e4de907e..6d160c9c 100644
+--- a/locale/setlocale.c
++++ b/locale/setlocale.c
+@@ -137,7 +137,7 @@ extern int _nl_msg_cat_cntr;
+ 
+ /* Construct a new composite name.  */
+ static char *
+-new_composite_name (int category, const char *newnames[__LC_LAST])
++new_composite_name (int category, const char **newnames)
+ {
+   size_t last_len = 0;
+   size_t cumlen = 0;
+-- 
+2.20.1
+

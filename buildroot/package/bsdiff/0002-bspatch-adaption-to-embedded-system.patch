@@ -1,0 +1,108 @@
+From 60babcd97b871c8f037b426beb57f21d20d57a9e Mon Sep 17 00:00:00 2001
+From: Shunqian Zheng <zhengsq@rock-chips.com>
+Date: Thu, 6 Jan 2022 15:06:44 +0800
+Subject: [PATCH] bspatch: adaption to embedded system
+
+Use mmap to avoid large memory allocation.
+Support read old file from block device(e.g. /dev/mmcblkMpN), which
+requires an extra old-file-size argument.
+
+Signed-off-by: Shunqian Zheng <zhengsq@rock-chips.com>
+---
+ bspatch.c | 50 +++++++++++++++++++++++++++++++++++---------------
+ 1 file changed, 35 insertions(+), 15 deletions(-)
+
+diff --git a/bspatch.c b/bspatch.c
+index de47d2a..0c6952c 100644
+--- a/bspatch.c
++++ b/bspatch.c
+@@ -36,6 +36,8 @@ __FBSDID("$FreeBSD: src/usr.bin/bsdiff/bspatch/bspatch.c,v 1.1 2005/08/06 01:59:
+ #include <unistd.h>
+ #include <fcntl.h>
+ #include <sys/types.h>
++#include <sys/mman.h>
++#include <sys/stat.h>
+ 
+ static off_t offtin(u_char *buf)
+ {
+@@ -69,8 +71,25 @@ int main(int argc,char * argv[])
+ 	off_t ctrl[3];
+ 	off_t lenread;
+ 	off_t i;
+-
+-	if(argc!=4) errx(1,"usage: %s oldfile newfile patchfile\n",argv[0]);
++	struct stat old_stat;
++
++	if(argc!=4 && argc!=5) errx(1,"usage: %s oldfile newfile patchfile\n"
++		"             or\n"
++		"                %s /dev/mmcblkMpN newfile patchfile oldsize\n", argv[0]);
++
++	oldsize = 0;
++	stat(argv[1], &old_stat);
++	if (old_stat.st_mode & S_IFBLK && argc == 5) {
++		oldsize = atoi(argv[4]);
++	} else if (old_stat.st_mode & S_IFREG && argc == 4) {
++		if(((fd=open(argv[1],O_RDONLY,0))<0) ||
++		   ((oldsize=lseek(fd,0,SEEK_END))<=0) ||
++		   (close(fd)==-1))
++			 err(1,"file %s size err!",argv[1]);
++	} else {
++		errx(1, "oldfile shall be regular file or block device,\n"
++			"         for block device, the oldfile_size arg is needed\n");
++	}
+ 
+ 	/* Open patch file */
+ 	if ((f = fopen(argv[3], "r")) == NULL)
+@@ -105,7 +124,7 @@ int main(int argc,char * argv[])
+ 	bzctrllen=offtin(header+8);
+ 	bzdatalen=offtin(header+16);
+ 	newsize=offtin(header+24);
+-	if((bzctrllen<0) || (bzdatalen<0) || (newsize<0))
++	if((bzctrllen<0) || (bzdatalen<0) || (newsize<=0))
+ 		errx(1,"Corrupt patch\n");
+ 
+ 	/* Close patch file and re-open it via libbzip2 at the right places */
+@@ -133,13 +152,19 @@ int main(int argc,char * argv[])
+ 	if ((epfbz2 = BZ2_bzReadOpen(&ebz2err, epf, 0, 0, NULL, 0)) == NULL)
+ 		errx(1, "BZ2_bzReadOpen, bz2err = %d", ebz2err);
+ 
++	//if oldfile is a block device, get oldsize from arg
+ 	if(((fd=open(argv[1],O_RDONLY,0))<0) ||
+-		((oldsize=lseek(fd,0,SEEK_END))==-1) ||
+-		((old=malloc(oldsize+1))==NULL) ||
+-		(lseek(fd,0,SEEK_SET)!=0) ||
+-		(read(fd,old,oldsize)!=oldsize) ||
++		((old=mmap(NULL,oldsize,PROT_READ,MAP_SHARED|MAP_POPULATE,fd,0))==MAP_FAILED) ||
+ 		(close(fd)==-1)) err(1,"%s",argv[1]);
+-	if((new=malloc(newsize+1))==NULL) err(1,NULL);
++
++	/* mmap the new file */
++	if(((fd=open(argv[2],O_CREAT|O_TRUNC|O_RDWR,0666))<0) ||
++		(lseek(fd,newsize-1,SEEK_SET)!=(newsize-1)) ||
++		(write(fd, "E", 1) != 1) ||
++		(lseek(fd,0,SEEK_SET)!=0) ||
++		((new=mmap(NULL,newsize,PROT_READ | PROT_WRITE,MAP_SHARED,fd,0))==MAP_FAILED) ||
++		(close(fd)==-1))
++		err(1,"%s",argv[2]);
+ 
+ 	oldpos=0;newpos=0;
+ 	while(newpos<newsize) {
+@@ -193,13 +218,8 @@ int main(int argc,char * argv[])
+ 	if (fclose(cpf) || fclose(dpf) || fclose(epf))
+ 		err(1, "fclose(%s)", argv[3]);
+ 
+-	/* Write the new file */
+-	if(((fd=open(argv[2],O_CREAT|O_TRUNC|O_WRONLY,0666))<0) ||
+-		(write(fd,new,newsize)!=newsize) || (close(fd)==-1))
+-		err(1,"%s",argv[2]);
+-
+-	free(new);
+-	free(old);
++	munmap(new, newsize);
++	munmap(old, oldsize);
+ 
+ 	return 0;
+ }
+-- 
+2.25.1
+

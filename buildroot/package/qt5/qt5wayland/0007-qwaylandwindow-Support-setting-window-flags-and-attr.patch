@@ -1,0 +1,148 @@
+From d4bd42f942efbc2c93ccc420969c88ff20bfdaab Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Thu, 7 May 2020 09:12:08 +0800
+Subject: [PATCH 07/17] qwaylandwindow: Support setting window flags and attrs
+
+Support setting window flags and attrs through app_id, for example:
+app_id = "attrs=alpha:0.5;flags=stay-on-top|stay-on-bottom|no-focus"
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ src/client/qwaylandwindow.cpp | 60 +++++++++++++++++++++++++++++++++++
+ src/client/qwaylandwindow_p.h |  6 ++++
+ 2 files changed, 66 insertions(+)
+
+diff --git a/src/client/qwaylandwindow.cpp b/src/client/qwaylandwindow.cpp
+index 6ec9e99..7c18a72 100644
+--- a/src/client/qwaylandwindow.cpp
++++ b/src/client/qwaylandwindow.cpp
+@@ -117,6 +117,35 @@ void QWaylandWindow::ensureSize()
+         mBackingStore->ensureSize();
+ }
+ 
++/* HACK: Set window status through app id */
++void QWaylandWindow::applyWindowStatus()
++{
++    char s[256];
++
++    if (!mShellSurface)
++        return;
++
++    snprintf(s, sizeof(s), "attrs=alpha:%f|", mOpacity);
++
++    strcat(s, ";flags=");
++
++    if (mBlocked)
++        strcat(s, "blocked|");
++    else
++        strcat(s, "-blocked|");
++
++#define SET_FLAG(flag, str) \
++    if (mFlags & (flag)) strcat(s, str "|"); \
++    else strcat(s, "-" str "|");
++
++    SET_FLAG(Qt::WindowStaysOnTopHint, "stay-on-top");
++    SET_FLAG(Qt::WindowStaysOnBottomHint, "stay-on-bottom");
++    SET_FLAG(Qt::WindowDoesNotAcceptFocus, "no-focus");
++    SET_FLAG(Qt::WindowTransparentForInput, "trans-input");
++
++    mShellSurface->setAppId(QLatin1String(s));
++}
++
+ void QWaylandWindow::initWindow()
+ {
+     if (window()->type() == Qt::Desktop)
+@@ -464,6 +493,13 @@ void QWaylandWindow::lower()
+         mShellSurface->lower();
+ }
+ 
++void QWaylandWindow::setOpacity(qreal level)
++{
++    mOpacity = level;
++
++    applyWindowStatus();
++}
++
+ void QWaylandWindow::setMask(const QRegion &mask)
+ {
+     QReadLocker locker(&mSurfaceLock);
+@@ -492,6 +528,28 @@ void QWaylandWindow::setMask(const QRegion &mask)
+     mSurface->commit();
+ }
+ 
++bool QWaylandWindow::windowEvent(QEvent *event)
++{
++    switch (event->type()) {
++    case QEvent::WindowBlocked:
++        {
++            mBlocked = true;
++            applyWindowStatus();
++        }
++        break;
++    case QEvent::WindowUnblocked:
++        {
++            mBlocked = false;
++            applyWindowStatus();
++        }
++        break;
++    default:
++        break;
++    }
++
++    return QPlatformWindow::windowEvent(event);
++}
++
+ void QWaylandWindow::applyConfigureWhenPossible()
+ {
+     QMutexLocker resizeLocker(&mResizeLock);
+@@ -810,6 +868,8 @@ void QWaylandWindow::setWindowFlags(Qt::WindowFlags flags)
+ 
+     mFlags = flags;
+     createDecoration();
++
++    applyWindowStatus();
+ }
+ 
+ bool QWaylandWindow::createDecoration()
+diff --git a/src/client/qwaylandwindow_p.h b/src/client/qwaylandwindow_p.h
+index c0a7634..afd318c 100644
+--- a/src/client/qwaylandwindow_p.h
++++ b/src/client/qwaylandwindow_p.h
+@@ -153,8 +153,11 @@ public:
+     void raise() override;
+     void lower() override;
+ 
++    void setOpacity(qreal level) override;
+     void setMask(const QRegion &region) override;
+ 
++    bool windowEvent(QEvent *event) override;
++
+     int scale() const;
+     qreal devicePixelRatio() const override;
+ 
+@@ -257,12 +260,14 @@ protected:
+     QRegion mMask;
+     QRegion mOpaqueArea;
+     Qt::WindowStates mLastReportedWindowStates = Qt::WindowNoState;
++    qreal mOpacity = 1.0f;
+ 
+     QWaylandShmBackingStore *mBackingStore = nullptr;
+     QWaylandBuffer *mQueuedBuffer = nullptr;
+     QRegion mQueuedBufferDamage;
+ 
+ private:
++    void applyWindowStatus();
+     void setGeometry_helper(const QRect &rect);
+     void initWindow();
+     void initializeWlSurface();
+@@ -279,6 +284,7 @@ private:
+     void handleScreensChanged();
+     void sendRecursiveExposeEvent();
+ 
++    bool mBlocked = false;
+     bool mInResizeFromApplyConfigure = false;
+     bool lastVisible = false;
+     QRect mLastExposeGeometry;
+-- 
+2.20.1
+

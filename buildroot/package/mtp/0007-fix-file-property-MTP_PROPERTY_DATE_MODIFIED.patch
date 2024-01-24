@@ -1,0 +1,35 @@
+From e0e9a98697a39ad101ffde1b76ef66aacbea840f Mon Sep 17 00:00:00 2001
+From: Yu YongZhen <yuyz@rock-chips.com>
+Date: Thu, 12 Dec 2019 15:36:14 +0800
+Subject: [PATCH] fix file property MTP_PROPERTY_DATE_MODIFIED
+
+Signed-off-by: Yu YongZhen <yuyz@rock-chips.com>
+---
+ server/UbuntuMtpDatabase.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/server/UbuntuMtpDatabase.h b/server/UbuntuMtpDatabase.h
+index 71561bf..73200de 100755
+--- a/server/UbuntuMtpDatabase.h
++++ b/server/UbuntuMtpDatabase.h
+@@ -815,7 +815,7 @@ public:
+          */
+ 
+         if (property == ALL_PROPERTIES)
+-             packet.putUInt32(6 * handles.size());
++             packet.putUInt32(14 * handles.size());
+         else
+              packet.putUInt32(1 * handles.size());
+ 
+@@ -921,7 +921,7 @@ public:
+                 char date[20];
+                 formatDateTime(entry.last_modified, date, sizeof(date));
+                 packet.putUInt32(i);
+-                packet.putUInt16(MTP_PROPERTY_DATE_CREATED);
++                packet.putUInt16(MTP_PROPERTY_DATE_MODIFIED);
+                 packet.putUInt16(MTP_TYPE_STR);
+                 packet.putString(date);
+             }
+-- 
+2.7.4
+

@@ -1,0 +1,9 @@
+config BR2_PACKAGE_LIBV4L_RKMPP
+	bool "A rockchip-mpp V4L2 wrapper plugin for chromium V4L2 VDA"
+	depends on BR2_PACKAGE_LIBV4L
+	depends on BR2_PACKAGE_ROCKCHIP_MPP
+	help
+	  A V4L2 plugin that wraps rockchip-mpp for the chromium's V4L2 VDA.
+	  The original idea comes from v4l-gst.
+
+	  https://github.com/JeffyCN/libv4l-rkmpp

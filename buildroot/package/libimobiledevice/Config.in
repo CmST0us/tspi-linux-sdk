@@ -1,0 +1,9 @@
+config BR2_PACKAGE_LIBIMOBILEDEVICE
+	bool "libimobiledevice"
+	select BR2_PACKAGE_LIBIMOBILEDEVICE_GLUE
+	select BR2_PACKAGE_LIBUSBMUXD
+	help
+	  A library to communicate with services on iOS devices using
+	  native protocols.
+
+	  http://www.libimobiledevice.org/

@@ -1,0 +1,145 @@
+From 96ba65f77bce3d1470214438e74355b2282eafe7 Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Thu, 20 Jun 2019 10:32:04 +0800
+Subject: [PATCH 4/5] tsmf: gstreamer: X11: Fix wrong render x/y
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ channels/tsmf/client/gstreamer/tsmf_X11.c      | 18 ++++++++++++++----
+ .../tsmf/client/gstreamer/tsmf_gstreamer.c     | 11 +++++++++++
+ channels/tsmf/client/gstreamer/tsmf_platform.h |  1 +
+ 3 files changed, 26 insertions(+), 4 deletions(-)
+
+diff --git a/channels/tsmf/client/gstreamer/tsmf_X11.c b/channels/tsmf/client/gstreamer/tsmf_X11.c
+index ae383df..6028104 100644
+--- a/channels/tsmf/client/gstreamer/tsmf_X11.c
++++ b/channels/tsmf/client/gstreamer/tsmf_X11.c
+@@ -97,6 +97,8 @@ static GstBusSyncReply tsmf_platform_bus_sync_handler(GstBus* bus, GstMessage* m
+ 
+ 	TSMFGstreamerDecoder* decoder = user_data;
+ 
++	int renderX, renderY;
++
+ 	if (GST_MESSAGE_TYPE(message) != GST_MESSAGE_ELEMENT)
+ 		return GST_BUS_PASS;
+ 
+@@ -112,6 +114,9 @@ static GstBusSyncReply tsmf_platform_bus_sync_handler(GstBus* bus, GstMessage* m
+ 
+ 	if (hdl->subwin)
+ 	{
++		renderX = decoder->gstWindowless ? hdl->subwinX : 0;
++		renderY = decoder->gstWindowless ? hdl->subwinY : 0;
++
+ #if GST_VERSION_MAJOR > 0
+ 		hdl->overlay = GST_VIDEO_OVERLAY(GST_MESSAGE_SRC(message));
+ 		gst_video_overlay_set_window_handle(hdl->overlay, hdl->subwin);
+@@ -130,7 +135,7 @@ static GstBusSyncReply tsmf_platform_bus_sync_handler(GstBus* bus, GstMessage* m
+ 		    hdl->subwinY != -1)
+ 		{
+ #if GST_VERSION_MAJOR > 0
+-			if (!gst_video_overlay_set_render_rectangle(hdl->overlay, 0, 0, hdl->subwinWidth,
++			if (!gst_video_overlay_set_render_rectangle(hdl->overlay, renderX, renderY, hdl->subwinWidth,
+ 			                                            hdl->subwinHeight))
+ 			{
+ 				WLog_ERR(TAG, "Could not resize overlay!");
+@@ -138,7 +143,7 @@ static GstBusSyncReply tsmf_platform_bus_sync_handler(GstBus* bus, GstMessage* m
+ 
+ 			gst_video_overlay_expose(hdl->overlay);
+ #else
+-			if (!gst_x_overlay_set_render_rectangle(hdl->overlay, 0, 0, hdl->subwinWidth,
++			if (!gst_x_overlay_set_render_rectangle(hdl->overlay, renderX, renderY, hdl->subwinWidth,
+ 			                                        hdl->subwinHeight))
+ 			{
+ 				WLog_ERR(TAG, "Could not resize overlay!");
+@@ -335,6 +340,8 @@ int tsmf_window_resize(TSMFGstreamerDecoder* decoder, int x, int y, int width, i
+ {
+ 	struct X11Handle* hdl;
+ 
++	int renderX, renderY;
++
+ 	if (!decoder)
+ 		return -1;
+ 
+@@ -346,6 +353,9 @@ int tsmf_window_resize(TSMFGstreamerDecoder* decoder, int x, int y, int width, i
+ 	if (!decoder->platform)
+ 		return -1;
+ 
++	renderX = decoder->gstWindowless ? x : 0;
++	renderY = decoder->gstWindowless ? y : 0;
++
+ 	hdl = (struct X11Handle*)decoder->platform;
+ 	DEBUG_TSMF("resize: x=%d, y=%d, w=%d, h=%d", x, y, width, height);
+ 
+@@ -353,14 +363,14 @@ int tsmf_window_resize(TSMFGstreamerDecoder* decoder, int x, int y, int width, i
+ 	{
+ #if GST_VERSION_MAJOR > 0
+ 
+-		if (!gst_video_overlay_set_render_rectangle(hdl->overlay, 0, 0, width, height))
++		if (!gst_video_overlay_set_render_rectangle(hdl->overlay, renderX, renderY, width, height))
+ 		{
+ 			WLog_ERR(TAG, "Could not resize overlay!");
+ 		}
+ 
+ 		gst_video_overlay_expose(hdl->overlay);
+ #else
+-		if (!gst_x_overlay_set_render_rectangle(hdl->overlay, 0, 0, width, height))
++		if (!gst_x_overlay_set_render_rectangle(hdl->overlay, renderX, renderY, width, height))
+ 		{
+ 			WLog_ERR(TAG, "Could not resize overlay!");
+ 		}
+diff --git a/channels/tsmf/client/gstreamer/tsmf_gstreamer.c b/channels/tsmf/client/gstreamer/tsmf_gstreamer.c
+index 61ea6a8..2b39d46 100644
+--- a/channels/tsmf/client/gstreamer/tsmf_gstreamer.c
++++ b/channels/tsmf/client/gstreamer/tsmf_gstreamer.c
+@@ -78,11 +78,18 @@ static const char* get_type(TSMFGstreamerDecoder* mdecoder)
+ 	}
+ }
+ 
++#if GST_VERSION_MAJOR > 0
++static void cb_child_added(GstChildProxy *child_proxy, GObject *object, const char* name, TSMFGstreamerDecoder* mdecoder)
++#else
+ static void cb_child_added(GstChildProxy* child_proxy, GObject* object,
+                            TSMFGstreamerDecoder* mdecoder)
++#endif
+ {
+ 	DEBUG_TSMF("NAME: %s", G_OBJECT_TYPE_NAME(object));
+ 
++	if (!g_strcmp0(G_OBJECT_TYPE_NAME(object), "GstKMSSink"))
++		mdecoder->gstWindowless = TRUE;
++
+ 	if (!g_strcmp0(G_OBJECT_TYPE_NAME(object), "GstXvImageSink") ||
+ 	    !g_strcmp0(G_OBJECT_TYPE_NAME(object), "GstXImageSink") ||
+ 	    !g_strcmp0(G_OBJECT_TYPE_NAME(object), "GstFluVAAutoSink"))
+@@ -623,6 +630,9 @@ BOOL tsmf_gstreamer_pipeline_build(TSMFGstreamerDecoder* mdecoder)
+ 	g_object_set(G_OBJECT(mdecoder->queue), "max-size-bytes", 0, NULL);
+ 	g_object_set(G_OBJECT(mdecoder->queue), "max-size-time", (guint64)0, NULL);
+ 
++	if (!g_strcmp0(G_OBJECT_TYPE_NAME(mdecoder->outsink), "GstKMSSink"))
++		mdecoder->gstWindowless = TRUE;
++
+ 	/* Only set these properties if not an autosink, otherwise we will set properties when real
+ 	 * sinks are added */
+ 	if (!g_strcmp0(G_OBJECT_TYPE_NAME(mdecoder->outsink), "GstAutoVideoSink") &&
+@@ -1051,6 +1061,7 @@ ITSMFDecoder* freerdp_tsmf_client_subsystem_entry(void)
+ 	decoder->iface.BufferLevel = tsmf_gstreamer_buffer_level;
+ 	decoder->iface.SetAckFunc = tsmf_gstreamer_ack;
+ 	decoder->iface.SetSyncFunc = tsmf_gstreamer_sync;
++	decoder->gstWindowless = FALSE;
+ 	decoder->paused = FALSE;
+ 	decoder->gstVolume = 0.5;
+ 	decoder->gstMuted = FALSE;
+diff --git a/channels/tsmf/client/gstreamer/tsmf_platform.h b/channels/tsmf/client/gstreamer/tsmf_platform.h
+index b6f0b33..9b6f778 100644
+--- a/channels/tsmf/client/gstreamer/tsmf_platform.h
++++ b/channels/tsmf/client/gstreamer/tsmf_platform.h
+@@ -41,6 +41,7 @@ typedef struct _TSMFGstreamerDecoder
+ 	GstElement* queue;
+ 	GstElement* outsink;
+ 	GstElement* volume;
++	BOOL gstWindowless;
+ 
+ 	BOOL ready;
+ 	BOOL paused;
+-- 
+2.20.1
+

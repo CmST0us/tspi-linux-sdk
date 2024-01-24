@@ -1,0 +1,29 @@
+From 7582981e3855df92f7b5b715a41631730604a0a3 Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Sat, 27 Mar 2021 04:05:16 +0800
+Subject: [PATCH 24/28] bearer: linux: Support Bearer4G
+
+Add missing support for Bearer4G.
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ src/plugins/bearer/generic/qgenericengine.cpp | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/src/plugins/bearer/generic/qgenericengine.cpp b/src/plugins/bearer/generic/qgenericengine.cpp
+index b1f28849..2e4247c0 100644
+--- a/src/plugins/bearer/generic/qgenericengine.cpp
++++ b/src/plugins/bearer/generic/qgenericengine.cpp
+@@ -139,6 +139,9 @@ static QNetworkConfiguration::BearerType qGetInterfaceType(const QString &interf
+ 
+     if (result >= 0 && request.ifr_hwaddr.sa_family == ARPHRD_ETHER)
+         return QNetworkConfiguration::BearerEthernet;
++
++    if (result >= 0 && request.ifr_hwaddr.sa_family == ARPHRD_PPP)
++        return QNetworkConfiguration::Bearer4G;
+ #elif defined(Q_OS_WINRT)
+     ComPtr<INetworkInformationStatics> networkInfoStatics;
+     HRESULT hr = GetActivationFactory(HString::MakeReference(RuntimeClass_Windows_Networking_Connectivity_NetworkInformation).Get(), &networkInfoStatics);
+-- 
+2.20.1
+

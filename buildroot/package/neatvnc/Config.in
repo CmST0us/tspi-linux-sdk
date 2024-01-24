@@ -1,0 +1,11 @@
+config BR2_PACKAGE_NEATVNC
+	bool "neatvnc"
+	depends on BR2_TOOLCHAIN_HAS_THREADS
+	select BR2_PACKAGE_AML
+	select BR2_PACKAGE_PIXMAN
+	select BR2_PACKAGE_ZLIB
+	help
+	  A liberally licensed VNC server library with a clean interface
+	  Resources.
+
+	  https://github.com/any1/neatvnc

@@ -1,0 +1,12 @@
+#include "base/base.config"
+#include "chips/rk3566_rk3568_aarch64.config"
+#include "tee_aarch64_v2.config"
+# BR2_PACKAGE_ANDROID_TOOLS is reset to default
+# BR2_PACKAGE_INPUT_EVENT_DAEMON is reset to default
+BR2_PACKAGE_LUKSMETA=y
+# BR2_PACKAGE_PM_UTILS is reset to default
+# BR2_PACKAGE_UPDATE is reset to default
+# BR2_PACKAGE_UTIL_LINUX_MOUNT is reset to default
+# BR2_PACKAGE_VENDOR_STORAGE is reset to default
+# BR2_ROOTFS_DEVICE_CREATION_DYNAMIC_EUDEV is reset to default
+BR2_ROOTFS_OVERLAY+="board/rockchip/common/security-ramdisk-overlay/"

@@ -1,0 +1,28 @@
+From 37505b3e099a6f91afea609245cbeb15136558c0 Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Fri, 24 Jun 2022 23:22:28 +0800
+Subject: [PATCH 14/14] media: gpu: chromeos: Define MT21C for old kernel
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ chromium/media/gpu/chromeos/fourcc.h | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/chromium/media/gpu/chromeos/fourcc.h b/chromium/media/gpu/chromeos/fourcc.h
+index 652f203e0..4aaf49a5b 100644
+--- a/chromium/media/gpu/chromeos/fourcc.h
++++ b/chromium/media/gpu/chromeos/fourcc.h
+@@ -13,6 +13,10 @@
+ #include "media/gpu/buildflags.h"
+ #include "media/gpu/media_gpu_export.h"
+ 
++#ifndef V4L2_PIX_FMT_MT21C
++#define V4L2_PIX_FMT_MT21C    v4l2_fourcc('M', 'T', '2', '1') /* Mediatek compressed block mode  */
++#endif
++
+ namespace media {
+ 
+ // Composes a Fourcc value.
+-- 
+2.20.1
+

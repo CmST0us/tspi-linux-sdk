@@ -1,0 +1,49 @@
+From 29c87ee9c3aac4811880d3a0d844ba311813be4f Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Fri, 9 Aug 2019 10:01:15 +0800
+Subject: [PATCH 5/5] client: X11: Disable complex regions by default
+
+Doing complex regions update is very slow with xserver 2d
+accels(exa/glamor), let's disable it by default.
+
+Use "XFREERDP_COMPLEX_REGIONS" environment to enable it.
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ client/X11/xf_client.c | 3 +++
+ client/X11/xf_gdi.c    | 5 +++++
+ 2 files changed, 8 insertions(+)
+
+diff --git a/client/X11/xf_client.c b/client/X11/xf_client.c
+index bd3eb0d..c846642 100644
+--- a/client/X11/xf_client.c
++++ b/client/X11/xf_client.c
+@@ -1939,6 +1939,9 @@ static BOOL xfreerdp_client_new(freerdp* instance, rdpContext* context)
+ 	xfc->_NET_SUPPORTED = XInternAtom(xfc->display, "_NET_SUPPORTED", True);
+ 	xfc->_NET_SUPPORTING_WM_CHECK = XInternAtom(xfc->display, "_NET_SUPPORTING_WM_CHECK", True);
+ 
++	if (!getenv("XFREERDP_COMPLEX_REGIONS"))
++		xfc->complex_regions = FALSE;
++
+ 	if ((xfc->_NET_SUPPORTED != None) && (xfc->_NET_SUPPORTING_WM_CHECK != None))
+ 	{
+ 		Atom actual_type = 0;
+diff --git a/client/X11/xf_gdi.c b/client/X11/xf_gdi.c
+index 4f52853..cde6904 100644
+--- a/client/X11/xf_gdi.c
++++ b/client/X11/xf_gdi.c
+@@ -994,6 +994,11 @@ static BOOL xf_gdi_update_screen(xfContext* xfc, const BYTE* pSrcData, UINT32 sc
+ 	XSetFunction(xfc->display, xfc->gc, GXcopy);
+ 	XSetFillStyle(xfc->display, xfc->gc, FillSolid);
+ 
++	if (!xfc->complex_regions) {
++		nbRects = 1;
++		rects = region16_extents(pRegion);
++	}
++
+ 	for (i = 0; i < nbRects; i++)
+ 	{
+ 		UINT32 left = rects[i].left;
+-- 
+2.20.1
+

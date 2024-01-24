@@ -1,0 +1,27 @@
+From bb9093eb419f98bbb8ba2171643a1b27469e782f Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Thu, 16 Jul 2020 17:18:42 +0800
+Subject: [PATCH 11/17] qwaylandshmbackingstore: Ignore resizing with no screen
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ src/client/qwaylandshmbackingstore.cpp | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/src/client/qwaylandshmbackingstore.cpp b/src/client/qwaylandshmbackingstore.cpp
+index dc7ff67..515ec19 100644
+--- a/src/client/qwaylandshmbackingstore.cpp
++++ b/src/client/qwaylandshmbackingstore.cpp
+@@ -274,6 +274,9 @@ void QWaylandShmBackingStore::resize(const QSize &size)
+     int scale = waylandWindow()->scale();
+     QSize sizeWithMargins = (size + QSize(margins.left()+margins.right(),margins.top()+margins.bottom())) * scale;
+ 
++    if (!QPlatformScreen::platformScreenForWindow(window()))
++        return;
++
+     // We look for a free buffer to draw into. If the buffer is not the last buffer we used,
+     // that is mBackBuffer, and the size is the same we memcpy the old content into the new
+     // buffer so that QPainter is happy to find the stuff it had drawn before. If the new
+-- 
+2.20.1
+

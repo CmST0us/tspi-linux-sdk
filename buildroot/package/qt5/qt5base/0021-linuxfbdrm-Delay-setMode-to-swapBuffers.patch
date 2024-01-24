@@ -1,0 +1,81 @@
+From 87e926e7e26f96e04f0e28b588db7b50ebaa5c48 Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Fri, 14 Aug 2020 14:28:31 +0800
+Subject: [PATCH 21/28] linuxfbdrm: Delay setMode to swapBuffers()
+
+To avoid blank screen during setup.
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ .../platforms/linuxfb/qlinuxfbdrmscreen.cpp   | 29 ++++++++++---------
+ 1 file changed, 16 insertions(+), 13 deletions(-)
+
+diff --git a/src/plugins/platforms/linuxfb/qlinuxfbdrmscreen.cpp b/src/plugins/platforms/linuxfb/qlinuxfbdrmscreen.cpp
+index 5745ef06..b6e3960d 100644
+--- a/src/plugins/platforms/linuxfb/qlinuxfbdrmscreen.cpp
++++ b/src/plugins/platforms/linuxfb/qlinuxfbdrmscreen.cpp
+@@ -102,8 +102,8 @@ public:
+ 
+     void createFramebuffers();
+     void destroyFramebuffers();
+-    void setMode();
+ 
++    void setMode(Output *output);
+     void swapBuffers(Output *output);
+     void waitForFlip(Output *output);
+ 
+@@ -339,19 +339,21 @@ void QLinuxFbDevice::destroyFramebuffers()
+     }
+ }
+ 
+-void QLinuxFbDevice::setMode()
++void QLinuxFbDevice::setMode(Output *output)
+ {
+-    for (Output &output : m_outputs) {
+-        drmModeModeInfo &modeInfo(output.kmsOutput.modes[output.kmsOutput.mode]);
+-        if (drmModeSetCrtc(fd(), output.kmsOutput.crtc_id, output.fb[0].fb, 0, 0,
+-                           &output.kmsOutput.connector_id, 1, &modeInfo) == -1) {
+-            qErrnoWarning(errno, "Failed to set mode");
+-            return;
+-        }
++    drmModeModeInfo &modeInfo(output->kmsOutput.modes[output->kmsOutput.mode]);
++
++    if (output->kmsOutput.mode_set)
++        return;
+ 
+-        output.kmsOutput.mode_set = true; // have cleanup() to restore the mode
+-        output.kmsOutput.setPowerState(this, QPlatformScreen::PowerStateOn);
++    if (drmModeSetCrtc(fd(), output->kmsOutput.crtc_id, output->fb[0].fb, 0, 0,
++                       &output->kmsOutput.connector_id, 1, &modeInfo) == -1) {
++        qErrnoWarning(errno, "Failed to set mode");
++        return;
+     }
++
++    output->kmsOutput.mode_set = true; // have cleanup() to restore the mode
++    output->kmsOutput.setPowerState(this, QPlatformScreen::PowerStateOn);
+ }
+ 
+ void QLinuxFbDevice::pageFlipHandler(int fd, unsigned int sequence,
+@@ -394,7 +396,10 @@ void QLinuxFbDevice::swapBuffers(Output *output)
+     waitForFlip(output);
+ #endif
+ 
++    setMode(output);
++
+     Framebuffer &fb(output->fb[output->backFb]);
++
+     if (drmModePageFlip(fd(), output->kmsOutput.crtc_id, fb.fb, DRM_MODE_PAGE_FLIP_EVENT, output) == -1) {
+         qErrnoWarning(errno, "Page flip failed");
+         return;
+@@ -443,8 +448,6 @@ bool QLinuxFbDrmScreen::initialize()
+     m_device->createScreens();
+     // Now off to dumb buffer specifics.
+     m_device->createFramebuffers();
+-    // Do the modesetting.
+-    m_device->setMode();
+ 
+     QLinuxFbDevice::Output *output(m_device->output(0));
+ 
+-- 
+2.20.1
+

@@ -1,0 +1,4 @@
+config BR2_PACKAGE_NPU_POWERCTRL
+	bool "Rockchip NPU power control for linux"
+	help
+	  Rockchip NPU power control for linux.

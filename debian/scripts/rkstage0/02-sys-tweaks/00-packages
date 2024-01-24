@@ -1,0 +1,10 @@
+vim
+sudo
+ssh
+console-setup keyboard-configuration debconf-utils
+strace
+tree
+psmisc
+bash-completion
+util-linux
+htop

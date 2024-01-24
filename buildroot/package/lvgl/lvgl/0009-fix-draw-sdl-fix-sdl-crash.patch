@@ -1,0 +1,28 @@
+From eadaf8794804bdb4a11737d8616d25bbdda85c3f Mon Sep 17 00:00:00 2001
+From: Jiajian Wu <jair.wu@rock-chips.com>
+Date: Thu, 15 Dec 2022 17:08:38 +0800
+Subject: [PATCH 09/11] fix(draw): sdl: fix sdl crash
+
+Signed-off-by: Jiajian Wu <jair.wu@rock-chips.com>
+---
+ src/draw/sdl/lv_draw_sdl_utils.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/src/draw/sdl/lv_draw_sdl_utils.c b/src/draw/sdl/lv_draw_sdl_utils.c
+index 3ca0fad45..c1a77d409 100644
+--- a/src/draw/sdl/lv_draw_sdl_utils.c
++++ b/src/draw/sdl/lv_draw_sdl_utils.c
+@@ -143,6 +143,10 @@ void lv_sdl_to_8bpp(uint8_t * dest, const uint8_t * src, int width, int height,
+     int curbit;
+     uint8_t opa_mask;
+     const uint8_t * opa_table;
++
++    if (!dest || !src)
++        return;
++
+     switch(bpp) {
+         case 1:
+             opa_mask = 0x1;
+-- 
+2.25.1
+

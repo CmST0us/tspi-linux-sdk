@@ -1,0 +1,68 @@
+From 5f484c213e6a508c4b602315f73eb206748caa1d Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Fri, 1 Jul 2022 19:20:48 +0800
+Subject: [PATCH 06/10] ecore_drm2: Fallback to first possible CRTC of encoder
+
+TODO: Avoid using assigned CRTC.
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ src/lib/ecore_drm2/ecore_drm2_outputs.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/src/lib/ecore_drm2/ecore_drm2_outputs.c b/src/lib/ecore_drm2/ecore_drm2_outputs.c
+index 77123c9..d7ff6a2 100644
+--- a/src/lib/ecore_drm2/ecore_drm2_outputs.c
++++ b/src/lib/ecore_drm2/ecore_drm2_outputs.c
+@@ -253,7 +253,7 @@ static int
+ _output_crtc_find(const drmModeRes *res, const drmModeConnector *conn, int fd)
+ {
+    drmModeEncoder *enc;
+-   uint32_t crtc;
++   uint32_t crtc, possible_crtcs;
+    int i = 0, j = 0;
+ 
+    /* Skip all disconnected connectors...
+@@ -271,8 +271,12 @@ _output_crtc_find(const drmModeRes *res, const drmModeConnector *conn, int fd)
+         if (!enc) continue;
+ 
+         crtc = enc->crtc_id;
++        possible_crtcs = enc->possible_crtcs;
+         sym_drmModeFreeEncoder(enc);
+ 
++        if (!crtc)
++          return ffs(possible_crtcs) - 1;
++
+         for (i = 0; i < res->count_crtcs; i++)
+           if (crtc == res->crtcs[i])
+             return i;
+@@ -1433,6 +1437,9 @@ ecore_drm2_output_possible_crtc_get(Ecore_Drm2_Output *output, unsigned int crtc
+    EINA_SAFETY_ON_NULL_RETURN_VAL(output, EINA_FALSE);
+    EINA_SAFETY_ON_TRUE_RETURN_VAL((output->fd < 0), EINA_FALSE);
+ 
++   if (output->crtc_id != crtc)
++      return EINA_FALSE;
++
+    res = sym_drmModeGetResources(output->fd);
+    if (!res) return EINA_FALSE;
+ 
+@@ -1446,8 +1453,6 @@ ecore_drm2_output_possible_crtc_get(Ecore_Drm2_Output *output, unsigned int crtc
+              enc = sym_drmModeGetEncoder(output->fd, conn->encoders[j]);
+              if (!enc) continue;
+ 
+-             if (enc->crtc_id != crtc) goto next;
+-
+              p = enc->possible_crtcs;
+ 
+              for (k = 0; k < res->count_crtcs; k++)
+@@ -1461,7 +1466,6 @@ ecore_drm2_output_possible_crtc_get(Ecore_Drm2_Output *output, unsigned int crtc
+                     }
+                }
+ 
+-next:
+              sym_drmModeFreeEncoder(enc);
+              if (ret) break;
+           }
+-- 
+2.20.1
+

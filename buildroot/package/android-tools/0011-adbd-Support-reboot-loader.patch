@@ -1,0 +1,30 @@
+From b493c0ab51b621ac7aa88c89ae127d0bc8efd5bf Mon Sep 17 00:00:00 2001
+From: Eddie Cai <eddie.cai.linux@gmail.com>
+Date: Thu, 6 Sep 2018 17:58:09 +0800
+Subject: [PATCH 11/20] adbd: Support reboot loader
+
+Signed-off-by: Eddie Cai <eddie.cai.linux@gmail.com>
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ core/adbd/services.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/core/adbd/services.c b/core/adbd/services.c
+index 6de1951..e4eedc9 100644
+--- a/core/adbd/services.c
++++ b/core/adbd/services.c
+@@ -185,6 +185,11 @@ void reboot_service(int fd, void *arg)
+         waitpid(pid, &ret, 0);
+     }
+ 
++    if (strstr(arg, "loader")) {
++	system("reboot loader");
++	while(1) { pause(); }
++    }
++
+     ret = android_reboot(ANDROID_RB_RESTART2, 0, (char *) arg);
+     if (ret < 0) {
+         snprintf(buf, sizeof(buf), "reboot failed: %s\n", strerror(errno));
+-- 
+2.20.1
+

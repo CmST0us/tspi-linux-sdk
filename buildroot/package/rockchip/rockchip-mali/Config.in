@@ -1,0 +1,112 @@
+config BR2_PACKAGE_ROCKCHIP_MALI
+	bool "rockchip-mali"
+	depends on BR2_INSTALL_LIBSTDCPP
+	depends on BR2_TOOLCHAIN_USES_GLIBC
+	depends on BR2_TOOLCHAIN_HAS_THREADS
+	depends on BR2_aarch64 || (BR2_ARM_EABIHF && BR2_arm)
+	select BR2_PACKAGE_LIBDRM
+	help
+	  Install the binary user-space components for the ARM Mali GPU.
+	  This package requires a kernel with the ARM Mali GPU Kernel
+	  Drivers enabled.
+
+if BR2_PACKAGE_ROCKCHIP_MALI
+
+comment "mali optimize level"
+
+choice
+	prompt "optimize level"
+	default BR2_PACKAGE_ROCKCHIP_MALI_OPTIMIZE_3
+	help
+	  Set the optimization level for rockchip-mali
+
+config BR2_PACKAGE_ROCKCHIP_MALI_OPTIMIZE_3
+	bool "optimization level 3"
+	help
+	  Built with -O3.
+
+config BR2_PACKAGE_ROCKCHIP_MALI_OPTIMIZE_s
+	bool "optimization level s"
+	help
+	  Built with -Os.
+
+endchoice
+
+comment "mali special configs"
+
+config BR2_PACKAGE_ROCKCHIP_MALI_CUSTOM_PLATFORM
+	string "custom platform"
+	default ""
+
+comment "mali API features"
+
+config BR2_PACKAGE_ROCKCHIP_MALI_HAS_DUMMY
+	bool "dummy winsys"
+	help
+	  For dummy platform.
+
+config BR2_PACKAGE_ROCKCHIP_MALI_HAS_WAYLAND
+	bool "wayland winsys"
+	default y
+	depends on BR2_PACKAGE_WAYLAND
+	select BR2_PACKAGE_WAYLAND_WITHOUT_EGL
+	help
+	  For wayland platform.
+
+config BR2_PACKAGE_ROCKCHIP_MALI_HAS_X11
+	bool "X11 winsys"
+	default y
+	depends on BR2_PACKAGE_XORG7
+	select BR2_PACKAGE_LIBXCB
+	select BR2_PACKAGE_XLIB_LIBX11
+	help
+	  For X11 platform.
+
+config BR2_PACKAGE_ROCKCHIP_MALI_HAS_GBM
+	bool "GBM"
+	default y if !BR2_PACKAGE_ROCKCHIP_MALI_HAS_DUMMY
+	select BR2_PACKAGE_HAS_LIBGBM
+	select BR2_PACKAGE_LIBGBM_HAS_FEATURE_FORMAT_MODIFIER_PLANE_COUNT
+	select BR2_PACKAGE_LIBGBM_HAS_FEATURE_DMA_BUF
+	help
+	  For GBM platform.
+
+config BR2_PACKAGE_ROCKCHIP_MALI_HAS_EGL
+	bool "OpenGL EGL"
+	default y
+	select BR2_PACKAGE_HAS_LIBEGL
+
+config BR2_PACKAGE_ROCKCHIP_MALI_HAS_EGL_WAYLAND
+	bool "OpenGL EGL Wayland"
+	default y
+	depends on BR2_PACKAGE_ROCKCHIP_MALI_HAS_EGL
+	depends on BR2_PACKAGE_ROCKCHIP_MALI_HAS_WAYLAND
+	select BR2_PACKAGE_HAS_LIBEGL_WAYLAND
+
+config BR2_PACKAGE_ROCKCHIP_MALI_HAS_GLES
+	bool "OpenGL ES"
+	default y
+	select BR2_PACKAGE_HAS_LIBGLES
+
+config BR2_PACKAGE_ROCKCHIP_MALI_HAS_OPENCL
+	bool "OpenCL"
+	default y
+	select BR2_PACKAGE_HAS_LIBOPENCL
+
+config BR2_PACKAGE_ROCKCHIP_MALI_HAS_VULKAN
+	bool "Vulkan"
+	select BR2_PACKAGE_VULKAN_LOADER
+
+config BR2_PACKAGE_PROVIDES_LIBEGL
+	default "rockchip-mali" if BR2_PACKAGE_ROCKCHIP_MALI_HAS_EGL
+
+config BR2_PACKAGE_PROVIDES_LIBGBM
+	default "rockchip-mali" if BR2_PACKAGE_ROCKCHIP_MALI_HAS_GBM
+
+config BR2_PACKAGE_PROVIDES_LIBGLES
+	default "rockchip-mali" if BR2_PACKAGE_ROCKCHIP_MALI_HAS_GLES
+
+config BR2_PACKAGE_PROVIDES_LIBOPENCL
+	default "rockchip-mali" if BR2_PACKAGE_ROCKCHIP_MALI_HAS_OPENCL
+
+endif

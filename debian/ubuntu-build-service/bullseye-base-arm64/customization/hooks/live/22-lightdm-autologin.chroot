@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# Enable lightdm autologin for linaro user
+if [ -e /etc/lightdm/lightdm.conf ]; then 
+  sed -i "s|^#autologin-user=.*|autologin-user=linaro|" /etc/lightdm/lightdm.conf
+  sed -i "s|^#autologin-user-timeout=.*|autologin-user-timeout=0|" /etc/lightdm/lightdm.conf
+fi

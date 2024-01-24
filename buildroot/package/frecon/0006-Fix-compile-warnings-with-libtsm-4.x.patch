@@ -1,0 +1,35 @@
+From 57acefb1d5f2793ba80addb5f837ab624e836c17 Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Fri, 10 Jun 2022 16:39:32 +0800
+Subject: [PATCH 6/9] Fix compile warnings with libtsm 4.x
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ term.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/term.c b/term.c
+index 8f391ef..4b24ff6 100644
+--- a/term.c
++++ b/term.c
+@@ -85,7 +85,7 @@ static void __attribute__ ((noreturn)) term_run_child(terminal_t* terminal)
+ 	}
+ }
+ 
+-static int term_draw_cell(struct tsm_screen* screen, uint32_t id,
++static int term_draw_cell(struct tsm_screen* screen, uint64_t id,
+ 			  const uint32_t* ch, size_t len,
+ 			  unsigned int cwidth, unsigned int posx,
+ 			  unsigned int posy,
+@@ -353,7 +353,7 @@ static bool is_xterm_osc(char *osc)
+ 	return false;
+ }
+ 
+-static void term_osc_cb(struct tsm_vte *vte, const uint32_t *osc_string,
++static void term_osc_cb(struct tsm_vte *vte, const char *osc_string,
+ 			size_t osc_len, void *data)
+ {
+ 	terminal_t* terminal = (terminal_t*)data;
+-- 
+2.20.1
+

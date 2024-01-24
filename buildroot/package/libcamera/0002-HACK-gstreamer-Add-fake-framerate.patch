@@ -1,0 +1,30 @@
+From 01935f600b5fe273ecd29ea7b9f4cfb64dca3557 Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Tue, 29 Nov 2022 19:30:14 +0800
+Subject: [PATCH 2/3] HACK: gstreamer: Add fake framerate
+
+The sinks might need it.
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ src/gstreamer/gstlibcamera-utils.cpp | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/src/gstreamer/gstlibcamera-utils.cpp b/src/gstreamer/gstlibcamera-utils.cpp
+index c97c0d4..27f6124 100644
+--- a/src/gstreamer/gstlibcamera-utils.cpp
++++ b/src/gstreamer/gstlibcamera-utils.cpp
+@@ -139,6 +139,10 @@ gst_libcamera_stream_configuration_to_caps(const StreamConfiguration &stream_cfg
+ 			  "width", G_TYPE_INT, stream_cfg.size.width,
+ 			  "height", G_TYPE_INT, stream_cfg.size.height,
+ 			  nullptr);
++
++	// HACK: libcamera doesn't support framerate, but we need it
++	gst_structure_set (s, "framerate", GST_TYPE_FRACTION, 30, 1, NULL);
++
+ 	gst_caps_append_structure(caps, s);
+ 
+ 	return caps;
+-- 
+2.20.1
+

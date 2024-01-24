@@ -1,0 +1,15 @@
+config BR2_PACKAGE_PROCRANK_LINUX
+	bool "procrank_linux"
+	help
+	  procrank is a tool commonly used by Android platform
+	  developers to find out how much memory is really being used.
+
+	  https://github.com/csimmonds/procrank_linux
+
+if BR2_PACKAGE_PROCRANK_LINUX
+
+config BR2_PACKAGE_PROCRANK_LINUX_STATIC
+	bool "Enable static"
+	default y if BR2_STATIC_LIBS
+
+endif

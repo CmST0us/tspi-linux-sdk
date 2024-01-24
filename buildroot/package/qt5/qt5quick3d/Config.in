@@ -1,0 +1,21 @@
+config BR2_PACKAGE_QT5QUICK3D
+	bool "qt5quick3d"
+	depends on BR2_PACKAGE_QT5_JSCORE_AVAILABLE # qt5declarative
+	depends on BR2_PACKAGE_QT5_GL_AVAILABLE # qt5declarative_quick
+	select BR2_PACKAGE_QT5BASE_GUI
+	select BR2_PACKAGE_QT5DECLARATIVE
+	select BR2_PACKAGE_QT5DECLARATIVE_QUICK
+	help
+	  Qt is a cross-platform application and UI framework for
+	  developers using C++.
+
+	  This package corresponds to the qt5quick3d module.
+
+	  Enable the assimp package to gain the assimp sceneparser
+	  plugin.
+
+	  https://doc.qt.io/qt-5/qtquick3d-index.html
+
+comment "qt5quick3d module needs an OpenGL-capable backend"
+	depends on BR2_PACKAGE_QT5_JSCORE_AVAILABLE
+	depends on !BR2_PACKAGE_QT5_GL_AVAILABLE

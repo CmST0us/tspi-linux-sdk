@@ -1,0 +1,6 @@
+config BR2_PACKAGE_STRESSAPPTEST
+	bool "stressapptest"
+	help
+	  Stressful Application Test - userspace memory and IO test.
+
+	  https://github.com/stressapptest/stressapptest

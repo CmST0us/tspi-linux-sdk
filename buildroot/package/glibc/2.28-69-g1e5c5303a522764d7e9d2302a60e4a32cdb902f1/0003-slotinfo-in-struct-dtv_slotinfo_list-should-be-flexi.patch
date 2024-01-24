@@ -1,0 +1,202 @@
+From 8e7921aab0aa215d32ed90db3dd150d2c5d25d49 Mon Sep 17 00:00:00 2001
+From: Florian Weimer <fweimer@redhat.com>
+Date: Tue, 12 Nov 2019 12:41:34 +0100
+Subject: [PATCH 03/20] slotinfo in struct dtv_slotinfo_list should be flexible
+ array [BZ #25097]
+
+GCC 10 will warn about subscribing inner length zero arrays.  Use a GCC
+extension in csu/libc-tls.c to allocate space for the static_slotinfo
+variable.  Adjust nptl_db so that the type description machinery does
+not attempt to determine the size of the flexible array member slotinfo.
+
+Change-Id: I51be146a7857186a4ede0bb40b332509487bdde8
+(cherry picked from commit cba932a5a9e91cffd7f4172d7e91f9b2efb1f84b)
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ csu/libc-tls.c             | 34 ++++++++++++++--------------------
+ nptl_db/db-symbols.h       |  3 +++
+ nptl_db/db_info.c          |  6 ++++++
+ nptl_db/structs.def        |  2 +-
+ nptl_db/thread_dbP.h       |  4 ++++
+ sysdeps/generic/ldsodefs.h |  2 +-
+ 6 files changed, 29 insertions(+), 22 deletions(-)
+
+diff --git a/csu/libc-tls.c b/csu/libc-tls.c
+index 28a79441..334baa72 100644
+--- a/csu/libc-tls.c
++++ b/csu/libc-tls.c
+@@ -23,7 +23,7 @@
+ #include <unistd.h>
+ #include <stdio.h>
+ #include <sys/param.h>
+-
++#include <array_length.h>
+ 
+ #ifdef SHARED
+  #error makefile bug, this file is for static only
+@@ -32,17 +32,11 @@
+ dtv_t _dl_static_dtv[2 + TLS_SLOTINFO_SURPLUS];
+ 
+ 
+-static struct
+-{
+-  struct dtv_slotinfo_list si;
+-  /* The dtv_slotinfo_list data structure does not include the actual
+-     information since it is defined as an array of size zero.  We define
+-     here the necessary entries.  Note that it is not important whether
+-     there is padding or not since we will always access the information
+-     through the 'si' element.  */
+-  struct dtv_slotinfo info[2 + TLS_SLOTINFO_SURPLUS];
+-} static_slotinfo;
+-
++static struct dtv_slotinfo_list static_slotinfo =
++  {
++   /* Allocate an array of 2 + TLS_SLOTINFO_SURPLUS elements.  */
++   .slotinfo =  { [array_length (_dl_static_dtv) - 1] = { 0 } },
++  };
+ 
+ /* Highest dtv index currently needed.  */
+ size_t _dl_tls_max_dtv_idx;
+@@ -72,16 +66,16 @@ TLS_INIT_HELPER
+ static void
+ init_slotinfo (void)
+ {
+-  /* Create the slotinfo list.  */
+-  static_slotinfo.si.len = (((char *) (&static_slotinfo + 1)
+-			     - (char *) &static_slotinfo.si.slotinfo[0])
+-			    / sizeof static_slotinfo.si.slotinfo[0]);
+-  // static_slotinfo.si.next = NULL;	already zero
++  /* Create the slotinfo list.  Note that the type of static_slotinfo
++     has effectively a zero-length array, so we cannot use the size of
++     static_slotinfo to determine the array length.  */
++  static_slotinfo.len = array_length (_dl_static_dtv);
++  /* static_slotinfo.next = NULL; -- Already zero.  */
+ 
+   /* The slotinfo list.  Will be extended by the code doing dynamic
+      linking.  */
+   GL(dl_tls_max_dtv_idx) = 1;
+-  GL(dl_tls_dtv_slotinfo_list) = &static_slotinfo.si;
++  GL(dl_tls_dtv_slotinfo_list) = &static_slotinfo;
+ }
+ 
+ static void
+@@ -205,8 +199,8 @@ __libc_setup_tls (void)
+   main_map->l_tls_modid = 1;
+ 
+   init_slotinfo ();
+-  // static_slotinfo.si.slotinfo[1].gen = 0; already zero
+-  static_slotinfo.si.slotinfo[1].map = main_map;
++  /* static_slotinfo.slotinfo[1].gen = 0; -- Already zero.  */
++  static_slotinfo.slotinfo[1].map = main_map;
+ 
+   memsz = roundup (memsz, align ?: 1);
+ 
+diff --git a/nptl_db/db-symbols.h b/nptl_db/db-symbols.h
+index e2f7cf63..1be6c72a 100644
+--- a/nptl_db/db-symbols.h
++++ b/nptl_db/db-symbols.h
+@@ -25,6 +25,7 @@
+   DB_LOOKUP_NAME (SYM_SIZEOF_##type, _thread_db_sizeof_##type)
+ #define DB_STRUCT_FIELD(type, field) \
+   DB_LOOKUP_NAME (SYM_##type##_FIELD_##field, _thread_db_##type##_##field)
++#define DB_STRUCT_FLEXIBLE_ARRAY(type, field) DB_STRUCT_FIELD (type, field)
+ #define DB_SYMBOL(name) \
+   DB_LOOKUP_NAME (SYM_##name, name)
+ #define DB_FUNCTION(name) \
+@@ -36,6 +37,8 @@
+ # include "structs.def"
+ 
+ # undef DB_STRUCT
++# undef DB_STRUCT_FIELD
++# undef DB_STRUCT_FLEXIBLE_ARRAY
+ # undef DB_FUNCTION
+ # undef DB_SYMBOL
+ # undef DB_VARIABLE
+diff --git a/nptl_db/db_info.c b/nptl_db/db_info.c
+index 7f23cf46..16a33901 100644
+--- a/nptl_db/db_info.c
++++ b/nptl_db/db_info.c
+@@ -56,6 +56,9 @@ extern bool __nptl_initial_report_events;
+   DB_DEFINE_DESC (name, \
+ 		  8 * sizeof (obj)[0], sizeof (obj) / sizeof (obj)[0], \
+ 		  offset);
++/* Flexible arrays do not have a length that can be determined.  */
++#define FLEXIBLE_ARRAY_DESC(name, offset, obj) \
++  DB_DEFINE_DESC (name, 8 * sizeof (obj)[0], 0, offset);
+ 
+ #if TLS_TCB_AT_TP
+ # define dtvp header.dtv
+@@ -77,6 +80,9 @@ DESC (_thread_db_pthread_dtvp,
+ #define DB_STRUCT_ARRAY_FIELD(type, field) \
+   ARRAY_DESC (_thread_db_##type##_##field, \
+ 	      offsetof (type, field), ((type *) 0)->field)
++#define DB_STRUCT_FLEXIBLE_ARRAY(type, field) \
++  FLEXIBLE_ARRAY_DESC (_thread_db_##type##_##field, \
++		       offsetof (type, field), ((type *) 0)->field)
+ #define DB_VARIABLE(name) DESC (_thread_db_##name, 0, name)
+ #define DB_ARRAY_VARIABLE(name) ARRAY_DESC (_thread_db_##name, 0, name)
+ #define DB_SYMBOL(name)	/* Nothing.  */
+diff --git a/nptl_db/structs.def b/nptl_db/structs.def
+index 15ec77f4..f670cbce 100644
+--- a/nptl_db/structs.def
++++ b/nptl_db/structs.def
+@@ -110,7 +110,7 @@ DB_RTLD_GLOBAL_FIELD (dl_tls_dtv_slotinfo_list)
+ DB_STRUCT (dtv_slotinfo_list)
+ DB_STRUCT_FIELD (dtv_slotinfo_list, len)
+ DB_STRUCT_FIELD (dtv_slotinfo_list, next)
+-DB_STRUCT_ARRAY_FIELD (dtv_slotinfo_list, slotinfo)
++DB_STRUCT_FLEXIBLE_ARRAY (dtv_slotinfo_list, slotinfo)
+ 
+ DB_STRUCT (dtv_slotinfo)
+ DB_STRUCT_FIELD (dtv_slotinfo, gen)
+diff --git a/nptl_db/thread_dbP.h b/nptl_db/thread_dbP.h
+index bcb27640..8dbdbb5d 100644
+--- a/nptl_db/thread_dbP.h
++++ b/nptl_db/thread_dbP.h
+@@ -37,12 +37,14 @@ enum
+   {
+ # define DB_STRUCT(type)		SYM_SIZEOF_##type,
+ # define DB_STRUCT_FIELD(type, field)	SYM_##type##_FIELD_##field,
++# define DB_STRUCT_FLEXIBLE_ARRAY(type, field) DB_STRUCT_FIELD (type, field)
+ # define DB_SYMBOL(name)		SYM_##name,
+ # define DB_FUNCTION(name)		SYM_##name,
+ # define DB_VARIABLE(name)		SYM_##name, SYM_DESC_##name,
+ # include "structs.def"
+ # undef DB_STRUCT
+ # undef DB_STRUCT_FIELD
++# undef DB_STRUCT_FLEXIBLE_ARRAY
+ # undef DB_SYMBOL
+ # undef DB_FUNCTION
+ # undef DB_VARIABLE
+@@ -90,6 +92,7 @@ struct td_thragent
+   uint32_t ta_sizeof_##type;
+ # define DB_STRUCT_FIELD(type, field) \
+   db_desc_t ta_field_##type##_##field;
++# define DB_STRUCT_FLEXIBLE_ARRAY(type, field) DB_STRUCT_FIELD (type, field)
+ # define DB_SYMBOL(name) \
+   psaddr_t ta_addr_##name;
+ # define DB_FUNCTION(name) \
+@@ -100,6 +103,7 @@ struct td_thragent
+ # include "structs.def"
+ # undef DB_STRUCT
+ # undef DB_STRUCT_FIELD
++# undef DB_STRUCT_FLEXIBLE_ARRAY
+ # undef DB_FUNCTION
+ # undef DB_SYMBOL
+ # undef DB_VARIABLE
+diff --git a/sysdeps/generic/ldsodefs.h b/sysdeps/generic/ldsodefs.h
+index 95dc8751..ef7d0e28 100644
+--- a/sysdeps/generic/ldsodefs.h
++++ b/sysdeps/generic/ldsodefs.h
+@@ -408,7 +408,7 @@ struct rtld_global
+     {
+       size_t gen;
+       struct link_map *map;
+-    } slotinfo[0];
++    } slotinfo[];
+   } *_dl_tls_dtv_slotinfo_list;
+   /* Number of modules in the static TLS block.  */
+   EXTERN size_t _dl_tls_static_nelem;
+-- 
+2.20.1
+

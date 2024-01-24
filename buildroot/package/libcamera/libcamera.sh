@@ -1,0 +1,6 @@
+#!/bin/sh
+
+export LIBCAMERA_CUSTOM_DRIVERS="has:rkisp"
+export LIBCAMERA_CUSTOM_DEFAULT="has:mainpath"
+export LIBCAMERA_CUSTOM_FORMAT="NV12"
+export LIBCAMERA_CUSTOM_BUF_CNT=4

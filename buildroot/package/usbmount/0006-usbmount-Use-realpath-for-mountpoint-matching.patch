@@ -1,0 +1,26 @@
+From af65e67c5a4c36994aeb51f7ec54f229a032cbf0 Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Thu, 17 Nov 2022 11:02:30 +0800
+Subject: [PATCH 6/6] usbmount: Use realpath for mountpoint matching
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ usbmount | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/usbmount b/usbmount
+index 4613dac..94afdee 100755
+--- a/usbmount
++++ b/usbmount
+@@ -110,7 +110,7 @@ if [ "$1" = add ]; then
+ 	if in_list "$fstype" "$FILESYSTEMS"; then
+ 	    # Search an available mountpoint.
+ 	    for v in $MOUNTPOINTS; do
+-		if [ -d "$v" ] && ! grep -q "^[^ ][^ ]*  *$v " /proc/mounts; then
++		if [ -d "$v" ] && ! grep -q "^[^ ][^ ]*  *$(realpath $v) " /proc/mounts; then
+ 		    mountpoint="$v"
+ 		    log debug "mountpoint $mountpoint is available for $DEVNAME"
+ 		    break
+-- 
+2.20.1
+

@@ -1,0 +1,205 @@
+From 3ac01579b647ad850ccace06ce24763ee6f71ad5 Mon Sep 17 00:00:00 2001
+From: Eddie Cai <eddie.cai.linux@gmail.com>
+Date: Thu, 17 Mar 2022 09:53:24 +0800
+Subject: [PATCH 2/3] modify export-image to meet rockchip image requirement
+
+---
+ export-image/00-allow-rerun/00-run.sh  | 10 +++-
+ export-image/03-set-partuuid/00-run.sh |  6 ---
+ export-image/04-finalise/01-run.sh     | 30 +++---------
+ export-image/prerun.sh                 | 64 +++++---------------------
+ 4 files changed, 25 insertions(+), 85 deletions(-)
+
+diff --git a/export-image/00-allow-rerun/00-run.sh b/export-image/00-allow-rerun/00-run.sh
+index dd67f4c..5174d9b 100755
+--- a/export-image/00-allow-rerun/00-run.sh
++++ b/export-image/00-allow-rerun/00-run.sh
+@@ -1,7 +1,13 @@
+ #!/bin/bash -e
+ 
+-if [ ! -x "${ROOTFS_DIR}/usr/bin/qemu-arm-static" ]; then
+-	cp /usr/bin/qemu-arm-static "${ROOTFS_DIR}/usr/bin/"
++if [ "$ARCH" == "armhf" ]; then
++	if [ ! -x "${ROOTFS_DIR}/usr/bin/qemu-arm-static" ]; then
++		cp /usr/bin/qemu-arm-static "${ROOTFS_DIR}/usr/bin/"
++	fi
++elif [ "$ARCH" == "arm64"  ]; then
++	if [ ! -x "${ROOTFS_DIR}/usr/bin/qemu-aarch64-static" ]; then
++		cp /usr/bin/qemu-aarch64-static "${ROOTFS_DIR}/usr/bin/"
++	fi
+ fi
+ 
+ if [ -e "${ROOTFS_DIR}/etc/ld.so.preload" ]; then
+diff --git a/export-image/03-set-partuuid/00-run.sh b/export-image/03-set-partuuid/00-run.sh
+index 16e1b15..28020d6 100755
+--- a/export-image/03-set-partuuid/00-run.sh
++++ b/export-image/03-set-partuuid/00-run.sh
+@@ -6,13 +6,7 @@ if [ "${NO_PRERUN_QCOW2}" = "0" ]; then
+ 
+ 	IMGID="$(dd if="${IMG_FILE}" skip=440 bs=1 count=4 2>/dev/null | xxd -e | cut -f 2 -d' ')"
+ 
+-	BOOT_PARTUUID="${IMGID}-01"
+ 	ROOT_PARTUUID="${IMGID}-02"
+ 
+-	sed -i "s/BOOTDEV/PARTUUID=${BOOT_PARTUUID}/" "${ROOTFS_DIR}/etc/fstab"
+-	sed -i "s/ROOTDEV/PARTUUID=${ROOT_PARTUUID}/" "${ROOTFS_DIR}/etc/fstab"
+-
+-	sed -i "s/ROOTDEV/PARTUUID=${ROOT_PARTUUID}/" "${ROOTFS_DIR}/boot/cmdline.txt"
+-
+ fi
+ 
+diff --git a/export-image/04-finalise/01-run.sh b/export-image/04-finalise/01-run.sh
+index d7ace58..fa0e191 100755
+--- a/export-image/04-finalise/01-run.sh
++++ b/export-image/04-finalise/01-run.sh
+@@ -16,7 +16,11 @@ if [ -d "${ROOTFS_DIR}/home/${FIRST_USER_NAME}/.config" ]; then
+ 	chmod 700 "${ROOTFS_DIR}/home/${FIRST_USER_NAME}/.config"
+ fi
+ 
+-rm -f "${ROOTFS_DIR}/usr/bin/qemu-arm-static"
++if [ "$ARCH" == "armhf" ]; then
++	rm -f "${ROOTFS_DIR}/usr/bin/qemu-arm-static"
++elif [ "$ARCH" == "arm64"  ]; then
++	rm -f "${ROOTFS_DIR}/usr/bin/qemu-aarch64-static"
++fi
+ 
+ if [ "${USE_QEMU}" != "1" ]; then
+ 	if [ -e "${ROOTFS_DIR}/etc/ld.so.preload.disabled" ]; then
+@@ -52,26 +56,9 @@ find "${ROOTFS_DIR}/var/log/" -type f -exec cp /dev/null {} \;
+ rm -f "${ROOTFS_DIR}/root/.vnc/private.key"
+ rm -f "${ROOTFS_DIR}/etc/vnc/updateid"
+ 
+-update_issue "$(basename "${EXPORT_DIR}")"
+-install -m 644 "${ROOTFS_DIR}/etc/rpi-issue" "${ROOTFS_DIR}/boot/issue.txt"
+-
+-cp "$ROOTFS_DIR/etc/rpi-issue" "$INFO_FILE"
+-
+ 
+ {
+-	if [ -f "$ROOTFS_DIR/usr/share/doc/raspberrypi-kernel/changelog.Debian.gz" ]; then
+-		firmware=$(zgrep "firmware as of" \
+-			"$ROOTFS_DIR/usr/share/doc/raspberrypi-kernel/changelog.Debian.gz" | \
+-			head -n1 | sed  -n 's|.* \([^ ]*\)$|\1|p')
+-		printf "\nFirmware: https://github.com/raspberrypi/firmware/tree/%s\n" "$firmware"
+-
+-		kernel="$(curl -s -L "https://github.com/raspberrypi/firmware/raw/$firmware/extra/git_hash")"
+-		printf "Kernel: https://github.com/raspberrypi/linux/tree/%s\n" "$kernel"
+-
+-		uname="$(curl -s -L "https://github.com/raspberrypi/firmware/raw/$firmware/extra/uname_string7")"
+-		printf "Uname string: %s\n" "$uname"
+-	fi
+-
++	echo -e "Rockbian ${IMG_DATE}\nGenerated using ${PI_GEN}, ${PI_GEN_REPO}, ${GIT_HASH}, $(basename ${EXPORT_DIR})"
+ 	printf "\nPackages:\n"
+ 	dpkg -l --root "$ROOTFS_DIR"
+ } >> "$INFO_FILE"
+@@ -84,12 +71,7 @@ rm -f "${DEPLOY_DIR}/${IMG_FILENAME}${IMG_SUFFIX}.img"
+ mv "$INFO_FILE" "$DEPLOY_DIR/"
+ 
+ if [ "${USE_QCOW2}" = "0" ] && [ "${NO_PRERUN_QCOW2}" = "0" ]; then
+-	ROOT_DEV="$(mount | grep "${ROOTFS_DIR} " | cut -f1 -d' ')"
+-
+ 	unmount "${ROOTFS_DIR}"
+-	zerofree "${ROOT_DEV}"
+-
+-	unmount_image "${IMG_FILE}"
+ else
+ 	unload_qimage
+ 	make_bootable_image "${STAGE_WORK_DIR}/${IMG_FILENAME}${IMG_SUFFIX}.qcow2" "$IMG_FILE"
+diff --git a/export-image/prerun.sh b/export-image/prerun.sh
+index fad7f80..dde7315 100755
+--- a/export-image/prerun.sh
++++ b/export-image/prerun.sh
+@@ -10,8 +10,7 @@ if [ "${NO_PRERUN_QCOW2}" = "0" ]; then
+ 	rm -rf "${ROOTFS_DIR}"
+ 	mkdir -p "${ROOTFS_DIR}"
+ 
+-	BOOT_SIZE="$((256 * 1024 * 1024))"
+-	ROOT_SIZE=$(du --apparent-size -s "${EXPORT_ROOTFS_DIR}" --exclude var/cache/apt/archives --exclude boot --block-size=1 | cut -f 1)
++	ROOT_SIZE=$(du --apparent-size -s "${EXPORT_ROOTFS_DIR}" --exclude var/cache/apt/archives --block-size=1 | cut -f 1)
+ 
+ 	# All partition sizes and starts will be aligned to this size
+ 	ALIGN="$((4 * 1024 * 1024))"
+@@ -19,55 +18,18 @@ if [ "${NO_PRERUN_QCOW2}" = "0" ]; then
+ 	# some overhead (since actual space usage is usually rounded up to the
+ 	# filesystem block size) and gives some free space on the resulting
+ 	# image.
+-	ROOT_MARGIN="$(echo "($ROOT_SIZE * 0.2 + 200 * 1024 * 1024) / 1" | bc)"
++	ROOT_MARGIN="$((200 * 1024 * 1024))"
+ 
+-	BOOT_PART_START=$((ALIGN))
+-	BOOT_PART_SIZE=$(((BOOT_SIZE + ALIGN - 1) / ALIGN * ALIGN))
+-	ROOT_PART_START=$((BOOT_PART_START + BOOT_PART_SIZE))
++	ROOT_PART_START=$((ALIGN))
+ 	ROOT_PART_SIZE=$(((ROOT_SIZE + ROOT_MARGIN + ALIGN  - 1) / ALIGN * ALIGN))
+-	IMG_SIZE=$((BOOT_PART_START + BOOT_PART_SIZE + ROOT_PART_SIZE))
++	IMG_SIZE=$((ROOT_PART_START + ROOT_PART_SIZE))
+ 
+ 	truncate -s "${IMG_SIZE}" "${IMG_FILE}"
++	
++	ROOT_OFFSET=${ROOT_PART_START}
++	ROOT_LENGTH=${ROOT_PART_SIZE}
+ 
+-	parted --script "${IMG_FILE}" mklabel msdos
+-	parted --script "${IMG_FILE}" unit B mkpart primary fat32 "${BOOT_PART_START}" "$((BOOT_PART_START + BOOT_PART_SIZE - 1))"
+-	parted --script "${IMG_FILE}" unit B mkpart primary ext4 "${ROOT_PART_START}" "$((ROOT_PART_START + ROOT_PART_SIZE - 1))"
+-
+-	PARTED_OUT=$(parted -sm "${IMG_FILE}" unit b print)
+-	BOOT_OFFSET=$(echo "$PARTED_OUT" | grep -e '^1:' | cut -d':' -f 2 | tr -d B)
+-	BOOT_LENGTH=$(echo "$PARTED_OUT" | grep -e '^1:' | cut -d':' -f 4 | tr -d B)
+-
+-	ROOT_OFFSET=$(echo "$PARTED_OUT" | grep -e '^2:' | cut -d':' -f 2 | tr -d B)
+-	ROOT_LENGTH=$(echo "$PARTED_OUT" | grep -e '^2:' | cut -d':' -f 4 | tr -d B)
+-
+-	echo "Mounting BOOT_DEV..."
+-	cnt=0
+-	until BOOT_DEV=$(losetup --show -f -o "${BOOT_OFFSET}" --sizelimit "${BOOT_LENGTH}" "${IMG_FILE}"); do
+-		if [ $cnt -lt 5 ]; then
+-			cnt=$((cnt + 1))
+-			echo "Error in losetup for BOOT_DEV.  Retrying..."
+-			sleep 5
+-		else
+-			echo "ERROR: losetup for BOOT_DEV failed; exiting"
+-			exit 1
+-		fi
+-	done
+-
+-	echo "Mounting ROOT_DEV..."
+-	cnt=0
+-	until ROOT_DEV=$(losetup --show -f -o "${ROOT_OFFSET}" --sizelimit "${ROOT_LENGTH}" "${IMG_FILE}"); do
+-		if [ $cnt -lt 5 ]; then
+-			cnt=$((cnt + 1))
+-			echo "Error in losetup for ROOT_DEV.  Retrying..."
+-			sleep 5
+-		else
+-			echo "ERROR: losetup for ROOT_DEV failed; exiting"
+-			exit 1
+-		fi
+-	done
+-
+-	echo "/boot: offset $BOOT_OFFSET, length $BOOT_LENGTH"
+-	echo "/:     offset $ROOT_OFFSET, length $ROOT_LENGTH"
++	echo "/:     offset $ROOT_OFFSET, length $ROOT_PART_SIZE"
+ 
+ 	ROOT_FEATURES="^huge_file"
+ 	for FEATURE in metadata_csum 64bit; do
+@@ -75,13 +37,9 @@ if [ "${NO_PRERUN_QCOW2}" = "0" ]; then
+ 		ROOT_FEATURES="^$FEATURE,$ROOT_FEATURES"
+ 	fi
+ 	done
+-	mkdosfs -n boot -F 32 -v "$BOOT_DEV" > /dev/null
+-	mkfs.ext4 -L rootfs -O "$ROOT_FEATURES" "$ROOT_DEV" > /dev/null
+ 
+-	mount -v "$ROOT_DEV" "${ROOTFS_DIR}" -t ext4
+-	mkdir -p "${ROOTFS_DIR}/boot"
+-	mount -v "$BOOT_DEV" "${ROOTFS_DIR}/boot" -t vfat
++	mkfs.ext4 -L rootfs -O "$ROOT_FEATURES" "$IMG_FILE" > /dev/null
+ 
+-	rsync -aHAXx --exclude /var/cache/apt/archives --exclude /boot "${EXPORT_ROOTFS_DIR}/" "${ROOTFS_DIR}/"
+-	rsync -rtx "${EXPORT_ROOTFS_DIR}/boot/" "${ROOTFS_DIR}/boot/"
++	mount -v "$IMG_FILE" "${ROOTFS_DIR}" -t ext4
++	rsync -aHAXx --exclude /var/cache/apt/archives "${EXPORT_ROOTFS_DIR}/" "${ROOTFS_DIR}/"
+ fi
+-- 
+2.20.1
+

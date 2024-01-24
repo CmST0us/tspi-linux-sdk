@@ -1,0 +1,29 @@
+From 1ae99b796a2b949dfec91ed75026906e2891192c Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Tue, 5 Jul 2022 12:49:24 +0800
+Subject: [PATCH 09/10] elput: Fix pipe racing in async_open()
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ src/lib/elput/elput_input.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/src/lib/elput/elput_input.c b/src/lib/elput/elput_input.c
+index 4005a43..5196353 100644
+--- a/src/lib/elput/elput_input.c
++++ b/src/lib/elput/elput_input.c
+@@ -76,6 +76,11 @@ _cb_open_restricted(const char *path, int flags, void *data)
+         if (avail < 0) break;
+      }
+    close(p[0]);
++
++   /* Sync with the other side */
++   while (em->input.pipe != -1)
++      usleep(1000);
++
+    return ret;
+ }
+ 
+-- 
+2.20.1
+

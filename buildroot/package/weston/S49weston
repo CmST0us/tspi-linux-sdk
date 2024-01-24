@@ -1,0 +1,53 @@
+#!/bin/sh -e
+### BEGIN INIT INFO
+# Provides:          weston
+# Required-Start:    mountvirtfs
+# Required-Stop:
+# Should-Start:
+# Should-Stop:
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Linux weston daemon
+### END INIT INFO
+
+PATH="/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin"
+
+# Load default env variables from profiles(e.g. /etc/profile.d/weston.sh)
+. /etc/profile
+
+start_weston()
+{
+	/usr/bin/weston&
+}
+
+stop_weston()
+{
+	killall weston
+}
+
+case "$1" in
+	start)
+		echo -n "starting weston... "
+		start_weston
+		echo "done."
+		;;
+	stop)
+		echo -n "stoping weston... "
+		stop_weston || true
+		echo "done."
+		;;
+	restart|reload)
+		echo -n "stoping weston... "
+		stop_weston && sleep .3
+		echo "done."
+
+		echo -n "starting weston... "
+		start_weston
+		echo "done."
+		;;
+	*)
+		echo "Usage: $0 {start|stop|restart}"
+		exit 1
+esac
+
+exit 0

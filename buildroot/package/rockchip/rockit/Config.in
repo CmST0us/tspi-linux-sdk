@@ -1,0 +1,7 @@
+config BR2_PACKAGE_ROCKIT
+	bool "rockit"
+	depends on BR2_PACKAGE_ROCKCHIP_MPP
+	depends on BR2_PACKAGE_ALSA_PLUGINS
+	default n
+	help
+		rockit

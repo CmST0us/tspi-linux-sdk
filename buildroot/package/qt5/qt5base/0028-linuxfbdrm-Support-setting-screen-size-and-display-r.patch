@@ -1,0 +1,100 @@
+From a710cf924929a1a102b3d07938bd217303e41e93 Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Mon, 28 Feb 2022 11:31:12 +0800
+Subject: [PATCH 28/28] linuxfbdrm: Support setting screen size and display
+ rectangle
+
+Usage:
+export QT_QPA_PLATFORM=linuxfb:size=480x200:rect=0,20,480,220
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ .../platforms/linuxfb/qlinuxfbdrmscreen.cpp   | 30 +++++++++++++++++--
+ .../platforms/linuxfb/qlinuxfbdrmscreen.h     |  2 ++
+ 2 files changed, 30 insertions(+), 2 deletions(-)
+
+diff --git a/src/plugins/platforms/linuxfb/qlinuxfbdrmscreen.cpp b/src/plugins/platforms/linuxfb/qlinuxfbdrmscreen.cpp
+index b6e3960d..04df126e 100644
+--- a/src/plugins/platforms/linuxfb/qlinuxfbdrmscreen.cpp
++++ b/src/plugins/platforms/linuxfb/qlinuxfbdrmscreen.cpp
+@@ -416,14 +416,27 @@ void QLinuxFbDevice::swapBuffers(Output *output)
+ QLinuxFbDrmScreen::QLinuxFbDrmScreen(const QStringList &args)
+     : m_screenConfig(nullptr),
+       m_device(nullptr),
+-      m_rotation(0)
++      m_rotation(0),
++      m_screenSize(),
++      m_displayRect()
+ {
+     QRegularExpression rotationRx(QLatin1String("rotation=(0|90|180|270)"));
++    QRegularExpression sizeRx(QLatin1String("size=([1-9]\\d*)x([1-9]\\d*)"));
++    QRegularExpression rectRx(QLatin1String("rect=(\\d+),(\\d+),(\\d+),(\\d+)"));
+ 
+     for (const QString &arg : qAsConst(args)) {
+         QRegularExpressionMatch match;
+         if (arg.contains(rotationRx, &match))
+             m_rotation = match.captured(1).toInt();
++
++        if (arg.contains(sizeRx, &match))
++            m_screenSize =
++                QSize(match.captured(1).toInt(), match.captured(2).toInt());
++
++        if (arg.contains(rectRx, &match))
++            m_displayRect =
++                QRect(match.captured(1).toInt(), match.captured(2).toInt(),
++                      match.captured(3).toInt(), match.captured(4).toInt());
+     }
+ }
+ 
+@@ -451,7 +464,14 @@ bool QLinuxFbDrmScreen::initialize()
+ 
+     QLinuxFbDevice::Output *output(m_device->output(0));
+ 
+-    mGeometry = QRect(QPoint(0, 0), output->currentRes());
++    if (m_screenSize.isEmpty())
++        m_screenSize = output->currentRes();
++
++    mGeometry = QRect(QPoint(0, 0), m_screenSize);
++
++    if (m_displayRect.isEmpty())
++        m_displayRect = mGeometry;
++
+     if(m_rotation % 180) {
+         int tmp = mGeometry.width();
+         mGeometry.setWidth(mGeometry.height());
+@@ -472,6 +492,9 @@ bool QLinuxFbDrmScreen::initialize()
+ 
+ QRegion QLinuxFbDrmScreen::doRedraw()
+ {
++    qreal scaleX = qreal(m_displayRect.width()) / m_screenSize.width();
++    qreal scaleY = qreal(m_displayRect.height()) / m_screenSize.height();
++
+     const QRegion dirty = QFbScreen::doRedraw();
+     if (dirty.isEmpty())
+         return dirty;
+@@ -498,6 +521,9 @@ QRegion QLinuxFbDrmScreen::doRedraw()
+     // Do not waste time with the default SourceOver.
+     pntr.setCompositionMode(QPainter::CompositionMode_Source);
+     for (const QRect &rect : qAsConst(output->dirty[output->backFb])) {
++        pntr.translate(m_displayRect.x(), m_displayRect.y());
++        pntr.scale(scaleX, scaleY);
++
+         if(m_rotation) {
+             if(m_rotation == 180)
+                 pntr.translate(mGeometry.width()/2, mGeometry.height()/2);
+diff --git a/src/plugins/platforms/linuxfb/qlinuxfbdrmscreen.h b/src/plugins/platforms/linuxfb/qlinuxfbdrmscreen.h
+index 4065392d..679d851b 100644
+--- a/src/plugins/platforms/linuxfb/qlinuxfbdrmscreen.h
++++ b/src/plugins/platforms/linuxfb/qlinuxfbdrmscreen.h
+@@ -63,6 +63,8 @@ private:
+     QLinuxFbDevice *m_device;
+ 
+     int m_rotation;
++    QSize m_screenSize;
++    QRect m_displayRect;
+ };
+ 
+ QT_END_NAMESPACE
+-- 
+2.20.1
+

@@ -1,0 +1,157 @@
+From 122d8d7e63f5c5c2bf81143ef655e964d3982cfd Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Fri, 27 May 2022 12:43:19 +0800
+Subject: [PATCH] MtpServer: Support creation time
+
+Only available on boost >= 1.75.0 and kernel >= 4.11.
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ CMakeLists.txt             | 3 ++-
+ include/MtpDatabase.h      | 3 ++-
+ server/UbuntuMtpDatabase.h | 9 ++++++++-
+ src/MtpServer.cpp          | 9 +++++++--
+ tests/MockMtpDatabase.h    | 3 ++-
+ 5 files changed, 21 insertions(+), 6 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 707b7f8..a2d7bd5 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -13,7 +13,8 @@ set(MTP_VERSION_MAJOR 1)
+ set(MTP_VERSION_MINOR 0)
+ set(MTP_VERSION_PATCH 0)
+ 
+-find_package(Boost REQUIRED COMPONENTS thread system filesystem unit_test_framework)
++# Request 1.75.0 for filesystem creation_time operation.
++find_package(Boost 1.75.0 REQUIRED COMPONENTS thread system filesystem unit_test_framework)
+ pkg_check_modules(DBUSCPP REQUIRED dbus-c++-1)
+ pkg_check_modules(GLOG REQUIRED libglog)
+ 
+diff --git a/include/MtpDatabase.h b/include/MtpDatabase.h
+index c72964c..203b33f 100644
+--- a/include/MtpDatabase.h
++++ b/include/MtpDatabase.h
+@@ -45,7 +45,8 @@ public:
+                                             MtpObjectHandle parent,
+                                             MtpStorageID storage,
+                                             uint64_t size,
+-                                            time_t modified) = 0;
++                                            time_t modified,
++                                            time_t created) = 0;
+ 
+     // called to report success or failure of the SendObject file transfer
+     // success should signal a notification of the new object's creation,
+diff --git a/server/UbuntuMtpDatabase.h b/server/UbuntuMtpDatabase.h
+index 73200de..6078c31 100644
+--- a/server/UbuntuMtpDatabase.h
++++ b/server/UbuntuMtpDatabase.h
+@@ -68,6 +68,7 @@ private:
+         std::string path;
+         int watch_fd;
+         std::time_t last_modified;
++        std::time_t creation;
+     };
+ 
+     MtpServer* local_server;
+@@ -134,6 +135,7 @@ private:
+             entry.object_size = 0;
+             entry.watch_fd = setup_dir_inotify(p);
+             entry.last_modified = last_write_time(p);
++            entry.creation = creation_time(p);
+ 
+             db.insert( std::pair<MtpObjectHandle, DbEntry>(handle, entry) );
+ 
+@@ -150,6 +152,7 @@ private:
+                 entry.object_format = guess_object_format(p.extension().string());
+                 entry.object_size = file_size(p);
+                 entry.last_modified = last_write_time(p);
++                entry.creation = creation_time(p);
+ 
+                 VLOG(1) << "Adding \"" << p.string() << "\"";
+ 
+@@ -206,6 +209,7 @@ private:
+                     entry.object_size = 0;
+                     entry.watch_fd = setup_dir_inotify(p);
+                     entry.last_modified = last_write_time(p);
++                    entry.creation = creation_time(p);
+ 
+                     db.insert( std::pair<MtpObjectHandle, DbEntry>(handle, entry) );
+ 
+@@ -224,6 +228,7 @@ private:
+                     entry.object_size = 0;
+                     entry.watch_fd = setup_dir_inotify(p.parent_path());
+                     entry.last_modified = 0;
++                    entry.creation = 0;
+                 }
+             }
+         }
+@@ -399,7 +404,8 @@ public:
+         MtpObjectHandle parent,
+         MtpStorageID storage,
+         uint64_t size,
+-        time_t modified)
++        time_t modified,
++        time_t created)
+     {
+ 	DbEntry entry;
+ 	MtpObjectHandle handle = counter;
+@@ -417,6 +423,7 @@ public:
+         entry.object_format = format;
+         entry.object_size = size;
+         entry.last_modified = modified;
++        entry.creation = created;
+ 
+         db.insert( std::pair<MtpObjectHandle, DbEntry>(handle, entry) );
+ 
+diff --git a/src/MtpServer.cpp b/src/MtpServer.cpp
+index fb73ac3..99897c4 100644
+--- a/src/MtpServer.cpp
++++ b/src/MtpServer.cpp
+@@ -786,7 +786,8 @@ MtpResponseCode MtpServer::doGetObjectInfo() {
+         mData.putUInt32(info.mAssociationDesc);
+         mData.putUInt32(info.mSequenceNumber);
+         mData.putString(info.mName);
+-        mData.putEmptyString();    // date created
++        formatDateTime(info.mDateCreated, date, sizeof(date));
++        mData.putString(date);   // date created
+         formatDateTime(info.mDateModified, date, sizeof(date));
+         mData.putString(date);   // date modified
+         mData.putEmptyString();   // keywords
+@@ -969,6 +970,10 @@ MtpResponseCode MtpServer::doSendObjectInfo() {
+     if (!parseDateTime(modified, modifiedTime))
+         modifiedTime = 0;
+ 
++    time_t createdTime;
++    if (!parseDateTime(created, createdTime))
++        createdTime = 0;
++
+     if (path[path.size() - 1] != '/')
+         path += "/";
+     path += (const char *)name;
+@@ -988,7 +993,7 @@ MtpResponseCode MtpServer::doSendObjectInfo() {
+     VLOG(2) << "path: " << path.c_str() << " parent: " << parent
+             << " storageID: " << std::hex << storageID << std::dec;
+     MtpObjectHandle handle = mDatabase->beginSendObject(path.c_str(),
+-            format, parent, storageID, mSendObjectFileSize, modifiedTime);
++            format, parent, storageID, mSendObjectFileSize, modifiedTime, createdTime);
+     if (handle == kInvalidObjectHandle) {
+         return MTP_RESPONSE_GENERAL_ERROR;
+     }
+diff --git a/tests/MockMtpDatabase.h b/tests/MockMtpDatabase.h
+index 1a10857..61f6817 100644
+--- a/tests/MockMtpDatabase.h
++++ b/tests/MockMtpDatabase.h
+@@ -88,7 +88,8 @@ public:
+         MtpObjectHandle parent,
+         MtpStorageID storage,
+         uint64_t size,
+-        time_t modified)
++        time_t modified,
++        time_t created)
+     {
+         return 1;
+     }
+-- 
+2.20.1
+

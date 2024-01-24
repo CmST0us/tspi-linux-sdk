@@ -1,0 +1,26 @@
+蓝牙接口基于Bluez，要注意如下几点：
+
+一. buildroot系统依赖如下配置，请确保打开
+BR2_PACKAGE_BLUEZ_ALSA=y
+BR2_PACKAGE_BLUEZ5_UTILS=y
+BR2_PACKAGE_BLUEZ5_UTILS_OBEX=y
+BR2_PACKAGE_BLUEZ5_UTILS_CLIENT=y
+BR2_PACKAGE_BLUEZ5_UTILS_GATTTOOL=y
+BR2_PACKAGE_BLUEZ5_UTILS_EXPERIMENTAL=y
+BR2_PACKAGE_BLUEZ5_PLUGINS_SIXAXIS=y
+
+二. 某些SDK可能会出现bluez-alsa编译出错，方法如下：
+0001-fix-bluezalsa-redefine.patch放到buildroot\package\bluez-alsa目录，clean重新编译
+
+三. 蓝牙接口大部分参考：/11-Linux平台/WIFIBT编程接口/Rockchip_Developer_Guide_DeviceIo_Bluetooth_CN.pdf
+下面针对改动的地方及重要事项进行说明：
+扫描：
+rk_bt_start_discovery();  //启动扫描函数，设置的时间参数不再有效，一直会处于扫描状态；
+rk_bt_cancel_discovery(); //只有主动关闭扫描功能，才能停止扫描；
+
+回调：
+切记：蓝牙api提供的所有回调函数，它仅是通知相关功能，务必不要在里面做任何耗时或阻塞的操作，比如加锁或者延时或者启动线程等待操作！！！
+
+
+四. 测试：
+蓝牙测试：rkwifibt_test bluetooth   #蓝牙相关API测试，也可参考：/11-Linux平台/WIFIBT编程接口/Rockchip_Developer_Guide_DeviceIo_Bluetooth_CN.pdf

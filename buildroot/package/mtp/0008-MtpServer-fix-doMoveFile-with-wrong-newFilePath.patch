@@ -1,0 +1,51 @@
+From 53fb739f85f89c2b2b94f50ecac476270867c1ee Mon Sep 17 00:00:00 2001
+From: Zain Wang <wzz@rock-chips.com>
+Date: Fri, 18 Sep 2020 17:30:07 +0800
+Subject: [PATCH] MtpServer: fix doMoveFile with wrong newFilePath
+
+Signed-off-by: Zain Wang <wzz@rock-chips.com>
+---
+ src/MtpServer.cpp | 21 +++++++++++++++++++--
+ 1 file changed, 19 insertions(+), 2 deletions(-)
+
+diff --git a/src/MtpServer.cpp b/src/MtpServer.cpp
+index ba95c5a..fb73ac3 100644
+--- a/src/MtpServer.cpp
++++ b/src/MtpServer.cpp
+@@ -1190,14 +1190,31 @@ MtpResponseCode MtpServer::doMoveObject() {
+     if (!hasStorage())
+         return MTP_RESPONSE_INVALID_OBJECT_HANDLE;
+     MtpObjectHandle handle = mRequest.getParameter(1);
+-    MtpObjectFormat format = mRequest.getParameter(2);
++    MtpStorageID id = mRequest.getParameter(2);
+     MtpObjectHandle newparent = mRequest.getParameter(3);
++    MtpObjectFormat format;
+ 
+     MtpString filePath;
+     MtpString newPath;
+     int64_t fileLength;
+     int result = mDatabase->getObjectFilePath(handle, filePath, fileLength, format);
+-    result = mDatabase->getObjectFilePath(handle, newPath, fileLength, format);
++
++    if (newparent == 0)
++        newPath = getStorage(id)->getPath();
++    else
++        result = mDatabase->getObjectFilePath(newparent, newPath, fileLength, format);
++
++    if (newPath.at(newPath.size() - 1) != '/')
++        newPath.append("/");
++
++
++    for (int i = filePath.size() - 2; i >= 0; i--) {
++        if (filePath.at(i) == '/') {
++            newPath.append(&filePath.c_str()[i + 1]);
++            break;
++        }
++    }
++
+     if (result == MTP_RESPONSE_OK) {
+         VLOG(2) << "moving " << filePath.c_str() << " to " << newPath.c_str();
+         result = mDatabase->moveFile(handle, newparent);
+-- 
+2.17.1
+

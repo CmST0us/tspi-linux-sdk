@@ -1,0 +1,28 @@
+#!/bin/sh
+#
+# Reconnect Wifi...
+#
+
+case "$1" in
+  start)
+	  echo "Trying to reconnect Wifi"
+		if [ -e /userdata/cfg/wpa_supplicant.conf ];then
+			if [ -n `grep "ssid=" /userdata/cfg/wpa_supplicant.conf` ];then
+				if [ -z `grep "SSID" /userdata/cfg/wpa_supplicant.conf` ];then
+					if [ -n `grep "psk=" /userdata/cfg/wpa_supplicant.conf` ];then
+						if [ -z `grep "PASSWORD" /userdata/cfg/wpa_supplicant.conf` ];then
+							wpa_supplicant -B -i wlan0 -c /userdata/cfg/wpa_supplicant.conf
+						fi
+					fi
+				fi
+			fi
+		fi
+	;;
+  stop)
+        ;;
+  *)
+        echo "Usage: $0 {start|stop}"
+        exit 1
+        ;;
+esac
+exit 0

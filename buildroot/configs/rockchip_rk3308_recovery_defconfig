@@ -1,0 +1,7 @@
+#include "base/base.config"
+#include "base/recovery.config"
+#include "chips/rk3308_arm.config"
+BR2_PACKAGE_RECOVERY_NO_UI=y
+BR2_PACKAGE_RECOVERY_RECOVERYBIN=y
+BR2_PACKAGE_RECOVERY_UPDATEENGINEBIN=y
+BR2_PACKAGE_RECOVERY_USE_UPDATEENGINE=y

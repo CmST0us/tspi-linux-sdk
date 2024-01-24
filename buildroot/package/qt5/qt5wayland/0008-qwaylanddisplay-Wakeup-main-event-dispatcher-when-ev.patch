@@ -1,0 +1,125 @@
+From c8853fb402c4ea6cc978d8cf1c50232f5edb81f4 Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Sat, 9 May 2020 17:05:32 +0800
+Subject: [PATCH 08/17] qwaylanddisplay: Wakeup main event dispatcher when
+ events pending
+
+The socket might not be able to generate poll events to wakeup the main
+event dispatcher when there're multiple wayland clients(e.g. waylandsink)
+reading it.
+
+So let's create a extra thread to check the wayland display event queue
+for pending events and wakeup the main event dispatcher.
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ src/client/qwaylanddisplay.cpp | 50 +++++++++++++++++++++++++++++++++-
+ src/client/qwaylanddisplay_p.h |  2 ++
+ 2 files changed, 51 insertions(+), 1 deletion(-)
+
+diff --git a/src/client/qwaylanddisplay.cpp b/src/client/qwaylanddisplay.cpp
+index 86045a3..dc61d23 100644
+--- a/src/client/qwaylanddisplay.cpp
++++ b/src/client/qwaylanddisplay.cpp
+@@ -83,6 +83,8 @@
+ 
+ #include <QtCore/QDebug>
+ 
++#include <QThread>
++
+ #include <errno.h>
+ 
+ #include <tuple> // for std::tie
+@@ -284,6 +286,48 @@ private:
+ 
+ Q_LOGGING_CATEGORY(lcQpaWayland, "qt.qpa.wayland"); // for general (uncategorized) Wayland platform logging
+ 
++class QWaylandDisplayThread : public QThread
++{
++public:
++    QWaylandDisplayThread(struct wl_display *display);
++    ~QWaylandDisplayThread();
++
++protected:
++    virtual void run() override;
++
++private:
++    struct wl_display *mDisplay = nullptr;
++    bool quit;
++};
++
++QWaylandDisplayThread::QWaylandDisplayThread(struct wl_display *display)
++    : mDisplay(display), quit(false)
++{
++    start();
++}
++
++QWaylandDisplayThread::~QWaylandDisplayThread()
++{
++    quit = true;
++    wait();
++}
++
++void QWaylandDisplayThread::run()
++{
++    while (!quit) {
++        if (wl_display_prepare_read(mDisplay) != 0) {
++            // wakeup dispatcher for pending events
++            if (auto *dispatcher = QCoreApplication::eventDispatcher())
++                dispatcher->wakeUp();
++        } else {
++            wl_display_flush(mDisplay);
++            wl_display_cancel_read(mDisplay);
++        }
++
++        usleep(100000);
++    }
++}
++
+ struct wl_surface *QWaylandDisplay::createSurface(void *handle)
+ {
+     struct wl_surface *surface = mCompositor.create_surface();
+@@ -351,6 +395,8 @@ QWaylandDisplay::QWaylandDisplay(QWaylandIntegration *waylandIntegration)
+     if (!mXkbContext)
+         qCWarning(lcQpaWayland, "failed to create xkb context");
+ #endif
++
++    mThread = new QWaylandDisplayThread(mDisplay);
+ }
+ 
+ QWaylandDisplay::~QWaylandDisplay(void)
+@@ -377,8 +423,10 @@ QWaylandDisplay::~QWaylandDisplay(void)
+ #if QT_CONFIG(cursor)
+     qDeleteAll(mCursorThemes);
+ #endif
+-    if (mDisplay)
++    if (mDisplay) {
++        delete mThread;
+         wl_display_disconnect(mDisplay);
++    }
+ }
+ 
+ // Steps which is called just after constructor. This separates registry_global() out of the constructor
+diff --git a/src/client/qwaylanddisplay_p.h b/src/client/qwaylanddisplay_p.h
+index 42bc661..fb632b3 100644
+--- a/src/client/qwaylanddisplay_p.h
++++ b/src/client/qwaylanddisplay_p.h
+@@ -109,6 +109,7 @@ class QWaylandSurface;
+ class QWaylandShellIntegration;
+ class QWaylandCursor;
+ class QWaylandCursorTheme;
++class QWaylandDisplayThread;
+ class EventThread;
+ 
+ typedef void (*RegistryListener)(void *data,
+@@ -276,6 +277,7 @@ private:
+     QList<QWaylandWindow *> mActiveWindows;
+     struct wl_callback *mSyncCallback = nullptr;
+     static const wl_callback_listener syncCallbackListener;
++    QWaylandDisplayThread *mThread = nullptr;
+ 
+     bool mClientSideInputContextRequested = !QPlatformInputContextFactory::requested().isNull();
+ 
+-- 
+2.20.1
+

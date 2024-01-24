@@ -1,0 +1,8 @@
+config BR2_PACKAGE_PYTHON_ARROW
+	bool "python-arrow"
+	depends on BR2_PACKAGE_PYTHON3
+	select BR2_PACKAGE_PYTHON_DATEUTIL # runtime
+	help
+	  Better dates and times for Python.
+
+	  https://github.com/crsmithdev/arrow/

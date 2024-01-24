@@ -1,0 +1,222 @@
+From 714e0affdd7c0274965e291f3c90ed23867e29ee Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Fri, 12 Jun 2020 09:09:47 +0800
+Subject: [PATCH 18/28] HACK: qpaintengine_raster: Support rga in fillRect with
+ texture
+
+Use QT_USE_RGA macro to enable it.
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ src/gui/image/qimage_p.h                 |   4 +
+ src/gui/painting/qpaintengine_raster.cpp |  46 +++++++++
+ src/gui/painting/rga.c                   | 117 +++++++++++++++++++++++
+ 3 files changed, 167 insertions(+)
+ create mode 100644 src/gui/painting/rga.c
+
+diff --git a/src/gui/image/qimage_p.h b/src/gui/image/qimage_p.h
+index b272377f..dde06267 100644
+--- a/src/gui/image/qimage_p.h
++++ b/src/gui/image/qimage_p.h
+@@ -282,7 +282,11 @@ inline QImage::Format qt_alphaVersion(QImage::Format format)
+     case QImage::Format_ARGB32:
+         return QImage::Format_ARGB32_Premultiplied;
+     case QImage::Format_RGB16:
++#ifdef QT_USE_RGA
++        return QImage::Format_ARGB32_Premultiplied;
++#else
+         return QImage::Format_ARGB8565_Premultiplied;
++#endif
+     case QImage::Format_RGB555:
+         return QImage::Format_ARGB8555_Premultiplied;
+     case QImage::Format_RGB666:
+diff --git a/src/gui/painting/qpaintengine_raster.cpp b/src/gui/painting/qpaintengine_raster.cpp
+index b2570069..e4d73047 100644
+--- a/src/gui/painting/qpaintengine_raster.cpp
++++ b/src/gui/painting/qpaintengine_raster.cpp
+@@ -1474,6 +1474,10 @@ void QRasterPaintEngine::fillPath(const QPainterPath &path, QSpanData *fillData)
+     d->rasterize(d->outlineMapper->convertPath(path), blend, fillData, d->rasterBuffer.data());
+ }
+ 
++#ifdef QT_USE_RGA
++#include "rga.c"
++#endif
++
+ static void fillRect_normalized(const QRect &r, QSpanData *data,
+                                 QRasterPaintEnginePrivate *pe)
+ {
+@@ -1509,6 +1513,48 @@ static void fillRect_normalized(const QRect &r, QSpanData *data,
+     bool isUnclipped = rectClipped
+                        || (pe && pe->isUnclipped_normalized(QRect(x1, y1, width, height)));
+ 
++#ifdef QT_USE_RGA
++    if (pe && isUnclipped && width > 64 && height > 64) {
++        const QPainter::CompositionMode mode = pe->rasterBuffer->compositionMode;
++        const uchar *dst = data->rasterBuffer->buffer();
++        int dst_stride = data->rasterBuffer->bytesPerLine();
++        int dst_height = data->rasterBuffer->height();
++        QImage::Format dst_format = data->rasterBuffer->format;
++
++        const uchar *src = data->texture.imageData;
++        int src_stride = data->texture.bytesPerLine;
++        int src_height = data->texture.height;
++        QImage::Format src_format = data->texture.format;
++
++        if (data->type == QSpanData::Solid) {
++#if 0 // Somehow neon is faster than rga on this
++            if (mode == QPainter::CompositionMode_Source ||
++                (mode == QPainter::CompositionMode_SourceOver &&
++                 data->solid.color.isOpaque())) {
++                if (rga_fill(dst, dst_stride, dst_height, dst_format,
++                             data->solid.color.toArgb32(),
++                             x1, y1, width, height))
++                    return;
++            }
++#endif
++        } else if (data->type == QSpanData::Texture) {
++            int sx, sy, dx, dy;
++
++            sx = x1 - qRound(-data->dx);
++            sy = y1 - qRound(-data->dy);
++            dx = x1;
++            dy = y1;
++
++            if (rga_blit(src, src_stride, src_height,
++                         dst, dst_stride, dst_height,
++                         src_format, dst_format,
++                         sx, sy, dx, dy, width, height,
++                         mode, data->texture.const_alpha))
++                return;
++        }
++    }
++#endif
++
+     if (pe && isUnclipped) {
+         const QPainter::CompositionMode mode = pe->rasterBuffer->compositionMode;
+ 
+diff --git a/src/gui/painting/rga.c b/src/gui/painting/rga.c
+new file mode 100644
+index 00000000..7f2833ee
+--- /dev/null
++++ b/src/gui/painting/rga.c
+@@ -0,0 +1,117 @@
++#include <rga/rga.h>
++#include <rga/RgaApi.h>
++
++static inline RgaSURF_FORMAT
++rga_get_format(QImage::Format format)
++{
++    switch (format) {
++    case QImage::Format_ARGB32:
++    case QImage::Format_ARGB32_Premultiplied:
++        return RK_FORMAT_BGRA_8888;
++    case QImage::Format_RGB16:
++        return RK_FORMAT_RGB_565;
++    default:
++        return RK_FORMAT_UNKNOWN;
++    }
++}
++
++static inline RgaSURF_FORMAT
++rga_get_reverse_format(QImage::Format format)
++{
++    switch (format) {
++    case QImage::Format_RGB32:
++        return RK_FORMAT_RGBX_8888;
++    case QImage::Format_ARGB32:
++    case QImage::Format_ARGB32_Premultiplied:
++        return RK_FORMAT_RGBA_8888;
++    default:
++        return RK_FORMAT_UNKNOWN;
++    }
++}
++
++bool rga_fill(const uchar *dst, int dst_stride, int dst_height,
++              QImage::Format format, int color,
++              int x, int y, int w, int h) {
++    if (c_RkRgaInit() < 0)
++        return false;
++
++    RgaSURF_FORMAT fmt = rga_get_format(format);
++    if (fmt == RK_FORMAT_UNKNOWN) {
++        if (format == QImage::Format_RGB32)
++            fmt = RK_FORMAT_BGRA_8888;
++        else
++            return false;
++    }
++
++    if (fmt == RK_FORMAT_RGB_565)
++        dst_stride /= 2;
++    else
++        dst_stride /= 4;
++
++    rga_info_t info;
++    memset(&info, 0, sizeof(info));
++    info.fd = -1;
++    info.virAddr = (void *)dst;
++    info.mmuFlag = 1;
++    rga_set_rect(&info.rect, x, y, w, h, dst_stride, dst_height, fmt);
++
++    info.color = color;
++
++    return c_RkRgaColorFill(&info) >= 0;
++}
++
++bool rga_blit(const uchar *src, int src_stride, int src_height,
++              const uchar *dst, int dst_stride, int dst_height,
++              QImage::Format src_format, QImage::Format dst_format,
++              int sx, int sy, int dx, int dy, int width, int height,
++              QPainter::CompositionMode mode, int alpha) {
++    if (c_RkRgaInit() < 0)
++        return false;
++
++    RgaSURF_FORMAT src_fmt = rga_get_format(src_format);
++    RgaSURF_FORMAT dst_fmt = rga_get_format(dst_format);
++    if (src_fmt == RK_FORMAT_UNKNOWN || dst_fmt == RK_FORMAT_UNKNOWN) {
++        src_fmt = rga_get_reverse_format(src_format);
++        dst_fmt = rga_get_reverse_format(dst_format);
++        if (src_fmt == RK_FORMAT_UNKNOWN || dst_fmt == RK_FORMAT_UNKNOWN)
++            return false;
++    }
++
++    if (src_fmt == RK_FORMAT_RGB_565)
++        src_stride /= 2;
++    else
++        src_stride /= 4;
++
++    if (dst_fmt == RK_FORMAT_RGB_565)
++        dst_stride /= 2;
++    else
++        dst_stride /= 4;
++
++    int blend = ((alpha * 255) >> 8) << 16;
++    if (mode == QPainter::CompositionMode_Source)
++        blend |= 0x0100;
++    else if (src_format == QImage::Format_ARGB32_Premultiplied)
++        blend |= 0x0105;
++    else
++        blend |= 0x0405;
++
++    rga_info_t src_info;
++    memset(&src_info, 0, sizeof(src_info));
++    src_info.fd = -1;
++    src_info.virAddr = (void *)src;
++    src_info.mmuFlag = 1;
++    rga_set_rect(&src_info.rect, sx, sy, width, height,
++                 src_stride, src_height, src_fmt);
++
++    rga_info_t dst_info;
++    memset(&dst_info, 0, sizeof(dst_info));
++    dst_info.fd = -1;
++    dst_info.virAddr = (void *)dst;
++    dst_info.mmuFlag = 1;
++    rga_set_rect(&dst_info.rect, dx, dy, width, height,
++                 dst_stride, dst_height, dst_fmt);
++
++    src_info.blend = blend;
++
++    return c_RkRgaBlit(&src_info, &dst_info, NULL) >= 0;
++}
+-- 
+2.20.1
+

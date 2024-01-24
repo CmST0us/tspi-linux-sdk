@@ -1,0 +1,26 @@
+config BR2_PACKAGE_TEE_USER_APP
+	bool "Rockchip TEE user App or linux"
+	help
+	  Rockchip TEE user App or linux.
+
+if BR2_PACKAGE_TEE_USER_APP
+
+config BR2_PACKAGE_TEE_USER_APP_COMPILE_CMD
+	string "compile command"
+	default "6432"
+	help
+	  Rockchip rk_tee_user compile cammad.
+
+config BR2_PACKAGE_TEE_USER_APP_TEE_VERSION
+	string "TEE version"
+	default "v2"
+	help
+	  Rockchip TEE version.
+
+config BR2_PACKAGE_TEE_USER_APP_EXTRA_TOOLCHAIN
+	string "Extra toolchain if neccessary"
+	default "None"
+	help
+	  Extra toolchain if neccessary
+
+endif

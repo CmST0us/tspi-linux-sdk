@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+	<file>resources/icon.png</file>
+	<file>resources/background_linux.jpg</file>
+	<file>resources/background_debian.jpg</file>
+    </qresource>
+</RCC>

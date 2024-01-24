@@ -1,0 +1,45 @@
+From add0864b7e65ad253e9485df25eb6a6a0a81b835 Mon Sep 17 00:00:00 2001
+From: "zain.wang" <wzz@rock-chips.com>
+Date: Thu, 9 Aug 2018 11:43:12 +0800
+Subject: [PATCH 2/3] Export userdata to mtp
+
+Signed-off-by: zain.wang <wzz@rock-chips.com>
+---
+ server/server.cpp | 19 ++++---------------
+ 1 file changed, 4 insertions(+), 15 deletions(-)
+
+diff --git a/server/server.cpp b/server/server.cpp
+index d08c13c..f43d513 100644
+--- a/server/server.cpp
++++ b/server/server.cpp
+@@ -217,23 +217,12 @@ public:
+             MTP_STORAGE_FIXED_RAM,
+             userdata->pw_dir,
+             "MTP",
+-            1024 * 1024 * 100,  /* 100 MB reserved space, to avoid filling the disk */
++            0,
+             false,
+             0  /* Do not check sizes for internal storage */);
+-        mtp_database->addStoragePath(std::string(userdata->pw_dir) + "/Documents",
+-                                     gettext("Documents"),
+-                                     MTP_STORAGE_FIXED_RAM, false);
+-        mtp_database->addStoragePath(std::string(userdata->pw_dir) + "/Music",
+-                                     gettext("Music"),
+-                                     MTP_STORAGE_FIXED_RAM, false);
+-        mtp_database->addStoragePath(std::string(userdata->pw_dir) + "/Videos",
+-                                     gettext("Videos"),
+-                                     MTP_STORAGE_FIXED_RAM, false);
+-        mtp_database->addStoragePath(std::string(userdata->pw_dir) + "/Pictures",
+-                                     gettext("Pictures"),
+-                                     MTP_STORAGE_FIXED_RAM, false);
+-        mtp_database->addStoragePath(std::string(userdata->pw_dir) + "/Downloads",
+-                                     gettext("Downloads"),
++
++        mtp_database->addStoragePath(std::string(userdata->pw_dir) + "/../userdata",
++                                     gettext("userdata"),
+                                      MTP_STORAGE_FIXED_RAM, false);
+         home_storage_added = false;
+ 
+-- 
+2.17.1
+

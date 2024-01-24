@@ -1,0 +1,32 @@
+config BR2_PACKAGE_USBMOUNT
+	bool "usbmount"
+	depends on BR2_USE_MMU # lockfile-progs -> liblockfile
+	depends on BR2_PACKAGE_HAS_UDEV
+	select BR2_PACKAGE_LOCKFILE_PROGS
+	help
+	  The usbmount package automatically mounts USB mass storage
+	  devices when they are plugged in, and unmounts them when
+	  they are removed.
+
+	  https://wiki.debian.org/usbmount
+
+comment "usbmount requires udev to be enabled"
+	depends on BR2_USE_MMU
+	depends on !BR2_PACKAGE_HAS_UDEV
+
+if BR2_PACKAGE_USBMOUNT
+
+config BR2_PACKAGE_USBMOUNT_SYNC_MOUNT
+	bool "mount with sync option"
+	default n
+	help
+	  The "sync" option may not be a good choice to use with flash
+	  drives, as it forces a greater amount of writing operating on
+	  the drive. This makes the writing speed considerably lower
+	  and also leads to a faster wear out of the disk.
+
+	  If you omit it, don't forget to use the command "sync" to
+	  synchronize the data on your disk before removing the drive
+	  or you may experience data loss.
+
+endif

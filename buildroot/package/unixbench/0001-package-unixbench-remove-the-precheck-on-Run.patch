@@ -1,0 +1,30 @@
+From 41819ca72a63cbd79851a1a0c0f71837c0826fd5 Mon Sep 17 00:00:00 2001
+From: Caesar Wang <wxt@rock-chips.com>
+Date: Fri, 31 Jul 2020 16:05:06 +0800
+Subject: [PATCH] package/unixbench: remove the precheck on Run
+
+/opt/unixbench# ./Run
+make: *** No rule to make target 'check'.  Stop.
+make: *** No rule to make target 'all'.  Stop.
+
+Signed-off-by: Caesar Wang <wxt@rock-chips.com>
+---
+ UnixBench/Run | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/UnixBench/Run b/UnixBench/Run
+index b4abd26..a13b104 100755
+--- a/UnixBench/Run
++++ b/UnixBench/Run
+@@ -1900,7 +1900,7 @@ sub main {
+     my @creatingDirectories = ( ${TMPDIR}, ${RESULTDIR} );
+     createDirrectoriesIfNotExists(@creatingDirectories);
+ 
+-    preChecks();
++    #preChecks();
+     my $systemInfo = getSystemInfo();
+ 
+     # If the number of copies to run was not set, set it to 1
+-- 
+2.27.0
+

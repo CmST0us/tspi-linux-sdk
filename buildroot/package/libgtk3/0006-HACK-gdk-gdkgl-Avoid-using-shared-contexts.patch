@@ -1,0 +1,38 @@
+From 7c64ef8281b59fc5e1f6f2afc01ce3679af6c061 Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Mon, 28 Mar 2022 18:29:24 +0800
+Subject: [PATCH 6/6] HACK: gdk: gdkgl: Avoid using shared contexts
+
+Some GL implementations don't support sharing framebuffers in shared
+GL contexts, for example Mali DDK.
+
+Let's avoid switching GL context here to make sure of generating
+framebuffer in the common GL context.
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ gdk/gdkgl.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/gdk/gdkgl.c b/gdk/gdkgl.c
+index 9690077..c0b5bb3 100644
+--- a/gdk/gdkgl.c
++++ b/gdk/gdkgl.c
+@@ -366,7 +366,13 @@ gdk_cairo_draw_from_gl (cairo_t              *cr,
+ 
+   clip_region = gdk_cairo_region_from_clip (cr);
+ 
+-  gdk_gl_context_make_current (paint_context);
++  /**
++   * HACK: Some GL implementations don't support sharing framebuffers in shared
++   * GL contexts, for example Mali DDK.
++   * Let's avoid switching GL context here to make sure of generating
++   * framebuffer in the common GL context.
++   */
++  // gdk_gl_context_make_current (paint_context);
+   paint_data = gdk_gl_context_get_paint_data (paint_context);
+ 
+   if (paint_data->tmp_framebuffer == 0)
+-- 
+2.20.1
+

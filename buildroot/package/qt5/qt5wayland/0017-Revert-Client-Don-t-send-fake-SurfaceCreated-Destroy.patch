@@ -1,0 +1,69 @@
+From 9809b77e3fb1fb7fc74dad0aa6f5bd3482255271 Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Tue, 30 Aug 2022 16:32:54 +0800
+Subject: [PATCH 17/17] Revert "Client: Don't send fake
+ SurfaceCreated/Destroyed events"
+
+This reverts commit cd21404f99b486ff62225699e1a4bdc0d5b3d5c1.
+
+Others, e.g. Quick scenegraph, still need surfaceAboutToBeDestroyed
+event to cleanup renderer resources.
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ src/client/qwaylandwindow.cpp | 10 ++++++++--
+ src/client/qwaylandwindow_p.h |  2 +-
+ 2 files changed, 9 insertions(+), 3 deletions(-)
+
+diff --git a/src/client/qwaylandwindow.cpp b/src/client/qwaylandwindow.cpp
+index 81d4aef..fdb3d17 100644
+--- a/src/client/qwaylandwindow.cpp
++++ b/src/client/qwaylandwindow.cpp
+@@ -97,7 +97,7 @@ QWaylandWindow::~QWaylandWindow()
+     delete mWindowDecoration;
+ 
+     if (mSurface)
+-        reset();
++        reset(false);
+ 
+     const QWindow *parent = window();
+     const auto tlw = QGuiApplication::topLevelWindows();
+@@ -153,6 +153,8 @@ void QWaylandWindow::initWindow()
+ 
+     if (!mSurface) {
+         initializeWlSurface();
++        QPlatformSurfaceEvent e(QPlatformSurfaceEvent::SurfaceCreated);
++        QGuiApplication::sendEvent(window(), &e);
+     }
+ 
+     if (shouldCreateSubSurface()) {
+@@ -286,8 +288,12 @@ bool QWaylandWindow::shouldCreateSubSurface() const
+     return QPlatformWindow::parent() != nullptr;
+ }
+ 
+-void QWaylandWindow::reset()
++void QWaylandWindow::reset(bool sendDestroyEvent)
+ {
++    if (mSurface && sendDestroyEvent) {
++        QPlatformSurfaceEvent e(QPlatformSurfaceEvent::SurfaceAboutToBeDestroyed);
++        QGuiApplication::sendEvent(window(), &e);
++    }
+     mWaitingToApplyConfigure = false;
+ 
+     delete mShellSurface;
+diff --git a/src/client/qwaylandwindow_p.h b/src/client/qwaylandwindow_p.h
+index afd318c..63901a0 100644
+--- a/src/client/qwaylandwindow_p.h
++++ b/src/client/qwaylandwindow_p.h
+@@ -273,7 +273,7 @@ private:
+     void initializeWlSurface();
+     bool shouldCreateShellSurface() const;
+     bool shouldCreateSubSurface() const;
+-    void reset();
++    void reset(bool sendDestroyEvent = true);
+     void sendExposeEvent(const QRect &rect);
+     static void closePopups(QWaylandWindow *parent);
+     QPlatformScreen *calculateScreenFromSurfaceEvents() const;
+-- 
+2.20.1
+

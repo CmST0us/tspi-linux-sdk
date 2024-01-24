@@ -1,0 +1,25 @@
+From 5d4b2c967d7955376f3cddb80f3793d54168bf49 Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Fri, 24 Jun 2022 15:04:50 +0800
+Subject: [PATCH 4/4] config: linux: Use system libgbm for embedded
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ src/core/config/linux.pri | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/core/config/linux.pri b/src/core/config/linux.pri
+index 3e490a0..3dce0b9 100644
+--- a/src/core/config/linux.pri
++++ b/src/core/config/linux.pri
+@@ -2,6 +2,7 @@ include(common.pri)
+ 
+ qtConfig(webengine-embedded-build) {
+     gn_args += is_desktop_linux=false
++    gn_args += use_system_minigbm=true
+ }
+ 
+ !host_build{
+-- 
+2.20.1
+

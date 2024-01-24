@@ -1,0 +1,5 @@
+config BR2_PACKAGE_RKNPU_FW
+	bool "rknpu firmware"
+        depends on BR2_PACKAGE_NPU_POWERCTRL || BR2_PACKAGE_NPU_POWERCTRL_COMBINE
+	help
+	  "Copy rknpu firmware and upgrade"

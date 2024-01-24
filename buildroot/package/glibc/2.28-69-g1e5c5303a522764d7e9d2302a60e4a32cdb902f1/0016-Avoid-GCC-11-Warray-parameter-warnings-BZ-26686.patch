@@ -1,0 +1,42 @@
+From e13769bd60581f9cbb8c8565e0e5345fbfeb1508 Mon Sep 17 00:00:00 2001
+From: Martin Sebor <msebor@redhat.com>
+Date: Thu, 8 Oct 2020 12:46:03 -0600
+Subject: [PATCH 16/20] Avoid GCC 11 -Warray-parameter warnings [BZ #26686].
+
+Building Glibc with the latest GCC 11 also shows a couple of instances
+of the new -Warray-parameter warning in the thread db APIs.
+
+To avoid these, this patch changes the deefinitions of the two functions
+to match their definitions.
+
+(cherry picked from commit 3eff7504cab0c406dbd27a1b07a413dafc39634d)
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ nptl_db/fetch-value.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/nptl_db/fetch-value.c b/nptl_db/fetch-value.c
+index 8514898e..cb58de64 100644
+--- a/nptl_db/fetch-value.c
++++ b/nptl_db/fetch-value.c
+@@ -140,7 +140,7 @@ _td_fetch_value (td_thragent_t *ta,
+ 
+ td_err_e
+ _td_store_value (td_thragent_t *ta,
+-		 uint32_t desc[2], int descriptor_name, psaddr_t idx,
++		 db_desc_t desc, int descriptor_name, psaddr_t idx,
+ 		 psaddr_t address, psaddr_t widened_value)
+ {
+   ps_err_e err;
+@@ -240,7 +240,7 @@ _td_fetch_value_local (td_thragent_t *ta,
+ 
+ td_err_e
+ _td_store_value_local (td_thragent_t *ta,
+-		       uint32_t desc[2], int descriptor_name, psaddr_t idx,
++		       db_desc_t desc, int descriptor_name, psaddr_t idx,
+ 		       void *address, psaddr_t widened_value)
+ {
+   td_err_e terr = _td_locate_field (ta, desc, descriptor_name, idx, &address);
+-- 
+2.20.1
+

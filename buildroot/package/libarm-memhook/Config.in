@@ -1,0 +1,13 @@
+config BR2_PACKAGE_LIBARM_MEMHOOK
+	bool "libarm-memhook"
+	depends on BR2_arm && BR2_ARM_CPU_HAS_NEON
+	help
+	  A hook library for armv7-neon memcpy and memmove.
+
+	  Based on glibc-2.34.
+
+if BR2_PACKAGE_LIBARM_MEMHOOK
+config BR2_PACKAGE_LIBARM_MEMHOOK_PRELOAD
+	bool "preload"
+	depends on !BR2_STATIC_LIBS
+endif

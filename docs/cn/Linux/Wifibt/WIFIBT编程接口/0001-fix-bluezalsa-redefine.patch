@@ -1,0 +1,39 @@
+From 5016fd04d193640ad4bf908818f87c824550e00b Mon Sep 17 00:00:00 2001
+From: Yao Xiao <xiaoyao@rock-chips.com>
+Date: Fri, 17 Jun 2022 17:58:01 +0800
+Subject: [PATCH 1/1] fix_redefine
+
+---
+ src/bluez-a2dp.h  | 2 +-
+ src/bluez-iface.h | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/src/bluez-a2dp.h b/src/bluez-a2dp.h
+index 67a7c5d..442366f 100644
+--- a/src/bluez-a2dp.h
++++ b/src/bluez-a2dp.h
+@@ -55,6 +55,6 @@ struct bluez_a2dp_codec {
+ };
+ 
+ /* NULL-terminated list of available A2DP codecs */
+-const struct bluez_a2dp_codec **bluez_a2dp_codecs;
++extern const struct bluez_a2dp_codec **bluez_a2dp_codecs;
+ 
+ #endif
+diff --git a/src/bluez-iface.h b/src/bluez-iface.h
+index 7d61638..a86a1bd 100644
+--- a/src/bluez-iface.h
++++ b/src/bluez-iface.h
+@@ -13,7 +13,7 @@
+ 
+ #include <gio/gio.h>
+ 
+-const GDBusInterfaceInfo bluez_iface_endpoint;
+-const GDBusInterfaceInfo bluez_iface_profile;
++extern const GDBusInterfaceInfo bluez_iface_endpoint;
++extern const GDBusInterfaceInfo bluez_iface_profile;
+ 
+ #endif
+-- 
+2.17.1
+

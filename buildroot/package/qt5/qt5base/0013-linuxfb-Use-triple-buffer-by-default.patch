@@ -1,0 +1,131 @@
+From cc8100277871e7fc13556149ca111272db6fd2d0 Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Tue, 16 Apr 2019 18:46:49 +0800
+Subject: [PATCH 13/28] linuxfb: Use triple buffer by default
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ .../platforms/linuxfb/qlinuxfbdrmscreen.cpp   | 56 +++++++++++++++----
+ 1 file changed, 44 insertions(+), 12 deletions(-)
+
+diff --git a/src/plugins/platforms/linuxfb/qlinuxfbdrmscreen.cpp b/src/plugins/platforms/linuxfb/qlinuxfbdrmscreen.cpp
+index dcc1ef27..29d146f4 100644
+--- a/src/plugins/platforms/linuxfb/qlinuxfbdrmscreen.cpp
++++ b/src/plugins/platforms/linuxfb/qlinuxfbdrmscreen.cpp
+@@ -59,7 +59,13 @@ QT_BEGIN_NAMESPACE
+ 
+ Q_LOGGING_CATEGORY(qLcFbDrm, "qt.qpa.fb")
+ 
++#define TRIPLE_BUFFER
++
++#ifdef TRIPLE_BUFFER
++static const int BUFFER_COUNT = 3;
++#else
+ static const int BUFFER_COUNT = 2;
++#endif
+ 
+ class QLinuxFbDevice : public QKmsDevice
+ {
+@@ -75,12 +81,12 @@ public:
+     };
+ 
+     struct Output {
+-        Output() : backFb(0), flipped(false) { }
++        Output() : backFb(0), flipPending(false) { }
+         QKmsOutput kmsOutput;
+         Framebuffer fb[BUFFER_COUNT];
+         QRegion dirty[BUFFER_COUNT];
+         int backFb;
+-        bool flipped;
++        bool flipPending;
+         QSize currentRes() const {
+             const drmModeModeInfo &modeInfo(kmsOutput.modes[kmsOutput.mode]);
+             return QSize(modeInfo.hdisplay, modeInfo.vdisplay);
+@@ -97,6 +103,7 @@ public:
+     void setMode();
+ 
+     void swapBuffers(Output *output);
++    void waitForFlip(Output *output);
+ 
+     int outputCount() const { return m_outputs.count(); }
+     Output *output(int idx) { return &m_outputs[idx]; }
+@@ -301,7 +308,7 @@ void QLinuxFbDevice::createFramebuffers()
+                 return;
+         }
+         output.backFb = 0;
+-        output.flipped = false;
++        output.flipPending = false;
+     }
+ }
+ 
+@@ -355,19 +362,18 @@ void QLinuxFbDevice::pageFlipHandler(int fd, unsigned int sequence,
+     Q_UNUSED(tv_usec);
+ 
+     Output *output = static_cast<Output *>(user_data);
++
++#ifndef TRIPLE_BUFFER
++    // The next buffer would be available after flipped
+     output->backFb = (output->backFb + 1) % BUFFER_COUNT;
++#endif
++
++    output->flipPending = false;
+ }
+ 
+-void QLinuxFbDevice::swapBuffers(Output *output)
++void QLinuxFbDevice::waitForFlip(Output *output)
+ {
+-    Framebuffer &fb(output->fb[output->backFb]);
+-    if (drmModePageFlip(fd(), output->kmsOutput.crtc_id, fb.fb, DRM_MODE_PAGE_FLIP_EVENT, output) == -1) {
+-        qErrnoWarning(errno, "Page flip failed");
+-        return;
+-    }
+-
+-    const int fbIdx = output->backFb;
+-    while (output->backFb == fbIdx) {
++    while (output->flipPending) {
+         drmEventContext drmEvent;
+         memset(&drmEvent, 0, sizeof(drmEvent));
+         drmEvent.version = 2;
+@@ -379,6 +385,27 @@ void QLinuxFbDevice::swapBuffers(Output *output)
+     }
+ }
+ 
++void QLinuxFbDevice::swapBuffers(Output *output)
++{
++#ifdef TRIPLE_BUFFER
++    // Wait flip to make sure last buffer displayed
++    waitForFlip(output);
++#endif
++
++    Framebuffer &fb(output->fb[output->backFb]);
++    if (drmModePageFlip(fd(), output->kmsOutput.crtc_id, fb.fb, DRM_MODE_PAGE_FLIP_EVENT, output) == -1) {
++        qErrnoWarning(errno, "Page flip failed");
++        return;
++    }
++
++    output->flipPending = true;
++
++#ifdef TRIPLE_BUFFER
++    // The next buffer should always available in triple buffer case.
++    output->backFb = (output->backFb + 1) % BUFFER_COUNT;
++#endif
++}
++
+ QLinuxFbDrmScreen::QLinuxFbDrmScreen(const QStringList &args)
+     : m_screenConfig(nullptr),
+       m_device(nullptr)
+@@ -436,6 +463,11 @@ QRegion QLinuxFbDrmScreen::doRedraw()
+     for (int i = 0; i < BUFFER_COUNT; ++i)
+         output->dirty[i] += dirty;
+ 
++#ifndef TRIPLE_BUFFER
++    // Wait flip before accessing new buffer
++    m_device->waitForFlip(output);
++#endif
++
+     if (output->fb[output->backFb].wrapper.isNull())
+         return dirty;
+ 
+-- 
+2.20.1
+

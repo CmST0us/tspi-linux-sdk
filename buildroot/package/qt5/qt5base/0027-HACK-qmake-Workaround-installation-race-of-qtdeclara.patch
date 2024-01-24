@@ -1,0 +1,39 @@
+From e52c323bf63319aefe6b91f712b52dc69591f30c Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Fri, 8 Oct 2021 16:39:52 +0800
+Subject: [PATCH 27/28] HACK: qmake: Workaround installation race of
+ qtdeclarative qmltypes
+
+When doing in-place building, the generated qtdeclarative's
+plugins.qmltypes might be installed from qtbase's qml2build and
+qtdeclarative's install_qmltypes stages.
+
+That would cause a parallel installation race which might lead to:
+Error copying xxx/plugins.qmltypes to xxx/plugins.qmltypes: Destination file exists
+
+Let's workaround it by simply adding a few retries.
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ qmake/main.cpp | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/qmake/main.cpp b/qmake/main.cpp
+index 15b1b23f..01c4e6f0 100644
+--- a/qmake/main.cpp
++++ b/qmake/main.cpp
+@@ -289,6 +289,11 @@ static int installFile(const QString &source, const QString &target, bool exe =
+         QDir::root().mkpath(QFileInfo(target).absolutePath());
+     }
+ 
++    /* HACK: Workaround installation race of qtdeclarative's qmltypes */
++    if (!sourceFile.copy(target))
++        /* Wait for other installers and retry later */
++        if (({ sleep(10); QFile::remove(target); !sourceFile.copy(target); }))
++
+     if (!sourceFile.copy(target)) {
+         fprintf(stderr, "Error copying %s to %s: %s\n", source.toLatin1().constData(), qPrintable(target), qPrintable(sourceFile.errorString()));
+         return 3;
+-- 
+2.20.1
+

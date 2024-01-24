@@ -1,0 +1,78 @@
+From d0b587a185c0324792cf17c54b6d62eb4da4d400 Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Tue, 5 Jul 2022 13:51:11 +0800
+Subject: [PATCH 10/10] ecore_drm2: Set output's crtc atomic prop as well
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ src/lib/ecore_drm2/ecore_drm2_fb.c      | 7 +++++++
+ src/lib/ecore_drm2/ecore_drm2_outputs.c | 8 +++++++-
+ 2 files changed, 14 insertions(+), 1 deletion(-)
+
+diff --git a/src/lib/ecore_drm2/ecore_drm2_fb.c b/src/lib/ecore_drm2/ecore_drm2_fb.c
+index 38c8287..57bc154 100644
+--- a/src/lib/ecore_drm2/ecore_drm2_fb.c
++++ b/src/lib/ecore_drm2/ecore_drm2_fb.c
+@@ -336,6 +336,7 @@ _fb_atomic_flip_test(Ecore_Drm2_Output *output)
+    int ret = 0;
+    Eina_List *l;
+    Ecore_Drm2_Crtc_State *cstate;
++   Ecore_Drm2_Connector_State *cnstate;
+    Ecore_Drm2_Plane_State *pstate;
+    Ecore_Drm2_Plane *plane;
+    drmModeAtomicReq *req = NULL;
+@@ -350,6 +351,7 @@ _fb_atomic_flip_test(Ecore_Drm2_Output *output)
+    sym_drmModeAtomicSetCursor(req, 0);
+ 
+    cstate = output->crtc_state;
++   cnstate = output->conn_state;
+ 
+    ret =
+      sym_drmModeAtomicAddProperty(req, cstate->obj_id, cstate->mode.id,
+@@ -361,6 +363,11 @@ _fb_atomic_flip_test(Ecore_Drm2_Output *output)
+                                   cstate->active.value);
+    if (ret < 0) goto err;
+ 
++   ret =
++     sym_drmModeAtomicAddProperty(req, cnstate->obj_id, cnstate->crtc.id,
++                                  cnstate->crtc.value);
++   if (ret < 0) goto err;
++
+    if (cstate->background.id)
+      {
+         ret =
+diff --git a/src/lib/ecore_drm2/ecore_drm2_outputs.c b/src/lib/ecore_drm2/ecore_drm2_outputs.c
+index 2140079..ba6b139 100644
+--- a/src/lib/ecore_drm2/ecore_drm2_outputs.c
++++ b/src/lib/ecore_drm2/ecore_drm2_outputs.c
+@@ -1265,10 +1265,12 @@ static Eina_Bool
+ _output_mode_atomic_set(Ecore_Drm2_Output *output, Ecore_Drm2_Output_Mode *mode)
+ {
+    Ecore_Drm2_Crtc_State *cstate;
++   Ecore_Drm2_Connector_State *cnstate;
+    drmModeAtomicReq *req = NULL;
+    int ret = 0;
+ 
+    cstate = output->crtc_state;
++   cnstate = output->conn_state;
+ 
+    if (mode)
+      {
+@@ -1294,9 +1296,13 @@ _output_mode_atomic_set(Ecore_Drm2_Output *output, Ecore_Drm2_Output_Mode *mode)
+      {
+         cstate->active.value = 1;
+         cstate->mode.value = mode->id;
++        cnstate->crtc.value = cstate->obj_id;
+      }
+    else
+-     cstate->active.value = 0;
++     {
++        cstate->active.value = 0;
++        cnstate->crtc.value = 0;
++     }
+ 
+    ret = sym_drmModeAtomicAddProperty(req, cstate->obj_id, cstate->mode.id,
+                                       cstate->mode.value);
+-- 
+2.20.1
+

@@ -1,0 +1,18 @@
+config BR2_PACKAGE_RKUPDATE
+	bool "Rockchip rkupdate for linux"
+	select BR2_PACKAGE_LIBPTHREAD_STUBS
+	select BR2_PACKAGE_UTIL_LINUX_LIBUUID
+	help
+	  Rockchip rkupdate for linux.
+
+if BR2_PACKAGE_RKUPDATE
+config BR2_PACKAGE_RKUPDATE_SINGNATURE_FW
+	bool "update signature firmware"
+	help
+		update signature firmware.
+
+config BR2_PACKAGE_RKUPDATE_SIMULATE_ABNORMAL_POWER_OFF
+	bool "simulate abnormal power off during updating fw"
+	help
+		simulate abnormal power off during updating fw.
+endif

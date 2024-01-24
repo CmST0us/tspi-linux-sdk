@@ -1,0 +1,25 @@
+From 63371f97949b02b2589b1006a2b2102ee48d4dde Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Wed, 24 Aug 2022 09:51:24 +0800
+Subject: [PATCH] readline: Fix compile error on uclibc
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ lib/readline/text.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/lib/readline/text.c b/lib/readline/text.c
+index 2567dea..9f2c55e 100644
+--- a/lib/readline/text.c
++++ b/lib/readline/text.c
+@@ -40,6 +40,7 @@
+ #endif
+ 
+ #include <stdio.h>
++#include <stddef.h>
+ 
+ /* System-specific feature definitions and include files. */
+ #include "rldefs.h"
+-- 
+2.20.1
+

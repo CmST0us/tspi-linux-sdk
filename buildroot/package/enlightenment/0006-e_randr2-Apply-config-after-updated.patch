@@ -1,0 +1,27 @@
+From 31e547e088b095ce7785a9139d0b57c2bf02ff6f Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Thu, 21 Jul 2022 11:09:31 +0800
+Subject: [PATCH 06/10] e_randr2: Apply config after updated
+
+Fix black screen after wizard.
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ src/bin/e_randr2.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/bin/e_randr2.c b/src/bin/e_randr2.c
+index ae05a18ba..fbc10bd8e 100644
+--- a/src/bin/e_randr2.c
++++ b/src/bin/e_randr2.c
+@@ -119,6 +119,7 @@ e_randr2_init(void)
+    else
+      {
+         _config_update(e_randr2, e_randr2_cfg, 0);
++        e_randr2_config_apply();
+         ecore_job_add(_cb_delay_init_save, NULL);
+      }
+    ecore_event_add(E_EVENT_RANDR_CHANGE, NULL, NULL, NULL);
+-- 
+2.20.1
+

@@ -1,0 +1,32 @@
+From 19cb4ac0f2342331ff57489cda565b3d36463fee Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Fri, 17 Jun 2022 15:20:58 +0800
+Subject: [PATCH 4/5] usbmount: Allow unmounting other mountpoints
+
+We're allowed to mount devices(in fstab) on other mountpoints.
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ usbmount | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/usbmount b/usbmount
+index c09a865..d9a1f0c 100755
+--- a/usbmount
++++ b/usbmount
+@@ -174,10 +174,9 @@ elif [ "$1" = remove ]; then
+     # Test if it is mounted.
+     while read device mountpoint fstype remainder; do
+ 	if [ "$DEVNAME" = "$device" ]; then
+-	    # If the mountpoint and filesystem type are maintained by
++	    # If the filesystem type is maintained by
+ 	    # this script, unmount the filesystem.
+-	    if in_list "$mountpoint" "$MOUNTPOINTS" &&
+-		in_list "$fstype" "$FILESYSTEMS"; then
++	    if in_list "$fstype" "$FILESYSTEMS"; then
+ 		log info "executing command: umount -l $mountpoint"
+ 		umount -l "$mountpoint"
+ 
+-- 
+2.20.1
+

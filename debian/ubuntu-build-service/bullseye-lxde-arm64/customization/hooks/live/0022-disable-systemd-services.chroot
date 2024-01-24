@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# workaround 90s delay
+services=(NetworkManager systemd-networkd)
+for service in ${services[@]}; do
+  systemctl mask ${service}-wait-online.service
+done
+
+# disbale the wire/nl80211
+systemctl mask wpa_supplicant-wired@
+systemctl mask wpa_supplicant-nl80211@
+systemctl mask wpa_supplicant@

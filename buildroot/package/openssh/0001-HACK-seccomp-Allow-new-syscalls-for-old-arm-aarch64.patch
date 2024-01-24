@@ -1,0 +1,39 @@
+From 0d4f4f2b239c687c1f815b66084a8cceae6fa1d4 Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Mon, 19 Sep 2022 17:49:57 +0800
+Subject: [PATCH] HACK: seccomp: Allow new syscalls for old {arm, aarch64}
+
+The new glibc would try new syscalls unconditionally.
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ sandbox-seccomp-filter.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/sandbox-seccomp-filter.c b/sandbox-seccomp-filter.c
+index 4ce80cb..a449a80 100644
+--- a/sandbox-seccomp-filter.c
++++ b/sandbox-seccomp-filter.c
+@@ -186,6 +186,10 @@ static const struct sock_filter preauth_insns[] = {
+ #endif
+ #ifdef __NR_statx
+ 	SC_DENY(__NR_statx, EACCES),
++#elif defined __arm__
++	SC_DENY(397, ENOSYS),
++#elif defined __aarch64__
++	SC_DENY(291, ENOSYS),
+ #endif
+ 
+ 	/* Syscalls to permit */
+@@ -197,6 +201,8 @@ static const struct sock_filter preauth_insns[] = {
+ #endif
+ #ifdef __NR_clock_gettime64
+ 	SC_ALLOW(__NR_clock_gettime64),
++#else
++	SC_DENY(403, ENOSYS),
+ #endif
+ #ifdef __NR_close
+ 	SC_ALLOW(__NR_close),
+-- 
+2.20.1
+

@@ -1,0 +1,278 @@
+From 2bf12a6c7c52f88fd9ef4cd5652d1391a7b3f25c Mon Sep 17 00:00:00 2001
+From: "zain.wang" <wzz@rock-chips.com>
+Date: Thu, 9 Aug 2018 10:22:20 +0800
+Subject: [PATCH 1/3] Fix compile error
+
+Remove some code about dbus and properties.
+
+Signed-off-by: zain.wang <wzz@rock-chips.com>
+---
+ CMakeLists.txt        |   3 +-
+ server/CMakeLists.txt |   1 -
+ server/server.cpp     | 120 +-----------------------------------------
+ src/MtpServer.cpp     |  10 ++--
+ 4 files changed, 7 insertions(+), 127 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 46bff47..707b7f8 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -14,7 +14,7 @@ set(MTP_VERSION_MINOR 0)
+ set(MTP_VERSION_PATCH 0)
+ 
+ find_package(Boost REQUIRED COMPONENTS thread system filesystem unit_test_framework)
+-pkg_check_modules(DBUSCPP REQUIRED dbus-cpp)
++pkg_check_modules(DBUSCPP REQUIRED dbus-c++-1)
+ pkg_check_modules(GLOG REQUIRED libglog)
+ 
+ set(
+@@ -71,7 +71,6 @@ add_library(
+ 
+ target_link_libraries(
+   mtpserver
+-  android-properties
+   ${GLOG_LIBRARIES}
+   ${DBUSCPP_LIBRARIES}
+ )
+diff --git a/server/CMakeLists.txt b/server/CMakeLists.txt
+index 411ff46..9acb974 100644
+--- a/server/CMakeLists.txt
++++ b/server/CMakeLists.txt
+@@ -11,7 +11,6 @@ target_link_libraries(
+     mtp-server
+     mtpserver
+     usbhost
+-    android-properties
+     ${Boost_LIBRARIES}
+     ${Boost_thread_LIBRARIES}
+     ${Boost_system_LIBRARIES}
+diff --git a/server/server.cpp b/server/server.cpp
+index 0a9a846..d08c13c 100644
+--- a/server/server.cpp
++++ b/server/server.cpp
+@@ -32,73 +32,10 @@
+ #include <libintl.h>
+ #include <locale.h>
+ 
+-#include <hybris/properties/properties.h>
+ #include <glog/logging.h>
+ 
+-#include <core/dbus/bus.h>
+-#include <core/dbus/object.h>
+-#include <core/dbus/property.h>
+-#include <core/dbus/service.h>
+-#include <core/dbus/signal.h>
+-
+-#include <core/dbus/asio/executor.h>
+-#include <core/dbus/types/stl/tuple.h>
+-#include <core/dbus/types/stl/vector.h>
+-#include <core/dbus/types/struct.h>
+-
+-
+-namespace dbus = core::dbus;
+ using namespace android;
+ 
+-namespace core
+-{
+-dbus::Bus::Ptr the_session_bus()
+-{
+-    static dbus::Bus::Ptr session_bus = std::make_shared<dbus::Bus>(dbus::WellKnownBus::session);
+-    return session_bus;
+-}
+-
+-struct UnityGreeter
+-{
+-    struct Properties
+-    {
+-        struct IsActive
+-        {
+-            inline static std::string name()
+-            {
+-                return "IsActive";
+-            };
+-            typedef UnityGreeter Interface;
+-            typedef bool ValueType;
+-            static const bool readable = true;
+-            static const bool writable = false;
+-        };
+-    };
+-};
+-}
+-
+-namespace core
+-{
+-namespace dbus
+-{
+-namespace traits
+-{
+-template<>
+-struct Service<core::UnityGreeter>
+-{
+-    inline static const std::string& interface_name()
+-    {
+-        static const std::string s
+-        {
+-            "com.canonical.UnityGreeter"
+-        };
+-        return s;
+-    }
+-};
+-}
+-}
+-}
+-
+ namespace
+ {
+ struct FileSystemConfig
+@@ -114,7 +51,6 @@ class MtpDaemon
+ 
+ private:
+     struct passwd *userdata;
+-    dbus::Bus::Ptr bus;
+     boost::thread dbus_thread;
+ 
+     // Mtp stuff
+@@ -124,8 +60,7 @@ private:
+     MtpDatabase* mtp_database;
+ 
+     // Security
+-    std::shared_ptr<core::dbus::Property<core::UnityGreeter::Properties::IsActive> > is_active;
+-    bool screen_locked = true;
++    bool screen_locked = false;
+ 
+     // inotify stuff
+     boost::thread notifier_thread;
+@@ -242,17 +177,6 @@ private:
+         read_more_notify();
+     }
+ 
+-    void drive_bus()
+-    {
+-        try {
+-            bus->run();
+-        }
+-        catch (...) {
+-            PLOG(ERROR) << "There was an unexpected error in DBus; terminating.";
+-            server->stop();
+-        }
+-    }
+-
+ public:
+ 
+     MtpDaemon(int fd):
+@@ -285,28 +209,14 @@ public:
+                 userdata->pw_gid,
+                 FileSystemConfig::file_perm,
+                 FileSystemConfig::directory_perm);
+-
+-        // security / screen locking
+-        bus = core::the_session_bus();
+-        bus->install_executor(core::dbus::asio::make_executor(bus));
+-        dbus_thread = boost::thread(&MtpDaemon::drive_bus, this);
+-        auto greeter_service = dbus::Service::use_service(bus, "com.canonical.UnityGreeter");
+-        dbus::Object::Ptr greeter = greeter_service->object_for_path(dbus::types::ObjectPath("/"));
+-
+-        is_active = greeter->get_property<core::UnityGreeter::Properties::IsActive>();
+     }
+ 
+     void initStorage()
+     {
+-        char product_name[PROP_VALUE_MAX];
+-
+-        // Local storage
+-        property_get ("ro.product.model", product_name, "Ubuntu Touch device");
+-
+         home_storage = new MtpStorage(
+             MTP_STORAGE_FIXED_RAM,
+             userdata->pw_dir,
+-	    product_name,
++            "MTP",
+             1024 * 1024 * 100,  /* 100 MB reserved space, to avoid filling the disk */
+             false,
+             0  /* Do not check sizes for internal storage */);
+@@ -360,31 +270,6 @@ public:
+ 
+     void run()
+     {
+-        if (is_active->get()) {
+-            is_active->changed().connect([this](bool active)
+-            {
+-                if (!active) {
+-                    screen_locked = active;
+-                    VLOG(2) << "device was unlocked, adding storage";
+-                    if (home_storage && !home_storage_added) {
+-                        server->addStorage(home_storage);
+-                        home_storage_added = true;
+-                    }
+-                    BOOST_FOREACH(std::string name, removables | boost::adaptors::map_keys) {
+-                        auto t = removables.at(name);
+-                        MtpStorage *storage = std::get<0>(t);
+-                        bool added = std::get<1>(t);
+-                        if (!added) {
+-                            mtp_database->addStoragePath(storage->getPath(),
+-                                                         std::string(),
+-                                                         storage->getStorageID(),
+-                                                         true);
+-                            server->addStorage(storage);
+-                        }
+-                    }
+-                }
+-            });
+-        } else {
+             screen_locked = false;
+             VLOG(2) << "device is not locked, adding storage";
+             if (home_storage) {
+@@ -403,7 +288,6 @@ public:
+                     server->addStorage(storage);
+                 }
+             }
+-        }
+ 
+         // start the MtpServer main loop
+         server->run();
+diff --git a/src/MtpServer.cpp b/src/MtpServer.cpp
+index b2d9e9c..ba95c5a 100644
+--- a/src/MtpServer.cpp
++++ b/src/MtpServer.cpp
+@@ -41,8 +41,6 @@
+ 
+ #include <linux/usb/f_mtp.h>
+ 
+-#include <hybris/properties/properties.h>
+-
+ #include <glog/logging.h>
+ 
+ namespace android {
+@@ -468,7 +466,7 @@ bool MtpServer::handleRequest() {
+ MtpResponseCode MtpServer::doGetDeviceInfo() {
+     VLOG(1) <<  __PRETTY_FUNCTION__;
+     MtpStringBuffer   string;
+-    char prop_value[PROP_VALUE_MAX];
++    char prop_value[64];
+ 
+     MtpObjectFormatList* playbackFormats = mDatabase->getSupportedPlaybackFormats();
+     MtpObjectFormatList* captureFormats = mDatabase->getSupportedCaptureFormats();
+@@ -500,17 +498,17 @@ MtpResponseCode MtpServer::doGetDeviceInfo() {
+     mData.putAUInt16(captureFormats); // Capture Formats
+     mData.putAUInt16(playbackFormats);  // Playback Formats
+ 
+-    property_get("ro.product.manufacturer", prop_value, "unknown manufacturer");
++    strcpy(prop_value, "---MANUFACTURER---");
+     string.set(prop_value);
+     mData.putString(string);   // Manufacturer
+ 
+-    property_get("ro.product.model", prop_value, "MTP Device");
++    strcpy(prop_value, "---MODEL---");
+     string.set(prop_value);
+     mData.putString(string);   // Model
+     string.set("1.0");
+     mData.putString(string);   // Device Version
+ 
+-    property_get("ro.serialno", prop_value, "????????");
++    strcpy(prop_value, "---SERIAL---");
+     string.set(prop_value);
+     mData.putString(string);   // Serial Number
+ 
+-- 
+2.17.1
+

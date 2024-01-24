@@ -1,0 +1,41 @@
+From 252e1127421c3c50c56d5c34a1a1b9251592b87c Mon Sep 17 00:00:00 2001
+From: JeffyChen <jeffy.chen@rock-chips.com>
+Date: Fri, 2 Jul 2021 17:39:24 +0200
+Subject: [PATCH 02/20] malloc: Initiate tcache shutdown even without
+ allocations [BZ #28028]
+
+After commit 1e26d35193efbb29239c710a4c46a64708643320 ("malloc: Fix
+tcache leak after thread destruction [BZ #22111]"),
+tcache_shutting_down is still not early enough.  When we detach a
+thread with no tcache allocated, tcache_shutting_down would still be
+false.
+
+Reviewed-by: DJ Delorie <dj@redhat.com>
+(cherry picked from commit dfec225ee1972488bb48a8b67a2c4a13010c334a)
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ malloc/malloc.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/malloc/malloc.c b/malloc/malloc.c
+index 27cf6137..c2ed8b6b 100644
+--- a/malloc/malloc.c
++++ b/malloc/malloc.c
+@@ -2943,12 +2943,13 @@ tcache_thread_shutdown (void)
+   int i;
+   tcache_perthread_struct *tcache_tmp = tcache;
+ 
++  tcache_shutting_down = true;
++
+   if (!tcache)
+     return;
+ 
+   /* Disable the tcache and prevent it from being reinitialized.  */
+   tcache = NULL;
+-  tcache_shutting_down = true;
+ 
+   /* Free all of the entries and the tcache itself back to the arena
+      heap for coalescing.  */
+-- 
+2.20.1
+

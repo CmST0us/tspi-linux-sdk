@@ -1,0 +1,58 @@
+From cb1dec373ec8dc5627ed3fa1e74f6eefe2a232e2 Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Fri, 1 Jul 2022 18:15:50 +0800
+Subject: [PATCH 01/10] Fix compile error with wayland-only
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ src/bin/e_includes.h                         | 2 ++
+ src/bin/tools/fprint/meson.build             | 1 -
+ src/modules/conf_randr/e_int_config_randr2.c | 2 ++
+ 3 files changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/src/bin/e_includes.h b/src/bin/e_includes.h
+index c2b0e69a9..8d161b569 100644
+--- a/src/bin/e_includes.h
++++ b/src/bin/e_includes.h
+@@ -151,8 +151,10 @@
+ #include "e_comp_canvas.h"
+ #include "e_utils.h"
+ #include "e_hints.h"
++#ifndef HAVE_WAYLAND_ONLY
+ #include "e_comp_x_devices.h"
+ #include "e_comp_x_randr.h"
++#endif
+ #include "e_watchdog.h"
+ #include "e_gesture.h"
+ 
+diff --git a/src/bin/tools/fprint/meson.build b/src/bin/tools/fprint/meson.build
+index 27a3b2840..405d2a16c 100644
+--- a/src/bin/tools/fprint/meson.build
++++ b/src/bin/tools/fprint/meson.build
+@@ -16,7 +16,6 @@ efl_version = '>= 1.19.0'
+ elm  = dependency('elementary', required: true,  version: efl_version)
+ edje = dependency('edje',       required: true,  version: efl_version)
+ ecore = dependency('ecore', required: true,  version: efl_version)
+-ecorex = dependency('ecore-x', required: true,  version: efl_version)
+ depe = dependency('enlightenment', required: false)
+ #curl_dep = dependency('libcurl', version : '>= 7.35.0', required: true)
+ 
+diff --git a/src/modules/conf_randr/e_int_config_randr2.c b/src/modules/conf_randr/e_int_config_randr2.c
+index 9f2163b41..0712c0520 100644
+--- a/src/modules/conf_randr/e_int_config_randr2.c
++++ b/src/modules/conf_randr/e_int_config_randr2.c
+@@ -392,9 +392,11 @@ _basic_screen_info_fill(E_Config_Dialog_Data *cfdata, E_Config_Randr2_Screen *cs
+           {
+              mode_cbdata->cfdata = cfdata;
+              mode_cbdata->mode = *m;
++#ifndef HAVE_WAYLAND_ONLY
+              if (m->flags & ECORE_X_RANDR_MODE_DOUBLE_SCAN)
+                snprintf(buf, sizeof(buf), "%ix%i @ %1.2fHz (Doublescan)", m->w, m->h, m->refresh / 2);
+              else
++#endif
+                snprintf(buf, sizeof(buf), "%ix%i @ %1.2fHz", m->w, m->h, m->refresh);
+              it = elm_list_item_append(cfdata->modes_obj, buf, NULL, NULL, _cb_mode_set, mode_cbdata);
+              cfdata->freelist = eina_list_append(cfdata->freelist, mode_cbdata);
+-- 
+2.20.1
+

@@ -1,0 +1,35 @@
+From 28ae28a5025a4987f117444fbc15a5e4a0fbf8f5 Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Tue, 29 Nov 2022 17:17:27 +0800
+Subject: [PATCH 1/3] HACK: v4l2: Bypass API version check
+
+Some drivers overrides it to their private versions.
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ src/libcamera/v4l2_videodevice.cpp | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/src/libcamera/v4l2_videodevice.cpp b/src/libcamera/v4l2_videodevice.cpp
+index 6391133..ba472f7 100644
+--- a/src/libcamera/v4l2_videodevice.cpp
++++ b/src/libcamera/v4l2_videodevice.cpp
+@@ -583,6 +583,7 @@ int V4L2VideoDevice::open()
+ 		return ret;
+ 	}
+ 
++#if 0 // HACK: Bypass version check
+ 	if (caps_.version < KERNEL_VERSION(5, 0, 0)) {
+ 		LOG(V4L2, Error)
+ 			<< "V4L2 API v" << (caps_.version >> 16)
+@@ -591,6 +592,7 @@ int V4L2VideoDevice::open()
+ 			<< " too old, v5.0.0 or later is required";
+ 		return -EINVAL;
+ 	}
++#endif
+ 
+ 	if (!caps_.hasStreaming()) {
+ 		LOG(V4L2, Error) << "Device does not support streaming I/O";
+-- 
+2.20.1
+

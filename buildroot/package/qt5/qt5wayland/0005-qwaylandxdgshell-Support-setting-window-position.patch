@@ -1,0 +1,59 @@
+From e7ed869dd126463b927f931e2649e7f57c342cf9 Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Wed, 27 Feb 2019 16:52:15 +0800
+Subject: [PATCH 05/17] qwaylandxdgshell: Support setting window position
+
+Support setting window position.
+Note:
+1/ (0,0) initial position(default position) would be ignored.
+2/ The decoration would be ignored when the space not enough.
+3/ QT would not aware of the wayland position.
+
+Change-Id: Ifb1433b3902d44c1b2e43036bc1805a6e00128fb
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ .../xdg-shell/qwaylandxdgshell.cpp                 | 14 ++++++++++++++
+ .../xdg-shell/qwaylandxdgshell_p.h                 |  2 ++
+ 2 files changed, 16 insertions(+)
+
+diff --git a/src/plugins/shellintegration/xdg-shell/qwaylandxdgshell.cpp b/src/plugins/shellintegration/xdg-shell/qwaylandxdgshell.cpp
+index d7d0ddf..61f7e8c 100644
+--- a/src/plugins/shellintegration/xdg-shell/qwaylandxdgshell.cpp
++++ b/src/plugins/shellintegration/xdg-shell/qwaylandxdgshell.cpp
+@@ -355,6 +355,20 @@ void QWaylandXdgSurface::propagateSizeHints()
+ void QWaylandXdgSurface::setWindowGeometry(const QRect &rect)
+ {
+     set_window_geometry(rect.x(), rect.y(), rect.width(), rect.height());
++
++    if (m_window) {
++        QPoint position = m_window->geometry().topLeft();
++
++        // Also avoid initial position (0,0).
++        // What if we do want to be at (0,0)?
++        if (m_position == position)
++            return;
++        m_position = position;
++
++        // HACK: Set window position through .set_window_geometry(x, y, 0, 0)
++        set_window_geometry(position.x() > 0 ? position.x() : 0,
++                            position.y() > 0 ? position.y() : 0, 0, 0);
++    }
+ }
+ 
+ void QWaylandXdgSurface::setSizeHints()
+diff --git a/src/plugins/shellintegration/xdg-shell/qwaylandxdgshell_p.h b/src/plugins/shellintegration/xdg-shell/qwaylandxdgshell_p.h
+index 0c98be3..27d4a2e 100644
+--- a/src/plugins/shellintegration/xdg-shell/qwaylandxdgshell_p.h
++++ b/src/plugins/shellintegration/xdg-shell/qwaylandxdgshell_p.h
+@@ -154,6 +154,8 @@ private:
+     QRegion m_exposeRegion;
+     uint m_pendingConfigureSerial = 0;
+ 
++    QPoint m_position;
++
+     friend class QWaylandXdgShell;
+ };
+ 
+-- 
+2.20.1
+

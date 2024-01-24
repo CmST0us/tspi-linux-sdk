@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/icon">
+        <file alias="pass.png">res/factory_btn_pass.png</file>
+        <file alias="faild.png">res/factory_btn_abnormal.png</file>
+    </qresource>
+</RCC>

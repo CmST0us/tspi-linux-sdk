@@ -1,0 +1,14 @@
+# <file system>	<mount pt>	<type>	<options>	<dump>	<pass>
+/dev/root	/		ext4	rw,noauto	0	1
+tmpfs		/tmp		tmpfs	mode=1777	0	0
+tmpfs		/run		tmpfs	mode=0755,nosuid,nodev	0	0
+proc	/proc	proc	defaults	0 0
+devtmpfs	/dev	devtmpfs	defaults	0 0
+devpts	/dev/pts	devpts	mode=0620,ptmxmode=0666,gid=5	0 0
+tmpfs	/dev/shm	tmpfs	nosuid,nodev,noexec	0 0
+sysfs	/sys	sysfs	defaults	0 0
+configfs	/sys/kernel/config	configfs	defaults	0 0
+debugfs	/sys/kernel/debug	debugfs	defaults	0 0
+pstore	/sys/fs/pstore	pstore	defaults	0 0
+PARTLABEL=oem	/oem	ext4	defaults	0 2
+PARTLABEL=userdata	/userdata	ext4	defaults	0 2

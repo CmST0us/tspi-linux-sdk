@@ -1,0 +1,412 @@
+From d21be6954379970f7019bf2eacfbf0ff259e1ddd Mon Sep 17 00:00:00 2001
+From: serge-sans-paille <sguelton@redhat.com>
+Date: Fri, 21 Feb 2020 15:51:19 +0100
+Subject: [PATCH 2/2] No longer generate calls to *_finite
+
+According to Joseph Myers, a libm maintainer
+
+> They were only ever an ABI (selected by use of -ffinite-math-only or
+> options implying it, which resulted in the headers using "asm" to redirect
+> calls to some libm functions), not an API. The change means that ABI has
+> turned into compat symbols (only available for existing binaries, not for
+> anything newly linked, not included in static libm at all, not included in
+> shared libm for future glibc ports such as RV32), so, yes, in any case
+> where tools generate direct calls to those functions (rather than just
+> following the "asm" annotations on function declarations in the headers),
+> they need to stop doing so.
+
+As a consequence, we should no longer assume these symbols are available on the
+target system.
+
+Still keep the TargetLibraryInfo for constant folding.
+
+Differential Revision: https://reviews.llvm.org/D74712
+
+(cherry picked from commit 6d15c4deab51498b70825fb6cefbbfe8f3d9bdcf)
+
+For https://bugs.llvm.org/show_bug.cgi?id=45034
+
+(cherry picked from commit cd0926d087a85c5ee1222ca80980b4440214a822)
+
+Conflicts:
+	llvm/lib/CodeGen/SelectionDAG/LegalizeDAG.cpp
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ lib/Analysis/TargetLibraryInfo.cpp        |  3 +
+ lib/CodeGen/SelectionDAG/LegalizeDAG.cpp  | 79 ++++++-----------------
+ test/CodeGen/AArch64/illegal-float-ops.ll | 24 +++----
+ test/CodeGen/X86/finite-libcalls.ll       | 36 +++++------
+ 4 files changed, 51 insertions(+), 91 deletions(-)
+
+diff --git a/lib/Analysis/TargetLibraryInfo.cpp b/lib/Analysis/TargetLibraryInfo.cpp
+index ef139d325..37b030b18 100644
+--- a/lib/Analysis/TargetLibraryInfo.cpp
++++ b/lib/Analysis/TargetLibraryInfo.cpp
+@@ -479,6 +479,9 @@ static void initialize(TargetLibraryInfoImpl &TLI, const Triple &T,
+     TLI.setUnavailable(LibFunc_tmpfile64);
+ 
+     // Relaxed math functions are included in math-finite.h on Linux (GLIBC).
++    // Note that math-finite.h is no longer supported by top-of-tree GLIBC,
++    // so we keep these functions around just so that they're recognized by
++    // the ConstantFolder.
+     TLI.setUnavailable(LibFunc_acos_finite);
+     TLI.setUnavailable(LibFunc_acosf_finite);
+     TLI.setUnavailable(LibFunc_acosl_finite);
+diff --git a/lib/CodeGen/SelectionDAG/LegalizeDAG.cpp b/lib/CodeGen/SelectionDAG/LegalizeDAG.cpp
+index bf817f00f..97648fbb4 100644
+--- a/lib/CodeGen/SelectionDAG/LegalizeDAG.cpp
++++ b/lib/CodeGen/SelectionDAG/LegalizeDAG.cpp
+@@ -3731,7 +3731,6 @@ void SelectionDAGLegalize::ConvertNodeToLibcall(SDNode *Node) {
+   SmallVector<SDValue, 8> Results;
+   SDLoc dl(Node);
+   // FIXME: Check flags on the node to see if we can use a finite call.
+-  bool CanUseFiniteLibCall = TM.Options.NoInfsFPMath && TM.Options.NoNaNsFPMath;
+   unsigned Opc = Node->getOpcode();
+   switch (Opc) {
+   case ISD::ATOMIC_FENCE: {
+@@ -3834,68 +3833,33 @@ void SelectionDAGLegalize::ConvertNodeToLibcall(SDNode *Node) {
+     break;
+   case ISD::FLOG:
+   case ISD::STRICT_FLOG:
+-    if (CanUseFiniteLibCall && DAG.getLibInfo().has(LibFunc_log_finite))
+-      Results.push_back(ExpandFPLibCall(Node, RTLIB::LOG_FINITE_F32,
+-                                        RTLIB::LOG_FINITE_F64,
+-                                        RTLIB::LOG_FINITE_F80,
+-                                        RTLIB::LOG_FINITE_F128,
+-                                        RTLIB::LOG_FINITE_PPCF128));
+-    else
+-      Results.push_back(ExpandFPLibCall(Node, RTLIB::LOG_F32, RTLIB::LOG_F64,
+-                                        RTLIB::LOG_F80, RTLIB::LOG_F128,
+-                                        RTLIB::LOG_PPCF128));
++    Results.push_back(ExpandFPLibCall(Node, RTLIB::LOG_F32, RTLIB::LOG_F64,
++                                      RTLIB::LOG_F80, RTLIB::LOG_F128,
++                                      RTLIB::LOG_PPCF128));
+     break;
+   case ISD::FLOG2:
+   case ISD::STRICT_FLOG2:
+-    if (CanUseFiniteLibCall && DAG.getLibInfo().has(LibFunc_log2_finite))
+-      Results.push_back(ExpandFPLibCall(Node, RTLIB::LOG2_FINITE_F32,
+-                                        RTLIB::LOG2_FINITE_F64,
+-                                        RTLIB::LOG2_FINITE_F80,
+-                                        RTLIB::LOG2_FINITE_F128,
+-                                        RTLIB::LOG2_FINITE_PPCF128));
+-    else
+-      Results.push_back(ExpandFPLibCall(Node, RTLIB::LOG2_F32, RTLIB::LOG2_F64,
+-                                        RTLIB::LOG2_F80, RTLIB::LOG2_F128,
+-                                        RTLIB::LOG2_PPCF128));
++    Results.push_back(ExpandFPLibCall(Node, RTLIB::LOG2_F32, RTLIB::LOG2_F64,
++                                      RTLIB::LOG2_F80, RTLIB::LOG2_F128,
++                                      RTLIB::LOG2_PPCF128));
+     break;
+   case ISD::FLOG10:
+   case ISD::STRICT_FLOG10:
+-    if (CanUseFiniteLibCall && DAG.getLibInfo().has(LibFunc_log10_finite))
+-      Results.push_back(ExpandFPLibCall(Node, RTLIB::LOG10_FINITE_F32,
+-                                        RTLIB::LOG10_FINITE_F64,
+-                                        RTLIB::LOG10_FINITE_F80,
+-                                        RTLIB::LOG10_FINITE_F128,
+-                                        RTLIB::LOG10_FINITE_PPCF128));
+-    else
+-      Results.push_back(ExpandFPLibCall(Node, RTLIB::LOG10_F32, RTLIB::LOG10_F64,
+-                                        RTLIB::LOG10_F80, RTLIB::LOG10_F128,
+-                                        RTLIB::LOG10_PPCF128));
++    Results.push_back(ExpandFPLibCall(Node, RTLIB::LOG10_F32, RTLIB::LOG10_F64,
++                                      RTLIB::LOG10_F80, RTLIB::LOG10_F128,
++                                      RTLIB::LOG10_PPCF128));
+     break;
+   case ISD::FEXP:
+   case ISD::STRICT_FEXP:
+-    if (CanUseFiniteLibCall && DAG.getLibInfo().has(LibFunc_exp_finite))
+-      Results.push_back(ExpandFPLibCall(Node, RTLIB::EXP_FINITE_F32,
+-                                        RTLIB::EXP_FINITE_F64,
+-                                        RTLIB::EXP_FINITE_F80,
+-                                        RTLIB::EXP_FINITE_F128,
+-                                        RTLIB::EXP_FINITE_PPCF128));
+-    else
+-      Results.push_back(ExpandFPLibCall(Node, RTLIB::EXP_F32, RTLIB::EXP_F64,
+-                                        RTLIB::EXP_F80, RTLIB::EXP_F128,
+-                                        RTLIB::EXP_PPCF128));
++    Results.push_back(ExpandFPLibCall(Node, RTLIB::EXP_F32, RTLIB::EXP_F64,
++                                      RTLIB::EXP_F80, RTLIB::EXP_F128,
++                                      RTLIB::EXP_PPCF128));
+     break;
+   case ISD::FEXP2:
+   case ISD::STRICT_FEXP2:
+-    if (CanUseFiniteLibCall && DAG.getLibInfo().has(LibFunc_exp2_finite))
+-      Results.push_back(ExpandFPLibCall(Node, RTLIB::EXP2_FINITE_F32,
+-                                        RTLIB::EXP2_FINITE_F64,
+-                                        RTLIB::EXP2_FINITE_F80,
+-                                        RTLIB::EXP2_FINITE_F128,
+-                                        RTLIB::EXP2_FINITE_PPCF128));
+-    else
+-      Results.push_back(ExpandFPLibCall(Node, RTLIB::EXP2_F32, RTLIB::EXP2_F64,
+-                                        RTLIB::EXP2_F80, RTLIB::EXP2_F128,
+-                                        RTLIB::EXP2_PPCF128));
++    Results.push_back(ExpandFPLibCall(Node, RTLIB::EXP2_F32, RTLIB::EXP2_F64,
++                                      RTLIB::EXP2_F80, RTLIB::EXP2_F128,
++                                      RTLIB::EXP2_PPCF128));
+     break;
+   case ISD::FTRUNC:
+   case ISD::STRICT_FTRUNC:
+@@ -3945,16 +3909,9 @@ void SelectionDAGLegalize::ConvertNodeToLibcall(SDNode *Node) {
+     break;
+   case ISD::FPOW:
+   case ISD::STRICT_FPOW:
+-    if (CanUseFiniteLibCall && DAG.getLibInfo().has(LibFunc_pow_finite))
+-      Results.push_back(ExpandFPLibCall(Node, RTLIB::POW_FINITE_F32,
+-                                        RTLIB::POW_FINITE_F64,
+-                                        RTLIB::POW_FINITE_F80,
+-                                        RTLIB::POW_FINITE_F128,
+-                                        RTLIB::POW_FINITE_PPCF128));
+-    else
+-      Results.push_back(ExpandFPLibCall(Node, RTLIB::POW_F32, RTLIB::POW_F64,
+-                                        RTLIB::POW_F80, RTLIB::POW_F128,
+-                                        RTLIB::POW_PPCF128));
++    Results.push_back(ExpandFPLibCall(Node, RTLIB::POW_F32, RTLIB::POW_F64,
++                                      RTLIB::POW_F80, RTLIB::POW_F128,
++                                      RTLIB::POW_PPCF128));
+     break;
+   case ISD::FDIV:
+     Results.push_back(ExpandFPLibCall(Node, RTLIB::DIV_F32, RTLIB::DIV_F64,
+diff --git a/test/CodeGen/AArch64/illegal-float-ops.ll b/test/CodeGen/AArch64/illegal-float-ops.ll
+index 8bee4437f..f55663664 100644
+--- a/test/CodeGen/AArch64/illegal-float-ops.ll
++++ b/test/CodeGen/AArch64/illegal-float-ops.ll
+@@ -1,5 +1,5 @@
+ ; RUN: llc -mtriple=aarch64-none-linux-gnu -verify-machineinstrs -o - %s | FileCheck %s
+-; RUN: llc -mtriple=aarch64-linux-android -verify-machineinstrs -o - %s | FileCheck --check-prefix=ANDROID-AARCH64 %s
++; RUN: llc -mtriple=aarch64-linux-android -verify-machineinstrs -o - %s | FileCheck %s
+ 
+ @varfloat = global float 0.0
+ @vardouble = global double 0.0
+@@ -251,7 +251,7 @@ define void @test_exp_finite(double %double) #0 {
+   %expdouble = call double @llvm.exp.f64(double %double)
+   store double %expdouble, double* @vardouble
+   ; ANDROID-AARCH64-NOT: bl __exp_finite
+-  ; CHECK: bl __exp_finite
++  ; CHECK: bl exp
+ 
+   ret void
+ }
+@@ -259,8 +259,8 @@ define void @test_exp_finite(double %double) #0 {
+ define void @test_exp2_finite(double %double) #0 {
+   %expdouble = call double @llvm.exp2.f64(double %double)
+   store double %expdouble, double* @vardouble
+-  ; ANDROID-AARCH64-NOT: bl __exp2_finite
+-  ; CHECK: bl __exp2_finite
++  ; CHECK-NOT: bl __exp2_finite
++  ; CHECK: bl exp2
+ 
+   ret void
+ }
+@@ -268,32 +268,32 @@ define void @test_exp2_finite(double %double) #0 {
+ define void @test_log_finite(double %double) #0 {
+   %logdouble = call double @llvm.log.f64(double %double)
+   store double %logdouble, double* @vardouble
+-  ; ANDROID-AARCH64-NOT: bl __log_finite
+-  ; CHECK: bl __log_finite
++  ; CHECK-NOT: bl __log_finite
++  ; CHECK: bl log
+   ret void
+ }
+ 
+ define void @test_log2_finite(double %double) #0 {
+   %log2double = call double @llvm.log2.f64(double %double)
+   store double %log2double, double* @vardouble
+-  ; ANDROID-AARCH64-NOT: bl __log2_finite
+-  ; CHECK: bl __log2_finite
++  ; CHECK-NOT: bl __log2_finite
++  ; CHECK: bl log2
+   ret void
+ }
+ 
+ define void @test_log10_finite(double %double) #0 {
+   %log10double = call double @llvm.log10.f64(double %double)
+   store double %log10double, double* @vardouble
+-  ; ANDROID-AARCH64-NOT: bl __log10_finite
+-  ; CHECK: bl __log10_finite
++  ; CHECK-NOT: bl __log10_finite
++  ; CHECK: bl log10
+   ret void
+ }
+ 
+ define void @test_pow_finite(double %double) #0 {
+   %powdouble = call double @llvm.pow.f64(double %double, double %double)
+   store double %powdouble, double* @vardouble
+-  ; ANDROID-AARCH64-NOT: bl __pow_finite
+-  ; CHECK: bl __pow_finite
++  ; CHECK-NOT: bl __pow_finite
++  ; CHECK: bl pow
+   ret void
+ }
+ 
+diff --git a/test/CodeGen/X86/finite-libcalls.ll b/test/CodeGen/X86/finite-libcalls.ll
+index d54ee48ea..31fadfb0a 100644
+--- a/test/CodeGen/X86/finite-libcalls.ll
++++ b/test/CodeGen/X86/finite-libcalls.ll
+@@ -9,7 +9,7 @@
+ define float @exp_f32(float %x) #0 {
+ ; GNU-LABEL: exp_f32:
+ ; GNU:       # %bb.0:
+-; GNU-NEXT:    jmp __expf_finite # TAILCALL
++; GNU-NEXT:    jmp expf # TAILCALL
+ ;
+ ; WIN-LABEL: exp_f32:
+ ; WIN:       # %bb.0:
+@@ -25,7 +25,7 @@ define float @exp_f32(float %x) #0 {
+ define double @exp_f64(double %x) #0 {
+ ; GNU-LABEL: exp_f64:
+ ; GNU:       # %bb.0:
+-; GNU-NEXT:    jmp __exp_finite # TAILCALL
++; GNU-NEXT:    jmp exp # TAILCALL
+ ;
+ ; WIN-LABEL: exp_f64:
+ ; WIN:       # %bb.0:
+@@ -44,7 +44,7 @@ define x86_fp80 @exp_f80(x86_fp80 %x) #0 {
+ ; GNU-NEXT:    subq $24, %rsp
+ ; GNU-NEXT:    fldt {{[0-9]+}}(%rsp)
+ ; GNU-NEXT:    fstpt (%rsp)
+-; GNU-NEXT:    callq __expl_finite
++; GNU-NEXT:    callq expl
+ ; GNU-NEXT:    addq $24, %rsp
+ ; GNU-NEXT:    retq
+ ;
+@@ -80,7 +80,7 @@ define x86_fp80 @exp_f80(x86_fp80 %x) #0 {
+ define float @exp2_f32(float %x) #0 {
+ ; GNU-LABEL: exp2_f32:
+ ; GNU:       # %bb.0:
+-; GNU-NEXT:    jmp __exp2f_finite # TAILCALL
++; GNU-NEXT:    jmp exp2f # TAILCALL
+ ;
+ ; WIN-LABEL: exp2_f32:
+ ; WIN:       # %bb.0:
+@@ -96,7 +96,7 @@ define float @exp2_f32(float %x) #0 {
+ define double @exp2_f64(double %x) #0 {
+ ; GNU-LABEL: exp2_f64:
+ ; GNU:       # %bb.0:
+-; GNU-NEXT:    jmp __exp2_finite # TAILCALL
++; GNU-NEXT:    jmp exp2 # TAILCALL
+ ;
+ ; WIN-LABEL: exp2_f64:
+ ; WIN:       # %bb.0:
+@@ -115,7 +115,7 @@ define x86_fp80 @exp2_f80(x86_fp80 %x) #0 {
+ ; GNU-NEXT:    subq $24, %rsp
+ ; GNU-NEXT:    fldt {{[0-9]+}}(%rsp)
+ ; GNU-NEXT:    fstpt (%rsp)
+-; GNU-NEXT:    callq __exp2l_finite
++; GNU-NEXT:    callq exp2l
+ ; GNU-NEXT:    addq $24, %rsp
+ ; GNU-NEXT:    retq
+ ;
+@@ -151,7 +151,7 @@ define x86_fp80 @exp2_f80(x86_fp80 %x) #0 {
+ define float @log_f32(float %x) #0 {
+ ; GNU-LABEL: log_f32:
+ ; GNU:       # %bb.0:
+-; GNU-NEXT:    jmp __logf_finite # TAILCALL
++; GNU-NEXT:    jmp logf # TAILCALL
+ ;
+ ; WIN-LABEL: log_f32:
+ ; WIN:       # %bb.0:
+@@ -167,7 +167,7 @@ define float @log_f32(float %x) #0 {
+ define double @log_f64(double %x) #0 {
+ ; GNU-LABEL: log_f64:
+ ; GNU:       # %bb.0:
+-; GNU-NEXT:    jmp __log_finite # TAILCALL
++; GNU-NEXT:    jmp log # TAILCALL
+ ;
+ ; WIN-LABEL: log_f64:
+ ; WIN:       # %bb.0:
+@@ -186,7 +186,7 @@ define x86_fp80 @log_f80(x86_fp80 %x) #0 {
+ ; GNU-NEXT:    subq $24, %rsp
+ ; GNU-NEXT:    fldt {{[0-9]+}}(%rsp)
+ ; GNU-NEXT:    fstpt (%rsp)
+-; GNU-NEXT:    callq __logl_finite
++; GNU-NEXT:    callq logl
+ ; GNU-NEXT:    addq $24, %rsp
+ ; GNU-NEXT:    retq
+ ;
+@@ -222,7 +222,7 @@ define x86_fp80 @log_f80(x86_fp80 %x) #0 {
+ define float @log2_f32(float %x) #0 {
+ ; GNU-LABEL: log2_f32:
+ ; GNU:       # %bb.0:
+-; GNU-NEXT:    jmp __log2f_finite # TAILCALL
++; GNU-NEXT:    jmp log2f # TAILCALL
+ ;
+ ; WIN-LABEL: log2_f32:
+ ; WIN:       # %bb.0:
+@@ -238,7 +238,7 @@ define float @log2_f32(float %x) #0 {
+ define double @log2_f64(double %x) #0 {
+ ; GNU-LABEL: log2_f64:
+ ; GNU:       # %bb.0:
+-; GNU-NEXT:    jmp __log2_finite # TAILCALL
++; GNU-NEXT:    jmp log2 # TAILCALL
+ ;
+ ; WIN-LABEL: log2_f64:
+ ; WIN:       # %bb.0:
+@@ -257,7 +257,7 @@ define x86_fp80 @log2_f80(x86_fp80 %x) #0 {
+ ; GNU-NEXT:    subq $24, %rsp
+ ; GNU-NEXT:    fldt {{[0-9]+}}(%rsp)
+ ; GNU-NEXT:    fstpt (%rsp)
+-; GNU-NEXT:    callq __log2l_finite
++; GNU-NEXT:    callq log2l
+ ; GNU-NEXT:    addq $24, %rsp
+ ; GNU-NEXT:    retq
+ ;
+@@ -293,7 +293,7 @@ define x86_fp80 @log2_f80(x86_fp80 %x) #0 {
+ define float @log10_f32(float %x) #0 {
+ ; GNU-LABEL: log10_f32:
+ ; GNU:       # %bb.0:
+-; GNU-NEXT:    jmp __log10f_finite # TAILCALL
++; GNU-NEXT:    jmp log10f # TAILCALL
+ ;
+ ; WIN-LABEL: log10_f32:
+ ; WIN:       # %bb.0:
+@@ -309,7 +309,7 @@ define float @log10_f32(float %x) #0 {
+ define double @log10_f64(double %x) #0 {
+ ; GNU-LABEL: log10_f64:
+ ; GNU:       # %bb.0:
+-; GNU-NEXT:    jmp __log10_finite # TAILCALL
++; GNU-NEXT:    jmp log10 # TAILCALL
+ ;
+ ; WIN-LABEL: log10_f64:
+ ; WIN:       # %bb.0:
+@@ -328,7 +328,7 @@ define x86_fp80 @log10_f80(x86_fp80 %x) #0 {
+ ; GNU-NEXT:    subq $24, %rsp
+ ; GNU-NEXT:    fldt {{[0-9]+}}(%rsp)
+ ; GNU-NEXT:    fstpt (%rsp)
+-; GNU-NEXT:    callq __log10l_finite
++; GNU-NEXT:    callq log10l
+ ; GNU-NEXT:    addq $24, %rsp
+ ; GNU-NEXT:    retq
+ ;
+@@ -365,7 +365,7 @@ define float @pow_f32(float %x) #0 {
+ ; GNU-LABEL: pow_f32:
+ ; GNU:       # %bb.0:
+ ; GNU-NEXT:    movaps %xmm0, %xmm1
+-; GNU-NEXT:    jmp __powf_finite # TAILCALL
++; GNU-NEXT:    jmp powf # TAILCALL
+ ;
+ ; WIN-LABEL: pow_f32:
+ ; WIN:       # %bb.0:
+@@ -384,7 +384,7 @@ define double @pow_f64(double %x) #0 {
+ ; GNU-LABEL: pow_f64:
+ ; GNU:       # %bb.0:
+ ; GNU-NEXT:    movaps %xmm0, %xmm1
+-; GNU-NEXT:    jmp __pow_finite # TAILCALL
++; GNU-NEXT:    jmp pow # TAILCALL
+ ;
+ ; WIN-LABEL: pow_f64:
+ ; WIN:       # %bb.0:
+@@ -407,7 +407,7 @@ define x86_fp80 @pow_f80(x86_fp80 %x) #0 {
+ ; GNU-NEXT:    fld %st(0)
+ ; GNU-NEXT:    fstpt {{[0-9]+}}(%rsp)
+ ; GNU-NEXT:    fstpt (%rsp)
+-; GNU-NEXT:    callq __powl_finite
++; GNU-NEXT:    callq powl
+ ; GNU-NEXT:    addq $40, %rsp
+ ; GNU-NEXT:    retq
+ ;
+-- 
+2.20.1
+

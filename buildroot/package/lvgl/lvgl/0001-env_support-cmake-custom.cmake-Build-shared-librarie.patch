@@ -1,0 +1,27 @@
+From 3bc1738b8166bb86ffe15d32226ebb9d22cbcd7d Mon Sep 17 00:00:00 2001
+From: Jiajian Wu <jair.wu@rock-chips.com>
+Date: Tue, 27 Sep 2022 16:00:50 +0800
+Subject: [PATCH 01/11] env_support: cmake: custom.cmake: Build shared
+ libraries ON
+
+Signed-off-by: Jiajian Wu <jair.wu@rock-chips.com>
+---
+ env_support/cmake/custom.cmake | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/env_support/cmake/custom.cmake b/env_support/cmake/custom.cmake
+index 561698211..c6596841f 100644
+--- a/env_support/cmake/custom.cmake
++++ b/env_support/cmake/custom.cmake
+@@ -12,7 +12,7 @@ option(LV_CONF_PATH "Path defined for lv_conf.h")
+ get_filename_component(LV_CONF_DIR ${LV_CONF_PATH} DIRECTORY)
+ 
+ # Option to build shared libraries (as opposed to static), default: OFF
+-option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
++option(BUILD_SHARED_LIBS "Build shared libraries" ON)
+ 
+ file(GLOB_RECURSE SOURCES ${LVGL_ROOT_DIR}/src/*.c)
+ file(GLOB_RECURSE EXAMPLE_SOURCES ${LVGL_ROOT_DIR}/examples/*.c)
+-- 
+2.25.1
+

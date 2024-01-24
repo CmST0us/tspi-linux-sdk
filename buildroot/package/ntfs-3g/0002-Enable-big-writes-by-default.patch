@@ -1,0 +1,32 @@
+From 827f55d8bc7ee9f7a6f617b0914ac1370cfaa3b8 Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Fri, 17 Jun 2022 14:57:19 +0800
+Subject: [PATCH 2/2] Enable big-writes by default
+
+See:
+https://www.tuxera.com/company/open-source/#slow
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ src/ntfs-3g_common.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/src/ntfs-3g_common.c b/src/ntfs-3g_common.c
+index 29021df..b68716d 100644
+--- a/src/ntfs-3g_common.c
++++ b/src/ntfs-3g_common.c
+@@ -259,7 +259,10 @@ char *parse_mount_options(ntfs_fuse_context_t *ctx,
+ 		ntfs_log_perror("%s: strdup failed", EXEC_NAME);
+ 		return NULL;
+ 	}
+-	
++
++	if (!getenv("NTFS_3G_NO_BIG_WRITES"))
++		ctx->big_writes = TRUE;
++
+ 	s = options;
+ 	while (s && *s && (val = strsep(&s, ","))) {
+ 		opt = strsep(&val, "=");
+-- 
+2.20.1
+

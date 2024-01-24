@@ -1,0 +1,7 @@
+config BR2_PACKAGE_NOTO_SERIF_SC
+	bool "Noto Serif SC"
+	help
+	  Google Noto Serif CJK region-specific subset OTF font for
+	  Simplified Chinese.
+
+	  https://www.google.com/get/noto/help/cjk/

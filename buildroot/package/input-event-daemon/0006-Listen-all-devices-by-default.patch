@@ -1,0 +1,43 @@
+From ca074cc66d87c8fc40c945d4d8984ed9e71ab351 Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Fri, 29 Jul 2022 15:10:32 +0800
+Subject: [PATCH 6/7] Listen all devices by default
+
+Tested with:
+Run: input-event-daemon -v -D
+Got: input-event-daemon: Start listening on 11 devices...
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ input-event-daemon.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/input-event-daemon.c b/input-event-daemon.c
+index 4ba024a..f67bf17 100644
+--- a/input-event-daemon.c
++++ b/input-event-daemon.c
+@@ -971,10 +971,7 @@ int main(int argc, char *argv[]) {
+         conf.listen[listen_len++] = strdup(argv[arguments]);
+     }
+ 
+-    if(conf.monitor) {
+-        if (!conf.listen[0])
+-            input_open_all_listener();
+-    } else {
++    if(!conf.monitor) {
+         char path[strlen(configfile) + 3];
+ 
+         config_parse_file(configfile);
+@@ -984,6 +981,9 @@ int main(int argc, char *argv[]) {
+         config_parse_dir(path);
+     }
+ 
++    if (!conf.listen[0])
++        input_open_all_listener();
++
+     daemon_start_listener();
+ 
+     return EXIT_SUCCESS;
+-- 
+2.20.1
+

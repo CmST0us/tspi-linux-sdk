@@ -1,0 +1,25 @@
+#!/bin/sh
+#
+# Start 3A daemon for each /dev/mediaX device
+#
+
+export CAMERA_ENGINE_RKISP_XML_DB=/etc/iqfiles-db
+
+case "$1" in
+  start)
+    i=0
+    for MEDIA_DEV in $(ls -1 /dev/media*); do
+      start-stop-daemon -S -m -b -p /tmp/.rkisp_3A_$i --startas \
+        /bin/sh -- -c "/usr/bin/rkisp_3A_server --mmedia=$MEDIA_DEV 2>&1 | logger -t rkisp_3A-$i"
+      let i++
+    done
+    ;;
+  stop)
+    killall rkisp_3A_server
+    ;;
+  *)
+    echo "Usage: $0 {start|stop}"
+    exit 1
+    ;;
+esac
+exit 0

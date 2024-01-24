@@ -1,0 +1,7 @@
+config BR2_PACKAGE_PYTHON_DNSPYTHON
+	bool "python-dnspython"
+	depends on BR2_PACKAGE_PYTHON3
+	help
+	  A powerful DNS toolkit for python.
+
+	  http://www.dnspython.org

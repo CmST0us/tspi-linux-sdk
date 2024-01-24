@@ -1,0 +1,38 @@
+From 8cedb6530e4f369ad9c4543934aa0b61eeabf798 Mon Sep 17 00:00:00 2001
+From: "james.lin" <james.lin@rock-chips.com>
+Date: Thu, 12 Apr 2018 16:20:36 +0800
+Subject: [PATCH 06/17] qgstreamerplayersession add seek direct to ensure seek
+ effective
+
+Signed-off-by: james.lin <james.lin@rock-chips.com>
+---
+ src/gsttools/qgstreamerplayersession.cpp | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+ mode change 100644 => 100755 src/gsttools/qgstreamerplayersession.cpp
+
+diff --git a/src/gsttools/qgstreamerplayersession.cpp b/src/gsttools/qgstreamerplayersession.cpp
+old mode 100644
+new mode 100755
+index a891027..98b7ffb
+--- a/src/gsttools/qgstreamerplayersession.cpp
++++ b/src/gsttools/qgstreamerplayersession.cpp
+@@ -1091,9 +1091,15 @@ bool QGstreamerPlayerSession::seek(qint64 ms)
+         ms = qMax(ms,qint64(0));
+         qint64 from = m_playbackRate > 0 ? ms : 0;
+         qint64 to = m_playbackRate > 0 ? duration() : ms;
++        gint64  now = 0;
++        GstSeekFlags direct_flag = GST_SEEK_FLAG_SNAP_AFTER;
++
++        qt_gst_element_query_position(m_playbin, GST_FORMAT_TIME, &now);
++        if (now > from * 1000000)
++            direct_flag = GST_SEEK_FLAG_SNAP_BEFORE;
+ 
+         bool isSeeking = gst_element_seek(m_pipeline, m_playbackRate, GST_FORMAT_TIME,
+-                                          GstSeekFlags(GST_SEEK_FLAG_FLUSH),
++                                          GstSeekFlags(GST_SEEK_FLAG_FLUSH | GST_SEEK_FLAG_KEY_UNIT | direct_flag),
+                                           GST_SEEK_TYPE_SET, from * 1000000,
+                                           GST_SEEK_TYPE_SET, to * 1000000);
+         if (isSeeking)
+-- 
+2.20.1
+

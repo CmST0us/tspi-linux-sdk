@@ -1,0 +1,14 @@
+#include "base/base.config"
+#include "chips/rk3308_aarch64.config"
+#include "fs/vfat.config"
+#include "multimedia/audio.config"
+#include "wifibt/bt.config"
+#include "wifibt/wireless.config"
+#include "test.config"
+BR2_PACKAGE_COREUTILS=y
+BR2_PACKAGE_EVTEST=y
+BR2_PACKAGE_I2C_TOOLS=y
+BR2_PACKAGE_IO=y
+BR2_PACKAGE_IW=y
+BR2_PACKAGE_STRACE=y
+BR2_TARGET_GENERIC_HOSTNAME="rk3308_64"

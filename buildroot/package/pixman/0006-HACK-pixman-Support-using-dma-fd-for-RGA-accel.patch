@@ -1,0 +1,42 @@
+From 7c618559ef24672f101f805c470a38969fd1f30f Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Sat, 9 Oct 2021 12:32:24 +0800
+Subject: [PATCH 6/6] HACK: pixman: Support using dma fd for RGA accel
+
+Usage:
+pixman_image_set_destroy_function(image, NULL, (void *)(ptrdiff_t)dma_fd)
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ pixman/pixman.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
+
+diff --git a/pixman/pixman.c b/pixman/pixman.c
+index 371e421..d216a88 100644
+--- a/pixman/pixman.c
++++ b/pixman/pixman.c
+@@ -715,11 +715,19 @@ pixman_composite_try_rga (pixman_composite_info_t * info,
+     if (!pixman_transform_to_rga_rotate (transform, &src_info.rotation))
+ 	return FALSE;
+ 
++#define pixman_image_get_dma_fd(image) \
++    (image)->common.destroy_func ? -1 : \
++	((intptr_t)(image)->common.destroy_data ?: -1)
++
+     src_info.mmuFlag = 1;
+-    src_info.virAddr = src->bits.bits;
++    src_info.fd = pixman_image_get_dma_fd(src);
++    if (src_info.fd < 0)
++	src_info.virAddr = src->bits.bits;
+ 
+     dst_info.mmuFlag = 1;
+-    dst_info.virAddr = dest->bits.bits;
++    dst_info.fd = pixman_image_get_dma_fd(dest);
++    if (dst_info.fd < 0)
++	dst_info.virAddr = dest->bits.bits;
+ 
+     switch (src->bits.format) {
+     case PIXMAN_yv12:
+-- 
+2.20.1
+

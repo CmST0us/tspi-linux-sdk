@@ -1,0 +1,26 @@
+From fa1b466aec4004c014feedf8565c0f6a3bedf37e Mon Sep 17 00:00:00 2001
+From: Zain Wang <wzz@rock-chips.com>
+Date: Wed, 6 Nov 2019 16:21:47 +0800
+Subject: [PATCH] Don't delete MTP root directory
+
+---
+ server/UbuntuMtpDatabase.h | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/server/UbuntuMtpDatabase.h b/server/UbuntuMtpDatabase.h
+index 29bd315..d675809 100644
+--- a/server/UbuntuMtpDatabase.h
++++ b/server/UbuntuMtpDatabase.h
+@@ -1035,6 +1035,9 @@ public:
+         if (handle == 0 || handle == MTP_PARENT_ROOT)
+             return MTP_RESPONSE_INVALID_OBJECT_HANDLE;
+ 
++        DbEntry entry = db.at(handle);
++        if (entry.parent == 0)
++            return MTP_RESPONSE_INVALID_OBJECT_HANDLE;
+         try {
+             if (db.at(handle).object_format == MTP_FORMAT_ASSOCIATION)
+                 inotify_rm_watch(inotify_fd, db.at(handle).watch_fd);
+-- 
+2.7.4
+

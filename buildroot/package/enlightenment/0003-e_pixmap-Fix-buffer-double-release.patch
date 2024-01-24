@@ -1,0 +1,32 @@
+From 755b3fa1303dc7212138a9a18ce8ca83f8f0af19 Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Tue, 5 Jul 2022 17:54:47 +0800
+Subject: [PATCH 03/10] e_pixmap: Fix buffer double-release
+
+Tested with weston-simple-shm.
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ src/bin/e_pixmap.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/src/bin/e_pixmap.c b/src/bin/e_pixmap.c
+index 2edace94f..ece17fee1 100644
+--- a/src/bin/e_pixmap.c
++++ b/src/bin/e_pixmap.c
+@@ -205,6 +205,12 @@ _e_pixmap_wayland_image_clear(E_Pixmap *cp)
+      {
+         E_Comp_Wl_Buffer *buffer;
+ 
++        if (cp->held_buffer && cp->held_buffer->busy == 1)
++          {
++             // about to go to busy 0, so remove from list
++             cp->busy_list = eina_list_remove(cp->busy_list, cp->held_buffer);
++          }
++
+         EINA_LIST_FREE(cp->busy_list, buffer)
+           {
+              buffer->busy--;
+-- 
+2.20.1
+

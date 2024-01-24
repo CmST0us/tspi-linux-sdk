@@ -1,0 +1,31 @@
+From e76298684c947881065c97ec36ae789c94e2aa28 Mon Sep 17 00:00:00 2001
+From: Jiajian Wu <jair.wu@rock-chips.com>
+Date: Wed, 21 Dec 2022 11:43:16 +0800
+Subject: [PATCH 4/6] CMakeLists: add macro to select renderer
+
+Signed-off-by: Jiajian Wu <jair.wu@rock-chips.com>
+---
+ CMakeLists.txt | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 7d8019e..278e964 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -16,6 +16,13 @@ endif()
+ add_library(lvgl_drivers ALIAS lv_drivers)
+ add_library(lvgl::drivers ALIAS lv_drivers)
+ 
++if (LV_DRV_USE_SDL_GPU)
++    add_definitions(-DUSE_SDL_GPU=1)
++    add_definitions(-DLV_USE_GPU_SDL=1)
++endif()
++if (LV_DRV_USE_DRM)
++    add_definitions(-DUSE_DRM=1)
++endif()
+ add_definitions(-g -DLV_CONF_INCLUDE_SIMPLE)
+ include_directories(${CMAKE_SYSROOT}/usr/include/libdrm/)
+ 
+-- 
+2.25.1
+

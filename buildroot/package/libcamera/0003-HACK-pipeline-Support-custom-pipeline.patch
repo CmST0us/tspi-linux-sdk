@@ -1,0 +1,639 @@
+From 5a2566de4567404f57b70af4c6fbb09f6f617313 Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Tue, 29 Nov 2022 17:18:23 +0800
+Subject: [PATCH 3/3] HACK: pipeline: Support custom pipeline
+
+Tested on RK3588 EVB with:
+export LIBCAMERA_CUSTOM_DRIVERS=has:rkisp
+export LIBCAMERA_CUSTOM_DEFAULT=has:mainpath
+export LIBCAMERA_CUSTOM_FORMAT=NV12
+export LIBCAMERA_CUSTOM_BUF_CNT=4
+gst-launch-1.0 libcamerasrc ! waylandsink
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ meson_options.txt                             |   2 +-
+ src/libcamera/device_enumerator.cpp           |   8 +-
+ src/libcamera/pipeline/custom/custom.cpp      | 415 ++++++++++++++++++
+ src/libcamera/pipeline/custom/meson.build     |   5 +
+ test/pipeline/custom/custom_pipeline_test.cpp | 110 +++++
+ test/pipeline/custom/meson.build              |  14 +
+ test/pipeline/meson.build                     |   1 +
+ 7 files changed, 552 insertions(+), 3 deletions(-)
+ create mode 100644 src/libcamera/pipeline/custom/custom.cpp
+ create mode 100644 src/libcamera/pipeline/custom/meson.build
+ create mode 100644 test/pipeline/custom/custom_pipeline_test.cpp
+ create mode 100644 test/pipeline/custom/meson.build
+
+diff --git a/meson_options.txt b/meson_options.txt
+index 7a9aecf..65f3ffc 100644
+--- a/meson_options.txt
++++ b/meson_options.txt
+@@ -37,7 +37,7 @@ option('lc-compliance',
+ 
+ option('pipelines',
+         type : 'array',
+-        choices : ['ipu3', 'raspberrypi', 'rkisp1', 'simple', 'uvcvideo', 'vimc'],
++        choices : ['ipu3', 'raspberrypi', 'rkisp1', 'simple', 'uvcvideo', 'vimc', 'custom'],
+         description : 'Select which pipeline handlers to include')
+ 
+ option('qcam',
+diff --git a/src/libcamera/device_enumerator.cpp b/src/libcamera/device_enumerator.cpp
+index d125805..06d1707 100644
+--- a/src/libcamera/device_enumerator.cpp
++++ b/src/libcamera/device_enumerator.cpp
+@@ -93,8 +93,12 @@ void DeviceMatch::add(const std::string &entity)
+  */
+ bool DeviceMatch::match(const MediaDevice *device) const
+ {
+-	if (driver_ != device->driver())
+-		return false;
++	const std::string driver = device->driver();
++	if (driver_ != driver) {
++		if (driver_.find("has:") != 0 ||
++		    (driver.find(driver_.substr(4)) == std::string::npos))
++			return false;
++	}
+ 
+ 	for (const std::string &name : entities_) {
+ 		bool found = false;
+diff --git a/src/libcamera/pipeline/custom/custom.cpp b/src/libcamera/pipeline/custom/custom.cpp
+new file mode 100644
+index 0000000..bbf5259
+--- /dev/null
++++ b/src/libcamera/pipeline/custom/custom.cpp
+@@ -0,0 +1,415 @@
++/* SPDX-License-Identifier: LGPL-2.1-or-later */
++/*
++ * Copyright (C) 2019, Google Inc.
++ * Copyright (C) 2022, Rockchip Electronics Co., Ltd
++ *
++ * Based on src/libcamera/pipeline/uvcvideo/uvcvideo.cpp
++ *
++ * custom.cpp - Pipeline handler for custom devices
++ */
++
++#include <iostream>
++#include <string>
++
++#include <libcamera/base/log.h>
++#include <libcamera/base/utils.h>
++
++#include <libcamera/camera.h>
++#include <libcamera/control_ids.h>
++#include <libcamera/formats.h>
++#include <libcamera/property_ids.h>
++#include <libcamera/request.h>
++#include <libcamera/stream.h>
++
++#include "libcamera/internal/camera.h"
++#include "libcamera/internal/device_enumerator.h"
++#include "libcamera/internal/media_device.h"
++#include "libcamera/internal/pipeline_handler.h"
++#include "libcamera/internal/v4l2_videodevice.h"
++
++#define CUSTOM_DRIVERS_ENV "LIBCAMERA_CUSTOM_DRIVERS"
++#define CUSTOM_DEFAULT_ENV "LIBCAMERA_CUSTOM_DEFAULT"
++#define CUSTOM_BUF_CNT_ENV "LIBCAMERA_CUSTOM_BUF_CNT"
++#define CUSTOM_FORMAT_ENV "LIBCAMERA_CUSTOM_FORMAT"
++#define CUSTOM_FORMAT_NONE formats::R8
++
++using namespace std;
++
++namespace libcamera {
++
++LOG_DEFINE_CATEGORY(Custom)
++
++class CustomCameraData : public Camera::Private
++{
++public:
++	CustomCameraData(PipelineHandler *pipe)
++		: Camera::Private(pipe)
++	{
++	}
++
++	MediaEntity *getEntity(MediaDevice *media);
++	int init(MediaDevice *media);
++	void bufferReady(FrameBuffer *buffer);
++
++	std::unique_ptr<V4L2VideoDevice> video_;
++	Stream stream_;
++};
++
++class CustomCameraConfiguration : public CameraConfiguration
++{
++public:
++	CustomCameraConfiguration(CustomCameraData *data);
++
++	Status validate() override;
++
++private:
++	CustomCameraData *data_;
++};
++
++class PipelineHandlerCustom : public PipelineHandler
++{
++public:
++	PipelineHandlerCustom(CameraManager *manager);
++
++	CameraConfiguration *generateConfiguration(Camera *camera,
++		const StreamRoles &roles) override;
++	int configure(Camera *camera, CameraConfiguration *config) override;
++
++	int exportFrameBuffers(Camera *camera, Stream *stream,
++			       std::vector<std::unique_ptr<FrameBuffer>> *buffers) override;
++
++	int start(Camera *camera, const ControlList *controls) override;
++	void stopDevice(Camera *camera) override;
++
++	int queueRequestDevice(Camera *camera, Request *request) override;
++
++	bool match(DeviceEnumerator *enumerator) override;
++
++private:
++	CustomCameraData *cameraData(Camera *camera)
++	{
++		return static_cast<CustomCameraData *>(camera->_d());
++	}
++
++	int bufferCount_;
++	PixelFormat pixelFormat_;
++};
++
++CustomCameraConfiguration::CustomCameraConfiguration(CustomCameraData *data)
++	: CameraConfiguration(), data_(data)
++{
++}
++
++CameraConfiguration::Status CustomCameraConfiguration::validate()
++{
++	Status status = Valid;
++
++	if (config_.empty())
++		return Invalid;
++
++	if (transform != Transform::Identity) {
++		transform = Transform::Identity;
++		status = Adjusted;
++	}
++
++	/* Cap the number of entries to the available streams. */
++	if (config_.size() > 1) {
++		config_.resize(1);
++		status = Adjusted;
++	}
++
++	StreamConfiguration &cfg = config_[0];
++	const StreamFormats &formats = cfg.formats();
++	const PixelFormat pixelFormat = cfg.pixelFormat;
++	const Size size = cfg.size;
++
++	const std::vector<PixelFormat> pixelFormats = formats.pixelformats();
++	auto iter = std::find(pixelFormats.begin(), pixelFormats.end(), pixelFormat);
++	if (iter == pixelFormats.end()) {
++		cfg.pixelFormat = pixelFormats.front();
++		LOG(Custom, Debug)
++			<< "Adjusting pixel format from " << pixelFormat
++			<< " to " << cfg.pixelFormat;
++		status = Adjusted;
++	}
++
++	const std::vector<Size> &formatSizes = formats.sizes(cfg.pixelFormat);
++	cfg.size = formatSizes.front();
++	for (const Size &formatsSize : formatSizes) {
++		if (formatsSize > size)
++			break;
++
++		cfg.size = formatsSize;
++	}
++
++	if (cfg.size != size) {
++		LOG(Custom, Debug)
++			<< "Adjusting size from " << size << " to " << cfg.size;
++		status = Adjusted;
++	}
++
++	V4L2DeviceFormat format;
++	format.fourcc = V4L2PixelFormat::fromPixelFormat(cfg.pixelFormat);
++	format.size = cfg.size;
++
++	int ret = data_->video_->tryFormat(&format);
++	if (ret)
++		return Invalid;
++
++	cfg.stride = format.planes[0].bpl;
++	cfg.frameSize = format.planes[0].size;
++
++	return status;
++}
++
++PipelineHandlerCustom::PipelineHandlerCustom(CameraManager *manager)
++	: PipelineHandler(manager), bufferCount_(4),
++	pixelFormat_(CUSTOM_FORMAT_NONE)
++{
++	const char *bufferCount = utils::secure_getenv(CUSTOM_BUF_CNT_ENV);
++	if (bufferCount)
++		bufferCount_ = atoi(bufferCount);
++
++	const char *pixelFormat = utils::secure_getenv(CUSTOM_FORMAT_ENV);
++	if (pixelFormat) {
++		if (!strcmp(pixelFormat, "NV12"))
++			pixelFormat_ = formats::NV12;
++		else if (!strcmp(pixelFormat, "YUV420"))
++			pixelFormat_ = formats::YUV420;
++		else if (!strcmp(pixelFormat, "NV16"))
++			pixelFormat_ = formats::NV16;
++		else if (!strcmp(pixelFormat, "YUYV"))
++			pixelFormat_ = formats::YUYV;
++	}
++}
++
++CameraConfiguration *PipelineHandlerCustom::generateConfiguration(Camera *camera,
++	const StreamRoles &roles)
++{
++	CustomCameraData *data = cameraData(camera);
++	CameraConfiguration *config = new CustomCameraConfiguration(data);
++
++	if (roles.empty())
++		return config;
++
++	V4L2VideoDevice::Formats v4l2Formats = data->video_->formats();
++	std::map<PixelFormat, std::vector<SizeRange>> deviceFormats;
++	for (const auto &format : v4l2Formats) {
++		PixelFormat pixelFormat = format.first.toPixelFormat();
++		if (pixelFormat.isValid() &&
++		    (pixelFormat_ == CUSTOM_FORMAT_NONE ||
++		     pixelFormat == pixelFormat_))
++			deviceFormats[pixelFormat] = format.second;
++	}
++
++	StreamFormats formats(deviceFormats);
++	StreamConfiguration cfg(formats);
++
++	if (pixelFormat_ != CUSTOM_FORMAT_NONE)
++		cfg.pixelFormat = pixelFormat_;
++	else
++		cfg.pixelFormat = formats::NV12;
++
++	cfg.size = formats.sizes(cfg.pixelFormat).back();
++	cfg.bufferCount = bufferCount_;
++
++	config->addConfiguration(cfg);
++
++	config->validate();
++
++	return config;
++}
++
++int PipelineHandlerCustom::configure(Camera *camera, CameraConfiguration *config)
++{
++	CustomCameraData *data = cameraData(camera);
++	StreamConfiguration &cfg = config->at(0);
++	int ret;
++
++	V4L2DeviceFormat format;
++	format.fourcc = V4L2PixelFormat::fromPixelFormat(cfg.pixelFormat);
++	format.size = cfg.size;
++
++	ret = data->video_->setFormat(&format);
++	if (ret)
++		return ret;
++
++	if (format.size != cfg.size ||
++	    format.fourcc != V4L2PixelFormat::fromPixelFormat(cfg.pixelFormat))
++		return -EINVAL;
++
++	cfg.setStream(&data->stream_);
++
++	return 0;
++}
++
++int PipelineHandlerCustom::exportFrameBuffers(Camera *camera, Stream *stream,
++					   std::vector<std::unique_ptr<FrameBuffer>> *buffers)
++{
++	CustomCameraData *data = cameraData(camera);
++	unsigned int count = stream->configuration().bufferCount;
++
++	return data->video_->exportBuffers(count, buffers);
++}
++
++int PipelineHandlerCustom::start(Camera *camera, [[maybe_unused]] const ControlList *controls)
++{
++	CustomCameraData *data = cameraData(camera);
++	unsigned int count = data->stream_.configuration().bufferCount;
++
++	int ret = data->video_->importBuffers(count);
++	if (ret < 0)
++		return ret;
++
++	ret = data->video_->streamOn();
++	if (ret < 0) {
++		data->video_->releaseBuffers();
++		return ret;
++	}
++
++	return 0;
++}
++
++void PipelineHandlerCustom::stopDevice(Camera *camera)
++{
++	CustomCameraData *data = cameraData(camera);
++	data->video_->streamOff();
++	data->video_->releaseBuffers();
++}
++
++int PipelineHandlerCustom::queueRequestDevice(Camera *camera, Request *request)
++{
++	CustomCameraData *data = cameraData(camera);
++	int ret;
++
++	FrameBuffer *buffer = request->findBuffer(&data->stream_);
++	if (!buffer) {
++		LOG(Custom, Error)
++			<< "Attempt to queue request with invalid stream";
++
++		return -ENOENT;
++	}
++
++	ret = data->video_->queueBuffer(buffer);
++	if (ret < 0)
++		return ret;
++
++	return 0;
++}
++
++bool PipelineHandlerCustom::match(DeviceEnumerator *enumerator)
++{
++	MediaDevice *media;
++	bool found = false;
++
++	const char *drivers = utils::secure_getenv(CUSTOM_DRIVERS_ENV);
++	if (!drivers)
++		return false;
++
++	istringstream in(drivers);
++	string driver;
++
++	while (in >> driver) {
++		DeviceMatch dm(driver);
++		media = acquireMediaDevice(enumerator, dm);
++		if (!media)
++			continue;
++
++		std::unique_ptr<CustomCameraData> data =
++			std::make_unique<CustomCameraData>(this);
++
++		if (data->init(media))
++			continue;
++
++		/* Create and register the camera. */
++		std::string id = media->model();
++		if (id.empty()) {
++			LOG(Custom, Error) << "Failed to get camera ID";
++			continue;
++		}
++
++		std::set<Stream *> streams{ &data->stream_ };
++		std::shared_ptr<Camera> camera =
++			Camera::create(std::move(data), id, streams);
++		registerCamera(std::move(camera));
++
++		found = true;
++	}
++
++	return found;
++}
++
++MediaEntity *CustomCameraData::getEntity(MediaDevice *media)
++{
++	const std::vector<MediaEntity *> &entities = media->entities();
++
++	if (utils::secure_getenv(CUSTOM_DEFAULT_ENV)) {
++		auto iter = std::find_if(entities.begin(), entities.end(),
++					 [](MediaEntity *e) {
++					 string name = utils::secure_getenv(CUSTOM_DEFAULT_ENV);
++					 if (e->name() == name) return true;
++					 if (name.find("has:") != 0) return false;
++					 return e->name().find(name.substr(4)) != string::npos;
++					 });
++		return iter == entities.end() ? NULL : *iter;
++	} else {
++		auto iter = std::find_if(entities.begin(), entities.end(),
++					 [](MediaEntity *e) {
++					 return e->function() == MEDIA_ENT_F_IO_V4L;
++					 });
++		return iter == entities.end() ? NULL : *iter;
++	}
++}
++
++int CustomCameraData::init(MediaDevice *media)
++{
++	/* Locate and initialise the camera data with the default video node. */
++	MediaEntity *entity = getEntity(media);
++	if (!entity) {
++		LOG(Custom, Error) << "Could not find default video device";
++		return -ENODEV;
++	}
++
++	/* Create and open the video device. */
++	video_ = std::make_unique<V4L2VideoDevice>(entity);
++	int ret = video_->open();
++	if (ret)
++		return ret;
++
++	video_->bufferReady.connect(this, &CustomCameraData::bufferReady);
++
++	properties_.set(properties::Model, utils::toAscii(media->model()));
++
++	/*
++	 * Get the current format in order to initialize the sensor array
++	 * properties.
++	 */
++	Size resolution;
++	for (const auto &it : video_->formats()) {
++		const std::vector<SizeRange> &sizeRanges = it.second;
++		for (const SizeRange &sizeRange : sizeRanges) {
++			if (sizeRange.max > resolution)
++				resolution = sizeRange.max;
++		}
++	}
++
++	properties_.set(properties::PixelArraySize, resolution);
++	properties_.set(properties::PixelArrayActiveAreas, { Rectangle(resolution) });
++	return 0;
++}
++
++void CustomCameraData::bufferReady(FrameBuffer *buffer)
++{
++	Request *request = buffer->request();
++
++	/* \todo Use the Custom metadata to calculate a more precise timestamp */
++	request->metadata().set(controls::SensorTimestamp,
++				buffer->metadata().timestamp);
++
++	pipe()->completeBuffer(request, buffer);
++	pipe()->completeRequest(request);
++}
++
++REGISTER_PIPELINE_HANDLER(PipelineHandlerCustom)
++
++} /* namespace libcamera */
+diff --git a/src/libcamera/pipeline/custom/meson.build b/src/libcamera/pipeline/custom/meson.build
+new file mode 100644
+index 0000000..9d2ee94
+--- /dev/null
++++ b/src/libcamera/pipeline/custom/meson.build
+@@ -0,0 +1,5 @@
++# SPDX-License-Identifier: CC0-1.0
++
++libcamera_sources += files([
++    'custom.cpp',
++])
+diff --git a/test/pipeline/custom/custom_pipeline_test.cpp b/test/pipeline/custom/custom_pipeline_test.cpp
+new file mode 100644
+index 0000000..69d67d9
+--- /dev/null
++++ b/test/pipeline/custom/custom_pipeline_test.cpp
+@@ -0,0 +1,110 @@
++/* SPDX-License-Identifier: GPL-2.0-or-later */
++/*
++ * Copyright (C) 2022, Rockchip Electronics Co., Ltd
++ *
++ * custom_pipeline_test.cpp - Custom pipeline test
++ */
++
++#include <iostream>
++
++#include <sys/types.h>
++#include <unistd.h>
++
++#include <libcamera/camera.h>
++#include <libcamera/camera_manager.h>
++
++#include "libcamera/internal/device_enumerator.h"
++#include "libcamera/internal/media_device.h"
++
++#include "test.h"
++
++#define CUSTOM_DRIVERS_ENV "LIBCAMERA_CUSTOM_DRIVERS"
++
++using namespace std;
++using namespace libcamera;
++
++/*
++ * Verify that the custom pipeline handler gets matched and cameras
++ * are enumerated correctly.
++ *
++ * The test lists all cameras registered in the system, if any camera is
++ * available at all.
++ */
++class CustomPipelineTest : public Test
++{
++protected:
++	int init();
++	int run();
++	void cleanup();
++
++private:
++	CameraManager *cameraManager_;
++	unsigned int sensors_;
++};
++
++int CustomPipelineTest::init()
++{
++	unique_ptr<DeviceEnumerator> enumerator = DeviceEnumerator::create();
++	if (!enumerator) {
++		cerr << "Failed to create device enumerator" << endl;
++		return TestFail;
++	}
++
++	if (enumerator->enumerate()) {
++		cerr << "Failed to enumerate media devices" << endl;
++		return TestFail;
++	}
++
++	const char *drivers = utils::secure_getenv(CUSTOM_DRIVERS_ENV);
++	if (!drivers) {
++		cerr << "Needs env: " CUSTOM_DRIVERS_ENV << endl;
++		return TestFail;
++	}
++
++	istringstream in(drivers);
++	string driver;
++	bool found = false;
++
++	while (in >> driver) {
++		DeviceMatch dm(driver);
++		std::shared_ptr<MediaDevice> device = enumerator->search(dm);
++		if (device)
++			found = true;
++	}
++
++	if (!found) {
++		cerr << "Failed to find any camera: test skip" << endl;
++		return TestSkip;
++	}
++
++	cameraManager_ = new CameraManager();
++	int ret = cameraManager_->start();
++	if (ret) {
++		cerr << "Failed to start the CameraManager" << endl;
++		return TestFail;
++	}
++
++	return 0;
++}
++
++int CustomPipelineTest::run()
++{
++	auto cameras = cameraManager_->cameras();
++	for (const std::shared_ptr<Camera> &cam : cameras)
++		cout << "Found camera '" << cam->id() << "'" << endl;
++
++	if (!cameras.size()) {
++		cerr << "no cameras registered" << endl;
++		return TestFail;
++	}
++
++	return TestPass;
++}
++
++void CustomPipelineTest::cleanup()
++{
++	cameraManager_->stop();
++	delete cameraManager_;
++}
++
++TEST_REGISTER(CustomPipelineTest)
+diff --git a/test/pipeline/custom/meson.build b/test/pipeline/custom/meson.build
+new file mode 100644
+index 0000000..47305c9
+--- /dev/null
++++ b/test/pipeline/custom/meson.build
+@@ -0,0 +1,14 @@
++# SPDX-License-Identifier: CC0-1.0
++
++custom_test = [
++    ['custom_pipeline_test',            'custom_pipeline_test.cpp'],
++]
++
++foreach t : custom_test
++    exe = executable(t[0], t[1],
++                     dependencies : libcamera_private,
++                     link_with : test_libraries,
++                     include_directories : test_includes_internal)
++
++    test(t[0], exe, suite : 'custom', is_parallel : false)
++endforeach
+diff --git a/test/pipeline/meson.build b/test/pipeline/meson.build
+index 6e7901f..a0a3544 100644
+--- a/test/pipeline/meson.build
++++ b/test/pipeline/meson.build
+@@ -2,3 +2,4 @@
+ 
+ subdir('ipu3')
+ subdir('rkisp1')
++subdir('custom')
+-- 
+2.20.1
+

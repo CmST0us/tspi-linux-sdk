@@ -1,0 +1,89 @@
+From f0a4ffb3f6b9128e4c77ec1ff509077feb330298 Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Fri, 9 Dec 2022 11:15:45 +0800
+Subject: [PATCH 7/8] Support bypassing Unicode when printing
+
+Enabled by default.
+
+Based on:
+https://blog.csdn.net/wavemcu/article/details/7202908
+
+Tested on RK3588 EVB:
+1/ Disable CONFIG_UNICODE_SUPPORT
+2/ Check busybox ls could display chinese characters
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ libbb/Config.src         |  6 ++++++
+ libbb/printable_string.c |  6 +++++-
+ libbb/unicode.c          | 10 +++++++++-
+ 3 files changed, 20 insertions(+), 2 deletions(-)
+
+diff --git a/libbb/Config.src b/libbb/Config.src
+index b980f19..8b833c9 100644
+--- a/libbb/Config.src
++++ b/libbb/Config.src
+@@ -264,6 +264,12 @@ config UNICODE_SUPPORT
+ 	Probably by the time when busybox will be fully Unicode-clean,
+ 	other encodings will be mainly of historic interest.
+ 
++config UNICODE_BYPASS
++	bool "Bypass Unicode when printing"
++	default y
++	help
++	This makes various applets bypass Unicode when printing.
++
+ config UNICODE_USING_LOCALE
+ 	bool "Use libc routines for Unicode (else uses internal ones)"
+ 	default n
+diff --git a/libbb/printable_string.c b/libbb/printable_string.c
+index a814fd0..3473192 100644
+--- a/libbb/printable_string.c
++++ b/libbb/printable_string.c
+@@ -42,8 +42,12 @@ const char* FAST_FUNC printable_string2(uni_stat_t *stats, const char *str)
+ 			unsigned char c = *d;
+ 			if (c == '\0')
+ 				break;
+-			if (c < ' ' || c >= 0x7f)
++			if (c < ' ')
+ 				*d = '?';
++#if !ENABLE_UNICODE_BYPASS
++			if (c >= 0x7f)
++				*d = '?';
++#endif
+ 			d++;
+ 		}
+ 		if (stats) {
+diff --git a/libbb/unicode.c b/libbb/unicode.c
+index e98cbbf..2f9d0d3 100644
+--- a/libbb/unicode.c
++++ b/libbb/unicode.c
+@@ -1027,7 +1027,11 @@ static char* FAST_FUNC unicode_conv_to_printable2(uni_stat_t *stats, const char
+ 					while ((int)--width >= 0);
+ 					break;
+ 				}
++#if !ENABLE_UNICODE_BYPASS
+ 				*d++ = (c >= ' ' && c < 0x7f) ? c : '?';
++#else
++				*d++ = (c >= ' ') ? c : '?';
++#endif
+ 				src++;
+ 			}
+ 			*d = '\0';
+@@ -1035,8 +1039,12 @@ static char* FAST_FUNC unicode_conv_to_printable2(uni_stat_t *stats, const char
+ 			d = dst = xstrndup(src, width);
+ 			while (*d) {
+ 				unsigned char c = *d;
+-				if (c < ' ' || c >= 0x7f)
++				if (c < ' ')
+ 					*d = '?';
++#if !ENABLE_UNICODE_BYPASS
++				if (c >= 0x7f)
++					*d = '?';
++#endif
+ 				d++;
+ 			}
+ 		}
+-- 
+2.20.1
+

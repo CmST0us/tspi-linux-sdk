@@ -1,0 +1,8 @@
+config BR2_PACKAGE_PM_UTILS
+	bool "pm-utils"
+	help
+	  pm-utils provides simple shell command line tools to suspend and
+	  hibernate computer that can be used to run vendor, distribution, or
+	  user supplied scripts on suspend and resume.
+
+          http://pm-utils.freedesktop.org/wiki/

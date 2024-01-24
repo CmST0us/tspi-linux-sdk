@@ -1,0 +1,45 @@
+From d89d73c9c04e472479b2d2184beec506cc96e538 Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Sat, 20 May 2023 11:09:36 +0800
+Subject: [PATCH] pgrep: Fix compile error with BSP 4.4 kernel
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ configure.ac | 2 +-
+ pgrep.c      | 4 +++-
+ 2 files changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index 6417763..fe33be1 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -325,7 +325,7 @@ then
+ fi
+ AC_SUBST(DEJAGNU)
+ 
+-AC_CHECK_FUNCS([__fpending alarm atexit dup2 gethostname getpagesize gettimeofday iswprint memchr memmove memset mkdir nl_langinfo putenv regcomp rpmatch select setlocale strcasecmp strchr strcspn strdup strerror strncasecmp strndup strpbrk strrchr strspn strstr strtol strtoul strtoull strverscmp utmpname wcwidth])
++AC_CHECK_FUNCS([__fpending alarm atexit dup2 gethostname getpagesize gettimeofday iswprint memchr memmove memset mkdir nl_langinfo pidfd_open putenv regcomp rpmatch select setlocale strcasecmp strchr strcspn strdup strerror strncasecmp strndup strpbrk strrchr strspn strstr strtol strtoul strtoull strverscmp utmpname wcwidth])
+ 
+ AC_CONFIG_FILES([Makefile
+                  include/Makefile
+diff --git a/pgrep.c b/pgrep.c
+index 4fe5e8a..6353668 100644
+--- a/pgrep.c
++++ b/pgrep.c
+@@ -38,10 +38,12 @@
+ #include <stdbool.h>
+ #include <time.h>
+ 
+-#if defined(ENABLE_PWAIT) && !defined(HAVE_PIDFD_OPEN)
++#if defined(ENABLE_PWAIT)
+ #include <sys/epoll.h>
++#if !defined(HAVE_PIDFD_OPEN)
+ #include <sys/syscall.h>
+ #endif
++#endif
+ 
+ /* EXIT_SUCCESS is 0 */
+ /* EXIT_FAILURE is 1 */
+-- 
+2.20.1
+

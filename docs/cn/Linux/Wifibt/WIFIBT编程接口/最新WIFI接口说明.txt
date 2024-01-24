@@ -1,0 +1,173 @@
+RK平台WIFI API说明
+
+test/			 测试源码目录
+include/		 API头文件目录
+librkwifibt.so   WiFi应用依赖库
+
+//test目录说明：
+//RK WiFi自测程序，WiFi相关API的使用可参考rk_wifi_test.c
+main.c
+rk_wifi_test.c
+
+//SOFTAP相关的实现源码
+softap/
+
+//编程注意事项：
+1. RK_wifi_register_callback：切记不要在WiFi的回调函数里面做任何耗时或阻塞的操作，它仅仅反馈WiFi的状态；
+2. RK_wifi_enable(0/1): 打开或关闭时，一定要等待RK_WIFI_State_OPEN/RK_WIFI_State_OFF事件反馈，再做下一步操作；
+3. RK_wifi_scan_r/RK_wifi_getSavedInfo 这两个API会返回数据给应用，切记要释放返回的指针，防止内存泄露，参考rk_wifi_test.c
+4. RK_wifi_enable之前要注册RK_wifi_register_callback回调，监听连接的状态。
+5. RK_wifi_connect是非阻塞函数，返回不等于连接成功，要在callback里面确认上一次的连接结果，否则下一次connect调用不会被执行。
+
+//其它
+如果库或程序运行错误请确保buildroot配置确保如下配置打开：
+BR2_PACKAGE_WPA_SUPPLICANT_WPA_CLIENT_SO
+BR2_PACKAGE_BLUEZ5_UTILS
+
+//错误示范：
+
+
+API说明:
+//EVENT 事件回调函数，事件如下：
+typedef enum {
+	RK_WIFI_State_IDLE = 0,
+	RK_WIFI_State_CONNECTING,
+	RK_WIFI_State_CONNECTFAILED,
+	RK_WIFI_State_CONNECTFAILED_WRONG_KEY,
+	RK_WIFI_State_CONNECTED,
+	RK_WIFI_State_DISCONNECTED,
+	RK_WIFI_State_OPEN,
+	RK_WIFI_State_OFF,
+	RK_WIFI_State_SCAN_RESULTS,
+	RK_WIFI_State_DHCP_OK,
+} RK_WIFI_RUNNING_State_e;
+int RK_wifi_register_callback(RK_wifi_state_callback cb);
+
+//获取当前WiFi状态
+int RK_wifi_running_getState(RK_WIFI_RUNNING_State_e* pState);
+
+//获取当前WiFi的详细信息：
+typedef struct {
+	int id;
+	char bssid[BSSID_BUF_LEN];
+	char ssid[SSID_BUF_LEN];
+	int freq;
+	char mode[20];
+	char wpa_state[20];
+	char ip_address[20];
+	char mac_address[20];
+	int reason;
+} RK_WIFI_INFO_Connection_s;
+int RK_wifi_running_getConnectionInfo(RK_WIFI_INFO_Connection_s* pInfo);
+
+//打开关闭WIFI
+int RK_wifi_enable(int enable);
+
+//发起扫描：
+int RK_wifi_scan(void);
+
+//获取扫描结果，以json格式返回
+char* RK_wifi_scan_r(void);
+
+//连接WiFi
+int RK_wifi_connect(char* ssid, const char* psk);
+
+//连接WEP加密的WiFi
+int RK_wifi_connect_wep(char* ssid, const char* psk);
+
+//断开WiFi
+int RK_wifi_disconnect_network(void);
+
+//忘记之前连接SSID
+int RK_wifi_forget_with_ssid(char *ssid);
+
+//取消正在连接的WiFi
+int RK_wifi_cancel(void);
+
+//获取之前连接过的WiFi， ap_cnt为之前连过的个数
+typedef struct {
+	int id;
+	char bssid[BSSID_BUF_LEN];
+	char ssid[SSID_BUF_LEN];
+	char state[STATE_BUF_LEN];
+} RK_WIFI_SAVED_INFO_s;
+int RK_wifi_getSavedInfo(RK_WIFI_SAVED_INFO_s **pInfo, int *ap_cnt);
+
+//连接之前连接过的WiFi，参数为SSID
+int RK_wifi_connect_with_ssid(char* ssid);
+
+//恢复WiFi出厂设置
+int RK_wifi_reset(void);
+
+//SOFTAP模式下获取WIFI扫描结果，以json格式返回
+char *RK_wifi_scan_for_softap(void)
+
+
+//SOFTAP功能开源，源码参考test/softap/softap.c
+//回调event
+typedef enum {
+	RK_SOFTAP_STATE_IDLE=0,
+	RK_SOFTAP_STATE_CONNECTTING,
+	RK_SOFTAP_STATE_SUCCESS,
+	RK_SOFTAP_STATE_FAIL,
+	RK_SOFTAP_STATE_DISCONNECT,
+} RK_SOFTAP_STATE;
+int RK_softap_register_callback(RK_SOFTAP_STATE_CALLBACK cb)
+
+//启动热点，psk为空则为不加密，IP网关地址（暂未使用，softap固定为：10.201.126.1，可以根据实际需求更改）
+int wifi_start_hostapd(char *ssid, char *psk, char *ip)
+
+//关闭热点
+int wifi_stop_hostapd(void)
+
+//SOFTAP配网DEMO
+//启动一个名为name的热点，并开始配网流程，正常情况下手机在setting界面找到并连接上面启动的热点
+int RK_softap_start(char *name, RK_SOFTAP_SERVER_TYPE server_type)
+{
+	//打开WiFi
+	RK_wifi_enable(1);
+	//启动热点
+	wifi_start_hostapd(name, NULL, NULL);
+	//启动跟手机数据交互服务，依赖手机APK端的实现，根据实际需求修改
+	startTcpServer();
+
+	return 0;
+}
+
+//startTcpServer启动一个跟手机交互的线程，端口：#define SOCKET_PORT 8443
+static void *threadAccept(void *arg)
+{
+	... ...
+	while (1)
+		fd_client = accept(fd_server, (struct sockaddr *)&addr_client, &len_addr_client);
+		handleRequest(fd_client);
+			if (strstr(buf, REQUEST_WIFI_LIST)) {
+				//收到手机侧的获取WiFi列表命令
+				sendWifiList(fd_client, buf);
+					RK_wifi_scan();
+					RK_wifi_scan_for_softap();
+					send(fd, send_msg, sizeof(send_msg), 0);
+			} else if (strstr(buf, REQUEST_WIFI_SET_UP)) {
+				//收到手机侧的获取WiFi列表命令			
+				wifiSetup(fd_client, buf);
+					//解析手机发来的ssid/psk，然后调用连接API
+					RK_wifi_connect(softap_ssid, softap_psk);
+			} else if (strstr(buf, REQUEST_IS_WIFI_CONNECTED)) {
+				isWifiConnected(fd_client, buf);
+					//手机侧循环发送获取WiFi的连接状态	
+					if (!RK_wifi_running_getConnectionInfo(&info)) {
+						if (strncmp(info.wpa_state, "COMPLETED", 9) == 0) //如果连接成功
+							isConn = 1;
+					}
+					snprintf(msg, sizeof(msg), HTTP_RESPOSE_MESSAGE, 1, isConn ? "1" : "0");
+					send(fd, msg, sizeof(msg), 0) //发送成功的信息给手机
+			} else if (strstr(buf, REQUEST_POST_CONNECT_RESULT)) {
+				//收到手机侧的配网完成指令
+				doConnectResult(fd_client, buf);
+					wifi_stop_hostapd();//关闭热点
+			}
+	... ...
+}
+
+//关闭配网
+int RK_softap_stop(void);

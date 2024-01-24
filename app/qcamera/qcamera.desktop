@@ -1,0 +1,5 @@
+[Desktop Entry]
+Name=qcamera
+Exec=/usr/bin/qcamera
+Icon=/usr/share/icon/icon_camera.png
+Type=Application

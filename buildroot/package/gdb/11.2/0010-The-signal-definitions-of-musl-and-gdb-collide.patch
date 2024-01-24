@@ -1,0 +1,57 @@
+From bf84f8f74f087fbf1c4adc293433cd2e7b70df58 Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Wed, 25 May 2022 21:46:16 +0800
+Subject: [PATCH] The signal definitions of musl and gdb collide
+
+The kernel defines "struct sigcontext" in asm/sigcontext.h and musl libc
+defines it in signal.h which collides.
+Kernel 4.14 misses the definitions of struct user_sve_header so we still
+have to use the aarch64-sve-linux-sigcontext.h header file which also
+provides that and make sure aarch64-sve-linux-sigcontext.h does not
+provide the same headers as the kernel or musl.
+
+From:
+https://git.openwrt.org/?p=openwrt/openwrt.git;a=blob;f=package/devel/gdb/patches/010-aarch64-headers.patch;h=a718a8c6a4e2d898f33a4f61ab1dc3228f4c3a48;hb=bc89690f6e2c80e100b4dbfbabc7c7adb8218d74
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ gdb/nat/aarch64-sve-linux-ptrace.h     | 2 +-
+ gdb/nat/aarch64-sve-linux-sigcontext.h | 2 ++
+ 2 files changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/gdb/nat/aarch64-sve-linux-ptrace.h b/gdb/nat/aarch64-sve-linux-ptrace.h
+index 5c264b3..bf959dc 100644
+--- a/gdb/nat/aarch64-sve-linux-ptrace.h
++++ b/gdb/nat/aarch64-sve-linux-ptrace.h
+@@ -31,7 +31,7 @@
+ #include <sys/ptrace.h>
+ #include <asm/ptrace.h>
+ 
+-#ifndef SVE_SIG_ZREGS_SIZE
++#ifndef SVE_PT_REGS_SVE
+ #include "aarch64-sve-linux-sigcontext.h"
+ #endif
+ 
+diff --git a/gdb/nat/aarch64-sve-linux-sigcontext.h b/gdb/nat/aarch64-sve-linux-sigcontext.h
+index 1b40ffa..373e222 100644
+--- a/gdb/nat/aarch64-sve-linux-sigcontext.h
++++ b/gdb/nat/aarch64-sve-linux-sigcontext.h
+@@ -19,6 +19,7 @@
+ #ifndef NAT_AARCH64_SVE_LINUX_SIGCONTEXT_H
+ #define NAT_AARCH64_SVE_LINUX_SIGCONTEXT_H
+ 
++#ifndef SVE_MAGIC
+ #define SVE_MAGIC	0x53564501
+ 
+ struct sve_context {
+@@ -128,6 +129,7 @@ struct sve_context {
+ 	(SVE_SIG_FFR_OFFSET(vq) + SVE_SIG_FFR_SIZE(vq) - SVE_SIG_REGS_OFFSET)
+ 
+ #define SVE_SIG_CONTEXT_SIZE(vq) (SVE_SIG_REGS_OFFSET + SVE_SIG_REGS_SIZE(vq))
++#endif
+ 
+ /* SVE/FP/SIMD state (NT_ARM_SVE) */
+ 
+-- 
+2.20.1
+

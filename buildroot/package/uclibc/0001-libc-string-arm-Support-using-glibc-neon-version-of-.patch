@@ -1,0 +1,3069 @@
+From 0bea89508c6be2b1a76650108d759d389e99bbf3 Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Wed, 13 Apr 2022 16:32:02 +0800
+Subject: [PATCH] libc: string: arm: Support using glibc-neon version of APIs
+
+Set USE_GLIBC_NEON to enable.
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ Makerules                                     |   1 +
+ libc/string/Makefile.in                       |  10 +-
+ libc/string/arm/Makefile.in                   |  13 +
+ libc/string/arm/glibc-neon/README             |   4 +
+ libc/string/arm/glibc-neon/arm-features.h     |  59 ++
+ libc/string/arm/glibc-neon/bcopy.c            |  24 +
+ libc/string/arm/glibc-neon/bzero.c            |  28 +
+ libc/string/arm/glibc-neon/glibc_wrap.h       |  29 +
+ libc/string/arm/glibc-neon/memcmp.S           |   1 +
+ libc/string/arm/glibc-neon/memcpy.S           | 728 ++++++++++++++++++
+ libc/string/arm/glibc-neon/memmove.S          | 332 ++++++++
+ libc/string/arm/glibc-neon/memset.S           |  68 ++
+ libc/string/arm/glibc-neon/strcmp.S           | 504 ++++++++++++
+ libc/string/arm/glibc-neon/strlen.S           |  76 ++
+ libc/string/arm/glibc-neon/sysdep.h           | 339 ++++++++
+ .../arm/glibc-neon/sysdeps/generic/dwarf2.h   | 590 ++++++++++++++
+ .../arm/glibc-neon/sysdeps/generic/sysdep.h   |  97 +++
+ 17 files changed, 2901 insertions(+), 2 deletions(-)
+ create mode 100644 libc/string/arm/Makefile.in
+ create mode 100644 libc/string/arm/glibc-neon/README
+ create mode 100644 libc/string/arm/glibc-neon/arm-features.h
+ create mode 100644 libc/string/arm/glibc-neon/bcopy.c
+ create mode 100644 libc/string/arm/glibc-neon/bzero.c
+ create mode 100644 libc/string/arm/glibc-neon/glibc_wrap.h
+ create mode 120000 libc/string/arm/glibc-neon/memcmp.S
+ create mode 100644 libc/string/arm/glibc-neon/memcpy.S
+ create mode 100644 libc/string/arm/glibc-neon/memmove.S
+ create mode 100644 libc/string/arm/glibc-neon/memset.S
+ create mode 100644 libc/string/arm/glibc-neon/strcmp.S
+ create mode 100644 libc/string/arm/glibc-neon/strlen.S
+ create mode 100644 libc/string/arm/glibc-neon/sysdep.h
+ create mode 100644 libc/string/arm/glibc-neon/sysdeps/generic/dwarf2.h
+ create mode 100644 libc/string/arm/glibc-neon/sysdeps/generic/sysdep.h
+
+diff --git a/Makerules b/Makerules
+index fd40e6c..2013ba9 100644
+--- a/Makerules
++++ b/Makerules
+@@ -255,6 +255,7 @@ CFLAGS_gen.dep = -MT $@ -MD -MP -MF $(dir $@).$(notdir $@).dep
+ 
+ cmd_compile.c = $(CC) -c $< -o $@ \
+     $(filter-out $(CFLAGS-OMIT-$(notdir $<)), \
++        $(CFLAGS-extra-$(subst $(top_srcdir),,$(<D))) \
+         $(CFLAGS) \
+         $(CFLAGS-for-library-members) \
+ 	$(CFLAGS-$(suffix $@)) \
+diff --git a/libc/string/Makefile.in b/libc/string/Makefile.in
+index e7f2ccd..975b395 100644
+--- a/libc/string/Makefile.in
++++ b/libc/string/Makefile.in
+@@ -5,6 +5,12 @@
+ # Licensed under the LGPL v2.1, see the file COPYING.LIB in this tarball.
+ #
+ 
++ifeq ($(TARGET_ARCH),arm)
++ifneq ($(USE_GLIBC_NEON),)
++include $(top_srcdir)libc/string/$(TARGET_ARCH)/Makefile.in
++endif
++endif
++
+ subdirs += libc/string/$(TARGET_ARCH) libc/string/generic
+ 
+ #
+@@ -25,8 +31,8 @@ STRING_SUBARCH_OBJS := $(STRING_SUBARCH_SOBJ) $(STRING_SUBARCH_COBJ)
+ endif
+ 
+ # Collect the arch specific implementation (asm, c files)
+-STRING_ARCH_DIR := $(top_srcdir)libc/string/$(TARGET_ARCH)
+-STRING_ARCH_OUT := $(top_builddir)libc/string/$(TARGET_ARCH)
++STRING_ARCH_DIR ?= $(top_srcdir)libc/string/$(TARGET_ARCH)
++STRING_ARCH_OUT ?= $(top_builddir)libc/string/$(TARGET_ARCH)
+ 
+ STRING_ARCH_SRC := $(wildcard $(STRING_ARCH_DIR)/*.c)
+ STRING_ARCH_OBJ := $(patsubst $(STRING_ARCH_DIR)/%.c,$(STRING_ARCH_OUT)/%.o,$(STRING_ARCH_SRC))
+diff --git a/libc/string/arm/Makefile.in b/libc/string/arm/Makefile.in
+new file mode 100644
+index 0000000..4cd7e24
+--- /dev/null
++++ b/libc/string/arm/Makefile.in
+@@ -0,0 +1,13 @@
++# Makefile for uClibc
++#
++# Copyright (C) 2022 Jeffy Chen <jeffy.chen@rock-chips.com>
++#
++# Licensed under the LGPL v2.1, see the file COPYING.LIB in this tarball.
++#
++
++SUBDIR := libc/string/arm/glibc-neon
++
++STRING_ARCH_DIR := $(top_srcdir)$(SUBDIR)
++STRING_ARCH_OUT := $(top_builddir)$(SUBDIR)
++
++CFLAGS-extra-$(SUBDIR) := -include glibc_wrap.h -I$(top_srcdir)$(SUBDIR)
+diff --git a/libc/string/arm/glibc-neon/README b/libc/string/arm/glibc-neon/README
+new file mode 100644
+index 0000000..ad72f05
+--- /dev/null
++++ b/libc/string/arm/glibc-neon/README
+@@ -0,0 +1,4 @@
++NOTE:
++1/ Ported from glibc-2.34.9.
++2/ glibc doesn't have an arm arch version of memcmp.
++3/ uClibc is using strcmp as strcoll when locale disabled.
+diff --git a/libc/string/arm/glibc-neon/arm-features.h b/libc/string/arm/glibc-neon/arm-features.h
+new file mode 100644
+index 0000000..4a86e00
+--- /dev/null
++++ b/libc/string/arm/glibc-neon/arm-features.h
+@@ -0,0 +1,59 @@
++/* Macros to test for CPU features on ARM.  Generic ARM version.
++   Copyright (C) 2012-2021 Free Software Foundation, Inc.
++   This file is part of the GNU C Library.
++
++   The GNU C Library is free software; you can redistribute it and/or
++   modify it under the terms of the GNU Lesser General Public
++   License as published by the Free Software Foundation; either
++   version 2.1 of the License, or (at your option) any later version.
++
++   The GNU C Library is distributed in the hope that it will be useful,
++   but WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++   Lesser General Public License for more details.
++
++   You should have received a copy of the GNU Lesser General Public
++   License along with the GNU C Library.  If not, see
++   <https://www.gnu.org/licenses/>.  */
++
++#ifndef _ARM_ARM_FEATURES_H
++#define _ARM_ARM_FEATURES_H 1
++
++/* An OS-specific arm-features.h file should define ARM_HAVE_VFP to
++   an appropriate expression for testing at runtime whether the VFP
++   hardware is present.  We'll then redefine it to a constant if we
++   know at compile time that we can assume VFP.  */
++
++#ifndef __SOFTFP__
++/* The compiler is generating VFP instructions, so we're already
++   assuming the hardware exists.  */
++# undef ARM_HAVE_VFP
++# define ARM_HAVE_VFP	1
++#endif
++
++/* An OS-specific arm-features.h file may define ARM_ASSUME_NO_IWMMXT
++   to indicate at compile time that iWMMXt hardware is never present
++   at runtime (or that we never care about its state) and so need not
++   be checked for.  */
++
++/* A more-specific arm-features.h file may define ARM_ALWAYS_BX to indicate
++   that instructions using pc as a destination register must never be used,
++   so a "bx" (or "blx") instruction is always required.  */
++
++/* The log2 of the minimum alignment required for an address that
++   is the target of a computed branch (i.e. a "bx" instruction).
++   A more-specific arm-features.h file may define this to set a more
++   stringent requirement.
++
++   Using this only makes sense for code in ARM mode (where instructions
++   always have a fixed size of four bytes), or for Thumb-mode code that is
++   specifically aligning all the related branch targets to match (since
++   Thumb instructions might be either two or four bytes).  */
++#ifndef ARM_BX_ALIGN_LOG2
++# define ARM_BX_ALIGN_LOG2	2
++#endif
++
++/* An OS-specific arm-features.h file may define ARM_NO_INDEX_REGISTER to
++   indicate that the two-register addressing modes must never be used.  */
++
++#endif  /* arm-features.h */
+diff --git a/libc/string/arm/glibc-neon/bcopy.c b/libc/string/arm/glibc-neon/bcopy.c
+new file mode 100644
+index 0000000..302bbbd
+--- /dev/null
++++ b/libc/string/arm/glibc-neon/bcopy.c
+@@ -0,0 +1,24 @@
++/* Copyright (C) 1991-2021 Free Software Foundation, Inc.
++   This file is part of the GNU C Library.
++
++   The GNU C Library is free software; you can redistribute it and/or
++   modify it under the terms of the GNU Lesser General Public
++   License as published by the Free Software Foundation; either
++   version 2.1 of the License, or (at your option) any later version.
++
++   The GNU C Library is distributed in the hope that it will be useful,
++   but WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++   Lesser General Public License for more details.
++
++   You should have received a copy of the GNU Lesser General Public
++   License along with the GNU C Library; if not, see
++   <https://www.gnu.org/licenses/>.  */
++
++#include <string.h>
++
++void
++bcopy (const void *src, void *dest, size_t len)
++{
++  memmove (dest, src, len);
++}
+diff --git a/libc/string/arm/glibc-neon/bzero.c b/libc/string/arm/glibc-neon/bzero.c
+new file mode 100644
+index 0000000..4391dad
+--- /dev/null
++++ b/libc/string/arm/glibc-neon/bzero.c
+@@ -0,0 +1,28 @@
++/* Copyright (C) 1991-2021 Free Software Foundation, Inc.
++   This file is part of the GNU C Library.
++
++   The GNU C Library is free software; you can redistribute it and/or
++   modify it under the terms of the GNU Lesser General Public
++   License as published by the Free Software Foundation; either
++   version 2.1 of the License, or (at your option) any later version.
++
++   The GNU C Library is distributed in the hope that it will be useful,
++   but WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++   Lesser General Public License for more details.
++
++   You should have received a copy of the GNU Lesser General Public
++   License along with the GNU C Library; if not, see
++   <https://www.gnu.org/licenses/>.  */
++
++#include <string.h>
++
++#undef __bzero
++
++/* Set N bytes of S to 0.  */
++void
++__bzero (void *s, size_t len)
++{
++  memset (s, '\0', len);
++}
++weak_alias (__bzero, bzero)
+diff --git a/libc/string/arm/glibc-neon/glibc_wrap.h b/libc/string/arm/glibc-neon/glibc_wrap.h
+new file mode 100644
+index 0000000..f00d50d
+--- /dev/null
++++ b/libc/string/arm/glibc-neon/glibc_wrap.h
+@@ -0,0 +1,29 @@
++/* Macros to adapt glibc version of string APIs.
++   Copyright (C) 2022 Jeffy Chen <jeffy.chen@rock-chips.com>
++   This file is part of the GNU C Library.
++
++   The GNU C Library is free software; you can redistribute it and/or
++   modify it under the terms of the GNU Lesser General Public
++   License as published by the Free Software Foundation; either
++   version 2.1 of the License, or (at your option) any later version.
++
++   The GNU C Library is distributed in the hope that it will be useful,
++   but WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++   Lesser General Public License for more details.
++
++   You should have received a copy of the GNU Lesser General Public
++   License along with the GNU C Library.  If not, see
++   <https://www.gnu.org/licenses/>.  */
++
++#ifndef GLIBC_WRAP_H
++#define GLIBC_WRAP_H
++
++#define IS_IN(lib) 1
++
++#define libc_hidden_builtin_def(fn) libc_hidden_def(fn)
++
++#define C_SYMBOL_NAME(name) name
++#define MEMCPY_NEON
++
++#endif // GLIBC_WRAP_H
+diff --git a/libc/string/arm/glibc-neon/memcmp.S b/libc/string/arm/glibc-neon/memcmp.S
+new file mode 120000
+index 0000000..7c28a09
+--- /dev/null
++++ b/libc/string/arm/glibc-neon/memcmp.S
+@@ -0,0 +1 @@
++../memcmp.S
+\ No newline at end of file
+diff --git a/libc/string/arm/glibc-neon/memcpy.S b/libc/string/arm/glibc-neon/memcpy.S
+new file mode 100644
+index 0000000..ee562e8
+--- /dev/null
++++ b/libc/string/arm/glibc-neon/memcpy.S
+@@ -0,0 +1,728 @@
++/* NEON/VFP/ARM version of memcpy optimized for Cortex-A15.
++   Copyright (C) 2013-2021 Free Software Foundation, Inc.
++   This file is part of the GNU C Library.
++
++   The GNU C Library is free software; you can redistribute it and/or
++   modify it under the terms of the GNU Lesser General Public
++   License as published by the Free Software Foundation; either
++   version 2.1 of the License, or (at your option) any later version.
++
++   The GNU C Library is distributed in the hope that it will be useful,
++   but WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++   Lesser General Public License for more details.
++
++   You should have received a copy of the GNU Lesser General Public
++   License along with the GNU C Library; if not, see
++   <https://www.gnu.org/licenses/>.
++
++   This memcpy routine is optimised for Cortex-A15 cores and takes advantage
++   of VFP or NEON when built with the appropriate flags.
++
++   Assumptions:
++
++    ARMv6 (ARMv7-a if using Neon)
++    ARM state
++    Unaligned accesses
++
++ */
++
++/* Thumb cannot encode negative immediate offsets in memory operations.  */
++#ifndef NO_THUMB
++#define NO_THUMB
++#endif
++#include <sysdep.h>
++#include <arm-features.h>
++
++	.syntax unified
++	/* This implementation requires ARM state.  */
++	.arm
++
++#ifdef MEMCPY_NEON
++
++	.fpu	neon
++	.arch	armv7-a
++# define FRAME_SIZE	4
++# define USE_VFP
++# define USE_NEON
++
++#elif defined (MEMCPY_VFP)
++
++	.arch	armv6
++	.fpu	vfpv2
++# define FRAME_SIZE	32
++# define USE_VFP
++
++#else
++	.arch	armv6
++# define FRAME_SIZE    32
++
++#endif
++
++#define ALIGN(addr, align) addr:align
++
++#define INSN_SIZE	4
++
++/* Call parameters.  */
++#define dstin	r0
++#define src	r1
++#define count	r2
++
++/* Locals.  */
++#define tmp1	r3
++#define dst	ip
++#define tmp2	r8
++
++/* These two macros both work by repeated invocation of the macro
++   dispatch_step (not defined here).  That macro performs one "step",
++   doing one load instruction and one store instruction to copy one
++   "unit".  On entry, TMP1 contains the number of bytes to be copied,
++   a multiple of the unit size.  The macro clobbers TMP1 in the
++   process of doing a computed jump to the tail containing the
++   appropriate number of steps.
++
++   In dispatch_7_dword, dispatch_step is invoked seven times, with an
++   argument that is 7 for the first and 1 for the last.  Units are
++   double-words (8 bytes).  TMP1 is at most 56.
++
++   In dispatch_15_word, dispatch_step is invoked fifteen times,
++   with an argument that is 15 for the first and 1 for the last.
++   Units are words (4 bytes).  TMP1 is at most 60.  */
++
++#ifndef ARM_ALWAYS_BX
++# if ARM_BX_ALIGN_LOG2 != 2
++#  error case not handled
++# endif
++	.macro dispatch_7_dword
++	rsb	tmp1, tmp1, #((7 * 8) - PC_OFS + INSN_SIZE)
++	add	pc, pc, tmp1
++	dispatch_step 7
++	dispatch_step 6
++	dispatch_step 5
++	dispatch_step 4
++	dispatch_step 3
++	dispatch_step 2
++	dispatch_step 1
++	.purgem dispatch_step
++	.endm
++
++	.macro dispatch_15_word
++	rsb	tmp1, tmp1, #((15 * 4) - PC_OFS/2 + INSN_SIZE/2)
++	add	pc, pc, tmp1, lsl #1
++	dispatch_step 15
++	dispatch_step 14
++	dispatch_step 13
++	dispatch_step 12
++	dispatch_step 11
++	dispatch_step 10
++	dispatch_step 9
++	dispatch_step 8
++	dispatch_step 7
++	dispatch_step 6
++	dispatch_step 5
++	dispatch_step 4
++	dispatch_step 3
++	dispatch_step 2
++	dispatch_step 1
++	.purgem dispatch_step
++	.endm
++#else
++# if ARM_BX_ALIGN_LOG2 < 3
++#  error case not handled
++# endif
++	.macro dispatch_helper steps, log2_bytes_per_step
++	/* TMP1 gets (max_bytes - bytes_to_copy), where max_bytes is
++	   (STEPS << LOG2_BYTES_PER_STEP).
++	   So this is (steps_to_skip << LOG2_BYTES_PER_STEP).
++	   Then it needs further adjustment to compensate for the
++	   distance between the PC value taken below (0f + PC_OFS)
++	   and the first step's instructions (1f).  */
++	rsb	tmp1, tmp1, #((\steps << \log2_bytes_per_step) \
++			      + ((1f - PC_OFS - 0f) \
++				 >> (ARM_BX_ALIGN_LOG2 - \log2_bytes_per_step)))
++	/* Shifting down LOG2_BYTES_PER_STEP gives us the number of
++	   steps to skip, then shifting up ARM_BX_ALIGN_LOG2 gives us
++	   the (byte) distance to add to the PC.  */
++0:	add	tmp1, pc, tmp1, lsl #(ARM_BX_ALIGN_LOG2 - \log2_bytes_per_step)
++	bx	tmp1
++	.p2align ARM_BX_ALIGN_LOG2
++1:
++	.endm
++
++	.macro dispatch_7_dword
++	dispatch_helper 7, 3
++	.p2align ARM_BX_ALIGN_LOG2
++	dispatch_step 7
++	.p2align ARM_BX_ALIGN_LOG2
++	dispatch_step 6
++	.p2align ARM_BX_ALIGN_LOG2
++	dispatch_step 5
++	.p2align ARM_BX_ALIGN_LOG2
++	dispatch_step 4
++	.p2align ARM_BX_ALIGN_LOG2
++	dispatch_step 3
++	.p2align ARM_BX_ALIGN_LOG2
++	dispatch_step 2
++	.p2align ARM_BX_ALIGN_LOG2
++	dispatch_step 1
++	.p2align ARM_BX_ALIGN_LOG2
++	.purgem dispatch_step
++	.endm
++
++	.macro dispatch_15_word
++	dispatch_helper 15, 2
++	dispatch_step 15
++	.p2align ARM_BX_ALIGN_LOG2
++	dispatch_step 14
++	.p2align ARM_BX_ALIGN_LOG2
++	dispatch_step 13
++	.p2align ARM_BX_ALIGN_LOG2
++	dispatch_step 12
++	.p2align ARM_BX_ALIGN_LOG2
++	dispatch_step 11
++	.p2align ARM_BX_ALIGN_LOG2
++	dispatch_step 10
++	.p2align ARM_BX_ALIGN_LOG2
++	dispatch_step 9
++	.p2align ARM_BX_ALIGN_LOG2
++	dispatch_step 8
++	.p2align ARM_BX_ALIGN_LOG2
++	dispatch_step 7
++	.p2align ARM_BX_ALIGN_LOG2
++	dispatch_step 6
++	.p2align ARM_BX_ALIGN_LOG2
++	dispatch_step 5
++	.p2align ARM_BX_ALIGN_LOG2
++	dispatch_step 4
++	.p2align ARM_BX_ALIGN_LOG2
++	dispatch_step 3
++	.p2align ARM_BX_ALIGN_LOG2
++	dispatch_step 2
++	.p2align ARM_BX_ALIGN_LOG2
++	dispatch_step 1
++	.p2align ARM_BX_ALIGN_LOG2
++	.purgem dispatch_step
++	.endm
++
++#endif
++
++#ifndef USE_NEON
++/* For bulk copies using GP registers.  */
++#define	A_l	r2		/* Call-clobbered.  */
++#define	A_h	r3		/* Call-clobbered.  */
++#define	B_l	r4
++#define	B_h	r5
++#define	C_l	r6
++#define	C_h	r7
++/* Don't use the pair r8,r9 because in some EABI variants r9 is reserved.  */
++#define	D_l	r10
++#define	D_h	r11
++#endif
++
++/* Number of lines ahead to pre-fetch data.  If you change this the code
++   below will need adjustment to compensate.  */
++
++#define prefetch_lines	5
++
++#ifdef USE_VFP
++	.macro	cpy_line_vfp vreg, base
++	vstr	\vreg, [dst, #\base]
++	vldr	\vreg, [src, #\base]
++	vstr	d0, [dst, #\base + 8]
++	vldr	d0, [src, #\base + 8]
++	vstr	d1, [dst, #\base + 16]
++	vldr	d1, [src, #\base + 16]
++	vstr	d2, [dst, #\base + 24]
++	vldr	d2, [src, #\base + 24]
++	vstr	\vreg, [dst, #\base + 32]
++	vldr	\vreg, [src, #\base + prefetch_lines * 64 - 32]
++	vstr	d0, [dst, #\base + 40]
++	vldr	d0, [src, #\base + 40]
++	vstr	d1, [dst, #\base + 48]
++	vldr	d1, [src, #\base + 48]
++	vstr	d2, [dst, #\base + 56]
++	vldr	d2, [src, #\base + 56]
++	.endm
++
++	.macro	cpy_tail_vfp vreg, base
++	vstr	\vreg, [dst, #\base]
++	vldr	\vreg, [src, #\base]
++	vstr	d0, [dst, #\base + 8]
++	vldr	d0, [src, #\base + 8]
++	vstr	d1, [dst, #\base + 16]
++	vldr	d1, [src, #\base + 16]
++	vstr	d2, [dst, #\base + 24]
++	vldr	d2, [src, #\base + 24]
++	vstr	\vreg, [dst, #\base + 32]
++	vstr	d0, [dst, #\base + 40]
++	vldr	d0, [src, #\base + 40]
++	vstr	d1, [dst, #\base + 48]
++	vldr	d1, [src, #\base + 48]
++	vstr	d2, [dst, #\base + 56]
++	vldr	d2, [src, #\base + 56]
++	.endm
++#endif
++
++	.p2align 6
++ENTRY(memcpy)
++
++	mov	dst, dstin	/* Preserve dstin, we need to return it.  */
++	cmp	count, #64
++	bhs	.Lcpy_not_short
++	/* Deal with small copies quickly by dropping straight into the
++	   exit block.  */
++
++.Ltail63unaligned:
++#ifdef USE_NEON
++	/* These need an extra layer of macro just to work around a
++	   bug in the assembler's parser when an operand starts with
++	   a {...}.  https://sourceware.org/bugzilla/show_bug.cgi?id=15647
++	   tracks that bug; it was not fixed as of binutils-2.23.2.  */
++	.macro neon_load_d0 reg
++	vld1.8	{d0}, [\reg]!
++	.endm
++	.macro neon_store_d0 reg
++	vst1.8	{d0}, [\reg]!
++	.endm
++
++	and	tmp1, count, #0x38
++	.macro dispatch_step i
++	neon_load_d0 src
++	neon_store_d0 dst
++	.endm
++	dispatch_7_dword
++
++	tst	count, #4
++	ldrne	tmp1, [src], #4
++	strne	tmp1, [dst], #4
++#else
++	/* Copy up to 15 full words of data.  May not be aligned.  */
++	/* Cannot use VFP for unaligned data.  */
++	and	tmp1, count, #0x3c
++	add	dst, dst, tmp1
++	add	src, src, tmp1
++	/* Jump directly into the sequence below at the correct offset.  */
++	.macro dispatch_step i
++	ldr	tmp1, [src, #-(\i * 4)]
++	str	tmp1, [dst, #-(\i * 4)]
++	.endm
++	dispatch_15_word
++#endif
++
++	lsls	count, count, #31
++	ldrhcs	tmp1, [src], #2
++	ldrbne	src, [src]		/* Src is dead, use as a scratch.  */
++	strhcs	tmp1, [dst], #2
++	strbne	src, [dst]
++	bx	lr
++
++.Lcpy_not_short:
++	/* At least 64 bytes to copy, but don't know the alignment yet.  */
++	str	tmp2, [sp, #-FRAME_SIZE]!
++	cfi_adjust_cfa_offset (FRAME_SIZE)
++	cfi_rel_offset (tmp2, 0)
++	cfi_remember_state
++	and	tmp2, src, #7
++	and	tmp1, dst, #7
++	cmp	tmp1, tmp2
++	bne	.Lcpy_notaligned
++
++#ifdef USE_VFP
++	/* Magic dust alert!  Force VFP on Cortex-A9.  Experiments show
++	   that the FP pipeline is much better at streaming loads and
++	   stores.  This is outside the critical loop.  */
++	vmov.f32	s0, s0
++#endif
++
++	/* SRC and DST have the same mutual 64-bit alignment, but we may
++	   still need to pre-copy some bytes to get to natural alignment.
++	   We bring SRC and DST into full 64-bit alignment.  */
++	lsls	tmp2, dst, #29
++	beq	1f
++	rsbs	tmp2, tmp2, #0
++	sub	count, count, tmp2, lsr #29
++	ldrmi	tmp1, [src], #4
++	strmi	tmp1, [dst], #4
++	lsls	tmp2, tmp2, #2
++	ldrhcs	tmp1, [src], #2
++	ldrbne	tmp2, [src], #1
++	strhcs	tmp1, [dst], #2
++	strbne	tmp2, [dst], #1
++
++1:
++	subs	tmp2, count, #64	/* Use tmp2 for count.  */
++	blo	.Ltail63aligned
++
++	cmp	tmp2, #512
++	bhs	.Lcpy_body_long
++
++.Lcpy_body_medium:			/* Count in tmp2.  */
++#ifdef USE_VFP
++1:
++	vldr	d0, [src, #0]
++	subs	tmp2, tmp2, #64
++	vldr	d1, [src, #8]
++	vstr	d0, [dst, #0]
++	vldr	d0, [src, #16]
++	vstr	d1, [dst, #8]
++	vldr	d1, [src, #24]
++	vstr	d0, [dst, #16]
++	vldr	d0, [src, #32]
++	vstr	d1, [dst, #24]
++	vldr	d1, [src, #40]
++	vstr	d0, [dst, #32]
++	vldr	d0, [src, #48]
++	vstr	d1, [dst, #40]
++	vldr	d1, [src, #56]
++	vstr	d0, [dst, #48]
++	add	src, src, #64
++	vstr	d1, [dst, #56]
++	add	dst, dst, #64
++	bhs	1b
++	tst	tmp2, #0x3f
++	beq	.Ldone
++
++.Ltail63aligned:			/* Count in tmp2.  */
++	and	tmp1, tmp2, #0x38
++	add	dst, dst, tmp1
++	add	src, src, tmp1
++	.macro dispatch_step i
++	vldr	d0, [src, #-(\i * 8)]
++	vstr	d0, [dst, #-(\i * 8)]
++	.endm
++	dispatch_7_dword
++#else
++	sub	src, src, #8
++	sub	dst, dst, #8
++1:
++	ldrd	A_l, A_h, [src, #8]
++	strd	A_l, A_h, [dst, #8]
++	ldrd	A_l, A_h, [src, #16]
++	strd	A_l, A_h, [dst, #16]
++	ldrd	A_l, A_h, [src, #24]
++	strd	A_l, A_h, [dst, #24]
++	ldrd	A_l, A_h, [src, #32]
++	strd	A_l, A_h, [dst, #32]
++	ldrd	A_l, A_h, [src, #40]
++	strd	A_l, A_h, [dst, #40]
++	ldrd	A_l, A_h, [src, #48]
++	strd	A_l, A_h, [dst, #48]
++	ldrd	A_l, A_h, [src, #56]
++	strd	A_l, A_h, [dst, #56]
++	ldrd	A_l, A_h, [src, #64]!
++	strd	A_l, A_h, [dst, #64]!
++	subs	tmp2, tmp2, #64
++	bhs	1b
++	tst	tmp2, #0x3f
++	bne	1f
++	ldr	tmp2,[sp], #FRAME_SIZE
++	cfi_adjust_cfa_offset (-FRAME_SIZE)
++	cfi_restore (tmp2)
++	bx	lr
++
++	cfi_restore_state
++	cfi_remember_state
++1:
++	add	src, src, #8
++	add	dst, dst, #8
++
++.Ltail63aligned:			/* Count in tmp2.  */
++	/* Copy up to 7 d-words of data.  Similar to Ltail63unaligned, but
++	   we know that the src and dest are 64-bit aligned so we can use
++	   LDRD/STRD to improve efficiency.  */
++	/* TMP2 is now negative, but we don't care about that.  The bottom
++	   six bits still tell us how many bytes are left to copy.  */
++
++	and	tmp1, tmp2, #0x38
++	add	dst, dst, tmp1
++	add	src, src, tmp1
++	.macro dispatch_step i
++	ldrd	A_l, A_h, [src, #-(\i * 8)]
++	strd	A_l, A_h, [dst, #-(\i * 8)]
++	.endm
++	dispatch_7_dword
++#endif
++
++	tst	tmp2, #4
++	ldrne	tmp1, [src], #4
++	strne	tmp1, [dst], #4
++	lsls	tmp2, tmp2, #31		/* Count (tmp2) now dead. */
++	ldrhcs	tmp1, [src], #2
++	ldrbne	tmp2, [src]
++	strhcs	tmp1, [dst], #2
++	strbne	tmp2, [dst]
++
++.Ldone:
++	ldr	tmp2, [sp], #FRAME_SIZE
++	cfi_adjust_cfa_offset (-FRAME_SIZE)
++	cfi_restore (tmp2)
++	bx	lr
++
++	cfi_restore_state
++	cfi_remember_state
++
++.Lcpy_body_long:			/* Count in tmp2.  */
++
++	/* Long copy.  We know that there's at least (prefetch_lines * 64)
++	   bytes to go.  */
++#ifdef USE_VFP
++	/* Don't use PLD.  Instead, read some data in advance of the current
++	   copy position into a register.  This should act like a PLD
++	   operation but we won't have to repeat the transfer.  */
++
++	vldr	d3, [src, #0]
++	vldr	d4, [src, #64]
++	vldr	d5, [src, #128]
++	vldr	d6, [src, #192]
++	vldr	d7, [src, #256]
++
++	vldr	d0, [src, #8]
++	vldr	d1, [src, #16]
++	vldr	d2, [src, #24]
++	add	src, src, #32
++
++	subs	tmp2, tmp2, #prefetch_lines * 64 * 2
++	blo	2f
++1:
++	cpy_line_vfp	d3, 0
++	cpy_line_vfp	d4, 64
++	cpy_line_vfp	d5, 128
++	add	dst, dst, #3 * 64
++	add	src, src, #3 * 64
++	cpy_line_vfp	d6, 0
++	cpy_line_vfp	d7, 64
++	add	dst, dst, #2 * 64
++	add	src, src, #2 * 64
++	subs	tmp2, tmp2, #prefetch_lines * 64
++	bhs	1b
++
++2:
++	cpy_tail_vfp	d3, 0
++	cpy_tail_vfp	d4, 64
++	cpy_tail_vfp	d5, 128
++	add	src, src, #3 * 64
++	add	dst, dst, #3 * 64
++	cpy_tail_vfp	d6, 0
++	vstr	d7, [dst, #64]
++	vldr	d7, [src, #64]
++	vstr	d0, [dst, #64 + 8]
++	vldr	d0, [src, #64 + 8]
++	vstr	d1, [dst, #64 + 16]
++	vldr	d1, [src, #64 + 16]
++	vstr	d2, [dst, #64 + 24]
++	vldr	d2, [src, #64 + 24]
++	vstr	d7, [dst, #64 + 32]
++	add	src, src, #96
++	vstr	d0, [dst, #64 + 40]
++	vstr	d1, [dst, #64 + 48]
++	vstr	d2, [dst, #64 + 56]
++	add	dst, dst, #128
++	add	tmp2, tmp2, #prefetch_lines * 64
++	b	.Lcpy_body_medium
++#else
++	/* Long copy.  Use an SMS style loop to maximize the I/O
++	   bandwidth of the core.  We don't have enough spare registers
++	   to synthesise prefetching, so use PLD operations.  */
++	/* Pre-bias src and dst.  */
++	sub	src, src, #8
++	sub	dst, dst, #8
++	pld	[src, #8]
++	pld	[src, #72]
++	subs	tmp2, tmp2, #64
++	pld	[src, #136]
++	ldrd	A_l, A_h, [src, #8]
++	strd	B_l, B_h, [sp, #8]
++	cfi_rel_offset (B_l, 8)
++	cfi_rel_offset (B_h, 12)
++	ldrd	B_l, B_h, [src, #16]
++	strd	C_l, C_h, [sp, #16]
++	cfi_rel_offset (C_l, 16)
++	cfi_rel_offset (C_h, 20)
++	ldrd	C_l, C_h, [src, #24]
++	strd	D_l, D_h, [sp, #24]
++	cfi_rel_offset (D_l, 24)
++	cfi_rel_offset (D_h, 28)
++	pld	[src, #200]
++	ldrd	D_l, D_h, [src, #32]!
++	b	1f
++	.p2align	6
++2:
++	pld	[src, #232]
++	strd	A_l, A_h, [dst, #40]
++	ldrd	A_l, A_h, [src, #40]
++	strd	B_l, B_h, [dst, #48]
++	ldrd	B_l, B_h, [src, #48]
++	strd	C_l, C_h, [dst, #56]
++	ldrd	C_l, C_h, [src, #56]
++	strd	D_l, D_h, [dst, #64]!
++	ldrd	D_l, D_h, [src, #64]!
++	subs	tmp2, tmp2, #64
++1:
++	strd	A_l, A_h, [dst, #8]
++	ldrd	A_l, A_h, [src, #8]
++	strd	B_l, B_h, [dst, #16]
++	ldrd	B_l, B_h, [src, #16]
++	strd	C_l, C_h, [dst, #24]
++	ldrd	C_l, C_h, [src, #24]
++	strd	D_l, D_h, [dst, #32]
++	ldrd	D_l, D_h, [src, #32]
++	bcs	2b
++	/* Save the remaining bytes and restore the callee-saved regs.  */
++	strd	A_l, A_h, [dst, #40]
++	add	src, src, #40
++	strd	B_l, B_h, [dst, #48]
++	ldrd	B_l, B_h, [sp, #8]
++	cfi_restore (B_l)
++	cfi_restore (B_h)
++	strd	C_l, C_h, [dst, #56]
++	ldrd	C_l, C_h, [sp, #16]
++	cfi_restore (C_l)
++	cfi_restore (C_h)
++	strd	D_l, D_h, [dst, #64]
++	ldrd	D_l, D_h, [sp, #24]
++	cfi_restore (D_l)
++	cfi_restore (D_h)
++	add	dst, dst, #72
++	tst	tmp2, #0x3f
++	bne	.Ltail63aligned
++	ldr	tmp2, [sp], #FRAME_SIZE
++	cfi_adjust_cfa_offset (-FRAME_SIZE)
++	cfi_restore (tmp2)
++	bx	lr
++#endif
++
++	cfi_restore_state
++	cfi_remember_state
++
++.Lcpy_notaligned:
++	pld	[src, #0]
++	pld	[src, #64]
++	/* There's at least 64 bytes to copy, but there is no mutual
++	   alignment.  */
++	/* Bring DST to 64-bit alignment.  */
++	lsls	tmp2, dst, #29
++	pld	[src, #(2 * 64)]
++	beq	1f
++	rsbs	tmp2, tmp2, #0
++	sub	count, count, tmp2, lsr #29
++	ldrmi	tmp1, [src], #4
++	strmi	tmp1, [dst], #4
++	lsls	tmp2, tmp2, #2
++	ldrbne	tmp1, [src], #1
++	ldrhcs	tmp2, [src], #2
++	strbne	tmp1, [dst], #1
++	strhcs	tmp2, [dst], #2
++1:
++	pld	[src, #(3 * 64)]
++	subs	count, count, #64
++	ldrlo	tmp2, [sp], #FRAME_SIZE
++	blo	.Ltail63unaligned
++	pld	[src, #(4 * 64)]
++
++#ifdef USE_NEON
++	/* These need an extra layer of macro just to work around a
++	   bug in the assembler's parser when an operand starts with
++	   a {...}.  */
++	.macro neon_load_multi reglist, basereg
++	vld1.8	{\reglist}, [\basereg]!
++	.endm
++	.macro neon_store_multi reglist, basereg
++	vst1.8	{\reglist}, [ALIGN (\basereg, 64)]!
++	.endm
++
++	neon_load_multi d0-d3, src
++	neon_load_multi d4-d7, src
++	subs	count, count, #64
++	blo	2f
++1:
++	pld	[src, #(4 * 64)]
++	neon_store_multi d0-d3, dst
++	neon_load_multi d0-d3, src
++	neon_store_multi d4-d7, dst
++	neon_load_multi d4-d7, src
++	subs	count, count, #64
++	bhs	1b
++2:
++	neon_store_multi d0-d3, dst
++	neon_store_multi d4-d7, dst
++	ands	count, count, #0x3f
++#else
++	/* Use an SMS style loop to maximize the I/O bandwidth.  */
++	sub	src, src, #4
++	sub	dst, dst, #8
++	subs	tmp2, count, #64	/* Use tmp2 for count.  */
++	ldr	A_l, [src, #4]
++	ldr	A_h, [src, #8]
++	strd	B_l, B_h, [sp, #8]
++	cfi_rel_offset (B_l, 8)
++	cfi_rel_offset (B_h, 12)
++	ldr	B_l, [src, #12]
++	ldr	B_h, [src, #16]
++	strd	C_l, C_h, [sp, #16]
++	cfi_rel_offset (C_l, 16)
++	cfi_rel_offset (C_h, 20)
++	ldr	C_l, [src, #20]
++	ldr	C_h, [src, #24]
++	strd	D_l, D_h, [sp, #24]
++	cfi_rel_offset (D_l, 24)
++	cfi_rel_offset (D_h, 28)
++	ldr	D_l, [src, #28]
++	ldr	D_h, [src, #32]!
++	b	1f
++	.p2align	6
++2:
++	pld	[src, #(5 * 64) - (32 - 4)]
++	strd	A_l, A_h, [dst, #40]
++	ldr	A_l, [src, #36]
++	ldr	A_h, [src, #40]
++	strd	B_l, B_h, [dst, #48]
++	ldr	B_l, [src, #44]
++	ldr	B_h, [src, #48]
++	strd	C_l, C_h, [dst, #56]
++	ldr	C_l, [src, #52]
++	ldr	C_h, [src, #56]
++	strd	D_l, D_h, [dst, #64]!
++	ldr	D_l, [src, #60]
++	ldr	D_h, [src, #64]!
++	subs	tmp2, tmp2, #64
++1:
++	strd	A_l, A_h, [dst, #8]
++	ldr	A_l, [src, #4]
++	ldr	A_h, [src, #8]
++	strd	B_l, B_h, [dst, #16]
++	ldr	B_l, [src, #12]
++	ldr	B_h, [src, #16]
++	strd	C_l, C_h, [dst, #24]
++	ldr	C_l, [src, #20]
++	ldr	C_h, [src, #24]
++	strd	D_l, D_h, [dst, #32]
++	ldr	D_l, [src, #28]
++	ldr	D_h, [src, #32]
++	bcs	2b
++
++	/* Save the remaining bytes and restore the callee-saved regs.  */
++	strd	A_l, A_h, [dst, #40]
++	add	src, src, #36
++	strd	B_l, B_h, [dst, #48]
++	ldrd	B_l, B_h, [sp, #8]
++	cfi_restore (B_l)
++	cfi_restore (B_h)
++	strd	C_l, C_h, [dst, #56]
++	ldrd	C_l, C_h, [sp, #16]
++	cfi_restore (C_l)
++	cfi_restore (C_h)
++	strd	D_l, D_h, [dst, #64]
++	ldrd	D_l, D_h, [sp, #24]
++	cfi_restore (D_l)
++	cfi_restore (D_h)
++	add	dst, dst, #72
++	ands	count, tmp2, #0x3f
++#endif
++	ldr	tmp2, [sp], #FRAME_SIZE
++	cfi_adjust_cfa_offset (-FRAME_SIZE)
++	cfi_restore (tmp2)
++	bne	.Ltail63unaligned
++	bx	lr
++
++END(memcpy)
++libc_hidden_builtin_def (memcpy)
+diff --git a/libc/string/arm/glibc-neon/memmove.S b/libc/string/arm/glibc-neon/memmove.S
+new file mode 100644
+index 0000000..b01164a
+--- /dev/null
++++ b/libc/string/arm/glibc-neon/memmove.S
+@@ -0,0 +1,332 @@
++/* Copyright (C) 2006-2021 Free Software Foundation, Inc.
++   This file is part of the GNU C Library.
++
++   Contributed by MontaVista Software, Inc. (written by Nicolas Pitre)
++
++   The GNU C Library is free software; you can redistribute it and/or
++   modify it under the terms of the GNU Lesser General Public
++   License as published by the Free Software Foundation; either
++   version 2.1 of the License, or (at your option) any later version.
++
++   The GNU C Library is distributed in the hope that it will be useful,
++   but WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++   Lesser General Public License for more details.
++
++   You should have received a copy of the GNU Lesser General Public
++   License along with the GNU C Library.  If not, see
++   <https://www.gnu.org/licenses/>.  */
++
++/* Thumb requires excessive IT insns here.  */
++#define NO_THUMB
++#include <sysdep.h>
++#include <arm-features.h>
++
++/*
++ * Data preload for architectures that support it (ARM V5TE and above)
++ */
++#if (!defined (__ARM_ARCH_2__) && !defined (__ARM_ARCH_3__) \
++     && !defined (__ARM_ARCH_3M__) && !defined (__ARM_ARCH_4__) \
++     && !defined (__ARM_ARCH_4T__) && !defined (__ARM_ARCH_5__) \
++     && !defined (__ARM_ARCH_5T__))
++#define PLD(code...)    code
++#else
++#define PLD(code...)
++#endif
++
++/*
++ * This can be used to enable code to cacheline align the source pointer.
++ * Experiments on tested architectures (StrongARM and XScale) didn't show
++ * this a worthwhile thing to do.  That might be different in the future.
++ */
++//#define CALGN(code...)        code
++#define CALGN(code...)
++
++/*
++ * Endian independent macros for shifting bytes within registers.
++ */
++#ifndef __ARMEB__
++#define PULL            lsr
++#define PUSH            lsl
++#else
++#define PULL            lsl
++#define PUSH            lsr
++#endif
++
++		.text
++		.syntax unified
++
++/*
++ * Prototype: void *memmove(void *dest, const void *src, size_t n);
++ *
++ * Note:
++ *
++ * If the memory regions don't overlap, we simply branch to memcpy which is
++ * normally a bit faster. Otherwise the copy is done going downwards.
++ */
++
++ENTRY(memmove)
++
++		subs	ip, r0, r1
++		cmphi	r2, ip
++#if !IS_IN (libc)
++		bls	memcpy
++#else
++		bls	HIDDEN_JUMPTARGET(memcpy)
++#endif
++
++		push	{r0, r4, lr}
++		cfi_adjust_cfa_offset (12)
++		cfi_rel_offset (r4, 4)
++		cfi_rel_offset (lr, 8)
++
++		cfi_remember_state
++
++		add	r1, r1, r2
++		add	r0, r0, r2
++		subs	r2, r2, #4
++		blo	8f
++		ands	ip, r0, #3
++	PLD(	pld	[r1, #-4]		)
++		bne	9f
++		ands	ip, r1, #3
++		bne	10f
++
++1:		subs	r2, r2, #(28)
++		push	{r5 - r8}
++		cfi_adjust_cfa_offset (16)
++		cfi_rel_offset (r5, 0)
++		cfi_rel_offset (r6, 4)
++		cfi_rel_offset (r7, 8)
++		cfi_rel_offset (r8, 12)
++		blo     5f
++
++	CALGN(	ands	ip, r1, #31		)
++	CALGN(	sbcsne	r4, ip, r2		)  @ C is always set here
++	CALGN(	bcs	2f			)
++	CALGN(	adr	r4, 6f			)
++	CALGN(	subs	r2, r2, ip		)  @ C is set here
++#ifndef ARM_ALWAYS_BX
++	CALGN(	add	pc, r4, ip, lsl	#(ARM_BX_ALIGN_LOG2 - 2))
++#else
++	CALGN(	add	r4, r4, ip, lsl	#(ARM_BX_ALIGN_LOG2 - 2))
++	CALGN(	bx	r4			)
++#endif
++
++	PLD(	pld	[r1, #-4]		)
++2:	PLD(	cmp	r2, #96			)
++	PLD(	pld	[r1, #-32]		)
++	PLD(    blo     4f                      )
++	PLD(	pld	[r1, #-64]		)
++	PLD(	pld	[r1, #-96]		)
++
++3:	PLD(	pld	[r1, #-128]		)
++4:		ldmdb	r1!, {r3, r4, r5, r6, r7, r8, ip, lr}
++		subs	r2, r2, #32
++		stmdb	r0!, {r3, r4, r5, r6, r7, r8, ip, lr}
++		bhs     3b
++
++5:		ands	ip, r2, #28
++		rsb	ip, ip, #32
++#ifndef ARM_ALWAYS_BX
++		/* C is always clear here.  */
++		addne	pc, pc, ip, lsl #(ARM_BX_ALIGN_LOG2 - 2)
++		b	7f
++#else
++		beq	7f
++		push	{r10}
++		cfi_adjust_cfa_offset (4)
++		cfi_rel_offset (r10, 0)
++0:		add	r10, pc, ip, lsl #(ARM_BX_ALIGN_LOG2 - 2)
++		/* If alignment is not perfect, then there will be some
++		   padding (nop) instructions between this BX and label 6.
++		   The computation above assumed that two instructions
++		   later is exactly the right spot.  */
++		add	r10, #(6f - (0b + PC_OFS))
++		bx	r10
++#endif
++		.p2align ARM_BX_ALIGN_LOG2
++6:		nop
++		.p2align ARM_BX_ALIGN_LOG2
++		ldr	r3, [r1, #-4]!
++		.p2align ARM_BX_ALIGN_LOG2
++		ldr	r4, [r1, #-4]!
++		.p2align ARM_BX_ALIGN_LOG2
++		ldr	r5, [r1, #-4]!
++		.p2align ARM_BX_ALIGN_LOG2
++		ldr	r6, [r1, #-4]!
++		.p2align ARM_BX_ALIGN_LOG2
++		ldr	r7, [r1, #-4]!
++		.p2align ARM_BX_ALIGN_LOG2
++		ldr	r8, [r1, #-4]!
++		.p2align ARM_BX_ALIGN_LOG2
++		ldr	lr, [r1, #-4]!
++
++#ifndef ARM_ALWAYS_BX
++		add	pc, pc, ip, lsl #(ARM_BX_ALIGN_LOG2 - 2)
++		nop
++#else
++0:		add	r10, pc, ip, lsl #(ARM_BX_ALIGN_LOG2 - 2)
++		/* If alignment is not perfect, then there will be some
++		   padding (nop) instructions between this BX and label 66.
++		   The computation above assumed that two instructions
++		   later is exactly the right spot.  */
++		add	r10, #(66f - (0b + PC_OFS))
++		bx	r10
++#endif
++		.p2align ARM_BX_ALIGN_LOG2
++66:		nop
++		.p2align ARM_BX_ALIGN_LOG2
++		str	r3, [r0, #-4]!
++		.p2align ARM_BX_ALIGN_LOG2
++		str	r4, [r0, #-4]!
++		.p2align ARM_BX_ALIGN_LOG2
++		str	r5, [r0, #-4]!
++		.p2align ARM_BX_ALIGN_LOG2
++		str	r6, [r0, #-4]!
++		.p2align ARM_BX_ALIGN_LOG2
++		str	r7, [r0, #-4]!
++		.p2align ARM_BX_ALIGN_LOG2
++		str	r8, [r0, #-4]!
++		.p2align ARM_BX_ALIGN_LOG2
++		str	lr, [r0, #-4]!
++
++#ifdef ARM_ALWAYS_BX
++		pop	{r10}
++		cfi_adjust_cfa_offset (-4)
++		cfi_restore (r10)
++#endif
++
++	CALGN(	bcs	2b			)
++
++7:		pop	{r5 - r8}
++		cfi_adjust_cfa_offset (-16)
++		cfi_restore (r5)
++		cfi_restore (r6)
++		cfi_restore (r7)
++		cfi_restore (r8)
++
++8:		movs	r2, r2, lsl #31
++		ldrbne	r3, [r1, #-1]!
++		ldrbcs	r4, [r1, #-1]!
++		ldrbcs	ip, [r1, #-1]
++		strbne	r3, [r0, #-1]!
++		strbcs	r4, [r0, #-1]!
++		strbcs	ip, [r0, #-1]
++
++#if ((defined (__ARM_ARCH_4T__) && defined (__THUMB_INTERWORK__)) \
++     || defined (ARM_ALWAYS_BX))
++		pop	{r0, r4, lr}
++		cfi_adjust_cfa_offset (-12)
++		cfi_restore (r4)
++		cfi_restore (lr)
++		bx      lr
++#else
++		pop	{r0, r4, pc}
++#endif
++
++		cfi_restore_state
++
++9:		cmp	ip, #2
++		ldrbgt	r3, [r1, #-1]!
++		ldrbge	r4, [r1, #-1]!
++		ldrb	lr, [r1, #-1]!
++		strbgt	r3, [r0, #-1]!
++		strbge	r4, [r0, #-1]!
++		subs	r2, r2, ip
++		strb	lr, [r0, #-1]!
++		blo	8b
++		ands	ip, r1, #3
++		beq	1b
++
++10:		bic	r1, r1, #3
++		cmp	ip, #2
++		ldr	r3, [r1, #0]
++		beq	17f
++		blt	18f
++
++
++		.macro	backward_copy_shift push pull
++
++		subs	r2, r2, #28
++		blo	14f
++
++	CALGN(	ands	ip, r1, #31		)
++	CALGN(	rsb	ip, ip, #32		)
++	CALGN(	sbcsne	r4, ip, r2		)  @ C is always set here
++	CALGN(	subcc	r2, r2, ip		)
++	CALGN(	bcc	15f			)
++
++11:		push	{r5 - r8, r10}
++		cfi_adjust_cfa_offset (20)
++		cfi_rel_offset (r5, 0)
++		cfi_rel_offset (r6, 4)
++		cfi_rel_offset (r7, 8)
++		cfi_rel_offset (r8, 12)
++		cfi_rel_offset (r10, 16)
++
++	PLD(	pld	[r1, #-4]		)
++	PLD(	cmp	r2, #96			)
++	PLD(	pld	[r1, #-32]		)
++	PLD(	blo	13f			)
++	PLD(	pld	[r1, #-64]		)
++	PLD(	pld	[r1, #-96]		)
++
++12:	PLD(	pld	[r1, #-128]		)
++13:		ldmdb   r1!, {r7, r8, r10, ip}
++		mov     lr, r3, PUSH #\push
++		subs    r2, r2, #32
++		ldmdb   r1!, {r3, r4, r5, r6}
++		orr     lr, lr, ip, PULL #\pull
++		mov     ip, ip, PUSH #\push
++		orr     ip, ip, r10, PULL #\pull
++		mov     r10, r10, PUSH #\push
++		orr     r10, r10, r8, PULL #\pull
++		mov     r8, r8, PUSH #\push
++		orr     r8, r8, r7, PULL #\pull
++		mov     r7, r7, PUSH #\push
++		orr     r7, r7, r6, PULL #\pull
++		mov     r6, r6, PUSH #\push
++		orr     r6, r6, r5, PULL #\pull
++		mov     r5, r5, PUSH #\push
++		orr     r5, r5, r4, PULL #\pull
++		mov     r4, r4, PUSH #\push
++		orr     r4, r4, r3, PULL #\pull
++		stmdb   r0!, {r4 - r8, r10, ip, lr}
++		bhs	12b
++
++		pop	{r5 - r8, r10}
++		cfi_adjust_cfa_offset (-20)
++		cfi_restore (r5)
++		cfi_restore (r6)
++		cfi_restore (r7)
++		cfi_restore (r8)
++		cfi_restore (r10)
++
++14:		ands	ip, r2, #28
++		beq	16f
++
++15:		mov     lr, r3, PUSH #\push
++		ldr	r3, [r1, #-4]!
++		subs	ip, ip, #4
++		orr	lr, lr, r3, PULL #\pull
++		str	lr, [r0, #-4]!
++		bgt	15b
++	CALGN(	cmp	r2, #0			)
++	CALGN(	bge	11b			)
++
++16:		add	r1, r1, #(\pull / 8)
++		b	8b
++
++		.endm
++
++
++		backward_copy_shift	push=8	pull=24
++
++17:		backward_copy_shift	push=16	pull=16
++
++18:		backward_copy_shift	push=24	pull=8
++
++
++END(memmove)
++libc_hidden_builtin_def (memmove)
+diff --git a/libc/string/arm/glibc-neon/memset.S b/libc/string/arm/glibc-neon/memset.S
+new file mode 100644
+index 0000000..dc89ca7
+--- /dev/null
++++ b/libc/string/arm/glibc-neon/memset.S
+@@ -0,0 +1,68 @@
++/* Copyright (C) 1998-2021 Free Software Foundation, Inc.
++   This file is part of the GNU C Library.
++
++   The GNU C Library is free software; you can redistribute it and/or
++   modify it under the terms of the GNU Lesser General Public
++   License as published by the Free Software Foundation; either
++   version 2.1 of the License, or (at your option) any later version.
++
++   The GNU C Library is distributed in the hope that it will be useful,
++   but WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++   Lesser General Public License for more details.
++
++   You should have received a copy of the GNU Lesser General Public
++   License along with the GNU C Library.  If not, see
++   <https://www.gnu.org/licenses/>.  */
++
++/* Thumb requires excessive IT insns here.  */
++#define NO_THUMB
++#include <sysdep.h>
++
++	.text
++	.syntax unified
++
++/* void *memset (dstpp, c, len) */
++
++ENTRY(memset)
++	mov	r3, r0
++	cmp	r2, #8
++	bcc	2f		@ less than 8 bytes to move
++
++1:
++	tst	r3, #3		@ aligned yet?
++	strbne	r1, [r3], #1
++	subne	r2, r2, #1
++	bne	1b
++
++	and	r1, r1, #255	@ clear any sign bits
++	orr	r1, r1, r1, lsl $8
++	orr	r1, r1, r1, lsl $16
++	mov	ip, r1
++
++1:
++	subs	r2, r2, #8
++	stmiacs	r3!, {r1, ip}	@ store up to 32 bytes per loop iteration
++	subscs	r2, r2, #8
++	stmiacs	r3!, {r1, ip}
++	subscs	r2, r2, #8
++	stmiacs	r3!, {r1, ip}
++	subscs	r2, r2, #8
++	stmiacs	r3!, {r1, ip}
++	bcs	1b
++
++	and	r2, r2, #7
++2:
++	subs	r2, r2, #1	@ store up to 4 bytes per loop iteration
++	strbcs	r1, [r3], #1
++	subscs	r2, r2, #1
++	strbcs	r1, [r3], #1
++	subscs	r2, r2, #1
++	strbcs	r1, [r3], #1
++	subscs	r2, r2, #1
++	strbcs	r1, [r3], #1
++	bcs	2b
++
++	DO_RET(lr)
++END(memset)
++libc_hidden_builtin_def (memset)
+diff --git a/libc/string/arm/glibc-neon/strcmp.S b/libc/string/arm/glibc-neon/strcmp.S
+new file mode 100644
+index 0000000..98a3c6c
+--- /dev/null
++++ b/libc/string/arm/glibc-neon/strcmp.S
+@@ -0,0 +1,504 @@
++/* strcmp implementation for ARMv7-A, optimized for Cortex-A15.
++   Copyright (C) 2012-2021 Free Software Foundation, Inc.
++   This file is part of the GNU C Library.
++
++   The GNU C Library is free software; you can redistribute it and/or
++   modify it under the terms of the GNU Lesser General Public
++   License as published by the Free Software Foundation; either
++   version 2.1 of the License, or (at your option) any later version.
++
++   The GNU C Library is distributed in the hope that it will be useful,
++   but WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++   Lesser General Public License for more details.
++
++   You should have received a copy of the GNU Lesser General Public
++   License along with the GNU C Library.  If not, see
++   <https://www.gnu.org/licenses/>.  */
++
++#include <arm-features.h>
++#include <sysdep.h>
++
++/* Implementation of strcmp for ARMv7 when DSP instructions are
++   available.  Use ldrd to support wider loads, provided the data
++   is sufficiently aligned.  Use saturating arithmetic to optimize
++   the compares.  */
++
++/* Build Options:
++   STRCMP_PRECHECK: Run a quick pre-check of the first byte in the
++   string.  If comparing completely random strings the pre-check will
++   save time, since there is a very high probability of a mismatch in
++   the first character: we save significant overhead if this is the
++   common case.  However, if strings are likely to be identical (e.g.
++   because we're verifying a hit in a hash table), then this check
++   is largely redundant.  */
++
++#define STRCMP_PRECHECK	1
++
++	.syntax unified
++
++#ifdef __ARM_BIG_ENDIAN
++# define S2LO lsl
++# define S2LOEQ lsleq
++# define S2HI lsr
++# define MSB 0x000000ff
++# define LSB 0xff000000
++# define BYTE0_OFFSET 24
++# define BYTE1_OFFSET 16
++# define BYTE2_OFFSET 8
++# define BYTE3_OFFSET 0
++#else /* not  __ARM_BIG_ENDIAN */
++# define S2LO lsr
++# define S2LOEQ lsreq
++# define S2HI lsl
++# define BYTE0_OFFSET 0
++# define BYTE1_OFFSET 8
++# define BYTE2_OFFSET 16
++# define BYTE3_OFFSET 24
++# define MSB 0xff000000
++# define LSB 0x000000ff
++#endif /* not  __ARM_BIG_ENDIAN */
++
++/* Parameters and result.  */
++#define src1		r0
++#define src2		r1
++#define result		r0	/* Overlaps src1.  */
++
++/* Internal variables.  */
++#define tmp1		r4
++#define tmp2		r5
++#define const_m1	r12
++
++/* Additional internal variables for 64-bit aligned data.  */
++#define data1a		r2
++#define data1b		r3
++#define data2a		r6
++#define data2b		r7
++#define syndrome_a	tmp1
++#define syndrome_b	tmp2
++
++/* Additional internal variables for 32-bit aligned data.  */
++#define data1		r2
++#define data2		r3
++#define syndrome	tmp2
++
++
++	.thumb
++
++/* In Thumb code we can't use MVN with a register shift, but we do have ORN.  */
++.macro prepare_mask mask_reg, nbits_reg
++	S2HI \mask_reg, const_m1, \nbits_reg
++.endm
++.macro apply_mask data_reg, mask_reg
++	orn \data_reg, \data_reg, \mask_reg
++.endm
++
++	/* Macro to compute and return the result value for word-aligned
++	   cases.  */
++	.macro strcmp_epilogue_aligned synd d1 d2 restore_r6
++#ifdef __ARM_BIG_ENDIAN
++	/* If data1 contains a zero byte, then syndrome will contain a 1 in
++	   bit 7 of that byte.  Otherwise, the highest set bit in the
++	   syndrome will highlight the first different bit.  It is therefore
++	   sufficient to extract the eight bits starting with the syndrome
++	   bit.  */
++	clz	tmp1, \synd
++	lsl	r1, \d2, tmp1
++	.if \restore_r6
++	ldrd	r6, r7, [sp, #8]
++	.endif
++	lsl	\d1, \d1, tmp1
++	lsr	result, \d1, #24
++	ldrd	r4, r5, [sp], #16
++	cfi_remember_state
++	cfi_def_cfa_offset (0)
++	cfi_restore (r4)
++	cfi_restore (r5)
++	cfi_restore (r6)
++	cfi_restore (r7)
++	sub	result, result, r1, lsr #24
++	bx	lr
++#else
++	/* To use the big-endian trick we'd have to reverse all three words.
++	   that's slower than this approach.  */
++	rev	\synd, \synd
++	clz	tmp1, \synd
++	bic	tmp1, tmp1, #7
++	lsr	r1, \d2, tmp1
++	.if \restore_r6
++	ldrd	r6, r7, [sp, #8]
++	.endif
++	lsr	\d1, \d1, tmp1
++	and	result, \d1, #255
++	and	r1, r1, #255
++	ldrd	r4, r5, [sp], #16
++	cfi_remember_state
++	cfi_def_cfa_offset (0)
++	cfi_restore (r4)
++	cfi_restore (r5)
++	cfi_restore (r6)
++	cfi_restore (r7)
++	sub	result, result, r1
++
++	bx	lr
++#endif
++	.endm
++
++	.text
++	.p2align	5
++.Lstrcmp_start_addr:
++#if STRCMP_PRECHECK == 1
++.Lfastpath_exit:
++	sub	r0, r2, r3
++	bx	lr
++	nop
++#endif
++ENTRY (strcmp)
++#if STRCMP_PRECHECK == 1
++	ldrb	r2, [src1]
++	ldrb	r3, [src2]
++	cmp	r2, #1
++	it	cs
++	cmpcs	r2, r3
++	bne	.Lfastpath_exit
++#endif
++	strd	r4, r5, [sp, #-16]!
++	cfi_def_cfa_offset (16)
++	cfi_offset (r4, -16)
++	cfi_offset (r5, -12)
++	orr	tmp1, src1, src2
++	strd	r6, r7, [sp, #8]
++	cfi_offset (r6, -8)
++	cfi_offset (r7, -4)
++	mvn	const_m1, #0
++	lsl	r2, tmp1, #29
++	cbz	r2, .Lloop_aligned8
++
++.Lnot_aligned:
++	eor	tmp1, src1, src2
++	tst	tmp1, #7
++	bne	.Lmisaligned8
++
++	/* Deal with mutual misalignment by aligning downwards and then
++	   masking off the unwanted loaded data to prevent a difference.  */
++	and	tmp1, src1, #7
++	bic	src1, src1, #7
++	and	tmp2, tmp1, #3
++	bic	src2, src2, #7
++	lsl	tmp2, tmp2, #3	/* Bytes -> bits.  */
++	ldrd	data1a, data1b, [src1], #16
++	tst	tmp1, #4
++	ldrd	data2a, data2b, [src2], #16
++	prepare_mask tmp1, tmp2
++	apply_mask data1a, tmp1
++	apply_mask data2a, tmp1
++	beq	.Lstart_realigned8
++	apply_mask data1b, tmp1
++	mov	data1a, const_m1
++	apply_mask data2b, tmp1
++	mov	data2a, const_m1
++	b	.Lstart_realigned8
++
++	/* Unwind the inner loop by a factor of 2, giving 16 bytes per
++	   pass.  */
++	.p2align 5,,12  /* Don't start in the tail bytes of a cache line.  */
++	.p2align 2	/* Always word aligned.  */
++.Lloop_aligned8:
++	ldrd	data1a, data1b, [src1], #16
++	ldrd	data2a, data2b, [src2], #16
++.Lstart_realigned8:
++	uadd8	syndrome_b, data1a, const_m1	/* Only want GE bits,  */
++	eor	syndrome_a, data1a, data2a
++	sel	syndrome_a, syndrome_a, const_m1
++	cbnz	syndrome_a, .Ldiff_in_a
++	uadd8	syndrome_b, data1b, const_m1	/* Only want GE bits.  */
++	eor	syndrome_b, data1b, data2b
++	sel	syndrome_b, syndrome_b, const_m1
++	cbnz	syndrome_b, .Ldiff_in_b
++
++	ldrd	data1a, data1b, [src1, #-8]
++	ldrd	data2a, data2b, [src2, #-8]
++	uadd8	syndrome_b, data1a, const_m1	/* Only want GE bits,  */
++	eor	syndrome_a, data1a, data2a
++	sel	syndrome_a, syndrome_a, const_m1
++	uadd8	syndrome_b, data1b, const_m1	/* Only want GE bits.  */
++	eor	syndrome_b, data1b, data2b
++	sel	syndrome_b, syndrome_b, const_m1
++	/* Can't use CBZ for backwards branch.  */
++	orrs	syndrome_b, syndrome_b, syndrome_a /* Only need if s_a == 0 */
++	beq	.Lloop_aligned8
++
++.Ldiff_found:
++	cbnz	syndrome_a, .Ldiff_in_a
++
++.Ldiff_in_b:
++	strcmp_epilogue_aligned syndrome_b, data1b, data2b 1
++
++.Ldiff_in_a:
++	cfi_restore_state
++	strcmp_epilogue_aligned syndrome_a, data1a, data2a 1
++
++	cfi_restore_state
++.Lmisaligned8:
++	tst	tmp1, #3
++	bne	.Lmisaligned4
++	ands	tmp1, src1, #3
++	bne	.Lmutual_align4
++
++	/* Unrolled by a factor of 2, to reduce the number of post-increment
++	   operations.  */
++.Lloop_aligned4:
++	ldr	data1, [src1], #8
++	ldr	data2, [src2], #8
++.Lstart_realigned4:
++	uadd8	syndrome, data1, const_m1	/* Only need GE bits.  */
++	eor	syndrome, data1, data2
++	sel	syndrome, syndrome, const_m1
++	cbnz	syndrome, .Laligned4_done
++	ldr	data1, [src1, #-4]
++	ldr	data2, [src2, #-4]
++	uadd8	syndrome, data1, const_m1
++	eor	syndrome, data1, data2
++	sel	syndrome, syndrome, const_m1
++	cmp	syndrome, #0
++	beq	.Lloop_aligned4
++
++.Laligned4_done:
++	strcmp_epilogue_aligned syndrome, data1, data2, 0
++
++.Lmutual_align4:
++	cfi_restore_state
++	/* Deal with mutual misalignment by aligning downwards and then
++	   masking off the unwanted loaded data to prevent a difference.  */
++	lsl	tmp1, tmp1, #3	/* Bytes -> bits.  */
++	bic	src1, src1, #3
++	ldr	data1, [src1], #8
++	bic	src2, src2, #3
++	ldr	data2, [src2], #8
++
++	prepare_mask tmp1, tmp1
++	apply_mask data1, tmp1
++	apply_mask data2, tmp1
++	b	.Lstart_realigned4
++
++.Lmisaligned4:
++	ands	tmp1, src1, #3
++	beq	.Lsrc1_aligned
++	sub	src2, src2, tmp1
++	bic	src1, src1, #3
++	lsls	tmp1, tmp1, #31
++	ldr	data1, [src1], #4
++	beq	.Laligned_m2
++	bcs	.Laligned_m1
++
++#if STRCMP_PRECHECK == 0
++	ldrb	data2, [src2, #1]
++	uxtb	tmp1, data1, ror #BYTE1_OFFSET
++	subs	tmp1, tmp1, data2
++	bne	.Lmisaligned_exit
++	cbz	data2, .Lmisaligned_exit
++
++.Laligned_m2:
++	ldrb	data2, [src2, #2]
++	uxtb	tmp1, data1, ror #BYTE2_OFFSET
++	subs	tmp1, tmp1, data2
++	bne	.Lmisaligned_exit
++	cbz	data2, .Lmisaligned_exit
++
++.Laligned_m1:
++	ldrb	data2, [src2, #3]
++	uxtb	tmp1, data1, ror #BYTE3_OFFSET
++	subs	tmp1, tmp1, data2
++	bne	.Lmisaligned_exit
++	add	src2, src2, #4
++	cbnz	data2, .Lsrc1_aligned
++#else  /* STRCMP_PRECHECK */
++	/* If we've done the pre-check, then we don't need to check the
++	   first byte again here.  */
++	ldrb	data2, [src2, #2]
++	uxtb	tmp1, data1, ror #BYTE2_OFFSET
++	subs	tmp1, tmp1, data2
++	bne	.Lmisaligned_exit
++	cbz	data2, .Lmisaligned_exit
++
++.Laligned_m2:
++	ldrb	data2, [src2, #3]
++	uxtb	tmp1, data1, ror #BYTE3_OFFSET
++	subs	tmp1, tmp1, data2
++	bne	.Lmisaligned_exit
++	cbnz	data2, .Laligned_m1
++#endif
++
++.Lmisaligned_exit:
++	mov	result, tmp1
++	ldr	r4, [sp], #16
++	cfi_remember_state
++	cfi_def_cfa_offset (0)
++	cfi_restore (r4)
++	cfi_restore (r5)
++	cfi_restore (r6)
++	cfi_restore (r7)
++	bx	lr
++
++#if STRCMP_PRECHECK == 1
++.Laligned_m1:
++	add	src2, src2, #4
++#endif
++.Lsrc1_aligned:
++	cfi_restore_state
++	/* src1 is word aligned, but src2 has no common alignment
++	   with it.  */
++	ldr	data1, [src1], #4
++	lsls	tmp1, src2, #31		/* C=src2[1], Z=src2[0].  */
++
++	bic	src2, src2, #3
++	ldr	data2, [src2], #4
++	bhi	.Loverlap1		/* C=1, Z=0 => src2[1:0] = 0b11.  */
++	bcs	.Loverlap2		/* C=1, Z=1 => src2[1:0] = 0b10.  */
++
++	/* (overlap3) C=0, Z=0 => src2[1:0] = 0b01.  */
++.Loverlap3:
++	bic	tmp1, data1, #MSB
++	uadd8	syndrome, data1, const_m1
++	eors	syndrome, tmp1, data2, S2LO #8
++	sel	syndrome, syndrome, const_m1
++	bne	4f
++	cbnz	syndrome, 5f
++	ldr	data2, [src2], #4
++	eor	tmp1, tmp1, data1
++	cmp	tmp1, data2, S2HI #24
++	bne	6f
++	ldr	data1, [src1], #4
++	b	.Loverlap3
++4:
++	S2LO	data2, data2, #8
++	b	.Lstrcmp_tail
++
++5:
++	bics	syndrome, syndrome, #MSB
++	bne	.Lstrcmp_done_equal
++
++	/* We can only get here if the MSB of data1 contains 0, so
++	   fast-path the exit.  */
++	ldrb	result, [src2]
++	ldrd	r4, r5, [sp], #16
++	cfi_remember_state
++	cfi_def_cfa_offset (0)
++	cfi_restore (r4)
++	cfi_restore (r5)
++	/* R6/7 Not used in this sequence.  */
++	cfi_restore (r6)
++	cfi_restore (r7)
++	neg	result, result
++	bx	lr
++
++6:
++	cfi_restore_state
++	S2LO	data1, data1, #24
++	and	data2, data2, #LSB
++	b	.Lstrcmp_tail
++
++	.p2align 5,,12	/* Ensure at least 3 instructions in cache line.  */
++.Loverlap2:
++	and	tmp1, data1, const_m1, S2LO #16
++	uadd8	syndrome, data1, const_m1
++	eors	syndrome, tmp1, data2, S2LO #16
++	sel	syndrome, syndrome, const_m1
++	bne	4f
++	cbnz	syndrome, 5f
++	ldr	data2, [src2], #4
++	eor	tmp1, tmp1, data1
++	cmp	tmp1, data2, S2HI #16
++	bne	6f
++	ldr	data1, [src1], #4
++	b	.Loverlap2
++4:
++	S2LO	data2, data2, #16
++	b	.Lstrcmp_tail
++5:
++	ands	syndrome, syndrome, const_m1, S2LO #16
++	bne	.Lstrcmp_done_equal
++
++	ldrh	data2, [src2]
++	S2LO	data1, data1, #16
++#ifdef __ARM_BIG_ENDIAN
++	lsl	data2, data2, #16
++#endif
++	b	.Lstrcmp_tail
++
++6:
++	S2LO	data1, data1, #16
++	and	data2, data2, const_m1, S2LO #16
++	b	.Lstrcmp_tail
++
++	.p2align 5,,12	/* Ensure at least 3 instructions in cache line.  */
++.Loverlap1:
++	and	tmp1, data1, #LSB
++	uadd8	syndrome, data1, const_m1
++	eors	syndrome, tmp1, data2, S2LO #24
++	sel	syndrome, syndrome, const_m1
++	bne	4f
++	cbnz	syndrome, 5f
++	ldr	data2, [src2], #4
++	eor	tmp1, tmp1, data1
++	cmp	tmp1, data2, S2HI #8
++	bne	6f
++	ldr	data1, [src1], #4
++	b	.Loverlap1
++4:
++	S2LO	data2, data2, #24
++	b	.Lstrcmp_tail
++5:
++	tst	syndrome, #LSB
++	bne	.Lstrcmp_done_equal
++	ldr	data2, [src2]
++6:
++	S2LO	data1, data1, #8
++	bic	data2, data2, #MSB
++	b	.Lstrcmp_tail
++
++.Lstrcmp_done_equal:
++	mov	result, #0
++	ldrd	r4, r5, [sp], #16
++	cfi_remember_state
++	cfi_def_cfa_offset (0)
++	cfi_restore (r4)
++	cfi_restore (r5)
++	/* R6/7 not used in this sequence.  */
++	cfi_restore (r6)
++	cfi_restore (r7)
++	bx	lr
++
++.Lstrcmp_tail:
++	cfi_restore_state
++#ifndef __ARM_BIG_ENDIAN
++	rev	data1, data1
++	rev	data2, data2
++	/* Now everything looks big-endian...  */
++#endif
++	uadd8	tmp1, data1, const_m1
++	eor	tmp1, data1, data2
++	sel	syndrome, tmp1, const_m1
++	clz	tmp1, syndrome
++	lsl	data1, data1, tmp1
++	lsl	data2, data2, tmp1
++	lsr	result, data1, #24
++	ldrd	r4, r5, [sp], #16
++	cfi_def_cfa_offset (0)
++	cfi_restore (r4)
++	cfi_restore (r5)
++	/* R6/7 not used in this sequence.  */
++	cfi_restore (r6)
++	cfi_restore (r7)
++	sub	result, result, data2, lsr #24
++	bx	lr
++END (strcmp)
++libc_hidden_builtin_def (strcmp)
++
++# From ../strcmp.S
++#include <features.h>
++
++#ifndef __UCLIBC_HAS_LOCALE__
++strong_alias(strcmp,strcoll)
++libc_hidden_def(strcoll)
++#endif
+diff --git a/libc/string/arm/glibc-neon/strlen.S b/libc/string/arm/glibc-neon/strlen.S
+new file mode 100644
+index 0000000..dbb6344
+--- /dev/null
++++ b/libc/string/arm/glibc-neon/strlen.S
+@@ -0,0 +1,76 @@
++/* Copyright (C) 1998-2021 Free Software Foundation, Inc.
++   This file is part of the GNU C Library.
++
++   The GNU C Library is free software; you can redistribute it and/or
++   modify it under the terms of the GNU Lesser General Public
++   License as published by the Free Software Foundation; either
++   version 2.1 of the License, or (at your option) any later version.
++
++   The GNU C Library is distributed in the hope that it will be useful,
++   but WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++   Lesser General Public License for more details.
++
++   You should have received a copy of the GNU Lesser General Public
++   License along with the GNU C Library.  If not, see
++   <https://www.gnu.org/licenses/>.  */
++
++/* Thumb requires excessive IT insns here.  */
++#define NO_THUMB
++#include <sysdep.h>
++
++/* size_t strlen(const char *S)
++ * entry: r0 -> string
++ * exit: r0 = len
++ */
++
++	.syntax unified
++	.text
++
++ENTRY(strlen)
++	bic     r1, r0, $3              @ addr of word containing first byte
++	ldr     r2, [r1], $4            @ get the first word
++	ands    r3, r0, $3              @ how many bytes are duff?
++	rsb     r0, r3, $0              @ get - that number into counter.
++	beq     Laligned                @ skip into main check routine if no
++					@ more
++#ifdef __ARMEB__
++	orr     r2, r2, $0xff000000     @ set this byte to non-zero
++	subs    r3, r3, $1              @ any more to do?
++	orrgt   r2, r2, $0x00ff0000     @ if so, set this byte
++	subs    r3, r3, $1              @ more?
++	orrgt   r2, r2, $0x0000ff00     @ then set.
++#else
++	orr     r2, r2, $0x000000ff     @ set this byte to non-zero
++	subs    r3, r3, $1              @ any more to do?
++	orrgt   r2, r2, $0x0000ff00     @ if so, set this byte
++	subs    r3, r3, $1              @ more?
++	orrgt   r2, r2, $0x00ff0000     @ then set.
++#endif
++Laligned:				@ here, we have a word in r2.  Does it
++	tst     r2, $0x000000ff         @ contain any zeroes?
++	tstne   r2, $0x0000ff00         @
++	tstne   r2, $0x00ff0000         @
++	tstne   r2, $0xff000000         @
++	addne   r0, r0, $4              @ if not, the string is 4 bytes longer
++	ldrne   r2, [r1], $4            @ and we continue to the next word
++	bne     Laligned                @
++Llastword:				@ drop through to here once we find a
++#ifdef __ARMEB__
++	tst     r2, $0xff000000         @ word that has a zero byte in it
++	addne   r0, r0, $1              @
++	tstne   r2, $0x00ff0000         @ and add up to 3 bytes on to it
++	addne   r0, r0, $1              @
++	tstne   r2, $0x0000ff00         @ (if first three all non-zero, 4th
++	addne   r0, r0, $1              @  must be zero)
++#else
++	tst     r2, $0x000000ff         @ word that has a zero byte in it
++	addne   r0, r0, $1              @
++	tstne   r2, $0x0000ff00         @ and add up to 3 bytes on to it
++	addne   r0, r0, $1              @
++	tstne   r2, $0x00ff0000         @ (if first three all non-zero, 4th
++	addne   r0, r0, $1              @  must be zero)
++#endif
++	DO_RET(lr)
++END(strlen)
++libc_hidden_builtin_def (strlen)
+diff --git a/libc/string/arm/glibc-neon/sysdep.h b/libc/string/arm/glibc-neon/sysdep.h
+new file mode 100644
+index 0000000..cceb4a9
+--- /dev/null
++++ b/libc/string/arm/glibc-neon/sysdep.h
+@@ -0,0 +1,339 @@
++/* Assembler macros for ARM.
++   Copyright (C) 1997-2021 Free Software Foundation, Inc.
++   This file is part of the GNU C Library.
++
++   The GNU C Library is free software; you can redistribute it and/or
++   modify it under the terms of the GNU Lesser General Public
++   License as published by the Free Software Foundation; either
++   version 2.1 of the License, or (at your option) any later version.
++
++   The GNU C Library is distributed in the hope that it will be useful,
++   but WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++   Lesser General Public License for more details.
++
++   You should have received a copy of the GNU Lesser General Public
++   License along with the GNU C Library.  If not, see
++   <https://www.gnu.org/licenses/>.  */
++
++#include <sysdeps/generic/sysdep.h>
++#include <features.h>
++
++#ifndef __ASSEMBLER__
++# include <stdint.h>
++#else
++# include <arm-features.h>
++#endif
++
++/* The __ARM_ARCH define is provided by gcc 4.8.  Construct it otherwise.  */
++#ifndef __ARM_ARCH
++# ifdef __ARM_ARCH_2__
++#  define __ARM_ARCH 2
++# elif defined (__ARM_ARCH_3__) || defined (__ARM_ARCH_3M__)
++#  define __ARM_ARCH 3
++# elif defined (__ARM_ARCH_4__) || defined (__ARM_ARCH_4T__)
++#  define __ARM_ARCH 4
++# elif defined (__ARM_ARCH_5__) || defined (__ARM_ARCH_5E__) \
++       || defined(__ARM_ARCH_5T__) || defined(__ARM_ARCH_5TE__) \
++       || defined(__ARM_ARCH_5TEJ__)
++#  define __ARM_ARCH 5
++# elif defined (__ARM_ARCH_6__) || defined(__ARM_ARCH_6J__) \
++       || defined (__ARM_ARCH_6Z__) || defined(__ARM_ARCH_6ZK__) \
++       || defined (__ARM_ARCH_6K__) || defined(__ARM_ARCH_6T2__)
++#  define __ARM_ARCH 6
++# elif defined (__ARM_ARCH_7__) || defined(__ARM_ARCH_7A__) \
++       || defined(__ARM_ARCH_7R__) || defined(__ARM_ARCH_7M__) \
++       || defined(__ARM_ARCH_7EM__)
++#  define __ARM_ARCH 7
++# else
++#  error unknown arm architecture
++# endif
++#endif
++
++#if __ARM_ARCH > 4 || defined (__ARM_ARCH_4T__)
++# define ARCH_HAS_BX
++#endif
++#if __ARM_ARCH > 4
++# define ARCH_HAS_BLX
++#endif
++#if __ARM_ARCH > 6 || defined (__ARM_ARCH_6K__) || defined (__ARM_ARCH_6ZK__)
++# define ARCH_HAS_HARD_TP
++#endif
++#if __ARM_ARCH > 6 || defined (__ARM_ARCH_6T2__)
++# define ARCH_HAS_T2
++#endif
++
++#ifdef	__ASSEMBLER__
++
++/* Syntactic details of assembler.  */
++
++#define ALIGNARG(log2) log2
++#define ASM_SIZE_DIRECTIVE(name) .size name,.-name
++
++#define PLTJMP(_x)	_x##(PLT)
++
++#ifdef ARCH_HAS_BX
++# define BX(R)		bx	R
++# define BXC(C, R)	bx##C	R
++# ifdef ARCH_HAS_BLX
++#  define BLX(R)	blx	R
++# else
++#  define BLX(R)	mov	lr, pc; bx R
++# endif
++#else
++# define BX(R)		mov	pc, R
++# define BXC(C, R)	mov##C	pc, R
++# define BLX(R)		mov	lr, pc; mov pc, R
++#endif
++
++#define DO_RET(R)	BX(R)
++#define RETINSTR(C, R)	BXC(C, R)
++
++/* Define an entry point visible from C.  */
++#define	ENTRY(name)					\
++	.globl	C_SYMBOL_NAME(name);			\
++	.type	C_SYMBOL_NAME(name),%function;		\
++	.align	ALIGNARG(4);				\
++  C_LABEL(name)						\
++	CFI_SECTIONS;					\
++	cfi_startproc;					\
++	CALL_MCOUNT
++
++#define CFI_SECTIONS					\
++	.cfi_sections .debug_frame
++
++#undef	END
++#define END(name)					\
++	cfi_endproc;					\
++	ASM_SIZE_DIRECTIVE(name)
++
++/* If compiled for profiling, call `mcount' at the start of each function.  */
++#ifdef	PROF
++/* Call __gnu_mcount_nc (GCC >= 4.4).  */
++#define CALL_MCOUNT					\
++	push	{lr};					\
++	cfi_adjust_cfa_offset (4);			\
++	cfi_rel_offset (lr, 0);				\
++	bl	PLTJMP(mcount);				\
++	cfi_adjust_cfa_offset (-4);			\
++	cfi_restore (lr)
++#else
++#define CALL_MCOUNT		/* Do nothing.  */
++#endif
++
++/* Since C identifiers are not normally prefixed with an underscore
++   on this system, the asm identifier `syscall_error' intrudes on the
++   C name space.  Make sure we use an innocuous name.  */
++#define	syscall_error	__syscall_error
++#define mcount		__gnu_mcount_nc
++
++/* Tag_ABI_align8_preserved: This code preserves 8-byte
++   alignment in any callee.  */
++	.eabi_attribute 25, 1
++/* Tag_ABI_align8_needed: This code may require 8-byte alignment from
++   the caller.  */
++	.eabi_attribute 24, 1
++
++/* The thumb2 encoding is reasonably complete.  Unless suppressed, use it.  */
++	.syntax unified
++# if defined(__thumb2__) && !defined(NO_THUMB)
++	.thumb
++#else
++#  undef __thumb__
++#  undef __thumb2__
++	.arm
++# endif
++
++/* Load or store to/from address X + Y into/from R, (maybe) using T.
++   X or Y can use T freely; T can be R if OP is a load.  The first
++   version eschews the two-register addressing mode, while the
++   second version uses it.  */
++# define LDST_INDEXED_NOINDEX(OP, R, T, X, Y)		\
++	add	T, X, Y;				\
++	OP	R, [T]
++# define LDST_INDEXED_INDEX(OP, R, X, Y)		\
++	OP	R, [X, Y]
++
++# ifdef ARM_NO_INDEX_REGISTER
++/* We're never using the two-register addressing mode, so this
++   always uses an intermediate add.  */
++#  define LDST_INDEXED(OP, R, T, X, Y)	LDST_INDEXED_NOINDEX (OP, R, T, X, Y)
++#  define LDST_PC_INDEXED(OP, R, T, X)	LDST_INDEXED_NOINDEX (OP, R, T, pc, X)
++# else
++/* The two-register addressing mode is OK, except on Thumb with pc.  */
++#  define LDST_INDEXED(OP, R, T, X, Y)	LDST_INDEXED_INDEX (OP, R, X, Y)
++#  ifdef __thumb2__
++#   define LDST_PC_INDEXED(OP, R, T, X)	LDST_INDEXED_NOINDEX (OP, R, T, pc, X)
++#  else
++#   define LDST_PC_INDEXED(OP, R, T, X)	LDST_INDEXED_INDEX (OP, R, pc, X)
++#  endif
++# endif
++
++/* Load or store to/from a pc-relative EXPR into/from R, using T.  */
++# ifdef __thumb2__
++#  define LDST_PCREL(OP, R, T, EXPR) \
++	ldr	T, 98f;					\
++	.subsection 2;					\
++98:	.word	EXPR - 99f - PC_OFS;			\
++	.previous;					\
++99:	add	T, T, pc;				\
++	OP	R, [T]
++# elif defined (ARCH_HAS_T2) && ARM_PCREL_MOVW_OK
++#  define LDST_PCREL(OP, R, T, EXPR)			\
++	movw	T, #:lower16:EXPR - 99f - PC_OFS;	\
++	movt	T, #:upper16:EXPR - 99f - PC_OFS;	\
++99:	LDST_PC_INDEXED (OP, R, T, T)
++# else
++#  define LDST_PCREL(OP, R, T, EXPR) \
++	ldr	T, 98f;					\
++	.subsection 2;					\
++98:	.word	EXPR - 99f - PC_OFS;			\
++	.previous;					\
++99:	OP	R, [pc, T]
++# endif
++
++/* Load from a global SYMBOL + CONSTANT into R, using T.  */
++# if defined (ARCH_HAS_T2) && !defined (PIC)
++#  define LDR_GLOBAL(R, T, SYMBOL, CONSTANT)				\
++	movw	T, #:lower16:SYMBOL;					\
++	movt	T, #:upper16:SYMBOL;					\
++	ldr	R, [T, $CONSTANT]
++# elif defined (ARCH_HAS_T2) && defined (PIC) && ARM_PCREL_MOVW_OK
++#  define LDR_GLOBAL(R, T, SYMBOL, CONSTANT)				\
++	movw	R, #:lower16:_GLOBAL_OFFSET_TABLE_ - 97f - PC_OFS;	\
++	movw	T, #:lower16:99f - 98f - PC_OFS;			\
++	movt	R, #:upper16:_GLOBAL_OFFSET_TABLE_ - 97f - PC_OFS;	\
++	movt	T, #:upper16:99f - 98f - PC_OFS;			\
++	.pushsection .rodata.cst4, "aM", %progbits, 4;			\
++	.balign 4;							\
++99:	.word	SYMBOL##(GOT);						\
++	.popsection;							\
++97:	add	R, R, pc;						\
++98:	LDST_PC_INDEXED (ldr, T, T, T);					\
++	LDST_INDEXED (ldr, R, T, R, T);					\
++	ldr	R, [R, $CONSTANT]
++# else
++#  define LDR_GLOBAL(R, T, SYMBOL, CONSTANT)		\
++	ldr	T, 99f;					\
++	ldr	R, 100f;				\
++98:	add	T, T, pc;				\
++	ldr	T, [T, R];				\
++	.subsection 2;					\
++99:	.word	_GLOBAL_OFFSET_TABLE_ - 98b - PC_OFS;	\
++100:	.word	SYMBOL##(GOT);				\
++	.previous;					\
++	ldr	R, [T, $CONSTANT]
++# endif
++
++/* This is the same as LDR_GLOBAL, but for a SYMBOL that is known to
++   be in the same linked object (as for one with hidden visibility).
++   We can avoid the GOT indirection in the PIC case.  For the pure
++   static case, LDR_GLOBAL is already optimal.  */
++# ifdef PIC
++#  define LDR_HIDDEN(R, T, SYMBOL, CONSTANT) \
++  LDST_PCREL (ldr, R, T, SYMBOL + CONSTANT)
++# else
++#  define LDR_HIDDEN(R, T, SYMBOL, CONSTANT) \
++  LDR_GLOBAL (R, T, SYMBOL, CONSTANT)
++# endif
++
++/* Cope with negative memory offsets, which thumb can't encode.
++   Use NEGOFF_ADJ_BASE to (conditionally) alter the base register,
++   and then NEGOFF_OFF1 to use 0 for thumb and the offset for arm,
++   or NEGOFF_OFF2 to use A-B for thumb and A for arm.  */
++# ifdef __thumb2__
++#  define NEGOFF_ADJ_BASE(R, OFF)	add R, R, $OFF
++#  define NEGOFF_ADJ_BASE2(D, S, OFF)	add D, S, $OFF
++#  define NEGOFF_OFF1(R, OFF)		[R]
++#  define NEGOFF_OFF2(R, OFFA, OFFB)	[R, $((OFFA) - (OFFB))]
++# else
++#  define NEGOFF_ADJ_BASE(R, OFF)
++#  define NEGOFF_ADJ_BASE2(D, S, OFF)	mov D, S
++#  define NEGOFF_OFF1(R, OFF)		[R, $OFF]
++#  define NEGOFF_OFF2(R, OFFA, OFFB)	[R, $OFFA]
++# endif
++
++/* Helper to get the TLS base pointer.  The interface is that TMP is a
++   register that may be used to hold the LR, if necessary.  TMP may be
++   LR itself to indicate that LR need not be saved.  The base pointer
++   is returned in R0.  Only R0 and TMP are modified.  */
++
++# ifdef ARCH_HAS_HARD_TP
++/* If the cpu has cp15 available, use it.  */
++#  define GET_TLS(TMP)		mrc p15, 0, r0, c13, c0, 3
++# else
++/* At this generic level we have no tricks to pull.  Call the ABI routine.  */
++#  define GET_TLS(TMP)					\
++	push	{ r1, r2, r3, lr };			\
++	cfi_remember_state;				\
++	cfi_adjust_cfa_offset (16);			\
++	cfi_rel_offset (r1, 0);				\
++	cfi_rel_offset (r2, 4);				\
++	cfi_rel_offset (r3, 8);				\
++	cfi_rel_offset (lr, 12);			\
++	bl	__aeabi_read_tp;			\
++	pop	{ r1, r2, r3, lr };			\
++	cfi_restore_state
++# endif /* ARCH_HAS_HARD_TP */
++
++/* These are the directives used for EABI unwind info.
++   Wrap them in macros so another configuration's sysdep.h
++   file can define them away if it doesn't use EABI unwind info.  */
++# define eabi_fnstart		.fnstart
++# define eabi_fnend		.fnend
++# define eabi_save(...)		.save __VA_ARGS__
++# define eabi_cantunwind	.cantunwind
++# define eabi_pad(n)		.pad n
++
++#endif	/* __ASSEMBLER__ */
++
++/* This number is the offset from the pc at the current location.  */
++#ifdef __thumb__
++# define PC_OFS  4
++#else
++# define PC_OFS  8
++#endif
++
++/* Pointer mangling support.  */
++#if (IS_IN (rtld) \
++     || (!defined SHARED && (IS_IN (libc) || IS_IN (libpthread))))
++# ifdef __ASSEMBLER__
++#  define PTR_MANGLE_LOAD(guard, tmp)					\
++  LDR_HIDDEN (guard, tmp, C_SYMBOL_NAME(__pointer_chk_guard_local), 0)
++#  define PTR_MANGLE(dst, src, guard, tmp)				\
++  PTR_MANGLE_LOAD(guard, tmp);						\
++  PTR_MANGLE2(dst, src, guard)
++/* Use PTR_MANGLE2 for efficiency if guard is already loaded.  */
++#  define PTR_MANGLE2(dst, src, guard)		\
++  eor dst, src, guard
++#  define PTR_DEMANGLE(dst, src, guard, tmp)	\
++  PTR_MANGLE (dst, src, guard, tmp)
++#  define PTR_DEMANGLE2(dst, src, guard)	\
++  PTR_MANGLE2 (dst, src, guard)
++# else
++extern uintptr_t __pointer_chk_guard_local attribute_relro attribute_hidden;
++#  define PTR_MANGLE(var) \
++  (var) = (__typeof (var)) ((uintptr_t) (var) ^ __pointer_chk_guard_local)
++#  define PTR_DEMANGLE(var)     PTR_MANGLE (var)
++# endif
++#else
++# ifdef __ASSEMBLER__
++#  define PTR_MANGLE_LOAD(guard, tmp)					\
++  LDR_GLOBAL (guard, tmp, C_SYMBOL_NAME(__pointer_chk_guard), 0);
++#  define PTR_MANGLE(dst, src, guard, tmp)				\
++  PTR_MANGLE_LOAD(guard, tmp);						\
++  PTR_MANGLE2(dst, src, guard)
++/* Use PTR_MANGLE2 for efficiency if guard is already loaded.  */
++#  define PTR_MANGLE2(dst, src, guard)		\
++  eor dst, src, guard
++#  define PTR_DEMANGLE(dst, src, guard, tmp)	\
++  PTR_MANGLE (dst, src, guard, tmp)
++#  define PTR_DEMANGLE2(dst, src, guard)	\
++  PTR_MANGLE2 (dst, src, guard)
++# else
++extern uintptr_t __pointer_chk_guard attribute_relro;
++#  define PTR_MANGLE(var) \
++  (var) = (__typeof (var)) ((uintptr_t) (var) ^ __pointer_chk_guard)
++#  define PTR_DEMANGLE(var)     PTR_MANGLE (var)
++# endif
++#endif
+diff --git a/libc/string/arm/glibc-neon/sysdeps/generic/dwarf2.h b/libc/string/arm/glibc-neon/sysdeps/generic/dwarf2.h
+new file mode 100644
+index 0000000..0d08da0
+--- /dev/null
++++ b/libc/string/arm/glibc-neon/sysdeps/generic/dwarf2.h
+@@ -0,0 +1,590 @@
++/* Declarations and definitions of codes relating to the DWARF2 symbolic
++   debugging information format.
++   Copyright (C) 1992-2021 Free Software Foundation, Inc.
++   Contributed by Gary Funck (gary@intrepid.com).  Derived from the
++   DWARF 1 implementation written by Ron Guilmette (rfg@monkeys.com).
++
++   This file is part of the GNU C Library.
++
++   The GNU C Library is free software; you can redistribute it and/or
++   modify it under the terms of the GNU Lesser General Public
++   License as published by the Free Software Foundation; either
++   version 2.1 of the License, or (at your option) any later version.
++
++   The GNU C Library is distributed in the hope that it will be useful,
++   but WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++   Lesser General Public License for more details.
++
++   You should have received a copy of the GNU Lesser General Public
++   License along with the GNU C Library; if not, see
++   <https://www.gnu.org/licenses/>.  */
++
++#ifndef _DWARF2_H
++#define _DWARF2_H	1
++
++/* This file is derived from the DWARF specification (a public document)
++   Revision 2.0.0 (July 27, 1993) developed by the UNIX International
++   Programming Languages Special Interest Group (UI/PLSIG) and distributed
++   by UNIX International.  Copies of this specification are available from
++   UNIX International, 20 Waterview Boulevard, Parsippany, NJ, 07054.  */
++
++/* This file is shared between GCC and GDB, and should not contain
++   prototypes.  */
++
++#ifndef __ASSEMBLER__
++/* Tag names and codes.  */
++
++enum dwarf_tag
++  {
++    DW_TAG_padding = 0x00,
++    DW_TAG_array_type = 0x01,
++    DW_TAG_class_type = 0x02,
++    DW_TAG_entry_point = 0x03,
++    DW_TAG_enumeration_type = 0x04,
++    DW_TAG_formal_parameter = 0x05,
++    DW_TAG_imported_declaration = 0x08,
++    DW_TAG_label = 0x0a,
++    DW_TAG_lexical_block = 0x0b,
++    DW_TAG_member = 0x0d,
++    DW_TAG_pointer_type = 0x0f,
++    DW_TAG_reference_type = 0x10,
++    DW_TAG_compile_unit = 0x11,
++    DW_TAG_string_type = 0x12,
++    DW_TAG_structure_type = 0x13,
++    DW_TAG_subroutine_type = 0x15,
++    DW_TAG_typedef = 0x16,
++    DW_TAG_union_type = 0x17,
++    DW_TAG_unspecified_parameters = 0x18,
++    DW_TAG_variant = 0x19,
++    DW_TAG_common_block = 0x1a,
++    DW_TAG_common_inclusion = 0x1b,
++    DW_TAG_inheritance = 0x1c,
++    DW_TAG_inlined_subroutine = 0x1d,
++    DW_TAG_module = 0x1e,
++    DW_TAG_ptr_to_member_type = 0x1f,
++    DW_TAG_set_type = 0x20,
++    DW_TAG_subrange_type = 0x21,
++    DW_TAG_with_stmt = 0x22,
++    DW_TAG_access_declaration = 0x23,
++    DW_TAG_base_type = 0x24,
++    DW_TAG_catch_block = 0x25,
++    DW_TAG_const_type = 0x26,
++    DW_TAG_constant = 0x27,
++    DW_TAG_enumerator = 0x28,
++    DW_TAG_file_type = 0x29,
++    DW_TAG_friend = 0x2a,
++    DW_TAG_namelist = 0x2b,
++    DW_TAG_namelist_item = 0x2c,
++    DW_TAG_packed_type = 0x2d,
++    DW_TAG_subprogram = 0x2e,
++    DW_TAG_template_type_param = 0x2f,
++    DW_TAG_template_value_param = 0x30,
++    DW_TAG_thrown_type = 0x31,
++    DW_TAG_try_block = 0x32,
++    DW_TAG_variant_part = 0x33,
++    DW_TAG_variable = 0x34,
++    DW_TAG_volatile_type = 0x35,
++    /* SGI/MIPS Extensions */
++    DW_TAG_MIPS_loop = 0x4081,
++    /* GNU extensions */
++    DW_TAG_format_label = 0x4101,	/* for FORTRAN 77 and Fortran 90 */
++    DW_TAG_function_template = 0x4102,	/* for C++ */
++    DW_TAG_class_template = 0x4103,	/* for C++ */
++    DW_TAG_GNU_BINCL = 0x4104,
++    DW_TAG_GNU_EINCL = 0x4105
++  };
++
++#define DW_TAG_lo_user	0x4080
++#define DW_TAG_hi_user	0xffff
++
++/* flag that tells whether entry has a child or not */
++#define DW_children_no   0
++#define	DW_children_yes  1
++
++/* Form names and codes.  */
++enum dwarf_form
++  {
++    DW_FORM_addr = 0x01,
++    DW_FORM_block2 = 0x03,
++    DW_FORM_block4 = 0x04,
++    DW_FORM_data2 = 0x05,
++    DW_FORM_data4 = 0x06,
++    DW_FORM_data8 = 0x07,
++    DW_FORM_string = 0x08,
++    DW_FORM_block = 0x09,
++    DW_FORM_block1 = 0x0a,
++    DW_FORM_data1 = 0x0b,
++    DW_FORM_flag = 0x0c,
++    DW_FORM_sdata = 0x0d,
++    DW_FORM_strp = 0x0e,
++    DW_FORM_udata = 0x0f,
++    DW_FORM_ref_addr = 0x10,
++    DW_FORM_ref1 = 0x11,
++    DW_FORM_ref2 = 0x12,
++    DW_FORM_ref4 = 0x13,
++    DW_FORM_ref8 = 0x14,
++    DW_FORM_ref_udata = 0x15,
++    DW_FORM_indirect = 0x16
++  };
++
++/* Attribute names and codes.  */
++
++enum dwarf_attribute
++  {
++    DW_AT_sibling = 0x01,
++    DW_AT_location = 0x02,
++    DW_AT_name = 0x03,
++    DW_AT_ordering = 0x09,
++    DW_AT_subscr_data = 0x0a,
++    DW_AT_byte_size = 0x0b,
++    DW_AT_bit_offset = 0x0c,
++    DW_AT_bit_size = 0x0d,
++    DW_AT_element_list = 0x0f,
++    DW_AT_stmt_list = 0x10,
++    DW_AT_low_pc = 0x11,
++    DW_AT_high_pc = 0x12,
++    DW_AT_language = 0x13,
++    DW_AT_member = 0x14,
++    DW_AT_discr = 0x15,
++    DW_AT_discr_value = 0x16,
++    DW_AT_visibility = 0x17,
++    DW_AT_import = 0x18,
++    DW_AT_string_length = 0x19,
++    DW_AT_common_reference = 0x1a,
++    DW_AT_comp_dir = 0x1b,
++    DW_AT_const_value = 0x1c,
++    DW_AT_containing_type = 0x1d,
++    DW_AT_default_value = 0x1e,
++    DW_AT_inline = 0x20,
++    DW_AT_is_optional = 0x21,
++    DW_AT_lower_bound = 0x22,
++    DW_AT_producer = 0x25,
++    DW_AT_prototyped = 0x27,
++    DW_AT_return_addr = 0x2a,
++    DW_AT_start_scope = 0x2c,
++    DW_AT_stride_size = 0x2e,
++    DW_AT_upper_bound = 0x2f,
++    DW_AT_abstract_origin = 0x31,
++    DW_AT_accessibility = 0x32,
++    DW_AT_address_class = 0x33,
++    DW_AT_artificial = 0x34,
++    DW_AT_base_types = 0x35,
++    DW_AT_calling_convention = 0x36,
++    DW_AT_count = 0x37,
++    DW_AT_data_member_location = 0x38,
++    DW_AT_decl_column = 0x39,
++    DW_AT_decl_file = 0x3a,
++    DW_AT_decl_line = 0x3b,
++    DW_AT_declaration = 0x3c,
++    DW_AT_discr_list = 0x3d,
++    DW_AT_encoding = 0x3e,
++    DW_AT_external = 0x3f,
++    DW_AT_frame_base = 0x40,
++    DW_AT_friend = 0x41,
++    DW_AT_identifier_case = 0x42,
++    DW_AT_macro_info = 0x43,
++    DW_AT_namelist_items = 0x44,
++    DW_AT_priority = 0x45,
++    DW_AT_segment = 0x46,
++    DW_AT_specification = 0x47,
++    DW_AT_static_link = 0x48,
++    DW_AT_type = 0x49,
++    DW_AT_use_location = 0x4a,
++    DW_AT_variable_parameter = 0x4b,
++    DW_AT_virtuality = 0x4c,
++    DW_AT_vtable_elem_location = 0x4d,
++    /* SGI/MIPS Extensions */
++    DW_AT_MIPS_fde = 0x2001,
++    DW_AT_MIPS_loop_begin = 0x2002,
++    DW_AT_MIPS_tail_loop_begin = 0x2003,
++    DW_AT_MIPS_epilog_begin = 0x2004,
++    DW_AT_MIPS_loop_unroll_factor = 0x2005,
++    DW_AT_MIPS_software_pipeline_depth = 0x2006,
++    DW_AT_MIPS_linkage_name = 0x2007,
++    DW_AT_MIPS_stride = 0x2008,
++    DW_AT_MIPS_abstract_name = 0x2009,
++    DW_AT_MIPS_clone_origin = 0x200a,
++    DW_AT_MIPS_has_inlines = 0x200b,
++    /* GNU extensions.  */
++    DW_AT_sf_names = 0x2101,
++    DW_AT_src_info = 0x2102,
++    DW_AT_mac_info = 0x2103,
++    DW_AT_src_coords = 0x2104,
++    DW_AT_body_begin = 0x2105,
++    DW_AT_body_end = 0x2106
++  };
++
++#define DW_AT_lo_user	0x2000	/* implementation-defined range start */
++#define DW_AT_hi_user	0x3ff0	/* implementation-defined range end */
++
++/* Location atom names and codes.  */
++
++enum dwarf_location_atom
++  {
++    DW_OP_addr = 0x03,
++    DW_OP_deref = 0x06,
++    DW_OP_const1u = 0x08,
++    DW_OP_const1s = 0x09,
++    DW_OP_const2u = 0x0a,
++    DW_OP_const2s = 0x0b,
++    DW_OP_const4u = 0x0c,
++    DW_OP_const4s = 0x0d,
++    DW_OP_const8u = 0x0e,
++    DW_OP_const8s = 0x0f,
++    DW_OP_constu = 0x10,
++    DW_OP_consts = 0x11,
++    DW_OP_dup = 0x12,
++    DW_OP_drop = 0x13,
++    DW_OP_over = 0x14,
++    DW_OP_pick = 0x15,
++    DW_OP_swap = 0x16,
++    DW_OP_rot = 0x17,
++    DW_OP_xderef = 0x18,
++    DW_OP_abs = 0x19,
++    DW_OP_and = 0x1a,
++    DW_OP_div = 0x1b,
++    DW_OP_minus = 0x1c,
++    DW_OP_mod = 0x1d,
++    DW_OP_mul = 0x1e,
++    DW_OP_neg = 0x1f,
++    DW_OP_not = 0x20,
++    DW_OP_or = 0x21,
++    DW_OP_plus = 0x22,
++    DW_OP_plus_uconst = 0x23,
++    DW_OP_shl = 0x24,
++    DW_OP_shr = 0x25,
++    DW_OP_shra = 0x26,
++    DW_OP_xor = 0x27,
++    DW_OP_bra = 0x28,
++    DW_OP_eq = 0x29,
++    DW_OP_ge = 0x2a,
++    DW_OP_gt = 0x2b,
++    DW_OP_le = 0x2c,
++    DW_OP_lt = 0x2d,
++    DW_OP_ne = 0x2e,
++    DW_OP_skip = 0x2f,
++    DW_OP_lit0 = 0x30,
++    DW_OP_lit1 = 0x31,
++    DW_OP_lit2 = 0x32,
++    DW_OP_lit3 = 0x33,
++    DW_OP_lit4 = 0x34,
++    DW_OP_lit5 = 0x35,
++    DW_OP_lit6 = 0x36,
++    DW_OP_lit7 = 0x37,
++    DW_OP_lit8 = 0x38,
++    DW_OP_lit9 = 0x39,
++    DW_OP_lit10 = 0x3a,
++    DW_OP_lit11 = 0x3b,
++    DW_OP_lit12 = 0x3c,
++    DW_OP_lit13 = 0x3d,
++    DW_OP_lit14 = 0x3e,
++    DW_OP_lit15 = 0x3f,
++    DW_OP_lit16 = 0x40,
++    DW_OP_lit17 = 0x41,
++    DW_OP_lit18 = 0x42,
++    DW_OP_lit19 = 0x43,
++    DW_OP_lit20 = 0x44,
++    DW_OP_lit21 = 0x45,
++    DW_OP_lit22 = 0x46,
++    DW_OP_lit23 = 0x47,
++    DW_OP_lit24 = 0x48,
++    DW_OP_lit25 = 0x49,
++    DW_OP_lit26 = 0x4a,
++    DW_OP_lit27 = 0x4b,
++    DW_OP_lit28 = 0x4c,
++    DW_OP_lit29 = 0x4d,
++    DW_OP_lit30 = 0x4e,
++    DW_OP_lit31 = 0x4f,
++    DW_OP_reg0 = 0x50,
++    DW_OP_reg1 = 0x51,
++    DW_OP_reg2 = 0x52,
++    DW_OP_reg3 = 0x53,
++    DW_OP_reg4 = 0x54,
++    DW_OP_reg5 = 0x55,
++    DW_OP_reg6 = 0x56,
++    DW_OP_reg7 = 0x57,
++    DW_OP_reg8 = 0x58,
++    DW_OP_reg9 = 0x59,
++    DW_OP_reg10 = 0x5a,
++    DW_OP_reg11 = 0x5b,
++    DW_OP_reg12 = 0x5c,
++    DW_OP_reg13 = 0x5d,
++    DW_OP_reg14 = 0x5e,
++    DW_OP_reg15 = 0x5f,
++    DW_OP_reg16 = 0x60,
++    DW_OP_reg17 = 0x61,
++    DW_OP_reg18 = 0x62,
++    DW_OP_reg19 = 0x63,
++    DW_OP_reg20 = 0x64,
++    DW_OP_reg21 = 0x65,
++    DW_OP_reg22 = 0x66,
++    DW_OP_reg23 = 0x67,
++    DW_OP_reg24 = 0x68,
++    DW_OP_reg25 = 0x69,
++    DW_OP_reg26 = 0x6a,
++    DW_OP_reg27 = 0x6b,
++    DW_OP_reg28 = 0x6c,
++    DW_OP_reg29 = 0x6d,
++    DW_OP_reg30 = 0x6e,
++    DW_OP_reg31 = 0x6f,
++    DW_OP_breg0 = 0x70,
++    DW_OP_breg1 = 0x71,
++    DW_OP_breg2 = 0x72,
++    DW_OP_breg3 = 0x73,
++    DW_OP_breg4 = 0x74,
++    DW_OP_breg5 = 0x75,
++    DW_OP_breg6 = 0x76,
++    DW_OP_breg7 = 0x77,
++    DW_OP_breg8 = 0x78,
++    DW_OP_breg9 = 0x79,
++    DW_OP_breg10 = 0x7a,
++    DW_OP_breg11 = 0x7b,
++    DW_OP_breg12 = 0x7c,
++    DW_OP_breg13 = 0x7d,
++    DW_OP_breg14 = 0x7e,
++    DW_OP_breg15 = 0x7f,
++    DW_OP_breg16 = 0x80,
++    DW_OP_breg17 = 0x81,
++    DW_OP_breg18 = 0x82,
++    DW_OP_breg19 = 0x83,
++    DW_OP_breg20 = 0x84,
++    DW_OP_breg21 = 0x85,
++    DW_OP_breg22 = 0x86,
++    DW_OP_breg23 = 0x87,
++    DW_OP_breg24 = 0x88,
++    DW_OP_breg25 = 0x89,
++    DW_OP_breg26 = 0x8a,
++    DW_OP_breg27 = 0x8b,
++    DW_OP_breg28 = 0x8c,
++    DW_OP_breg29 = 0x8d,
++    DW_OP_breg30 = 0x8e,
++    DW_OP_breg31 = 0x8f,
++    DW_OP_regx = 0x90,
++    DW_OP_fbreg = 0x91,
++    DW_OP_bregx = 0x92,
++    DW_OP_piece = 0x93,
++    DW_OP_deref_size = 0x94,
++    DW_OP_xderef_size = 0x95,
++    DW_OP_nop = 0x96
++  };
++
++#define DW_OP_lo_user	0x80	/* implementation-defined range start */
++#define DW_OP_hi_user	0xff	/* implementation-defined range end */
++
++/* Type encodings.  */
++
++enum dwarf_type
++  {
++    DW_ATE_void = 0x0,
++    DW_ATE_address = 0x1,
++    DW_ATE_boolean = 0x2,
++    DW_ATE_complex_float = 0x3,
++    DW_ATE_float = 0x4,
++    DW_ATE_signed = 0x5,
++    DW_ATE_signed_char = 0x6,
++    DW_ATE_unsigned = 0x7,
++    DW_ATE_unsigned_char = 0x8
++  };
++
++#define	DW_ATE_lo_user 0x80
++#define	DW_ATE_hi_user 0xff
++
++/* Array ordering names and codes.  */
++enum dwarf_array_dim_ordering
++  {
++    DW_ORD_row_major = 0,
++    DW_ORD_col_major = 1
++  };
++
++/* access attribute */
++enum dwarf_access_attribute
++  {
++    DW_ACCESS_public = 1,
++    DW_ACCESS_protected = 2,
++    DW_ACCESS_private = 3
++  };
++
++/* visibility */
++enum dwarf_visibility_attribute
++  {
++    DW_VIS_local = 1,
++    DW_VIS_exported = 2,
++    DW_VIS_qualified = 3
++  };
++
++/* virtuality */
++enum dwarf_virtuality_attribute
++  {
++    DW_VIRTUALITY_none = 0,
++    DW_VIRTUALITY_virtual = 1,
++    DW_VIRTUALITY_pure_virtual = 2
++  };
++
++/* case sensitivity */
++enum dwarf_id_case
++  {
++    DW_ID_case_sensitive = 0,
++    DW_ID_up_case = 1,
++    DW_ID_down_case = 2,
++    DW_ID_case_insensitive = 3
++  };
++
++/* calling convention */
++enum dwarf_calling_convention
++  {
++    DW_CC_normal = 0x1,
++    DW_CC_program = 0x2,
++    DW_CC_nocall = 0x3
++  };
++
++#define DW_CC_lo_user 0x40
++#define DW_CC_hi_user 0xff
++
++/* inline attribute */
++enum dwarf_inline_attribute
++  {
++    DW_INL_not_inlined = 0,
++    DW_INL_inlined = 1,
++    DW_INL_declared_not_inlined = 2,
++    DW_INL_declared_inlined = 3
++  };
++
++/* discriminant lists */
++enum dwarf_discrim_list
++  {
++    DW_DSC_label = 0,
++    DW_DSC_range = 1
++  };
++
++/* line number opcodes */
++enum dwarf_line_number_ops
++  {
++    DW_LNS_extended_op = 0,
++    DW_LNS_copy = 1,
++    DW_LNS_advance_pc = 2,
++    DW_LNS_advance_line = 3,
++    DW_LNS_set_file = 4,
++    DW_LNS_set_column = 5,
++    DW_LNS_negate_stmt = 6,
++    DW_LNS_set_basic_block = 7,
++    DW_LNS_const_add_pc = 8,
++    DW_LNS_fixed_advance_pc = 9
++  };
++
++/* line number extended opcodes */
++enum dwarf_line_number_x_ops
++  {
++    DW_LNE_end_sequence = 1,
++    DW_LNE_set_address = 2,
++    DW_LNE_define_file = 3
++  };
++
++/* call frame information */
++enum dwarf_call_frame_info
++  {
++    DW_CFA_advance_loc = 0x40,
++    DW_CFA_offset = 0x80,
++    DW_CFA_restore = 0xc0,
++    DW_CFA_nop = 0x00,
++    DW_CFA_set_loc = 0x01,
++    DW_CFA_advance_loc1 = 0x02,
++    DW_CFA_advance_loc2 = 0x03,
++    DW_CFA_advance_loc4 = 0x04,
++    DW_CFA_offset_extended = 0x05,
++    DW_CFA_restore_extended = 0x06,
++    DW_CFA_undefined = 0x07,
++    DW_CFA_same_value = 0x08,
++    DW_CFA_register = 0x09,
++    DW_CFA_remember_state = 0x0a,
++    DW_CFA_restore_state = 0x0b,
++    DW_CFA_def_cfa = 0x0c,
++    DW_CFA_def_cfa_register = 0x0d,
++    DW_CFA_def_cfa_offset = 0x0e,
++    DW_CFA_def_cfa_expression = 0x0f,
++    DW_CFA_expression = 0x10,
++    /* Dwarf 2.1 */
++    DW_CFA_offset_extended_sf = 0x11,
++    DW_CFA_def_cfa_sf = 0x12,
++    DW_CFA_def_cfa_offset_sf = 0x13,
++
++    /* SGI/MIPS specific */
++    DW_CFA_MIPS_advance_loc8 = 0x1d,
++
++    /* GNU extensions */
++    DW_CFA_GNU_window_save = 0x2d,
++    DW_CFA_GNU_args_size = 0x2e,
++    DW_CFA_GNU_negative_offset_extended = 0x2f
++  };
++
++#define DW_CIE_ID	  0xffffffff
++#define DW_CIE_VERSION	  1
++
++#define DW_CFA_extended   0
++#define DW_CFA_low_user   0x1c
++#define DW_CFA_high_user  0x3f
++
++#define DW_CHILDREN_no		     0x00
++#define DW_CHILDREN_yes		     0x01
++
++#define DW_ADDR_none		0
++
++/* Source language names and codes.  */
++
++enum dwarf_source_language
++  {
++    DW_LANG_C89 = 0x0001,
++    DW_LANG_C = 0x0002,
++    DW_LANG_Ada83 = 0x0003,
++    DW_LANG_C_plus_plus = 0x0004,
++    DW_LANG_Cobol74 = 0x0005,
++    DW_LANG_Cobol85 = 0x0006,
++    DW_LANG_Fortran77 = 0x0007,
++    DW_LANG_Fortran90 = 0x0008,
++    DW_LANG_Pascal83 = 0x0009,
++    DW_LANG_Modula2 = 0x000a,
++    DW_LANG_Java = 0x000b,
++    DW_LANG_Mips_Assembler = 0x8001
++  };
++
++
++#define DW_LANG_lo_user 0x8000	/* implementation-defined range start */
++#define DW_LANG_hi_user 0xffff	/* implementation-defined range start */
++
++/* Names and codes for macro information.  */
++
++enum dwarf_macinfo_record_type
++  {
++    DW_MACINFO_define = 1,
++    DW_MACINFO_undef = 2,
++    DW_MACINFO_start_file = 3,
++    DW_MACINFO_end_file = 4,
++    DW_MACINFO_vendor_ext = 255
++  };
++
++#endif /* !ASSEMBLER */
++
++/* @@@ For use with GNU frame unwind information.  */
++
++#define DW_EH_PE_absptr		0x00
++#define DW_EH_PE_omit		0xff
++
++#define DW_EH_PE_uleb128	0x01
++#define DW_EH_PE_udata2		0x02
++#define DW_EH_PE_udata4		0x03
++#define DW_EH_PE_udata8		0x04
++#define DW_EH_PE_sleb128	0x09
++#define DW_EH_PE_sdata2		0x0A
++#define DW_EH_PE_sdata4		0x0B
++#define DW_EH_PE_sdata8		0x0C
++#define DW_EH_PE_signed		0x08
++
++#define DW_EH_PE_pcrel		0x10
++#define DW_EH_PE_textrel	0x20
++#define DW_EH_PE_datarel	0x30
++#define DW_EH_PE_funcrel	0x40
++#define DW_EH_PE_aligned	0x50
++
++#define DW_EH_PE_indirect	0x80
++
++#endif /* dwarf2.h */
+diff --git a/libc/string/arm/glibc-neon/sysdeps/generic/sysdep.h b/libc/string/arm/glibc-neon/sysdeps/generic/sysdep.h
+new file mode 100644
+index 0000000..39cac91
+--- /dev/null
++++ b/libc/string/arm/glibc-neon/sysdeps/generic/sysdep.h
+@@ -0,0 +1,97 @@
++/* Generic asm macros used on many machines.
++   Copyright (C) 1991-2021 Free Software Foundation, Inc.
++   This file is part of the GNU C Library.
++
++   The GNU C Library is free software; you can redistribute it and/or
++   modify it under the terms of the GNU Lesser General Public
++   License as published by the Free Software Foundation; either
++   version 2.1 of the License, or (at your option) any later version.
++
++   The GNU C Library is distributed in the hope that it will be useful,
++   but WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++   Lesser General Public License for more details.
++
++   You should have received a copy of the GNU Lesser General Public
++   License along with the GNU C Library; if not, see
++   <https://www.gnu.org/licenses/>.  */
++
++#ifndef C_LABEL
++
++/* Define a macro we can use to construct the asm name for a C symbol.  */
++# define C_LABEL(name)	name##:
++
++#endif
++
++#ifdef __ASSEMBLER__
++/* Mark the end of function named SYM.  This is used on some platforms
++   to generate correct debugging information.  */
++# ifndef END
++#  define END(sym)
++# endif
++
++# ifndef JUMPTARGET
++#  define JUMPTARGET(sym)	sym
++# endif
++#endif
++
++/* Makros to generate eh_frame unwind information.  */
++#ifdef __ASSEMBLER__
++# define cfi_startproc			.cfi_startproc
++# define cfi_endproc			.cfi_endproc
++# define cfi_def_cfa(reg, off)		.cfi_def_cfa reg, off
++# define cfi_def_cfa_register(reg)	.cfi_def_cfa_register reg
++# define cfi_def_cfa_offset(off)	.cfi_def_cfa_offset off
++# define cfi_adjust_cfa_offset(off)	.cfi_adjust_cfa_offset off
++# define cfi_offset(reg, off)		.cfi_offset reg, off
++# define cfi_rel_offset(reg, off)	.cfi_rel_offset reg, off
++# define cfi_register(r1, r2)		.cfi_register r1, r2
++# define cfi_return_column(reg)	.cfi_return_column reg
++# define cfi_restore(reg)		.cfi_restore reg
++# define cfi_same_value(reg)		.cfi_same_value reg
++# define cfi_undefined(reg)		.cfi_undefined reg
++# define cfi_remember_state		.cfi_remember_state
++# define cfi_restore_state		.cfi_restore_state
++# define cfi_window_save		.cfi_window_save
++# define cfi_personality(enc, exp)	.cfi_personality enc, exp
++# define cfi_lsda(enc, exp)		.cfi_lsda enc, exp
++
++#else /* ! ASSEMBLER */
++
++# define CFI_STRINGIFY(Name) CFI_STRINGIFY2 (Name)
++# define CFI_STRINGIFY2(Name) #Name
++# define CFI_STARTPROC	".cfi_startproc"
++# define CFI_ENDPROC	".cfi_endproc"
++# define CFI_DEF_CFA(reg, off)	\
++   ".cfi_def_cfa " CFI_STRINGIFY(reg) "," CFI_STRINGIFY(off)
++# define CFI_DEF_CFA_REGISTER(reg) \
++   ".cfi_def_cfa_register " CFI_STRINGIFY(reg)
++# define CFI_DEF_CFA_OFFSET(off) \
++   ".cfi_def_cfa_offset " CFI_STRINGIFY(off)
++# define CFI_ADJUST_CFA_OFFSET(off) \
++   ".cfi_adjust_cfa_offset " CFI_STRINGIFY(off)
++# define CFI_OFFSET(reg, off) \
++   ".cfi_offset " CFI_STRINGIFY(reg) "," CFI_STRINGIFY(off)
++# define CFI_REL_OFFSET(reg, off) \
++   ".cfi_rel_offset " CFI_STRINGIFY(reg) "," CFI_STRINGIFY(off)
++# define CFI_REGISTER(r1, r2) \
++   ".cfi_register " CFI_STRINGIFY(r1) "," CFI_STRINGIFY(r2)
++# define CFI_RETURN_COLUMN(reg) \
++   ".cfi_return_column " CFI_STRINGIFY(reg)
++# define CFI_RESTORE(reg) \
++   ".cfi_restore " CFI_STRINGIFY(reg)
++# define CFI_UNDEFINED(reg) \
++   ".cfi_undefined " CFI_STRINGIFY(reg)
++# define CFI_REMEMBER_STATE \
++   ".cfi_remember_state"
++# define CFI_RESTORE_STATE \
++   ".cfi_restore_state"
++# define CFI_WINDOW_SAVE \
++   ".cfi_window_save"
++# define CFI_PERSONALITY(enc, exp) \
++   ".cfi_personality " CFI_STRINGIFY(enc) "," CFI_STRINGIFY(exp)
++# define CFI_LSDA(enc, exp) \
++   ".cfi_lsda " CFI_STRINGIFY(enc) "," CFI_STRINGIFY(exp)
++#endif
++
++#include "dwarf2.h"
+-- 
+2.20.1
+

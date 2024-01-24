@@ -1,0 +1,5 @@
+[Desktop Entry]
+Name=multivideoplayer
+Exec=/usr/bin/multivideoplayer
+Icon=/usr/share/icon/icon_multivideoplayer.png
+Type=Application

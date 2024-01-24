@@ -1,0 +1,115 @@
+From 9bc14b7363f4da0ea1f71db3a952a998435a592b Mon Sep 17 00:00:00 2001
+From: Eskil Abrahamsen Blomfeldt <eskil.abrahamsen-blomfeldt@qt.io>
+Date: Thu, 22 Apr 2021 08:42:33 +0200
+Subject: [PATCH 02/17] client: Gracefully handle shutdown and window hiding
+
+When a window is hidden or destroyed, the render thread may already
+be rendering. We need to properly read-lock the surface pointer
+when it is in use and exit when it becomes null.
+
+Note that there is also a potential crash in the Mesa GL driver
+where it keeps a proxy to the wl_surface, so if we delete this
+while we are still rendering, it can crash inside the driver.
+This is not addressed by this patch, and has not been reproduced
+on any other drivers so far.
+
+[ChangeLog][Client] Fixed a crash that could happen when hiding
+or closing windows while Qt Quick was actively rendering on
+a different thread.
+
+Pick-to: 6.0 6.1 5.15
+Fixes: QTBUG-91264
+Fixes: QTBUG-90037
+Task-number: QTBUG-92249
+Change-Id: I029b123b83c58740321e8b90a463ced748d8bcf4
+Reviewed-by: Laszlo Agocs <laszlo.agocs@qt.io>
+Reviewed-by: David Edmundson <davidedmundson@kde.org>
+
+Conflicts:
+	src/client/qwaylandwindow.cpp
+	src/hardwareintegration/client/wayland-egl/qwaylandglcontext.cpp
+
+(cherry picked from commit b19b0fbaf775e8b8eda1e03c265a5393d618c6c0)
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ src/client/qwaylandwindow.cpp | 15 +++++++++++++--
+ src/client/qwaylandwindow_p.h |  2 +-
+ 2 files changed, 14 insertions(+), 3 deletions(-)
+
+diff --git a/src/client/qwaylandwindow.cpp b/src/client/qwaylandwindow.cpp
+index ceaa4c7..6cbd315 100644
+--- a/src/client/qwaylandwindow.cpp
++++ b/src/client/qwaylandwindow.cpp
+@@ -414,6 +414,7 @@ void QWaylandWindow::closePopups(QWaylandWindow *parent)
+ 
+ QPlatformScreen *QWaylandWindow::calculateScreenFromSurfaceEvents() const
+ {
++    QReadLocker lock(&mSurfaceLock);
+     if (mSurface) {
+         if (auto *screen = mSurface->oldestEnteredScreen())
+             return screen;
+@@ -552,6 +553,10 @@ void QWaylandWindow::sendRecursiveExposeEvent()
+ 
+ void QWaylandWindow::attach(QWaylandBuffer *buffer, int x, int y)
+ {
++    QReadLocker locker(&mSurfaceLock);
++    if (mSurface == nullptr)
++        return;
++
+     if (buffer) {
+         Q_ASSERT(!buffer->committed());
+         handleUpdate();
+@@ -605,6 +610,8 @@ void QWaylandWindow::commit(QWaylandBuffer *buffer, const QRegion &damage)
+         qCDebug(lcWaylandBackingstore) << "Buffer already committed, ignoring.";
+         return;
+     }
++
++    QReadLocker locker(&mSurfaceLock);
+     if (!mSurface)
+         return;
+ 
+@@ -624,7 +631,9 @@ void QWaylandWindow::commit(QWaylandBuffer *buffer, const QRegion &damage)
+ 
+ void QWaylandWindow::commit()
+ {
+-    mSurface->commit();
++    QReadLocker locker(&mSurfaceLock);
++    if (mSurface != nullptr)
++        mSurface->commit();
+ }
+ 
+ const wl_callback_listener QWaylandWindow::callbackListener = {
+@@ -723,6 +732,7 @@ QPointF QWaylandWindow::mapFromWlSurface(const QPointF &surfacePosition) const
+ 
+ wl_surface *QWaylandWindow::wlSurface()
+ {
++    QReadLocker locker(&mSurfaceLock);
+     return mSurface ? mSurface->object() : nullptr;
+ }
+ 
+@@ -747,7 +757,8 @@ QWaylandScreen *QWaylandWindow::waylandScreen() const
+ 
+ void QWaylandWindow::handleContentOrientationChange(Qt::ScreenOrientation orientation)
+ {
+-    if (mDisplay->compositorVersion() < 2)
++    QReadLocker locker(&mSurfaceLock);
++    if (mSurface == nullptr || mDisplay->compositorVersion() < 2)
+         return;
+ 
+     wl_output_transform transform;
+diff --git a/src/client/qwaylandwindow_p.h b/src/client/qwaylandwindow_p.h
+index cb9135f..c0a7634 100644
+--- a/src/client/qwaylandwindow_p.h
++++ b/src/client/qwaylandwindow_p.h
+@@ -288,7 +288,7 @@ private:
+ 
+     static QWaylandWindow *mMouseGrab;
+ 
+-    QReadWriteLock mSurfaceLock;
++    mutable QReadWriteLock mSurfaceLock;
+ 
+     friend class QWaylandSubSurface;
+ };
+-- 
+2.20.1
+

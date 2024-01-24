@@ -1,0 +1,6 @@
+config BR2_PACKAGE_LIBSRT
+	bool "libsrt"
+	help
+	  Secure Reliable Transport (SRT) Protocol.
+
+	  https://github.com/Haivision/srt

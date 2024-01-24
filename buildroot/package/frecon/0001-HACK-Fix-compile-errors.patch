@@ -1,0 +1,72 @@
+From 468e457e57a46d2e5dd7d7831826992ab31f68d2 Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Thu, 9 Jun 2022 16:15:07 +0800
+Subject: [PATCH 1/9] HACK: Fix compile errors
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ common.mk |  1 -
+ drm.c     |  2 +-
+ fb.c      | 13 +++++++++----
+ 3 files changed, 10 insertions(+), 6 deletions(-)
+
+diff --git a/common.mk b/common.mk
+index c699152..055e75e 100644
+--- a/common.mk
++++ b/common.mk
+@@ -314,7 +314,6 @@ COMMON_CFLAGS-clang := -fvisibility=hidden -ggdb
+ COMMON_CFLAGS := -Wall -Werror -fno-strict-aliasing $(SSP_CFLAGS) -O1 -Wformat=2
+ CXXFLAGS += $(COMMON_CFLAGS) $(COMMON_CFLAGS-$(CXXDRIVER))
+ CFLAGS += $(COMMON_CFLAGS) $(COMMON_CFLAGS-$(CDRIVER))
+-CPPFLAGS += -D_FORTIFY_SOURCE=2
+ 
+ # Enable large file support.
+ CPPFLAGS += -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE
+diff --git a/drm.c b/drm.c
+index 34d4b78..037a820 100644
+--- a/drm.c
++++ b/drm.c
+@@ -821,7 +821,7 @@ static int remove_gamma_properties(drm_t* drm, uint32_t crtc_id) {
+ int32_t drm_setmode(drm_t* drm, uint32_t fb_id)
+ {
+ 	int conn;
+-	int32_t ret;
++	int32_t ret = 0;
+ 	uint32_t existing_console_crtc_id = 0;
+ 
+ 	if (drm->atomic)
+diff --git a/fb.c b/fb.c
+index 77219c2..9bb2599 100644
+--- a/fb.c
++++ b/fb.c
+@@ -51,10 +51,15 @@ static int fb_buffer_create(fb_t* fb,
+ 
+ 	fb->lock.map_offset = map_dumb.offset;
+ 
+-	uint32_t offset = 0;
++	uint32_t handles[4] = {0};
++	uint32_t pitches[4] = {0};
++	uint32_t offsets[4] = {0};
++	handles[0] = create_dumb.handle;
++	pitches[0] = create_dumb.pitch;
++
+ 	ret = drmModeAddFB2(fb->drm->fd, fb->drm->console_mode_info.hdisplay, fb->drm->console_mode_info.vdisplay,
+-			    DRM_FORMAT_XRGB8888, &create_dumb.handle,
+-			    &create_dumb.pitch, &offset, &fb->fb_id, 0);
++			    DRM_FORMAT_XRGB8888, handles,
++			    pitches, offsets, &fb->fb_id, 0);
+ 	if (ret) {
+ 		LOG(ERROR, "drmModeAddFB2 failed");
+ 		goto destroy_buffer;
+@@ -161,7 +166,7 @@ static bool parse_edid_dtd_display_size(drm_t* drm, int32_t* hsize_mm, int32_t*
+ 
+ int fb_buffer_init(fb_t* fb)
+ {
+-	int32_t width, height, pitch;
++	int32_t width, height, pitch = 0;
+ 	int32_t hsize_mm, vsize_mm;
+ 	int r;
+ 
+-- 
+2.20.1
+

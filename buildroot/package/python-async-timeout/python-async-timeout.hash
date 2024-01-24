@@ -1,0 +1,5 @@
+# md5, sha256 from https://pypi.org/pypi/async-timeout/json
+md5  2871f3853060ac7e76e6278b85dfb3c9  async-timeout-4.0.0.tar.gz
+sha256  7d87a4e8adba8ededb52e579ce6bc8276985888913620c935094c2276fd83382  async-timeout-4.0.0.tar.gz
+# Locally computed sha256 checksums
+sha256  e18d7bb8f513e2c46bb585c94b585bd30720dd3ccb21ddb0786f72d16658f92c  LICENSE

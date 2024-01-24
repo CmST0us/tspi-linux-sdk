@@ -1,0 +1,11 @@
+[Unit]
+Description=automount usb disk
+
+[Service]
+Type=forking
+User=root
+ExecStart=/usr/bin/automount.sh start
+After=udisks2
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,74 @@
+From eb87e757e488aea841d73f640483e076a999524b Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Fri, 17 Jun 2022 15:27:30 +0800
+Subject: [PATCH 5/5] Handle SD card as well
+
+There's no much difference in handling SD card and USB disk.
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ usbmount       |  8 ++++++++
+ usbmount.conf  |  5 +++--
+ usbmount.rules | 15 ++++++++++-----
+ 3 files changed, 21 insertions(+), 7 deletions(-)
+
+diff --git a/usbmount b/usbmount
+index d9a1f0c..4613dac 100755
+--- a/usbmount
++++ b/usbmount
+@@ -69,6 +69,14 @@ fi
+ 
+ umask 022
+ 
++case "$2" in
++    usb)
++	MOUNTPOINTS=${MOUNTPOINTS_USB:-${MOUNTPOINTS}}
++	;;
++    sd)
++	MOUNTPOINTS=${MOUNTPOINTS_SD:-${MOUNTPOINTS}}
++	;;
++esac
+ 
+ if [ "$1" = add ]; then
+ 
+diff --git a/usbmount.conf b/usbmount.conf
+index b265940..98b77eb 100644
+--- a/usbmount.conf
++++ b/usbmount.conf
+@@ -9,8 +9,9 @@ ENABLED=1
+ # removable storage devices.  A newly plugged in device is mounted on
+ # the first directory in this list that exists and on which nothing is
+ # mounted yet.
+-MOUNTPOINTS="/media/usb0 /media/usb1 /media/usb2 /media/usb3
+-             /media/usb4 /media/usb5 /media/usb6 /media/usb7"
++MOUNTPOINTS="/media/storage0 /media/storage1 /media/storage2 /media/storage3"
++MOUNTPOINTS_SD="/media/sdcard0 /media/sdcard1 /media/sdcard2 /media/sdcard3"
++MOUNTPOINTS_USB="/media/udisk0 /media/udisk1 /media/udisk2 /media/udisk3"
+ 
+ # Filesystem types: removable storage devices are only mounted if they
+ # contain a filesystem type which is in this list.
+diff --git a/usbmount.rules b/usbmount.rules
+index 81d657b..b919f12 100644
+--- a/usbmount.rules
++++ b/usbmount.rules
+@@ -1,7 +1,12 @@
+ # Rules for USBmount -*- conf -*-
+ 
+-KERNEL=="sd*", DRIVERS=="sbp2",		ACTION=="add",	RUN+="/usr/share/usbmount/usbmount add"
+-KERNEL=="sd*", SUBSYSTEM=="block",	ACTION=="add",	RUN+="/usr/share/usbmount/usbmount add"
+-KERNEL=="ub*", SUBSYSTEM=="block",	ACTION=="add",	RUN+="/usr/share/usbmount/usbmount add"
+-KERNEL=="sd*",				ACTION=="remove",	RUN+="/usr/share/usbmount/usbmount remove"
+-KERNEL=="ub*",				ACTION=="remove",	RUN+="/usr/share/usbmount/usbmount remove"
++SUBSYSTEM!="block", GOTO="usbmount_end"
++ACTION=="remove", RUN+="/usr/share/usbmount/usbmount remove"
++
++ACTION!="add", GOTO="usbmount_end"
++ENV{ID_FS_TYPE}=="", GOTO="usbmount_end"
++
++KERNEL=="mmcblk*", ATTRS{type}=="SD", RUN+="/usr/share/usbmount/usbmount add sd"
++ENV{ID_BUS}=="usb", RUN+="/usr/share/usbmount/usbmount add usb"
++
++LABEL="usbmount_end"
+-- 
+2.20.1
+

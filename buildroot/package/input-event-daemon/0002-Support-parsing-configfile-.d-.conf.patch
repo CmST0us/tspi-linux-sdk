@@ -1,0 +1,163 @@
+From 9a51dbca603267fd65a64b38e30a356affba38e3 Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Thu, 7 Mar 2019 18:20:44 +0800
+Subject: [PATCH 2/2] Support parsing <configfile>.d/*.conf
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ input-event-daemon.c | 69 ++++++++++++++++++++++++++++++++++++++++++++++------
+ 1 file changed, 61 insertions(+), 8 deletions(-)
+
+diff --git a/input-event-daemon.c b/input-event-daemon.c
+index 2a7b527..a324382 100644
+--- a/input-event-daemon.c
++++ b/input-event-daemon.c
+@@ -4,6 +4,7 @@
+ #include <unistd.h>
+ 
+ #include <ctype.h>
++#include <dirent.h>
+ #include <getopt.h>
+ #include <fcntl.h>
+ #include <errno.h>
+@@ -11,12 +12,15 @@
+ 
+ #include <sys/wait.h>
+ #include <sys/select.h>
++#include <sys/stat.h>
++#include <sys/types.h>
+ 
+ #include <linux/input.h>
+ 
+ #include "input-event-daemon.h"
+ #include "input-event-table.h"
+ 
++#define DEFAULT_CONFIGURE_FILE "/etc/input-event-daemon.conf";
+ 
+ static int key_event_compare(const key_event_t *a, const key_event_t *b) {
+     int i, r_cmp;
+@@ -385,7 +389,7 @@ static void input_parse_event(struct input_event *event, const char *src) {
+ }
+ 
+ 
+-void config_parse_file() {
++void config_parse_file(const char *configfile) {
+     FILE *config_fd;
+     char buffer[512], *line;
+     char *section = NULL;
+@@ -394,9 +398,13 @@ void config_parse_file() {
+     int line_num = 0;
+     int listen_len = 0;
+ 
+-    if((config_fd = fopen(conf.configfile, "r")) == NULL) {
++    if(conf.verbose) {
++        fprintf(stderr, PROGRAM": Start parsing %s...\n", configfile);
++    }
++
++    if((config_fd = fopen(configfile, "r")) == NULL) {
+         fprintf(stderr, PROGRAM": fopen(%s): %s\n",
+-            conf.configfile, strerror(errno));
++            configfile, strerror(errno));
+         exit(EXIT_FAILURE);
+     }
+ 
+@@ -461,7 +469,7 @@ void config_parse_file() {
+         print_error:
+         if(error != NULL) {
+             fprintf(stderr, PROGRAM": %s (%s:%d)\n",
+-                error, conf.configfile, line_num);
++                error, configfile, line_num);
+         }
+ 
+ 
+@@ -483,6 +491,46 @@ void config_parse_file() {
+     fclose(config_fd);
+ }
+ 
++//Base on triggerhappy's trigger.c
++static int accept_configure_file(const struct dirent *entry) {
++    const char *suffix = ".conf";
++    const char *name = entry->d_name;
++    char *end = strstr( name, suffix );
++    if ( end && end[ strlen(suffix) ] == '\0' ) {
++        return 1;
++    } else {
++        return 0;
++    }
++}
++
++//Base on triggerhappy's trigger.c
++void config_parse_dir(const char *path) {
++    struct stat sb;
++    struct dirent **namelist;
++    int n;
++
++    if (stat(path, &sb) < 0 || !S_ISDIR(sb.st_mode))
++        return;
++
++    n = scandir(path, &namelist, accept_configure_file, alphasort);
++    if ( n < 0)
++        return;
++
++    while (n--) {
++        struct stat sf;
++        char *file = namelist[n]->d_name;
++        char *sep = "/";
++        char fpath[strlen(path)+strlen(sep)+strlen(file) + 1];
++        strcpy(fpath, path);
++        strcat(fpath, sep);
++        strcat(fpath, file);
++        if (stat(fpath, &sf) != -1 && S_ISREG(sf.st_mode))
++            config_parse_file(fpath);
++        free(namelist[n]);
++    }
++    free(namelist);
++}
++
+ static const char *config_key_event(char *shortcut, char *exec) {
+     int i;
+     char *code, *modifier;
+@@ -619,8 +667,6 @@ static char *config_trim_string(char *str) {
+ void daemon_init() {
+     int i;
+ 
+-    conf.configfile  = "/etc/input-event-daemon.conf";
+-
+     conf.monitor     = 0;
+     conf.verbose     = 0;
+     conf.daemon      = 1;
+@@ -814,6 +860,7 @@ static void daemon_print_version() {
+ }
+ 
+ int main(int argc, char *argv[]) {
++    const char *configfile = DEFAULT_CONFIGURE_FILE;
+     int result, arguments = 0, listen_len = 0;
+     static const struct option long_options[] = {
+         { "monitor",   no_argument,       0, 'm' },
+@@ -859,7 +906,7 @@ int main(int argc, char *argv[]) {
+                 return EXIT_SUCCESS;
+                 break;
+             case 'c': /* config */
+-                conf.configfile = optarg;
++                configfile = optarg;
+                 break;
+             case 'v': /* verbose */
+                 conf.verbose = 1;
+@@ -891,7 +938,13 @@ int main(int argc, char *argv[]) {
+         if (!conf.listen[0])
+             input_open_all_listener();
+     } else {
+-        config_parse_file();
++        char path[strlen(configfile) + 3];
++
++        config_parse_file(configfile);
++
++        strcpy(path, configfile);
++        strcat(path, ".d");
++        config_parse_dir(path);
+     }
+ 
+     daemon_start_listener();
+-- 
+2.11.0
+

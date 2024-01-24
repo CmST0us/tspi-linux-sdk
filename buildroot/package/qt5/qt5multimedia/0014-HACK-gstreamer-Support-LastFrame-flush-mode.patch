@@ -1,0 +1,230 @@
+From acd6206d7925ba626c36ed254e5db932ad571cdd Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Tue, 30 Mar 2021 06:32:34 +0800
+Subject: [PATCH 14/17] HACK: gstreamer: Support LastFrame flush mode
+
+Hold last frame for VideoOutput.LastFrame.
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ src/gsttools/qgstreamerplayersession.cpp        | 17 +++++++++++++++++
+ src/gsttools/qgstreamervideooverlay.cpp         |  4 ++++
+ src/gsttools/qgstreamervideooverlay_p.h         |  5 +++++
+ src/gsttools/qgstreamervideowindow.cpp          | 10 ++++++++++
+ src/gsttools/qgstreamervideowindow_p.h          |  3 +++
+ src/multimedia/controls/qvideowindowcontrol.h   |  3 +++
+ .../qdeclarativevideooutput.cpp                 |  4 ++++
+ .../qdeclarativevideooutput_backend_p.h         |  2 ++
+ .../qdeclarativevideooutput_p.h                 |  6 +++---
+ .../qdeclarativevideooutput_window.cpp          |  9 +++++++++
+ .../qdeclarativevideooutput_window_p.h          |  2 ++
+ 11 files changed, 62 insertions(+), 3 deletions(-)
+
+diff --git a/src/gsttools/qgstreamerplayersession.cpp b/src/gsttools/qgstreamerplayersession.cpp
+index cc0681b..b0a37f8 100755
+--- a/src/gsttools/qgstreamerplayersession.cpp
++++ b/src/gsttools/qgstreamerplayersession.cpp
+@@ -63,6 +63,8 @@
+ #include <qvideorenderercontrol.h>
+ #include <QUrlQuery>
+ 
++#include <qvideowindowcontrol.h>
++
+ //#define DEBUG_PLAYBIN
+ 
+ QT_BEGIN_NAMESPACE
+@@ -1959,6 +1961,21 @@ void QGstreamerPlayerSession::removeProbe(QGstreamerAudioProbeControl* probe)
+ // and setSeekable() values.
+ void QGstreamerPlayerSession::endOfMediaReset()
+ {
++    auto window = qobject_cast<QVideoWindowControl *>(m_videoOutput);
++    if (window) {
++        switch (window->flushMode()) {
++        case Qt::LastFrame:
++            pause();
++            return;
++        case Qt::FirstFrame:
++            qWarning()<<"FirstFrame flush mode not supported";
++            seek(0);
++            break;
++        default:
++            break;
++        }
++    }
++
+     if (m_renderer)
+         m_renderer->stopRenderer();
+ 
+diff --git a/src/gsttools/qgstreamervideooverlay.cpp b/src/gsttools/qgstreamervideooverlay.cpp
+index 837fe92..2a8a8e8 100644
+--- a/src/gsttools/qgstreamervideooverlay.cpp
++++ b/src/gsttools/qgstreamervideooverlay.cpp
+@@ -711,6 +711,10 @@ void QGstreamerVideoOverlay::updateIsActive()
+ 
+     bool newIsActive = (state == GST_STATE_PLAYING || (state == GST_STATE_PAUSED && showPreroll));
+ 
++    // HACK: Pretend active when pausing to hold video frame
++    if (m_flushMode != Qt::EmptyFrame)
++        newIsActive |= m_isActive && state == GST_STATE_PAUSED;
++
+     if (newIsActive != m_isActive) {
+         m_isActive = newIsActive;
+         emit activeChanged();
+diff --git a/src/gsttools/qgstreamervideooverlay_p.h b/src/gsttools/qgstreamervideooverlay_p.h
+index 32b3d93..5628862 100644
+--- a/src/gsttools/qgstreamervideooverlay_p.h
++++ b/src/gsttools/qgstreamervideooverlay_p.h
+@@ -100,6 +100,9 @@ public:
+     bool processSyncMessage(const QGstreamerMessage &message) override;
+     bool processBusMessage(const QGstreamerMessage &message) override;
+ 
++    Qt::FlushMode flushMode() const { return m_flushMode; };
++    void setFlushMode(Qt::FlushMode mode) { m_flushMode = mode; };
++
+ Q_SIGNALS:
+     void nativeVideoSizeChanged();
+     void activeChanged();
+@@ -121,6 +124,8 @@ private:
+     QGstreamerSinkProperties *m_sinkProperties = nullptr;
+     WId m_windowId = 0;
+     QRect m_rect;
++
++    Qt::FlushMode m_flushMode = Qt::EmptyFrame;
+ };
+ 
+ QT_END_NAMESPACE
+diff --git a/src/gsttools/qgstreamervideowindow.cpp b/src/gsttools/qgstreamervideowindow.cpp
+index e7e3c50..f813b79 100644
+--- a/src/gsttools/qgstreamervideowindow.cpp
++++ b/src/gsttools/qgstreamervideowindow.cpp
+@@ -177,3 +177,13 @@ QSize QGstreamerVideoWindow::nativeSize() const
+ {
+     return m_videoOverlay.nativeVideoSize();
+ }
++
++Qt::FlushMode QGstreamerVideoWindow::flushMode() const
++{
++    return m_videoOverlay.flushMode();
++}
++
++void QGstreamerVideoWindow::setFlushMode(Qt::FlushMode mode)
++{
++    m_videoOverlay.setFlushMode(mode);
++}
+diff --git a/src/gsttools/qgstreamervideowindow_p.h b/src/gsttools/qgstreamervideowindow_p.h
+index a0ed859..b46e580 100644
+--- a/src/gsttools/qgstreamervideowindow_p.h
++++ b/src/gsttools/qgstreamervideowindow_p.h
+@@ -110,6 +110,9 @@ public:
+     bool processBusMessage(const QGstreamerMessage &message) override;
+     bool isReady() const override { return m_windowId != 0; }
+ 
++    Qt::FlushMode flushMode() const override;
++    void setFlushMode(Qt::FlushMode mode) override;
++
+ signals:
+     void sinkChanged();
+     void readyChanged(bool);
+diff --git a/src/multimedia/controls/qvideowindowcontrol.h b/src/multimedia/controls/qvideowindowcontrol.h
+index 510a299..cb22c7b 100644
+--- a/src/multimedia/controls/qvideowindowcontrol.h
++++ b/src/multimedia/controls/qvideowindowcontrol.h
+@@ -85,6 +85,9 @@ public:
+     virtual int saturation() const = 0;
+     virtual void setSaturation(int saturation) = 0;
+ 
++    virtual Qt::FlushMode flushMode() const = 0;
++    virtual void setFlushMode(Qt::FlushMode mode) = 0;
++
+ Q_SIGNALS:
+     void fullScreenChanged(bool fullScreen);
+     void brightnessChanged(int brightness);
+diff --git a/src/qtmultimediaquicktools/qdeclarativevideooutput.cpp b/src/qtmultimediaquicktools/qdeclarativevideooutput.cpp
+index d2f735b..ae23b65 100644
+--- a/src/qtmultimediaquicktools/qdeclarativevideooutput.cpp
++++ b/src/qtmultimediaquicktools/qdeclarativevideooutput.cpp
+@@ -921,7 +921,11 @@ void QDeclarativeVideoOutput::setFlushMode(FlushMode mode)
+         return;
+ 
+     m_flushMode = mode;
++
+     emit flushModeChanged();
++
++    if (m_backend)
++        m_backend->updateFlushMode();
+ }
+ 
+ QT_END_NAMESPACE
+diff --git a/src/qtmultimediaquicktools/qdeclarativevideooutput_backend_p.h b/src/qtmultimediaquicktools/qdeclarativevideooutput_backend_p.h
+index da99b38..677853b 100644
+--- a/src/qtmultimediaquicktools/qdeclarativevideooutput_backend_p.h
++++ b/src/qtmultimediaquicktools/qdeclarativevideooutput_backend_p.h
+@@ -94,6 +94,8 @@ public:
+     virtual void releaseResources() { }
+     virtual void invalidateSceneGraph() { }
+ 
++    virtual void updateFlushMode() { };
++
+ protected:
+     QDeclarativeVideoOutput *q;
+     QPointer<QMediaService> m_service;
+diff --git a/src/qtmultimediaquicktools/qdeclarativevideooutput_p.h b/src/qtmultimediaquicktools/qdeclarativevideooutput_p.h
+index d14731c..010e08c 100644
+--- a/src/qtmultimediaquicktools/qdeclarativevideooutput_p.h
++++ b/src/qtmultimediaquicktools/qdeclarativevideooutput_p.h
+@@ -89,9 +89,9 @@ public:
+ 
+     enum FlushMode
+     {
+-        EmptyFrame,
+-        FirstFrame,
+-        LastFrame
++        EmptyFrame = Qt::EmptyFrame,
++        FirstFrame = Qt::FirstFrame,
++        LastFrame = Qt::LastFrame
+     };
+ 
+     enum FillMode
+diff --git a/src/qtmultimediaquicktools/qdeclarativevideooutput_window.cpp b/src/qtmultimediaquicktools/qdeclarativevideooutput_window.cpp
+index bae29e1..c7204a3 100644
+--- a/src/qtmultimediaquicktools/qdeclarativevideooutput_window.cpp
++++ b/src/qtmultimediaquicktools/qdeclarativevideooutput_window.cpp
+@@ -57,6 +57,12 @@ QDeclarativeVideoWindowBackend::~QDeclarativeVideoWindowBackend()
+     releaseControl();
+ }
+ 
++void QDeclarativeVideoWindowBackend::updateFlushMode()
++{
++    if (m_videoWindowControl)
++        m_videoWindowControl->setFlushMode((Qt::FlushMode)q->flushMode());
++}
++
+ bool QDeclarativeVideoWindowBackend::init(QMediaService *service)
+ {
+     if (QMediaControl *control = service->requestControl(QVideoWindowControl_iid)) {
+@@ -66,6 +72,9 @@ bool QDeclarativeVideoWindowBackend::init(QMediaService *service)
+             m_service = service;
+             QObject::connect(m_videoWindowControl.data(), SIGNAL(nativeSizeChanged()),
+                              q, SLOT(_q_updateNativeSize()));
++
++            updateFlushMode();
++
+             return true;
+         }
+     }
+diff --git a/src/qtmultimediaquicktools/qdeclarativevideooutput_window_p.h b/src/qtmultimediaquicktools/qdeclarativevideooutput_window_p.h
+index eb1814b..b8990c8 100644
+--- a/src/qtmultimediaquicktools/qdeclarativevideooutput_window_p.h
++++ b/src/qtmultimediaquicktools/qdeclarativevideooutput_window_p.h
+@@ -73,6 +73,8 @@ public:
+     QAbstractVideoSurface *videoSurface() const override;
+     QRectF adjustedViewport() const override;
+ 
++    void updateFlushMode() override;
++
+ private:
+     QPointer<QVideoWindowControl> m_videoWindowControl;
+     bool m_visible;
+-- 
+2.20.1
+

@@ -1,0 +1,5 @@
+netbase
+net-tools
+network-manager
+ethtool
+curl

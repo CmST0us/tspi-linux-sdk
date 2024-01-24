@@ -1,0 +1,6 @@
+config BR2_PACKAGE_SOURCE_HAN_SANS_CN
+	bool "Source Han Sans CN"
+	help
+	  Adobe OpenType Pan-CJK font family for Simplified Chinese.
+
+	  https://github.com/adobe-fonts/source-han-sans

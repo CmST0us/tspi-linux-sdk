@@ -1,0 +1,21 @@
+From 165f496bc6904f1bf31902c5a4c3bd4d71042333 Mon Sep 17 00:00:00 2001
+From: Eddie Cai <eddie.cai.linux@gmail.com>
+Date: Thu, 17 Mar 2022 09:53:45 +0800
+Subject: [PATCH 3/3] add cache to .gitignore
+
+---
+ .gitignore | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/.gitignore b/.gitignore
+index a6883c2..66a9cb2 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -7,3 +7,4 @@ SKIP_IMAGES
+ .pc
+ *-pc
+ apt-cacher-ng/
++cache
+-- 
+2.20.1
+

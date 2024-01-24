@@ -1,0 +1,11 @@
+[Unit]
+Description=rockchip test auto reboot service
+
+[Service]
+Type=forking
+User=root
+ExecStart=/etc/init.d/S99-auto-reboot start
+ExecStop=/etc/init.d/S99-auto-reboot stop
+
+[Install]
+WantedBy=multi-user.target

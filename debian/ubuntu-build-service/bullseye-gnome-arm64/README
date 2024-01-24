@@ -1,0 +1,16 @@
+* To build binary image:
+  * install live-build qemu-user-static
+  * run configure
+  * run make
+
+* Scripts:
+  * configure
+  * Makefile
+
+* Configuration Layout
+
+`-- ./config
+
+* Customization Layout
+
+`-- ./customization

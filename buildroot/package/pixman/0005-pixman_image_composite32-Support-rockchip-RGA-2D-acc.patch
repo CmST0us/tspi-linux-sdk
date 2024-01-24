@@ -1,0 +1,353 @@
+From 3e5a0cdf3bea40440f5940db6b7d62d74847f258 Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Fri, 1 Nov 2019 17:55:06 +0800
+Subject: [PATCH 5/6] pixman_image_composite32: Support rockchip RGA 2D accel
+
+Disabled by default, set env PIXMAN_USE_RGA=1 to enable.
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ configure.ac       |   7 ++
+ pixman/Makefile.am |   2 +-
+ pixman/pixman.c    | 278 +++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 286 insertions(+), 1 deletion(-)
+
+diff --git a/configure.ac b/configure.ac
+index 43e9b20..5db5f9b 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -187,6 +187,13 @@ PIXMAN_CHECK_CFLAG([-Wdeclaration-after-statement])
+ PIXMAN_CHECK_CFLAG([-Wno-unused-local-typedefs])
+ PIXMAN_CHECK_CFLAG([-fno-strict-aliasing])
+ 
++dnl check for rockchip RGA
++PKG_CHECK_MODULES(RGA, [librga],
++                  AC_DEFINE(HAVE_RGA, 1, [Have rockchip RGA])],
++                  AC_MSG_NOTICE([Without rockchip RGA]))
++AC_SUBST(RGA_CFLAGS)
++AC_SUBST(RGA_LIBS)
++
+ dnl =========================================================================
+ dnl OpenMP for the test suite?
+ dnl
+diff --git a/pixman/Makefile.am b/pixman/Makefile.am
+index 8f780a1..a9669ab 100644
+--- a/pixman/Makefile.am
++++ b/pixman/Makefile.am
+@@ -3,7 +3,7 @@ include $(top_srcdir)/pixman/Makefile.sources
+ lib_LTLIBRARIES = libpixman-1.la
+ 
+ libpixman_1_la_LDFLAGS = -version-info $(LT_VERSION_INFO) -no-undefined @PTHREAD_LDFLAGS@ 
+-libpixman_1_la_LIBADD = @PTHREAD_LIBS@ -lm
++libpixman_1_la_LIBADD = @PTHREAD_LIBS@ -lm $(RGA_LIBS)
+ libpixman_1_la_SOURCES = $(libpixman_sources) $(libpixman_headers)
+ 
+ libpixmanincludedir = $(includedir)/pixman-1
+diff --git a/pixman/pixman.c b/pixman/pixman.c
+index cd7479a..371e421 100644
+--- a/pixman/pixman.c
++++ b/pixman/pixman.c
+@@ -28,8 +28,19 @@
+ #endif
+ #include "pixman-private.h"
+ 
++#include <math.h>
+ #include <stdlib.h>
+ 
++#ifdef HAVE_RGA
++#include <rga/rga.h>
++#include <rga/RgaApi.h>
++#endif
++
++#define CLAMP(v, low, high)                                             \
++    (((v) < low)? low : (((v) > high) ? high : (v)))
++
++#define ANGLE(n) ((n) < 0 ? (n) + 360 : (n))
++
+ pixman_implementation_t *global_implementation;
+ 
+ #ifdef TOOLCHAIN_SUPPORTS_ATTRIBUTE_CONSTRUCTOR
+@@ -540,6 +551,267 @@ analyze_extent (pixman_image_t       *image,
+     return TRUE;
+ }
+ 
++#ifdef HAVE_RGA
++static RgaSURF_FORMAT
++rga_get_format (pixman_image_t * image)
++{
++    switch (image->bits.format)
++    {
++    case PIXMAN_a8r8g8b8:
++    case PIXMAN_x8r8g8b8:
++	return RK_FORMAT_BGRA_8888;
++    case PIXMAN_a8b8g8r8:
++	return RK_FORMAT_RGBA_8888;
++    case PIXMAN_x8b8g8r8:
++	return RK_FORMAT_RGBX_8888;
++    case PIXMAN_r8g8b8:
++	return RK_FORMAT_BGR_888;
++    case PIXMAN_b8g8r8:
++	return RK_FORMAT_RGB_888;
++    case PIXMAN_r5g6b5:
++	return RK_FORMAT_RGB_565;
++    case PIXMAN_a1b5g5r5:
++    case PIXMAN_x1b5g5r5:
++	return RK_FORMAT_RGBA_5551;
++    case PIXMAN_yv12:
++	return RK_FORMAT_YCrCb_420_P;
++    case PIXMAN_i420:
++	return RK_FORMAT_YCbCr_420_P;
++    case PIXMAN_nv12:
++	return RK_FORMAT_YCbCr_420_SP;
++    case PIXMAN_nv16:
++	return RK_FORMAT_YCbCr_422_SP;
++    default:
++	return RK_FORMAT_UNKNOWN;
++    }
++}
++
++static pixman_bool_t
++rga_check_image (pixman_image_t * image)
++{
++    if (!image)
++	return FALSE;
++
++    /* TODO: Support this */
++    if (image->bits.rowstride <= 0)
++	return FALSE;
++
++    /* RGA requires image width/height larger than 2 */
++    if (image->bits.width <= 2 || image->bits.height <= 2)
++	return FALSE;
++
++    return rga_get_format (image) != RK_FORMAT_UNKNOWN;
++}
++
++static pixman_bool_t
++pixman_transform_to_rga_rotate (pixman_transform_t * transform, int * rotate)
++{
++    pixman_vector_t v;
++    double x, y, dx, dy;
++    int r1, r2;
++
++    *rotate = 0;
++
++    if (!transform)
++	return TRUE;
++
++    if (transform->matrix[2][0] || transform->matrix[2][1] ||
++	!transform->matrix[2][2])
++        return FALSE;
++
++    dx = transform->matrix[0][2] / (double) transform->matrix[2][2];
++    dy = transform->matrix[1][2] / (double) transform->matrix[2][2];
++
++    v.vector[0] = pixman_int_to_fixed (1);
++    v.vector[1] = pixman_int_to_fixed (0);
++    v.vector[2] = pixman_fixed_1;
++    if (!pixman_transform_point_3d (transform, &v))
++	return FALSE;
++
++    x = pixman_fixed_to_double (v.vector[0]) - dx;
++    y = pixman_fixed_to_double (v.vector[1]) - dy;
++    r1 = (int) ANGLE (atan2 (y, x) * 180 / M_PI);
++
++    /* Only support 0/90/180/270 rotations */
++    if (r1 % 90)
++        return FALSE;
++
++    v.vector[0] = pixman_int_to_fixed (0);
++    v.vector[1] = pixman_int_to_fixed (1);
++    v.vector[2] = pixman_fixed_1;
++    if (!pixman_transform_point_3d (transform, &v))
++	return FALSE;
++
++    x = pixman_fixed_to_double (v.vector[0]) - dx;
++    y = pixman_fixed_to_double (v.vector[1]) - dy;
++    r2 = (int) ANGLE (atan2 (y, x) * 180 / M_PI - 90);
++
++    /* TODO: Support reflect */
++    if (r1 != r2)
++	return FALSE;
++
++    /* Reverse the rotation */
++    if (r1 == 90)
++        *rotate = HAL_TRANSFORM_ROT_270;
++    else if (r1 == 180)
++        *rotate = HAL_TRANSFORM_ROT_180;
++    else if (r1 == 270)
++        *rotate = HAL_TRANSFORM_ROT_90;
++
++    return TRUE;
++}
++
++static pixman_bool_t
++pixman_composite_try_rga (pixman_composite_info_t * info,
++			  const pixman_box32_t * pbox, int n,
++			  pixman_implementation_t * imp,
++			  pixman_composite_func_t func,
++			  int src_x, int src_y, int dest_x, int dest_y)
++{
++    pixman_image_t * src = info->src_image;
++    pixman_image_t * mask = info->mask_image;
++    pixman_image_t * dest = info->dest_image;
++    pixman_transform_t * transform;
++    rga_info_t src_info = { 0 };
++    rga_info_t dst_info = { 0 };
++    int src_stride, is_yuv;
++
++    static int rga_supported = 1;
++    static int rga_inited = 0;
++    const char *buf;
++
++    buf = getenv ("PIXMAN_USE_RGA");
++    if (!buf || strcmp (buf, "1"))
++	return FALSE;
++
++    if (!rga_supported)
++	return FALSE;
++
++    if (!rga_inited) {
++	if (c_RkRgaInit () < 0) {
++	    rga_supported = 0;
++	    return FALSE;
++	}
++	rga_inited = 1;
++    }
++
++    if (mask || src == dest)
++	return FALSE;
++
++    if (!rga_check_image (src) || !rga_check_image (dest))
++	return FALSE;
++
++    /* TODO: Support more op */
++    if (info->op == PIXMAN_OP_OVER)
++	src_info.blend = 0xFF0405;
++    else if (info->op != PIXMAN_OP_SRC)
++	return FALSE;
++
++    /* TODO: Support SOLID */
++    if (src->type != BITS)
++	return FALSE;
++
++    transform = src->common.transform;
++    if (!pixman_transform_to_rga_rotate (transform, &src_info.rotation))
++	return FALSE;
++
++    src_info.mmuFlag = 1;
++    src_info.virAddr = src->bits.bits;
++
++    dst_info.mmuFlag = 1;
++    dst_info.virAddr = dest->bits.bits;
++
++    switch (src->bits.format) {
++    case PIXMAN_yv12:
++    case PIXMAN_i420:
++    case PIXMAN_nv12:
++    case PIXMAN_nv16:
++	is_yuv = 1;
++
++	/* rowstride = rowstride_bytes / (int) sizeof (uint32_t) */
++	src_stride = src->bits.rowstride * (int) sizeof (uint32_t);
++	break;
++    default:
++	is_yuv = 0;
++	src_stride = src->bits.rowstride;
++	break;
++    }
++
++    while (n--)
++    {
++	pixman_box16_t box;
++	int sx, sy, sw, sh, dx, dy, dw, dh;
++
++	dx = pbox[n].x1;
++	dy = pbox[n].y1;
++	dw = pbox[n].x2 - pbox[n].x1;
++	dh = pbox[n].y2 - pbox[n].y1;
++
++	box.x1 = pbox[n].x1 + src_x - dest_x;
++	box.y1 = pbox[n].y1 + src_y - dest_y;
++	box.x2 = pbox[n].x2 + src_x - dest_x;
++	box.y2 = pbox[n].y2 + src_y - dest_y;
++
++	if (transform)
++	    pixman_transform_bounds (transform, &box);
++
++	sx = CLAMP(box.x1, 0, src_stride);
++	sy = CLAMP(box.y1, 0, src->bits.height);
++	sw = CLAMP(box.x2 - box.x1, 0, src_stride);
++	sh = CLAMP(box.y2 - box.y1, 0, src->bits.height);
++
++	/* TODO: Support repeat? */
++	if (sw != dw || sh != dh)
++	    goto bail;
++
++	if (is_yuv) {
++	    /* RGA requires yuv image rect align to 2 */
++	    sx = (sx + 1) & ~1;
++	    sy = (sy + 1) & ~1;
++	    sw = sw & ~1;
++	    sh = sh & ~1;
++
++	    /* RGA requires yuv image stride align to 2 */
++	    if (src_stride % 2)
++		goto bail;
++	}
++
++	/* RGA requires w >= 2 and h >= 2 */
++	if (sw < 2 || sh < 2 || dw < 2 || dh < 2)
++	    goto bail;
++
++	/* RGA has scale limits */
++	if ((double) sw / dw > 16 || (double) dw / sw > 16 ||
++	    (double) sh / dh > 16 || (double) dh / sh > 16)
++	    goto bail;
++
++	rga_set_rect (&src_info.rect, sx, sy, sw, sh,
++		      src_stride, src->bits.height, rga_get_format (src));
++
++	rga_set_rect (&dst_info.rect, dx, dy, dw, dh,
++		      dest->bits.rowstride, dest->bits.height,
++		      rga_get_format (dest));
++
++	if (c_RkRgaBlit (&src_info, &dst_info, NULL) < 0)
++	    goto bail;
++
++	continue;
++
++bail:
++	info->src_x = pbox[n].x1 + src_x - dest_x;
++	info->src_y = pbox[n].y1 + src_y - dest_y;
++	info->dest_x = pbox[n].x1;
++	info->dest_y = pbox[n].y1;
++	info->width = pbox[n].x2 - pbox[n].x1;
++	info->height = pbox[n].y2 - pbox[n].y1;
++
++	func (imp, info);
++    }
++
++    return TRUE;
++}
++#endif
++
+ /*
+  * Work around GCC bug causing crashes in Mozilla with SSE2
+  *
+@@ -686,6 +958,12 @@ pixman_image_composite32 (pixman_op_t      op,
+ 
+     pbox = pixman_region32_rectangles (&region, &n);
+ 
++#ifdef HAVE_RGA
++    if (pixman_composite_try_rga (&info, pbox, n, imp, func,
++				  src_x, src_y, dest_x, dest_y))
++	goto out;
++#endif
++
+     while (n--)
+     {
+ 	info.src_x = pbox->x1 + src_x - dest_x;
+-- 
+2.20.1
+

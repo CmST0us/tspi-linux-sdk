@@ -1,0 +1,47 @@
+#include "base/base.config"
+#include "chips/rk3036_arm.config"
+#include "font/chinese.config"
+#include "fs/ntfs.config"
+#include "gpu/gpu.config"
+#include "multimedia/audio.config"
+#include "multimedia/gst/audio.config"
+#include "multimedia/gst/rtsp.config"
+#include "multimedia/gst/video.config"
+#include "multimedia/mpp.config"
+#include "wifibt/bt.config"
+#include "wifibt/wireless.config"
+#include "benchmark.config"
+#include "debug.config"
+#include "powermanager.config"
+#include "weston.config"
+# BR2_PREFER_ROCKCHIP_RGA is not set
+BR2_PACKAGE_ANDROID_TOOLS=y
+BR2_PACKAGE_ANDROID_TOOLS_STATIC=y
+
+BR2_PACKAGE_BUSYBOX=y
+BR2_PACKAGE_BUSYBOX_STATIC=y
+
+BR2_PACKAGE_GDB=y
+BR2_PACKAGE_GDB_STATIC=y
+BR2_PACKAGE_GDB_DEBUGGER=y
+
+BR2_PACKAGE_LIBDRM=y
+BR2_PACKAGE_LIBDRM_STATIC=y
+
+BR2_PACKAGE_LINUX_TOOLS_PERF=y
+BR2_PACKAGE_LINUX_TOOLS_PERF_STATIC=y
+
+BR2_PACKAGE_NCURSES=y
+BR2_PACKAGE_NCURSES_STATIC=y
+
+BR2_PACKAGE_PROCPS_NG=y
+BR2_PACKAGE_PROCPS_NG_STATIC=y
+
+BR2_PACKAGE_PROCRANK_LINUX=y
+BR2_PACKAGE_PROCRANK_LINUX_STATIC=y
+
+BR2_PACKAGE_RKTOOLKIT=y
+BR2_PACKAGE_RKTOOLKIT_STATIC=y
+
+BR2_PACKAGE_STRACE=y
+BR2_PACKAGE_STRACE_STATIC=y

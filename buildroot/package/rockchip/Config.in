@@ -1,0 +1,146 @@
+menuconfig BR2_PACKAGE_ROCKCHIP
+	bool "Rockchip Platform"
+
+if BR2_PACKAGE_ROCKCHIP
+
+config BR2_PACKAGE_ROCKCHIP_HAS_ISP1
+	bool
+	help
+	  Has Rockchip ISP1
+
+config BR2_PACKAGE_ROCKCHIP_HAS_ISP2
+	bool
+	help
+	  Has Rockchip ISP2
+
+config BR2_PACKAGE_ROCKCHIP_HAS_ISP3
+	bool
+	help
+	  Has Rockchip ISP3
+
+choice
+	default BR2_PACKAGE_RK3588
+	prompt "Rockchip SoC"
+
+config BR2_PACKAGE_PX30
+	bool "px30 chip"
+	select BR2_PACKAGE_ROCKCHIP_HAS_ISP1
+	help
+	  Use rockchip's px30 chip
+
+config BR2_PACKAGE_RK3036
+	bool "rk3036 chip"
+	help
+	  Use rockchip's rk3036 chip
+
+config BR2_PACKAGE_RK312X
+	bool "rk312x chip"
+	select BR2_PACKAGE_ROCKCHIP_HAS_ISP1
+	help
+	  Use rockchip's rk312x chip
+
+config BR2_PACKAGE_RK3288
+	bool "rk3288 chip"
+	select BR2_PACKAGE_ROCKCHIP_HAS_ISP1
+	help
+	  Use rockchip's rk3288 chip
+
+config BR2_PACKAGE_RK3308
+	bool "rk3308 chip"
+	help
+	  Use rockchip's rk3308 chip
+
+config BR2_PACKAGE_RK3326
+	bool "rk3326 chip"
+	select BR2_PACKAGE_ROCKCHIP_HAS_ISP1
+	help
+	  Use rockchip's rk3326 chip
+
+config BR2_PACKAGE_RK3358
+	bool "rk3358 chip"
+	select BR2_PACKAGE_ROCKCHIP_HAS_ISP1
+	help
+	  Use rockchip's rk3358 chip
+
+config BR2_PACKAGE_RK3399
+	bool "rk3399 chip"
+	select BR2_PACKAGE_ROCKCHIP_HAS_ISP1
+	help
+	  Use Rockchip's rk3399 SoC
+
+config BR2_PACKAGE_RK3399PRO
+	bool "rk3399pro chip"
+	select BR2_PACKAGE_ROCKCHIP_HAS_ISP1
+	help
+	  Use Rockchip's rk3399pro SoC
+
+config BR2_PACKAGE_RK3528
+	bool "rk3528 chip"
+	help
+	  Use Rockchip's rk3528 SoC
+
+config BR2_PACKAGE_RK3562
+	bool "rk3562 chip"
+	select BR2_PACKAGE_ROCKCHIP_HAS_ISP2
+	help
+	  Use Rockchip's rk3562 SoC
+
+config BR2_PACKAGE_RK3566_RK3568
+	bool "rk3566 or rk3568 chip"
+	select BR2_PACKAGE_ROCKCHIP_HAS_ISP2
+	help
+	  Use Rockchip's rk3566 or rk3568 SoC
+
+config BR2_PACKAGE_RK3588
+	bool "rk3588"
+	select BR2_PACKAGE_ROCKCHIP_HAS_ISP3
+	help
+	  Use Rockchip's rk3588 SoC
+
+endchoice
+
+# Camera Engine packages
+config BR2_PACKAGE_CAMERA_ENGINE
+	bool "Rockchip Camera Engine For ISP"
+	depends on BR2_PACKAGE_ROCKCHIP_HAS_ISP1 || BR2_PACKAGE_ROCKCHIP_HAS_ISP2 || BR2_PACKAGE_ROCKCHIP_HAS_ISP3
+	select BR2_PACKAGE_CAMERA_ENGINE_RKISP if BR2_PACKAGE_ROCKCHIP_HAS_ISP1
+	select BR2_PACKAGE_CAMERA_ENGINE_RKAIQ if BR2_PACKAGE_ROCKCHIP_HAS_ISP2
+	select BR2_PACKAGE_CAMERA_ENGINE_RKAIQ if BR2_PACKAGE_ROCKCHIP_HAS_ISP3
+	help
+	  Depend on Chip Type, there are different camera_engine packages.
+	  Enable this config to choose camera_engine package by chip automatically.
+
+menu "Rockchip BSP packages"
+	source "package/rockchip/camera-engine-rkaiq/Config.in"
+	source "package/rockchip/camera-engine-rkisp/Config.in"
+	source "package/rockchip/gstreamer1-rockchip/Config.in"
+	source "package/rockchip/libv4l-rkmpp/Config.in"
+	source "package/rockchip/npu_powerctrl/Config.in"
+	source "package/rockchip/npu_powerctrl_combine/Config.in"
+	source "package/rockchip/n4/Config.in"
+	source "package/rockchip/recovery/Config.in"
+	source "package/rockchip/rknpu/Config.in"
+	source "package/rockchip/rknpu2/Config.in"
+	source "package/rockchip/rknpu-fw/Config.in"
+	source "package/rockchip/rknn_demo/Config.in"
+	source "package/rockchip/rkscript/Config.in"
+	source "package/rockchip/rktoolkit/Config.in"
+	source "package/rockchip/rkupdate/Config.in"
+	source "package/rockchip/rkwifibt/Config.in"
+	source "package/rockchip/rkwifibt-app/Config.in"
+	source "package/rockchip/rockchip-alsa-config/Config.in"
+	source "package/rockchip/rockchip-rga/Config.in"
+	source "package/rockchip/rockchip-mali/Config.in"
+	source "package/rockchip/rockchip-mali-nvr/Config.in"
+	source "package/rockchip/rockchip-mpp/Config.in"
+	source "package/rockchip/rockchip-test/Config.in"
+	source "package/rockchip/rockit/Config.in"
+	source "package/rockchip/tee-user-app/Config.in"
+	source "package/rockchip/slt_gpu_light/Config.in"
+endmenu
+
+menu "Rockchip Qt demos"
+	source "package/rockchip/apps/Config.in"
+endmenu
+
+endif

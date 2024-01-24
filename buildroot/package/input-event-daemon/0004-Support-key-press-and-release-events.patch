@@ -1,0 +1,119 @@
+From cba3de4125c7e91d8e9171199aa79da1a1dbd41a Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Tue, 21 Apr 2020 17:53:45 +0800
+Subject: [PATCH] Support key press and release events
+
+For example:
+[Keys]
+POWER:1        = /usr/bin/power-key.sh press
+POWER:0        = /usr/bin/power-key.sh release
+
+NOTE: Modifier events are only triggerred on release.
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ input-event-daemon.c | 30 +++++++++++++++++++++---------
+ input-event-daemon.h |  1 +
+ 2 files changed, 22 insertions(+), 9 deletions(-)
+
+diff --git a/input-event-daemon.c b/input-event-daemon.c
+index b5651a6..4bf2a33 100644
+--- a/input-event-daemon.c
++++ b/input-event-daemon.c
+@@ -36,7 +36,7 @@ static int key_event_compare(const key_event_t *a, const key_event_t *b) {
+             }
+         }
+     }
+-    return 0;
++    return a->value - b->value;
+ }
+ 
+ static const char *key_event_name(unsigned int code) {
+@@ -77,6 +77,8 @@ static key_event_t
+         .modifier_n = 0
+     };
+ 
++    current_key_event.value = pressed;
++
+     if(pressed) {
+ 
+         /* ignore if repeated */
+@@ -148,7 +150,9 @@ static key_event_t
+                 sizeof(const char*),
+                 (int (*)(const void *, const void *)) strcmp
+             );
++        }
+ 
++        if (current_key_event.code != NULL) {
+             fired_key_event = bsearch(
+                 &current_key_event,
+                 key_events,
+@@ -156,15 +160,9 @@ static key_event_t
+                 sizeof(key_event_t),
+                 (int (*)(const void *, const void *)) key_event_compare
+             );
+-
+         }
+ 
+-        if(
+-            current_key_event.code != NULL &&
+-            strcmp(current_key_event.code, key_event_name(code)) == 0
+-        ) {
+-            current_key_event.code = NULL;
+-        }
++        current_key_event.code = NULL;
+ 
+         /* remove released key from modifiers */
+         modifier_code = key_event_modifier_name(key_event_name(code));
+@@ -533,7 +531,7 @@ void config_parse_dir(const char *path) {
+ 
+ static const char *config_key_event(char *shortcut, char *exec) {
+     int i;
+-    char *code, *modifier;
++    char *code, *value, *modifier;
+     key_event_t *new_key_event;
+ 
+     if(key_event_n >= MAX_EVENTS) {
+@@ -547,6 +545,10 @@ static const char *config_key_event(char *shortcut, char *exec) {
+         new_key_event->modifiers[i] = NULL;
+     }
+ 
++    value = shortcut;
++    strsep(&value, ":");
++    shortcut = config_trim_string(shortcut);
++
+     if((code = strrchr(shortcut, '+')) != NULL) {
+         *code = '\0';
+         code = config_trim_string(code+1);
+@@ -570,6 +572,16 @@ static const char *config_key_event(char *shortcut, char *exec) {
+     qsort(new_key_event->modifiers, new_key_event->modifier_n,
+         sizeof(const char*), (int (*)(const void *, const void *)) strcmp);
+ 
++    new_key_event->value = 1;
++    if(value != NULL) {
++        value = config_trim_string(value);
++        new_key_event->value = atoi(value);
++    }
++
++    /* only trigger modifiers on release */
++    if (new_key_event->modifier_n)
++        new_key_event->value = 0;
++
+     return NULL;
+ }
+ 
+diff --git a/input-event-daemon.h b/input-event-daemon.h
+index 17ac906..7cab13d 100644
+--- a/input-event-daemon.h
++++ b/input-event-daemon.h
+@@ -37,6 +37,7 @@ struct {
+ 
+ typedef struct key_event {
+     const char *code;
++    int value;
+     const char *modifiers[MAX_MODIFIERS];
+     size_t     modifier_n;
+     const char *exec;
+-- 
+2.20.1
+

@@ -1,0 +1,5 @@
+config BR2_PACKAGE_RKWIFIBT_APP
+	bool "rkwifibt wireless applicantion"
+	select BR2_PACKAGE_ALSA_LIB
+	select BR2_PACKAGE_BLUEZ_ALSA
+	select BR2_PACKAGE_BLUEZ5_UTILS

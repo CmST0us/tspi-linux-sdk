@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# Enable gdm3 autologin for linaro user
+if [ -e /etc/gdm3/daemon.conf ]; then
+  sed -i "s|^#  AutomaticLoginEnable = .*|AutomaticLoginEnable = true|" /etc/gdm3/daemon.conf
+  sed -i "s|^#  AutomaticLogin = .*|AutomaticLogin = linaro|" /etc/gdm3/daemon.conf
+fi

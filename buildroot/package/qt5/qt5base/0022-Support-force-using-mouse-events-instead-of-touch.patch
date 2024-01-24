@@ -1,0 +1,37 @@
+From ba46d636b750238a67165f5036d49ee82a08fcd0 Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Fri, 16 Oct 2020 11:50:20 +0800
+Subject: [PATCH 22/28] Support force using mouse events instead of touch
+
+Set "QT_TOUCH_TO_MOUSE" environment to enable it:
+export QT_TOUCH_TO_MOUSE=1
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ src/gui/kernel/qguiapplication.cpp | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/src/gui/kernel/qguiapplication.cpp b/src/gui/kernel/qguiapplication.cpp
+index a95331e2..66d305d2 100644
+--- a/src/gui/kernel/qguiapplication.cpp
++++ b/src/gui/kernel/qguiapplication.cpp
+@@ -3053,10 +3053,16 @@ void QGuiApplicationPrivate::processTouchEvent(QWindowSystemInterfacePrivate::To
+             }
+         }
+ 
++        // Force using mouse events instead of touch
++        char *buf = getenv("QT_TOUCH_TO_MOUSE");
++        if (buf && buf[0] == '1')
++            goto fake_mouse;
++
+         QGuiApplication::sendSpontaneousEvent(w, &touchEvent);
+         if (!e->synthetic() && !touchEvent.isAccepted() && qApp->testAttribute(Qt::AA_SynthesizeMouseForUnhandledTouchEvents)) {
+             // exclude devices which generate their own mouse events
+             if (!(touchEvent.device()->capabilities() & QTouchDevice::MouseEmulation)) {
++fake_mouse:
+                 const QList<QTouchEvent::TouchPoint> &touchPoints = touchEvent.touchPoints();
+                 QEvent::Type mouseEventType = QEvent::MouseMove;
+                 Qt::MouseButton button = Qt::NoButton;
+-- 
+2.20.1
+

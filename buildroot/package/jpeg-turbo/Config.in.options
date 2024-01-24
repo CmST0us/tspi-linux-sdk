@@ -1,0 +1,26 @@
+if BR2_PACKAGE_JPEG_TURBO
+
+choice
+	prompt "libjpeg API shared library version"
+	default BR2_PACKAGE_JPEG_TURBO_JPEG8
+
+config BR2_PACKAGE_JPEG_TURBO_JPEG8
+	bool "jpeg 8"
+
+config BR2_PACKAGE_JPEG_TURBO_JPEG7
+	bool "jpeg 7"
+
+config BR2_PACKAGE_JPEG_TURBO_JPEG6
+	bool "jpeg 6"
+
+endchoice
+
+config BR2_PACKAGE_JPEG_TURBO_TOOLS
+	bool "jpeg-turbo tools"
+	help
+	  Libjpeg-turbo can also provide some tools like cjpeg,
+	  djpeg, jpegtran, rdjpgcom, tjbench and wrjpgcom.
+
+	  If you want to keep them enable this option.
+
+endif

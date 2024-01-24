@@ -1,0 +1,27 @@
+From 7f400e3c12542a6b86acd20f09609c56eac67d45 Mon Sep 17 00:00:00 2001
+From: Jiajian Wu <jair.wu@rock-chips.com>
+Date: Tue, 27 Sep 2022 16:13:36 +0800
+Subject: [PATCH 2/6] CMakeLists.txt: Use LV_CONF_INCLUDE_SIMPLE
+
+Signed-off-by: Jiajian Wu <jair.wu@rock-chips.com>
+---
+ CMakeLists.txt | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index efb0b0b..7d8019e 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -16,6 +16,9 @@ endif()
+ add_library(lvgl_drivers ALIAS lv_drivers)
+ add_library(lvgl::drivers ALIAS lv_drivers)
+ 
++add_definitions(-g -DLV_CONF_INCLUDE_SIMPLE)
++include_directories(${CMAKE_SYSROOT}/usr/include/libdrm/)
++
+ target_include_directories(lv_drivers SYSTEM PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+ 
+ find_package(PkgConfig)
+-- 
+2.25.1
+

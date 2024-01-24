@@ -1,0 +1,5 @@
+config BR2_PACKAGE_4G
+	bool "Rongpin 4G-daemon for linux"
+	help
+	  Rongpin 4G-daemon for linux
+

@@ -1,0 +1,28 @@
+From f303263ecab117e042012c93885ae1721384747e Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Fri, 22 Jul 2022 18:40:49 +0800
+Subject: [PATCH 16/17] HACK: qt5wayland: Set size in
+ wl_subsurface_set_position()
+
+Tested with hacked enlightenment.
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ src/client/qwaylandwindow.cpp | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/client/qwaylandwindow.cpp b/src/client/qwaylandwindow.cpp
+index b8d19a4..81d4aef 100644
+--- a/src/client/qwaylandwindow.cpp
++++ b/src/client/qwaylandwindow.cpp
+@@ -390,6 +390,7 @@ void QWaylandWindow::setGeometry_helper(const QRect &rect)
+ 
+     if (mSubSurfaceWindow) {
+         QMargins m = QPlatformWindow::parent()->frameMargins();
++        mSubSurfaceWindow->set_position(rect.x() + m.left() | rect.width() << 16, rect.y() + m.top() | rect.height() << 16);
+         mSubSurfaceWindow->set_position(rect.x() + m.left(), rect.y() + m.top());
+ 
+         QWaylandWindow *parentWindow = mSubSurfaceWindow->parent();
+-- 
+2.20.1
+

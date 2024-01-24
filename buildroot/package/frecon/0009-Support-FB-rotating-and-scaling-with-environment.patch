@@ -1,0 +1,83 @@
+From fc58fcee33d9466952756ab4ca063c499543d6c7 Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Wed, 17 May 2023 10:42:01 +0800
+Subject: [PATCH 9/9] Support FB rotating and scaling with environment
+
+Tested with:
+FRECON_FB_ROTATE=90 FRECON_FB_SCALE=2 frecon
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ fb.c   | 28 ++++++++++++++++++++++++++++
+ term.c |  2 +-
+ 2 files changed, 29 insertions(+), 1 deletion(-)
+
+diff --git a/fb.c b/fb.c
+index 9bb2599..44d9e00 100644
+--- a/fb.c
++++ b/fb.c
+@@ -168,6 +168,7 @@ int fb_buffer_init(fb_t* fb)
+ {
+ 	int32_t width, height, pitch = 0;
+ 	int32_t hsize_mm, vsize_mm;
++	const char *buf;
+ 	int r;
+ 
+ 	/* reuse the buffer_properties if it was set before */
+@@ -208,6 +209,7 @@ int fb_buffer_init(fb_t* fb)
+ 	DRM_MODE_PANEL_ORIENTATION_LEFT_UP,
+ 	DRM_MODE_PANEL_ORIENTATION_RIGHT_UP,
+ */
++
+ 	switch (fb->drm->panel_orientation) {
+ 		case 1:
+ 			fb->buffer_properties.rotation = DRM_MODE_ROTATE_180;
+@@ -237,6 +239,32 @@ int fb_buffer_init(fb_t* fb)
+ 			fb->buffer_properties.scaling = 2;
+ 	}
+ 
++
++	buf = getenv("FRECON_FB_ROTATE");
++	if (buf) {
++		switch (atoi(buf)) {
++		case 90:
++			fb->buffer_properties.rotation = DRM_MODE_ROTATE_90;
++			break;
++		case 180:
++			fb->buffer_properties.rotation = DRM_MODE_ROTATE_180;
++			break;
++		case 270:
++			fb->buffer_properties.rotation = DRM_MODE_ROTATE_270;
++			break;
++		default:
++			fb->buffer_properties.rotation = DRM_MODE_ROTATE_0;
++			break;
++		}
++	}
++
++	buf = getenv("FRECON_FB_SCALE");
++	if (buf) {
++		fb->buffer_properties.scaling = atoi(buf);
++		if (fb->buffer_properties.scaling < 1)
++			fb->buffer_properties.scaling = 1;
++	}
++
+ 	return 0;
+ }
+ 
+diff --git a/term.c b/term.c
+index bde1130..9015818 100644
+--- a/term.c
++++ b/term.c
+@@ -983,7 +983,7 @@ void term_clear(terminal_t* terminal)
+ void term_zoom(bool zoom_in)
+ {
+ 	int scaling = font_get_scaling();
+-	if (zoom_in && scaling < 4)
++	if (zoom_in)
+ 		scaling++;
+ 	else if (!zoom_in && scaling > 1)
+ 		scaling--;
+-- 
+2.20.1
+

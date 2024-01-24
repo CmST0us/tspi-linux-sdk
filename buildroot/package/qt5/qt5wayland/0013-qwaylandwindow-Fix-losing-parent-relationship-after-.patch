@@ -1,0 +1,47 @@
+From e0051310e404734bb1fcd8e1f6bc8a4c03d536ef Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Wed, 4 Nov 2020 11:42:23 +0800
+Subject: [PATCH 13/17] qwaylandwindow: Fix losing parent relationship after
+ reset
+
+Reset all children to reflush the parent relationship.
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ src/client/qwaylandwindow.cpp | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
+
+diff --git a/src/client/qwaylandwindow.cpp b/src/client/qwaylandwindow.cpp
+index 9cba945..d1b113c 100644
+--- a/src/client/qwaylandwindow.cpp
++++ b/src/client/qwaylandwindow.cpp
+@@ -242,6 +242,26 @@ void QWaylandWindow::initializeWlSurface()
+         mSurface->m_window = this;
+     }
+     emit wlSurfaceCreated();
++
++    // Reset all children to reflush parent relationship
++    QObjectList childObjects = window()->children();
++    for (int i = 0; i < childObjects.size(); i ++) {
++        QObject *object = childObjects.at(i);
++
++        if (!object->isWindowType())
++            continue;
++
++        QWindow *childWindow = static_cast<QWindow *>(object);
++        if (!childWindow->isVisible())
++            return;
++
++        QWaylandWindow *childWaylandWindow =
++            const_cast<QWaylandWindow *>(static_cast<const QWaylandWindow *>(childWindow->handle()));
++
++        childWaylandWindow->reset();
++        childWaylandWindow->setParent(this);
++        childWindow->setVisible(true);
++    }
+ }
+ 
+ bool QWaylandWindow::shouldCreateShellSurface() const
+-- 
+2.20.1
+

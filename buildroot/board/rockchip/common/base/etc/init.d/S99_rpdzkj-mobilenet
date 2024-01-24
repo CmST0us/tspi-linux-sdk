@@ -1,0 +1,23 @@
+#!/bin/bash
+case "$1" in
+    start)
+	printf "Starting mobilenet:"
+	rpdzkj-mobilenet.sh >> /tmp/moblienet 2>&1 &
+	[ $? = 0 ] && echo "OK" || echo "FAIL"
+	;;
+    stop)
+	printf "Starting mobilenet:"
+        killall rpdzkj-mobilenet.sh
+        [ $? = 0 ] && echo "OK" || echo "FAIL"
+        ;;
+    restart|reload)
+	"$0" stop
+	"$0" start
+	;;
+     *)
+	echo "Usage: $0 {start|stop|restart}"
+	exit 1
+esac
+
+exit $?
+

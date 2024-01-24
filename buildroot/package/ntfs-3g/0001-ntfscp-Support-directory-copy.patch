@@ -1,0 +1,151 @@
+From 34ed66f2bc913b70cae217fd32cc3cba050069c4 Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Sat, 29 Dec 2018 17:33:48 +0800
+Subject: [PATCH] ntfscp: Support directory copy
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ ntfsprogs/ntfscp.c | 45 ++++++++++++++++++++++++++++++++-------------
+ 1 file changed, 32 insertions(+), 13 deletions(-)
+
+diff --git a/ntfsprogs/ntfscp.c b/ntfsprogs/ntfscp.c
+index 19303b6..6f9180a 100644
+--- a/ntfsprogs/ntfscp.c
++++ b/ntfsprogs/ntfscp.c
+@@ -798,19 +798,20 @@ static int preallocate(ntfs_attr *na, s64 new_size)
+ }
+ 
+ /**
+- * Create a regular file under the given directory inode
++ * Create a file under the given directory inode
+  *
+  * It is a wrapper function to ntfs_create(...)
+  *
+  * Return:  the created file inode
+  */
+ static ntfs_inode *ntfs_new_file(ntfs_inode *dir_ni,
+-			  const char *filename)
++			  const char *filename, mode_t typemode)
+ {
+ 	ntfschar *ufilename;
+ 	/* inode to the file that is being created */
+ 	ntfs_inode *ni;
+ 	int ufilename_len;
++	mode_t type = typemode & ~07777;
+ 
+ 	/* ntfs_mbstoucs(...) will allocate memory for ufilename if it's NULL */
+ 	ufilename = NULL;
+@@ -820,7 +821,7 @@ static ntfs_inode *ntfs_new_file(ntfs_inode *dir_ni,
+ 					filename);
+ 		return NULL;
+ 	}
+-	ni = ntfs_create(dir_ni, const_cpu_to_le32(0), ufilename, ufilename_len, S_IFREG);
++	ni = ntfs_create(dir_ni, const_cpu_to_le32(0), ufilename, ufilename_len, type);
+ 	free(ufilename);
+ 	return ni;
+ }
+@@ -852,6 +853,8 @@ int main(int argc, char *argv[])
+ #ifdef HAVE_WINDOWS_H
+ 	char *unix_name;
+ #endif
++	struct stat fst;
++	int created = 0;
+ 
+ 	ntfs_log_set_handler(ntfs_log_handler_stderr);
+ 
+@@ -892,14 +895,11 @@ int main(int argc, char *argv[])
+ 		goto umount;
+ 	}
+ 
+-	{
+-		struct stat fst;
+-		if (stat(opts.src_file, &fst) == -1) {
+-			ntfs_log_perror("ERROR: Couldn't stat source file");
+-			goto umount;
+-		}
+-		new_size = fst.st_size;
++	if (stat(opts.src_file, &fst) == -1) {
++		ntfs_log_perror("ERROR: Couldn't stat source file");
++		goto umount;
+ 	}
++	new_size = fst.st_size;
+ 	ntfs_log_verbose("New file size: %lld\n", (long long)new_size);
+ 
+ 	in = fopen(opts.src_file, "r");
+@@ -960,6 +960,8 @@ int main(int argc, char *argv[])
+ 			ntfs_log_verbose("Target path does not contain '/'. "
+ 					"Using root directory as parent.\n");
+ 			dir_ni = ntfs_inode_open(vol, FILE_root);
++			free(parent_dirname);
++			dirname_last_whack = parent_dirname = strdup("/");
+ 		}
+ 		if (dir_ni) {
+ 			if (!(dir_ni->mrec->flags & MFT_RECORD_IS_DIRECTORY)) {
+@@ -974,7 +976,7 @@ int main(int argc, char *argv[])
+ 			}
+ 			ntfs_log_verbose("Creating a new file '%s' under '%s'"
+ 					 "\n", filename, parent_dirname);
+-			ni = ntfs_new_file(dir_ni, filename);
++			ni = ntfs_new_file(dir_ni, filename, fst.st_mode);
+ 			ntfs_inode_close(dir_ni);
+ 			if (!ni) {
+ 				ntfs_log_perror("Failed to create '%s' under "
+@@ -984,6 +986,7 @@ int main(int argc, char *argv[])
+ 				goto close_src;
+ 			}
+ 			out = ni;
++			created = 1;
+ 		} else {
+ 			ntfs_log_perror("ERROR: Couldn't open '%s'",
+ 					parent_dirname);
+@@ -993,7 +996,8 @@ int main(int argc, char *argv[])
+ 		free(parent_dirname);
+ 	}
+ 	/* The destination is a directory. */
+-	if ((out->mrec->flags & MFT_RECORD_IS_DIRECTORY) && !opts.inode) {
++	if (!created && (out->mrec->flags & MFT_RECORD_IS_DIRECTORY)
++	   && !opts.inode) {
+ 		char *filename;
+ 		char *overwrite_filename;
+ 		int overwrite_filename_len;
+@@ -1027,6 +1031,16 @@ int main(int argc, char *argv[])
+ 		ni = ntfs_pathname_to_inode(vol, dir_ni, overwrite_filename);
+ 		/* Does a file with the same name exist in the dest dir? */
+ 		if (ni) {
++			if (S_ISDIR(fst.st_mode)
++			   || ni->mrec->flags & MFT_RECORD_IS_DIRECTORY) {
++				ntfs_log_verbose("Destination path has a file"
++						" with the same name\nCannot"
++						" overwriting the file '%s'\n",
++						overwrite_filename);
++				ntfs_inode_close(out);
++				free(overwrite_filename);
++				goto close_src;
++			}
+ 			ntfs_log_verbose("Destination path has a file with "
+ 					"the same name\nOverwriting the file "
+ 					"'%s'\n", overwrite_filename);
+@@ -1035,7 +1049,7 @@ int main(int argc, char *argv[])
+ 		} else {
+ 			ntfs_log_verbose("Creating a new file '%s' under "
+ 					"'%s'\n", filename, opts.dest_file);
+-			ni = ntfs_new_file(dir_ni, filename);
++			ni = ntfs_new_file(dir_ni, filename, fst.st_mode);
+ 			ntfs_inode_close(dir_ni);
+ 			if (!ni) {
+ 				ntfs_log_perror("ERROR: Failed to create the "
+@@ -1077,6 +1091,11 @@ int main(int argc, char *argv[])
+ 		}
+ 	}
+ 
++	if (S_ISDIR(fst.st_mode)) {
++		result = 0;
++		goto close_attr;
++	}
++
+ 	ntfs_log_verbose("Old file size: %lld\n", (long long)na->data_size);
+ 	if (opts.minfragments && NAttrCompressed(na)) {
+ 		ntfs_log_info("Warning : Cannot avoid fragmentation"
+-- 
+2.20.1
+

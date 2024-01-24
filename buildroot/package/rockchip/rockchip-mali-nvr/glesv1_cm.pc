@@ -1,0 +1,9 @@
+prefix=/usr
+libdir=${prefix}/lib
+includedir=${prefix}/include
+
+Name: glesv1_cm
+Description: Mali GPU User-Space Binary Driver
+Version: 7.10
+Libs: -L${libdir} -lmali
+Cflags: -I${includedir}

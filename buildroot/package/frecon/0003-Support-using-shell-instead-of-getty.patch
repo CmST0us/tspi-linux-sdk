@@ -1,0 +1,61 @@
+From 42b56fd583ff37fdd965a6e037a4cf69e6971441 Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Thu, 9 Jun 2022 17:00:32 +0800
+Subject: [PATCH 3/9] Support using shell instead of getty
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ Makefile |  5 +++++
+ term.c   | 15 ++++++++++++---
+ 2 files changed, 17 insertions(+), 3 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index a2e0d43..1f44dcf 100644
+--- a/Makefile
++++ b/Makefile
+@@ -6,6 +6,11 @@ include common.mk
+ 
+ FRECON_LITE ?= 0
+ CHROMEOS ?= 1
++USE_GETTY ?= 1
++
++ifeq ($(USE_GETTY),1)
++CPPFLAGS += -DUSE_GETTY=1
++endif
+ 
+ PC_DEPS = libdrm libpng libtsm
+ ifeq ($(FRECON_LITE),1)
+diff --git a/term.c b/term.c
+index c66f088..7b6383a 100644
+--- a/term.c
++++ b/term.c
+@@ -50,14 +50,23 @@ struct _terminal_t {
+ 	char** exec;
+ };
+ 
+-
+-static char* interactive_cmd_line[] = {
+-	"/sbin/agetty",
++#ifdef USE_GETTY
++static char* interactive_cmd_line[] =
++{
++	"/sbin/getty",
+ 	"-",
+ 	"9600",
+ 	"xterm",
+ 	NULL
+ };
++#else
++static char* interactive_cmd_line[] =
++{
++	"/bin/sh",
++	"-il",
++	NULL
++};
++#endif
+ 
+ static bool in_background = false;
+ static bool hotplug_occured = false;
+-- 
+2.20.1
+

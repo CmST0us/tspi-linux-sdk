@@ -1,0 +1,44 @@
+From 81f822f7b4faf670cb3b04adfb065ae411982226 Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Tue, 7 Mar 2023 16:51:35 +0800
+Subject: [PATCH 18/20] adbd: Support setting TCP port with env ADB_TCP_PORT
+
+Tested on RK3588 EVB:
+ADB_TCP_PORT=3588 adbd
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ core/adbd/adb.c | 16 ++++++----------
+ 1 file changed, 6 insertions(+), 10 deletions(-)
+
+diff --git a/core/adbd/adb.c b/core/adbd/adb.c
+index c4c00d7..32173f2 100644
+--- a/core/adbd/adb.c
++++ b/core/adbd/adb.c
+@@ -1314,17 +1314,13 @@ int adb_main(int is_daemon, int server_port)
+     // If one of these properties is set, also listen on that port
+     // If one of the properties isn't set and we couldn't listen on usb,
+     // listen on the default port.
+-    //property_get("service.adb.tcp.port", value, "");
+-    //if (!value[0]) {
+-        //property_get("persist.adb.tcp.port", value, "");
+-    //}
+-    //if (sscanf(value, "%d", &port) == 1 && port > 0) {
+-    //    printf("using port=%d\n", port);
++    strcpy(value, getenv("ADB_TCP_PORT") ? : "");
++    if (sscanf(value, "%d", &port) == 1 && port > 0) {
++        printf("using port=%d\n", port);
+         // listen on TCP port specified by service.adb.tcp.port property
+-    //    local_init(port);
+-    //} else 
+-    if (!usb) {
+-        printf("Using USB\n");
++        local_init(port);
++    } else if (!usb) {
++        printf("Using TCP\n");
+         // listen on default port
+         local_init(DEFAULT_ADB_LOCAL_TRANSPORT_PORT);
+     }
+-- 
+2.20.1
+

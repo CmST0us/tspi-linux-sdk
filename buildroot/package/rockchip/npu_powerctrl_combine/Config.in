@@ -1,0 +1,4 @@
+config BR2_PACKAGE_NPU_POWERCTRL_COMBINE
+	bool "Rockchip NPU power control combine for linux"
+	help
+	  Rockchip NPU power control combine for linux.

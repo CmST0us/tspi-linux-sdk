@@ -1,0 +1,33 @@
+From 375072c412ea245b8e498f70fca814746e1c88d0 Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Wed, 4 Mar 2020 06:39:55 +0000
+Subject: [PATCH 3/4] d: Compat with Debian Stetch
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ debian/compat  | 2 +-
+ debian/control | 1 -
+ 2 files changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/debian/compat b/debian/compat
+index b4de394767..f599e28b8a 100644
+--- a/debian/compat
++++ b/debian/compat
+@@ -1 +1 @@
+-11
++10
+diff --git a/debian/control b/debian/control
+index 348a99eda7..1dba18a5ce 100644
+--- a/debian/control
++++ b/debian/control
+@@ -6,7 +6,6 @@ Uploaders: Alessandro Ghedini <ghedo@debian.org>,
+  Reinhard Tartler <siretart@tauware.de>,
+  James Cowgill <jcowgill@debian.org>
+ Build-Depends:
+- debhelper (>= 11),
+  dpkg-dev (>= 1.17),
+  libarchive-dev (>= 3),
+  libasound2-dev [linux-any],
+-- 
+2.17.1
+

@@ -1,0 +1,12 @@
+config BR2_PACKAGE_N4
+    bool "rk n4 camera"
+    default n
+    select BR2_PACKAGE_LIBSERIALPORT
+    select BR2_PACKAGE_LIBV4L
+    select BR2_PACKAGE_LIBV4L_UTILS
+    select BR2_PACKAGE_RKMEDIA
+    select BR2_PACKAGE_RKMEDIA_V4L2_CAPTURE
+    select BR2_PACKAGE_RKMEDIA_RKRGA
+    select BR2_PACKAGE_DRM_DISPLAY_OUTPUT
+    help
+      rk n4 cif camera on 1808 which is controlled by 3399 via virtual tty

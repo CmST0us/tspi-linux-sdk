@@ -1,0 +1,48 @@
+From e0c46c2b8db6ec0b377cc82a4478f1a9ce6658b3 Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Mon, 4 Jul 2022 11:43:03 +0800
+Subject: [PATCH 02/10] wl_wl: Force maxium screen
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ src/modules/wl_wl/e_mod_main.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/src/modules/wl_wl/e_mod_main.c b/src/modules/wl_wl/e_mod_main.c
+index 5c320d70b..31364dadf 100644
+--- a/src/modules/wl_wl/e_mod_main.c
++++ b/src/modules/wl_wl/e_mod_main.c
+@@ -17,9 +17,9 @@ _cb_sync_done(void *data EINA_UNUSED, int type EINA_UNUSED, void *event)
+    ecore_evas_screen_geometry_get(e_comp->ee, NULL, NULL, &w, &h);
+    if ((w < 1) || (h < 1)) return ECORE_CALLBACK_PASS_ON;
+ 
+-   e_comp_canvas_resize(w * 2 / 3, h * 2 / 3);
++   e_comp_canvas_resize(w, h);
+    e_comp_wl_output_init(NULL, NULL, NULL,
+-               0, 0, w * 2 / 3, h * 2 / 3,
++               0, 0, w, h,
+                0, 0, 0, 0, 0, 0);
+ 
+    it = ecore_wl2_display_inputs_get(ecore_wl2_window_display_get(ecore_evas_wayland2_window_get(e_comp->ee)));
+@@ -38,6 +38,8 @@ _cb_sync_done(void *data EINA_UNUSED, int type EINA_UNUSED, void *event)
+ E_API void *
+ e_modapi_init(E_Module *m)
+ {
++   int w = 0, h = 0;
++
+    printf("LOAD WL_WL MODULE\n");
+ 
+    if (e_comp_config_get()->engine == E_COMP_ENGINE_GL)
+@@ -71,7 +73,8 @@ e_modapi_init(E_Module *m)
+    ecore_event_handler_add(ECORE_WL2_EVENT_SYNC_DONE, _cb_sync_done, NULL);
+ 
+    if (!e_comp_wl_init()) return NULL;
+-   if (!e_comp_canvas_init(1024, 768)) return NULL;
++   ecore_evas_screen_geometry_get(e_comp->ee, NULL, NULL, &w, &h);
++   if (!e_comp_canvas_init(w, h)) return NULL;
+ 
+    e_comp_wl_input_pointer_enabled_set(EINA_TRUE);
+    e_comp_wl_input_keyboard_enabled_set(EINA_TRUE);
+-- 
+2.20.1
+

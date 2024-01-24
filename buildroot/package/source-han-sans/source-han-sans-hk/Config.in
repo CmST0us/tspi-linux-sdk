@@ -1,0 +1,6 @@
+config BR2_PACKAGE_SOURCE_HAN_SANS_HK
+	bool "Source Han Sans HK"
+	help
+	  Adobe OpenType Pan-CJK font family for Traditional Chinese(Hong Kong).
+
+	  https://github.com/adobe-fonts/source-han-sans

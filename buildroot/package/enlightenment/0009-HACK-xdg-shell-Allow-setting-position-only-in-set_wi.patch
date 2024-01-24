@@ -1,0 +1,37 @@
+From 3d33d31d1cba0b83f6b7fef1c98f86a9f56b38df Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Fri, 22 Jul 2022 16:34:32 +0800
+Subject: [PATCH 09/10] HACK: xdg-shell: Allow setting position only in
+ set_window_geometry()
+
+There's an hack in the wl clients to do this for weston.
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ src/modules/wl_desktop_shell/xdg.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/src/modules/wl_desktop_shell/xdg.c b/src/modules/wl_desktop_shell/xdg.c
+index 0f8c973ec..c304de4ae 100644
+--- a/src/modules/wl_desktop_shell/xdg.c
++++ b/src/modules/wl_desktop_shell/xdg.c
+@@ -522,7 +522,15 @@ _e_xdg_surface_cb_window_geometry_set(struct wl_client *client EINA_UNUSED, stru
+         return;
+      }
+    if (e_object_is_del(E_OBJECT(ec))) return;
+-   EINA_RECTANGLE_SET(&ec->comp_data->shell.window, x, y, w, h);
++   if (!w && !h)
++     {
++        ec->comp_data->shell.window.x = x;
++        ec->comp_data->shell.window.y = y;
++     }
++   else
++     {
++        EINA_RECTANGLE_SET(&ec->comp_data->shell.window, x, y, w, h);
++     }
+    //DBG("XDG_SHELL: Window Geom Set: %d \t%d %d, %d %d", wl_resource_get_id(resource), x, y, w, h);
+ }
+ 
+-- 
+2.20.1
+

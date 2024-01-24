@@ -1,0 +1,134 @@
+From 6bf724c142f41ae9fe9de6aa1c421781e1f3f8e5 Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Thu, 21 Jul 2022 16:05:53 +0800
+Subject: [PATCH 07/10] HACK: wl: Support setting size in
+ wl_subsurface_position_set()
+
+Tested with waylandsink.
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ src/bin/e_comp_wl.c | 18 ++++++++++++++++++
+ src/bin/e_comp_wl.h |  1 +
+ src/bin/e_pixmap.c  | 13 +++++++++++--
+ src/bin/e_pixmap.h  |  1 +
+ 4 files changed, 31 insertions(+), 2 deletions(-)
+
+diff --git a/src/bin/e_comp_wl.c b/src/bin/e_comp_wl.c
+index 0df8544fa..db8806c3b 100644
+--- a/src/bin/e_comp_wl.c
++++ b/src/bin/e_comp_wl.c
+@@ -2229,8 +2229,13 @@ _e_comp_wl_subsurface_parent_commit(E_Client *ec, Eina_Bool parent_synchronized)
+    if (!(sdata = ec->comp_data->sub.data)) return;
+    if (!(parent = sdata->parent)) return;
+ 
++   _e_comp_wl_subsurface_parent_commit(parent, parent_synchronized);
++
+    if (sdata->position.set)
+      {
++        if (sdata->position.w && sdata->position.h)
++          e_pixmap_viewport_set(ec->pixmap, sdata->position.w, sdata->position.h);
++
+         evas_object_move(ec->frame, parent->client.x + sdata->position.x,
+                          parent->client.y + sdata->position.y);
+         sdata->position.set = EINA_FALSE;
+@@ -2263,6 +2268,7 @@ _e_comp_wl_subsurface_cb_position_set(struct wl_client *client EINA_UNUSED, stru
+ {
+    E_Client *ec;
+    E_Comp_Wl_Subsurf_Data *sdata;
++   int32_t w, h;
+ 
+    DBG("Subsurface Cb Position Set: %d", wl_resource_get_id(resource));
+ 
+@@ -2271,8 +2277,20 @@ _e_comp_wl_subsurface_cb_position_set(struct wl_client *client EINA_UNUSED, stru
+ 
+    if (!(sdata = ec->comp_data->sub.data)) return;
+ 
++   w = x >> 16;
++   h = y >> 16;
++   x &= (1 << 16) - 1;
++   y &= (1 << 16) - 1;
++
+    sdata->position.x = x;
+    sdata->position.y = y;
++
++   if (w && h)
++     {
++        sdata->position.w = w;
++        sdata->position.h = h;
++     }
++
+    sdata->position.set = EINA_TRUE;
+ }
+ 
+diff --git a/src/bin/e_comp_wl.h b/src/bin/e_comp_wl.h
+index a18746c5d..8f844dd58 100644
+--- a/src/bin/e_comp_wl.h
++++ b/src/bin/e_comp_wl.h
+@@ -95,6 +95,7 @@ struct _E_Comp_Wl_Subsurf_Data
+    struct
+      {
+         int x, y;
++        int w, h;
+         Eina_Bool set;
+      } position;
+ 
+diff --git a/src/bin/e_pixmap.c b/src/bin/e_pixmap.c
+index ece17fee1..3d9177f4a 100644
+--- a/src/bin/e_pixmap.c
++++ b/src/bin/e_pixmap.c
+@@ -35,6 +35,7 @@ struct _E_Pixmap
+    Ecore_Window parent;
+ 
+    int w, h;
++   int viewport_w, viewport_h;
+ 
+ #ifndef HAVE_WAYLAND_ONLY
+    void *image;
+@@ -282,6 +283,7 @@ _e_pixmap_new(E_Pixmap_Type type)
+    cp = E_NEW(E_Pixmap, 1);
+    cp->type = type;
+    cp->w = cp->h = 0;
++   cp->viewport_w = cp->viewport_h = 0;
+    cp->refcount = 1;
+    cp->dirty = 1;
+    return cp;
+@@ -643,14 +645,21 @@ e_pixmap_size_changed(E_Pixmap *cp, int w, int h)
+    return (w != cp->w) || (h != cp->h);
+ }
+ 
++E_API void
++e_pixmap_viewport_set(E_Pixmap *cp, int w, int h)
++{
++   cp->viewport_w = w;
++   cp->viewport_h = h;
++}
++
+ E_API Eina_Bool
+ e_pixmap_size_get(E_Pixmap *cp, int *w, int *h)
+ {
+    if (w) *w = 0;
+    if (h) *h = 0;
+    EINA_SAFETY_ON_NULL_RETURN_VAL(cp, EINA_FALSE);
+-   if (w) *w = cp->w;
+-   if (h) *h = cp->h;
++   if (w) *w = cp->viewport_w ?: cp->w;
++   if (h) *h = cp->viewport_h ?: cp->h;
+    return (cp->w > 0) && (cp->h > 0);
+ }
+ 
+diff --git a/src/bin/e_pixmap.h b/src/bin/e_pixmap.h
+index 293a6786c..39b394f57 100644
+--- a/src/bin/e_pixmap.h
++++ b/src/bin/e_pixmap.h
+@@ -32,6 +32,7 @@ E_API void e_pixmap_dirty(E_Pixmap *cp);
+ E_API Eina_Bool e_pixmap_refresh(E_Pixmap *cp);
+ E_API Eina_Bool e_pixmap_size_changed(E_Pixmap *cp, int w, int h);
+ E_API Eina_Bool e_pixmap_size_get(E_Pixmap *cp, int *w, int *h);
++E_API void e_pixmap_viewport_set(E_Pixmap *cp, int w, int h);
+ E_API void e_pixmap_client_set(E_Pixmap *cp, E_Client *ec);
+ E_API E_Client *e_pixmap_client_get(E_Pixmap *cp);
+ E_API E_Pixmap *e_pixmap_find(E_Pixmap_Type type, ...);
+-- 
+2.20.1
+

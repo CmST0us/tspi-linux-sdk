@@ -1,0 +1,82 @@
+From 1c41ba468681fcee3ebb9b9b0cf68095b7f13f1e Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Mon, 23 May 2022 13:13:45 +0800
+Subject: [PATCH 3/3] core: Add --off-screen command-line option
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ src/main_loop.cpp | 7 +++++--
+ src/options.cpp   | 5 +++++
+ src/options.h     | 1 +
+ 3 files changed, 11 insertions(+), 2 deletions(-)
+
+diff --git a/src/main_loop.cpp b/src/main_loop.cpp
+index 5a6383b..94f4a12 100644
+--- a/src/main_loop.cpp
++++ b/src/main_loop.cpp
+@@ -123,8 +123,11 @@ void MainLoop::run()
+                !(should_quit = ws.should_quit()) &&
+                !should_stop)
+         {
+-            ws.present_vulkan_image(
+-                scene.draw(ws.next_vulkan_image()));
++            if (options.off_screen)
++                scene.draw(ws.next_vulkan_image());
++            else
++                ws.present_vulkan_image(
++                    scene.draw(ws.next_vulkan_image()));
+             scene.update();
+         }
+ 
+diff --git a/src/options.cpp b/src/options.cpp
+index 0ef58c9..6009949 100644
+--- a/src/options.cpp
++++ b/src/options.cpp
+@@ -50,6 +50,7 @@ struct option long_options[] = {
+     {"winsys-options", 1, 0, 0},
+     {"list-devices", 0, 0, 0},
+     {"run-forever", 0, 0, 0},
++    {"off-screen", 0, 0, 0},
+     {"debug", 0, 0, 0},
+     {"help", 0, 0, 0},
+     {0, 0, 0, 0}
+@@ -136,6 +137,7 @@ Options::Options()
+       window_system_dir{VKMARK_WINDOW_SYSTEM_DIR},
+       data_dir{VKMARK_DATA_DIR},
+       run_forever{false},
++      off_screen{false},
+       show_debug{false},
+       show_help{false},
+       list_devices{false},
+@@ -167,6 +169,7 @@ std::string Options::help_string()
+         "      --winsys-options OPTS   Window system options as 'opt1=val1(:opt2=val2)*'\n"
+         "      --run-forever           Run indefinitely, looping from the last benchmark\n"
+         "                              back to the first\n"
++        "      --off-screen            Render to an off-screen surface\n"
+         "  -d, --debug                 Display debug messages\n"
+         "  -D  --use-device            Use Vulkan device with specified UUID\n"
+         "  -L  --list-devices          List Vulkan devices\n"
+@@ -223,6 +226,8 @@ bool Options::parse_args(int argc, char **argv)
+             window_system_options = parse_window_system_options(optarg);
+         else if (optname == "run-forever")
+             run_forever = true;
++        else if (optname == "off-screen")
++            off_screen = true;
+         else if (c == 'd' || optname == "debug")
+             show_debug = true;
+         else if (c == 'h' || optname == "help")
+diff --git a/src/options.h b/src/options.h
+index eb5b6cf..69b37d4 100644
+--- a/src/options.h
++++ b/src/options.h
+@@ -55,6 +55,7 @@ struct Options
+     std::string window_system;
+     std::vector<WindowSystemOption> window_system_options;
+     bool run_forever;
++    bool off_screen;
+     bool show_debug;
+     bool show_help;
+     bool list_devices;
+-- 
+2.20.1
+

@@ -1,0 +1,20 @@
+menuconfig BR2_PACKAGE_ROCKCHIP_MPP
+	bool "rockchip-mpp"
+	select BR2_PACKAGE_LIBDRM
+	help
+	  Rockchip MPP(Multimedia Processing Platform).
+
+if BR2_PACKAGE_ROCKCHIP_MPP
+
+config BR2_PACKAGE_ROCKCHIP_MPP_ALLOCATOR_DRM
+	bool "drm allocator"
+	help
+	  Use drm allocator.
+
+config BR2_PACKAGE_ROCKCHIP_MPP_TESTS
+	bool "test programs"
+	default n
+	help
+	  Install the test programs.
+
+endif

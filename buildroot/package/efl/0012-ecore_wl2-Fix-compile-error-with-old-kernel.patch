@@ -1,0 +1,30 @@
+From db04c80c93fd45b25b4d9a17b6c8546ed66a29ed Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Fri, 5 Aug 2022 17:16:31 +0800
+Subject: [PATCH 12/12] ecore_wl2: Fix compile error with old kernel
+
+The 4.4 kernel-headers doesn't install dma-buf.h
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ src/lib/ecore_wl2/ecore_wl2_buffer.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/src/lib/ecore_wl2/ecore_wl2_buffer.c b/src/lib/ecore_wl2/ecore_wl2_buffer.c
+index 386eff294f..8d3bb090d6 100644
+--- a/src/lib/ecore_wl2/ecore_wl2_buffer.c
++++ b/src/lib/ecore_wl2/ecore_wl2_buffer.c
+@@ -17,9 +17,7 @@
+ #include <sys/mman.h>
+ #include <sys/ioctl.h>
+ 
+-#if defined(__linux__)
+-#include <linux/dma-buf.h>
+-#elif defined(__FreeBSD__)
++#ifndef DMA_BUF_BASE
+ /* begin/end dma-buf functions used for userspace mmap. */
+ struct dma_buf_sync {
+         __u64 flags;
+-- 
+2.20.1
+

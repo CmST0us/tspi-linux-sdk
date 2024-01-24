@@ -1,0 +1,190 @@
+From a3c839f7ca05ecd424be293f49e90f36845b8b8b Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Fri, 25 Nov 2022 19:39:30 +0800
+Subject: [PATCH 6/8] Support PARTLABEL
+
+Tested on RK3588 EVB:
+busybox mount PARTLABEL=rootfs /media/
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ include/volume_id.h                       |  1 +
+ util-linux/volume_id/get_devname.c        | 59 +++++++++++++++++++----
+ util-linux/volume_id/volume_id_internal.h |  1 +
+ 3 files changed, 52 insertions(+), 9 deletions(-)
+
+diff --git a/include/volume_id.h b/include/volume_id.h
+index a83da89..afb76e4 100644
+--- a/include/volume_id.h
++++ b/include/volume_id.h
+@@ -20,6 +20,7 @@
+ 
+ char *get_devname_from_label(const char *spec);
+ char *get_devname_from_uuid(const char *spec);
++char *get_devname_from_partlabel(const char *spec);
+ void display_uuid_cache(int scan_devices);
+ 
+ /* Returns:
+diff --git a/util-linux/volume_id/get_devname.c b/util-linux/volume_id/get_devname.c
+index 00cfb28..61d0461 100644
+--- a/util-linux/volume_id/get_devname.c
++++ b/util-linux/volume_id/get_devname.c
+@@ -24,15 +24,16 @@ static struct uuidCache_s {
+ //	int major, minor;
+ 	char *device;
+ 	char *label;
++	char *partlabel;
+ 	char *uc_uuid; /* prefix makes it easier to grep for */
+ 	IF_FEATURE_BLKID_TYPE(const char *type;)
+ } *uuidCache;
+ 
+ #if !ENABLE_FEATURE_BLKID_TYPE
+-#define get_label_uuid(fd, label, uuid, type) \
+-	get_label_uuid(fd, label, uuid)
+-#define uuidcache_addentry(device, label, uuid, type) \
+-	uuidcache_addentry(device, label, uuid)
++#define get_label_uuid(fd, label, partlabel, uuid, type) \
++	get_label_uuid(fd, label, partlabel, uuid)
++#define uuidcache_addentry(device, label, partlabel, uuid, type) \
++	uuidcache_addentry(device, label, partlabel, uuid)
+ #endif
+ 
+ /* Returns !0 on error.
+@@ -40,11 +41,13 @@ static struct uuidCache_s {
+  * (and they can't be NULL, although they can be "").
+  * NB: closes fd. */
+ static int
+-get_label_uuid(int fd, char **label, char **uuid, const char **type)
++get_label_uuid(int fd, char **label, char **partlabel, char **uuid, const char **type)
+ {
+ 	int rv = 1;
+ 	uint64_t size;
+ 	struct volume_id *vid;
++	struct stat st;
++	char *uevent;
+ 
+ 	/* fd is owned by vid now */
+ 	vid = volume_id_open_node(fd);
+@@ -55,12 +58,30 @@ get_label_uuid(int fd, char **label, char **uuid, const char **type)
+ 	if (volume_id_probe_all(vid, /*0,*/ size) != 0)
+ 		goto ret;
+ 
+-	if (vid->label[0] != '\0' || vid->uuid[0] != '\0'
++	fstat(fd, &st);
++	uevent = xasprintf("/sys/dev/block/%d:%d/uevent",
++			   major(st.st_rdev), minor(st.st_rdev));
++	if (uevent) {
++		FILE *rfile = fopen_for_read(uevent);
++		if (rfile) {
++			const char *line;
++			while ((line = xmalloc_fgetline(rfile)) != NULL) {
++				if (sscanf(line, "PARTNAME=%s",
++					   vid->partlabel) > 0)
++					break;
++			}
++			fclose(rfile);
++		}
++		free(uevent);
++	}
++
++	if (vid->label[0] != '\0' || vid->partlabel[0] != '\0' || vid->uuid[0] != '\0'
+ #if ENABLE_FEATURE_BLKID_TYPE
+ 	 || vid->type != NULL
+ #endif
+ 	) {
+ 		*label = xstrndup(vid->label, sizeof(vid->label));
++		*partlabel = xstrndup(vid->partlabel, sizeof(vid->partlabel));
+ 		*uuid  = xstrndup(vid->uuid, sizeof(vid->uuid));
+ #if ENABLE_FEATURE_BLKID_TYPE
+ 		*type = vid->type;
+@@ -77,7 +98,7 @@ get_label_uuid(int fd, char **label, char **uuid, const char **type)
+ 
+ /* NB: we take ownership of (malloc'ed) label and uuid */
+ static void
+-uuidcache_addentry(char *device, /*int major, int minor,*/ char *label, char *uuid, const char *type)
++uuidcache_addentry(char *device, /*int major, int minor,*/ char *label, char *partlabel, char *uuid, const char *type)
+ {
+ 	struct uuidCache_s *last;
+ 
+@@ -94,6 +115,7 @@ uuidcache_addentry(char *device, /*int major, int minor,*/ char *label, char *uu
+ //	last->minor = minor;
+ 	last->device = device;
+ 	last->label = label;
++	last->partlabel = partlabel;
+ 	last->uc_uuid = uuid;
+ 	IF_FEATURE_BLKID_TYPE(last->type = type;)
+ }
+@@ -244,6 +266,8 @@ void display_uuid_cache(int scan_devices)
+ 	if (uc->type)
+ 		printf(" TYPE=\"%s\"", uc->type);
+ #endif
++		if (uc->partlabel[0])
++			printf(" PARTLABEL=\"%s\"", uc->partlabel);
+ 		bb_putchar('\n');
+ 		uc = uc->next;
+ 	}
+@@ -253,6 +277,7 @@ int add_to_uuid_cache(const char *device)
+ {
+ 	char *uuid = uuid; /* for compiler */
+ 	char *label = label;
++	char *partlabel = partlabel;
+ #if ENABLE_FEATURE_BLKID_TYPE
+ 	const char *type = type;
+ #endif
+@@ -263,9 +288,9 @@ int add_to_uuid_cache(const char *device)
+ 		return 0;
+ 
+ 	/* get_label_uuid() closes fd in all cases (success & failure) */
+-	if (get_label_uuid(fd, &label, &uuid, &type) == 0) {
++	if (get_label_uuid(fd, &label, &partlabel, &uuid, &type) == 0) {
+ 		/* uuidcache_addentry() takes ownership of all four params */
+-		uuidcache_addentry(xstrdup(device), /*ma, mi,*/ label, uuid, type);
++		uuidcache_addentry(xstrdup(device), /*ma, mi,*/ label, partlabel, uuid, type);
+ 		return 1;
+ 	}
+ 	return 0;
+@@ -288,6 +313,20 @@ char *get_devname_from_label(const char *spec)
+ 	return NULL;
+ }
+ 
++char *get_devname_from_partlabel(const char *spec)
++{
++	struct uuidCache_s *uc;
++
++	uc = uuidcache_init(/*scan_devices:*/ 1);
++	while (uc) {
++		if (uc->partlabel[0] && strcmp(spec, uc->partlabel) == 0) {
++			return xstrdup(uc->device);
++		}
++		uc = uc->next;
++	}
++	return NULL;
++}
++
+ char *get_devname_from_uuid(const char *spec)
+ {
+ 	struct uuidCache_s *uc;
+@@ -311,6 +350,8 @@ int resolve_mount_spec(char **fsname)
+ 		tmp = get_devname_from_uuid(*fsname + 5);
+ 	else if (is_prefixed_with(*fsname, "LABEL="))
+ 		tmp = get_devname_from_label(*fsname + 6);
++	else if (is_prefixed_with(*fsname, "PARTLABEL="))
++		tmp = get_devname_from_partlabel(*fsname + 10);
+ 
+ 	if (tmp == *fsname)
+ 		return 0; /* no UUID= or LABEL= prefix found */
+diff --git a/util-linux/volume_id/volume_id_internal.h b/util-linux/volume_id/volume_id_internal.h
+index b1e4448..d1d9d4d 100644
+--- a/util-linux/volume_id/volume_id_internal.h
++++ b/util-linux/volume_id/volume_id_internal.h
+@@ -76,6 +76,7 @@ struct volume_id {
+ //	uint8_t		label_raw[VOLUME_ID_LABEL_SIZE];
+ //	size_t		label_raw_len;
+ 	char		label[VOLUME_ID_LABEL_SIZE+1];
++	char		partlabel[VOLUME_ID_LABEL_SIZE+1];
+ //	uint8_t		uuid_raw[VOLUME_ID_UUID_SIZE];
+ //	size_t		uuid_raw_len;
+ 	/* uuid is stored in ASCII (not binary) form here: */
+-- 
+2.20.1
+

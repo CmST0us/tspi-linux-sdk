@@ -1,0 +1,98 @@
+From 9d71349961ef3d171ab8330ea169164a6a717d00 Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Fri, 1 Jul 2022 17:28:05 +0800
+Subject: [PATCH 04/10] evas_gl_drm: Drop dependency on mesa3d
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ src/modules/ecore_evas/engines/drm/ecore_evas_drm.c |  2 +-
+ src/modules/evas/engines/gl_drm/evas_engine.h       |  1 -
+ src/modules/evas/engines/gl_drm/evas_outbuf.c       | 10 +---------
+ 3 files changed, 2 insertions(+), 11 deletions(-)
+
+diff --git a/src/modules/ecore_evas/engines/drm/ecore_evas_drm.c b/src/modules/ecore_evas/engines/drm/ecore_evas_drm.c
+index b992915..02e5226 100644
+--- a/src/modules/ecore_evas/engines/drm/ecore_evas_drm.c
++++ b/src/modules/ecore_evas/engines/drm/ecore_evas_drm.c
+@@ -1148,7 +1148,7 @@ ecore_evas_gl_drm_new_internal(const char *device, unsigned int parent EINA_UNUS
+    static void *libglapi = NULL;
+ 
+    if (!libglapi) libglapi = dlopen("libglapi.so.0", RTLD_LAZY | RTLD_GLOBAL);
+-   if (dlerror()) return NULL;
++   /* if (dlerror()) return NULL; */
+ 
+    return _ecore_evas_new_internal(device, x, y, w, h, EINA_TRUE);
+ }
+diff --git a/src/modules/evas/engines/gl_drm/evas_engine.h b/src/modules/evas/engines/gl_drm/evas_engine.h
+index d21bd5e..0383891 100644
+--- a/src/modules/evas/engines/gl_drm/evas_engine.h
++++ b/src/modules/evas/engines/gl_drm/evas_engine.h
+@@ -21,7 +21,6 @@
+ 
+ # include <EGL/egl.h>
+ # include <EGL/eglext.h>
+-# include <EGL/eglmesaext.h>
+ # include <GLES2/gl2.h>
+ # include <GLES2/gl2ext.h>
+ # include "../gl_generic/Evas_Engine_GL_Generic.h"
+diff --git a/src/modules/evas/engines/gl_drm/evas_outbuf.c b/src/modules/evas/engines/gl_drm/evas_outbuf.c
+index 4fa1252..44e9ea4 100644
+--- a/src/modules/evas/engines/gl_drm/evas_outbuf.c
++++ b/src/modules/evas/engines/gl_drm/evas_outbuf.c
+@@ -5,10 +5,8 @@ static Outbuf *_evas_gl_drm_window = NULL;
+ static EGLContext context = EGL_NO_CONTEXT;
+ static int win_count = 0;
+ 
+-#ifdef EGL_MESA_platform_gbm
+ static PFNEGLGETPLATFORMDISPLAYEXTPROC dlsym_eglGetPlatformDisplayEXT = NULL;
+ static PFNEGLCREATEPLATFORMWINDOWSURFACEEXTPROC dlsym_eglCreatePlatformWindowSurfaceEXT = NULL;
+-#endif
+ 
+ static void
+ _evas_outbuf_gbm_surface_destroy(Outbuf *ob)
+@@ -146,7 +144,6 @@ _evas_outbuf_init(void)
+    static int _init = 0;
+ 
+    if (_init) return EINA_TRUE;
+-#ifdef EGL_MESA_platform_gbm
+    {
+      const char *exts;
+ 
+@@ -159,7 +156,6 @@ _evas_outbuf_init(void)
+                 eglGetProcAddress("eglCreatePlatformWindowSurfaceEXT");
+        }
+    }
+-#endif
+    _init = 1;
+    return EINA_TRUE;
+ }
+@@ -212,12 +208,10 @@ _evas_outbuf_egl_setup(Outbuf *ob)
+    cfg_attr[n++] = EGL_NONE;
+ 
+    ob->egl.disp = EGL_NO_DISPLAY;
+-#ifdef EGL_MESA_platform_gbm
+    if (dlsym_eglGetPlatformDisplayEXT)
+-     ob->egl.disp = dlsym_eglGetPlatformDisplayEXT(EGL_PLATFORM_GBM_MESA,
++     ob->egl.disp = dlsym_eglGetPlatformDisplayEXT(EGL_PLATFORM_GBM_KHR,
+                                                    ob->info->info.gbm,
+                                                    NULL);
+-#endif
+    if (ob->egl.disp == EGL_NO_DISPLAY)
+      ob->egl.disp = eglGetDisplay((EGLNativeDisplayType)ob->info->info.gbm);
+    if (ob->egl.disp == EGL_NO_DISPLAY)
+@@ -282,12 +276,10 @@ _evas_outbuf_egl_setup(Outbuf *ob)
+    if (ob->egl.surface != EGL_NO_SURFACE)
+      eglDestroySurface(ob->egl.disp, ob->egl.surface);
+    ob->egl.surface = EGL_NO_SURFACE;
+-#ifdef EGL_MESA_platform_gbm
+    if (dlsym_eglCreatePlatformWindowSurfaceEXT)
+      ob->egl.surface =
+        dlsym_eglCreatePlatformWindowSurfaceEXT(ob->egl.disp, ob->egl.config,
+                                                ob->surface, NULL);
+-#endif
+    if (ob->egl.surface == EGL_NO_SURFACE)
+      ob->egl.surface = eglCreateWindowSurface(ob->egl.disp, ob->egl.config,
+                                               (EGLNativeWindowType)ob->surface,
+-- 
+2.20.1
+

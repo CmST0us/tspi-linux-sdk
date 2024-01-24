@@ -1,0 +1,69 @@
+From 5e2ba0042bf530c7c50468eeac24f6c2b71d494a Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Mon, 30 May 2022 15:25:32 +0800
+Subject: [PATCH] arm64 front end: add support for 'ldnp', 'stnp'
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ VEX/priv/guest_arm64_toIR.c | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
+
+diff --git a/VEX/priv/guest_arm64_toIR.c b/VEX/priv/guest_arm64_toIR.c
+index 44a1c23..d406fcf 100644
+--- a/VEX/priv/guest_arm64_toIR.c
++++ b/VEX/priv/guest_arm64_toIR.c
+@@ -5006,13 +5006,16 @@ Bool dis_ARM64_load_store(/*MB_OUT*/DisResult* dres, UInt insn,
+       }
+    }
+ 
+-   /* -------- LDP,STP (immediate, simm7) (INT REGS) -------- */
++   /* -------- LDP,STP,LDNP,STNP (immediate, simm7) (INT REGS) -------- */
+    /* L==1 => mm==LD
+       L==0 => mm==ST
+       x==0 => 32 bit transfers, and zero extended loads
+       x==1 => 64 bit transfers
+       simm7 is scaled by the (single-register) transfer size
+ 
++      (at-Rn-then-Rn=EA (non-temporal))
++      x0 101 0000 L imm7 Rt2 Rn Rt1  mmP Rt1,Rt2, [Xn|SP], #imm
++
+       (at-Rn-then-Rn=EA)
+       x0 101 0001 L imm7 Rt2 Rn Rt1  mmP Rt1,Rt2, [Xn|SP], #imm
+    
+@@ -5023,12 +5026,13 @@ Bool dis_ARM64_load_store(/*MB_OUT*/DisResult* dres, UInt insn,
+       x0 101 0010 L imm7 Rt2 Rn Rt1  mmP Rt1,Rt2, [Xn|SP, #imm]
+    */
+    UInt insn_30_23 = INSN(30,23);
+-   if (insn_30_23 == BITS8(0,1,0,1,0,0,0,1) 
++   if (insn_30_23 == BITS8(0,1,0,1,0,0,0,0)
++       || insn_30_23 == BITS8(0,1,0,1,0,0,0,1)
+        || insn_30_23 == BITS8(0,1,0,1,0,0,1,1)
+        || insn_30_23 == BITS8(0,1,0,1,0,0,1,0)) {
+       UInt bL     = INSN(22,22);
+       UInt bX     = INSN(31,31);
+-      UInt bWBack = INSN(23,23);
++      UInt bWBack = INSN(24,23) != BITS2(1,0);
+       UInt rT1    = INSN(4,0);
+       UInt rN     = INSN(9,5);
+       UInt rT2    = INSN(14,10);
+@@ -5049,6 +5053,7 @@ Bool dis_ARM64_load_store(/*MB_OUT*/DisResult* dres, UInt insn,
+          IRTemp tTA = newTemp(Ity_I64);
+          IRTemp tWA = newTemp(Ity_I64);
+          switch (INSN(24,23)) {
++            case BITS2(0,0): /* fallthru */
+             case BITS2(0,1):
+                assign(tTA, mkexpr(tRN)); assign(tWA, mkexpr(tEA)); break;
+             case BITS2(1,1):
+@@ -5109,6 +5114,9 @@ Bool dis_ARM64_load_store(/*MB_OUT*/DisResult* dres, UInt insn,
+ 
+          const HChar* fmt_str = NULL;
+          switch (INSN(24,23)) {
++            case BITS2(0,0):
++               fmt_str = "%snp %s, %s, [%s], #%lld (at-Rn-then-Rn=EA (non-temporal))\n";
++               break;
+             case BITS2(0,1):
+                fmt_str = "%sp %s, %s, [%s], #%lld (at-Rn-then-Rn=EA)\n";
+                break;
+-- 
+2.20.1
+

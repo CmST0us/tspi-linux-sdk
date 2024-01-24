@@ -1,0 +1,44 @@
+From 29cf880dbd7a193d7a56338054ff8e857bb147fa Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Fri, 6 Mar 2020 17:20:40 +0800
+Subject: [PATCH 15/28] qscreen: Update toplevel windows' screen when needed
+
+Update toplevel windows' screen when creating new primary screen, since
+we cleared it during destroying the old one.
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ src/gui/kernel/qscreen.cpp | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
+
+diff --git a/src/gui/kernel/qscreen.cpp b/src/gui/kernel/qscreen.cpp
+index e33d77c1..90c1fae7 100644
+--- a/src/gui/kernel/qscreen.cpp
++++ b/src/gui/kernel/qscreen.cpp
+@@ -74,7 +74,23 @@ QScreen::QScreen(QPlatformScreen *screen)
+     : QObject(*new QScreenPrivate(), nullptr)
+ {
+     Q_D(QScreen);
++    QScreen *primaryScreen = QGuiApplication::primaryScreen();
++
+     d->setPlatformScreen(screen);
++
++    if (primaryScreen)
++        return;
++
++    // Move any leftover windows to this new screen
++    const auto allWindows = QGuiApplication::allWindows();
++    for (QWindow *window : allWindows) {
++        if (!window->isTopLevel())
++            continue;
++
++        const bool wasVisible = window->isVisible();
++        window->setScreen(this);
++        window->setVisible(wasVisible);
++    }
+ }
+ 
+ void QScreenPrivate::updateGeometriesWithSignals()
+-- 
+2.20.1
+

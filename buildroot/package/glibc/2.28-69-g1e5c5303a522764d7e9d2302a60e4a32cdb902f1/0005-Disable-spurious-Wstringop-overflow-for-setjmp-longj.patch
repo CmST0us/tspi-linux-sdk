@@ -1,0 +1,119 @@
+From 12cd30dbe088f20a2953985ca1612cb6a539700d Mon Sep 17 00:00:00 2001
+From: Joseph Myers <joseph@codesourcery.com>
+Date: Fri, 30 Oct 2020 21:38:31 +0000
+Subject: [PATCH 05/20] Disable spurious -Wstringop-overflow for setjmp/longjmp
+ (bug 26647)
+
+Building glibc with GCC 11 fails with (among other warnings) spurious
+-Wstringop-overflow warnings from calls to setjmp and longjmp with a
+pointer to a pthread_unwind_buf that is smaller than jmp_buf.  As
+discussed in bug 26647, the warning in libc-start.c is a false
+positive, because setjmp and longjmp do not access anything (the
+signal mask) beyond the common prefix of the two structures, so this
+patch disables the warning for that call to setjmp, as well as for two
+calls in NPTL code that produce the same warning and look like false
+positives for the same reason.
+
+Tested with build-many-glibcs.py for arm-linux-gnueabi, where this
+allows the build to get further.
+
+Reviewed-by: DJ Delorie <dj@redhat.com>
+(cherry picked from commit 2098d4034d398cbde6ccd4a2aaac52c518374698)
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ csu/libc-start.c      | 10 ++++++++++
+ nptl/pthread_create.c | 10 ++++++++++
+ nptl/unwind.c         | 10 ++++++++++
+ 3 files changed, 30 insertions(+)
+
+diff --git a/csu/libc-start.c b/csu/libc-start.c
+index 49413236..dd572d53 100644
+--- a/csu/libc-start.c
++++ b/csu/libc-start.c
+@@ -21,6 +21,7 @@
+ #include <unistd.h>
+ #include <ldsodefs.h>
+ #include <exit-thread.h>
++#include <libc-diag.h>
+ #include <libc-internal.h>
+ 
+ #include <elf/dl-tunables.h>
+@@ -292,7 +293,16 @@ LIBC_START_MAIN (int (*main) (int, char **, char ** MAIN_AUXVEC_DECL),
+   struct pthread_unwind_buf unwind_buf;
+ 
+   int not_first_call;
++  DIAG_PUSH_NEEDS_COMMENT;
++#if __GNUC_PREREQ (7, 0)
++  /* This call results in a -Wstringop-overflow warning because struct
++     pthread_unwind_buf is smaller than jmp_buf.  setjmp and longjmp
++     do not use anything beyond the common prefix (they never access
++     the saved signal mask), so that is a false positive.  */
++  DIAG_IGNORE_NEEDS_COMMENT (11, "-Wstringop-overflow=");
++#endif
+   not_first_call = setjmp ((struct __jmp_buf_tag *) unwind_buf.cancel_jmp_buf);
++  DIAG_POP_NEEDS_COMMENT;
+   if (__glibc_likely (! not_first_call))
+     {
+       struct pthread *self = THREAD_SELF;
+diff --git a/nptl/pthread_create.c b/nptl/pthread_create.c
+index fe75d041..05bbbd88 100644
+--- a/nptl/pthread_create.c
++++ b/nptl/pthread_create.c
+@@ -26,6 +26,7 @@
+ #include <hp-timing.h>
+ #include <ldsodefs.h>
+ #include <atomic.h>
++#include <libc-diag.h>
+ #include <libc-internal.h>
+ #include <resolv.h>
+ #include <kernel-features.h>
+@@ -429,7 +430,16 @@ START_THREAD_DEFN
+   struct pthread_unwind_buf unwind_buf;
+ 
+   int not_first_call;
++  DIAG_PUSH_NEEDS_COMMENT;
++#if __GNUC_PREREQ (7, 0)
++  /* This call results in a -Wstringop-overflow warning because struct
++     pthread_unwind_buf is smaller than jmp_buf.  setjmp and longjmp
++     do not use anything beyond the common prefix (they never access
++     the saved signal mask), so that is a false positive.  */
++  DIAG_IGNORE_NEEDS_COMMENT (11, "-Wstringop-overflow=");
++#endif
+   not_first_call = setjmp ((struct __jmp_buf_tag *) unwind_buf.cancel_jmp_buf);
++  DIAG_POP_NEEDS_COMMENT;
+ 
+   /* No previous handlers.  NB: This must be done after setjmp since the
+      private space in the unwind jump buffer may overlap space used by
+diff --git a/nptl/unwind.c b/nptl/unwind.c
+index b37a063c..3cf0779d 100644
+--- a/nptl/unwind.c
++++ b/nptl/unwind.c
+@@ -23,6 +23,7 @@
+ #include <string.h>
+ #include <unistd.h>
+ #include "pthreadP.h"
++#include <libc-diag.h>
+ #include <jmpbuf-unwind.h>
+ 
+ #ifdef _STACK_GROWS_DOWN
+@@ -90,8 +91,17 @@ unwind_stop (int version, _Unwind_Action actions,
+ 	}
+     }
+ 
++  DIAG_PUSH_NEEDS_COMMENT;
++#if __GNUC_PREREQ (7, 0)
++  /* This call results in a -Wstringop-overflow warning because struct
++     pthread_unwind_buf is smaller than jmp_buf.  setjmp and longjmp
++     do not use anything beyond the common prefix (they never access
++     the saved signal mask), so that is a false positive.  */
++  DIAG_IGNORE_NEEDS_COMMENT (11, "-Wstringop-overflow=");
++#endif
+   if (do_longjump)
+     __libc_unwind_longjmp ((struct __jmp_buf_tag *) buf->cancel_jmp_buf, 1);
++  DIAG_POP_NEEDS_COMMENT;
+ 
+   return _URC_NO_REASON;
+ }
+-- 
+2.20.1
+

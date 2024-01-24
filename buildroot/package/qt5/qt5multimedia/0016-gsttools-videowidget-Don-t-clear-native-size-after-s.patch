@@ -1,0 +1,28 @@
+From cd08e226a5a389392dec97f8f991f8b44c7640f2 Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Mon, 22 Nov 2021 19:07:03 +0800
+Subject: [PATCH 16/17] gsttools: videowidget: Don't clear native size after
+ stopped
+
+To avoid changing geometry after stopped.
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ src/gsttools/qgstreamervideowidget.cpp | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/src/gsttools/qgstreamervideowidget.cpp b/src/gsttools/qgstreamervideowidget.cpp
+index 878702c..7ae0aa9 100644
+--- a/src/gsttools/qgstreamervideowidget.cpp
++++ b/src/gsttools/qgstreamervideowidget.cpp
+@@ -170,7 +170,6 @@ void QGstreamerVideoWidgetControl::stopRenderer()
+ {
+     m_stopped = true;
+     updateWidgetAttributes();
+-    m_widget->setNativeSize(QSize());
+ }
+ 
+ void QGstreamerVideoWidgetControl::onNativeVideoSizeChanged()
+-- 
+2.20.1
+

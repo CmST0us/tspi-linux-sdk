@@ -1,0 +1,37 @@
+From 07e21c6d742927baf76eba63f793a25f5587f090 Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Mon, 21 Feb 2022 16:56:09 +0800
+Subject: [PATCH] Only require xcursor for unknown cursor dir
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ configure.ac | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index 3d9bd5f..37c9fbe 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -26,12 +26,16 @@ if test "x$XCURSORGEN" = xno; then
+ fi
+ AC_SUBST([XCURSORGEN])
+ 
+-PKG_CHECK_MODULES(ICONDEFS, xcursor)
+-pkg_cursordir=`$PKG_CONFIG --variable=icondir xcursor`
+ AC_ARG_WITH(cursordir,
+         AC_HELP_STRING([--with-cursordir=<pathname>],
+           [specify directory for cursor files (default is autodetected)]),
+-        [cursordir="$withval"], [cursordir="${pkg_cursordir}"])
++        [cursordir="$withval"], [cursordir=""])
++
++if test "x$cursordir" = "x" ; then
++  PKG_CHECK_MODULES(ICONDEFS, xcursor)
++  cursordir=`$PKG_CONFIG --variable=icondir xcursor`
++fi
++
+ AC_SUBST([cursordir])
+ 
+ AM_CONDITIONAL(WHITEGLASS, true)
+-- 
+2.20.1
+

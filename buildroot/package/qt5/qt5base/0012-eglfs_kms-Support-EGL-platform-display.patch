@@ -1,0 +1,46 @@
+From 329c2a748739ddd5d025a44c1c69b11b5257c370 Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Thu, 14 Mar 2019 20:28:34 +0800
+Subject: [PATCH 12/28] eglfs_kms: Support EGL platform display
+
+Conflicts:
+    src/plugins/platforms/eglfs/deviceintegration/eglfs_kms_support/qeglfskmsscreen.cpp
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+Signed-off-by: Ziyuan Xu <xzy.xu@rock-chips.com>
+---
+ .../eglfs/api/qeglfsdeviceintegration.cpp      | 18 +++++++++++++++++-
+ 1 file changed, 17 insertions(+), 1 deletion(-)
+
+diff --git a/src/plugins/platforms/eglfs/api/qeglfsdeviceintegration.cpp b/src/plugins/platforms/eglfs/api/qeglfsdeviceintegration.cpp
+index b985386a..a9a9521f 100644
+--- a/src/plugins/platforms/eglfs/api/qeglfsdeviceintegration.cpp
++++ b/src/plugins/platforms/eglfs/api/qeglfsdeviceintegration.cpp
+@@ -192,7 +192,23 @@ EGLNativeDisplayType QEglFSDeviceIntegration::platformDisplay() const
+ 
+ EGLDisplay QEglFSDeviceIntegration::createDisplay(EGLNativeDisplayType nativeDisplay)
+ {
+-    return eglGetDisplay(nativeDisplay);
++    EGLDisplay display;
++
++    PFNEGLGETPLATFORMDISPLAYEXTPROC get_platform_display =
++        reinterpret_cast<PFNEGLGETPLATFORMDISPLAYEXTPROC>(eglGetProcAddress("eglGetPlatformDisplayEXT"));
++
++    if (get_platform_display) {
++        display = get_platform_display(EGL_PLATFORM_GBM_KHR,
++                                       nativeDisplay, Q_NULLPTR);
++    } else {
++        qWarning("EGL_EXT_platform_device not available, falling back to legacy path!");
++        display = eglGetDisplay(nativeDisplay);
++    }
++
++    if (Q_UNLIKELY(display == EGL_NO_DISPLAY))
++        qFatal("Could not get EGL display");
++
++    return display;
+ }
+ 
+ bool QEglFSDeviceIntegration::usesDefaultScreen()
+-- 
+2.20.1
+

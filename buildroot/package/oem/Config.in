@@ -1,0 +1,14 @@
+config BR2_PACKAGE_OEM
+	bool "OEM splitted rootfs"
+	depends on !BR2_PER_PACKAGE_DIRECTORIES
+	help
+	  Install specified packages to $(TARGET_DIR)/oem instead.
+
+if BR2_PACKAGE_OEM
+
+config BR2_PACKAGE_OEM_PACKAGES
+	string "OEM packages"
+	help
+	  Packages which would be installed to the OEM splitted rootfs.
+
+endif

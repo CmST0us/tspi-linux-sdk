@@ -1,0 +1,29 @@
+From 5cd05a2ed0d705b8ce02ebca9dc117d6f0061990 Mon Sep 17 00:00:00 2001
+From: "jkand.huang" <jkand.huang@rock-chips.com>
+Date: Sat, 12 Oct 2019 15:18:04 +0800
+Subject: [PATCH] change home_dir from /root to /userdata.
+
+Signed-off-by: jkand.huang <jkand.huang@rock-chips.com>
+---
+ server/server.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+ mode change 100644 => 100755 server/server.cpp
+
+diff --git a/server/server.cpp b/server/server.cpp
+old mode 100644
+new mode 100755
+index f43d513..37e1459
+--- a/server/server.cpp
++++ b/server/server.cpp
+@@ -215,7 +215,7 @@ public:
+     {
+         home_storage = new MtpStorage(
+             MTP_STORAGE_FIXED_RAM,
+-            userdata->pw_dir,
++            "userdata",
+             "MTP",
+             0,
+             false,
+-- 
+2.7.4
+

@@ -1,0 +1,35 @@
+From 48830ce0a5b251ad85df1a080979999816ccf467 Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Tue, 12 Jul 2022 12:29:11 +0800
+Subject: [PATCH 04/10] xdg-shell: Avoid conflict with xdg-shell-v6
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ src/modules/wl_desktop_shell/xdg.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/modules/wl_desktop_shell/xdg.c b/src/modules/wl_desktop_shell/xdg.c
+index 81e1fb6e6..4892eaa70 100644
+--- a/src/modules/wl_desktop_shell/xdg.c
++++ b/src/modules/wl_desktop_shell/xdg.c
+@@ -1381,7 +1381,7 @@ _e_xdg_shell_cb_surface_get(struct wl_client *client, struct wl_resource *resour
+                                "Client already has XDG shell surface");
+         return;
+      }
+-   shd = cdata->shell.data = e_shell_data_new(6);
++   shd = cdata->shell.data = e_shell_data_new(1);
+    shd->width = shd->height = -1;
+ 
+    /* try to create a shell surface */
+@@ -1445,7 +1445,7 @@ _xdg_client_destroy(E_Client *ec, Eina_Bool do_list)
+    if (e_pixmap_type_get(ec->pixmap) != E_PIXMAP_TYPE_WL) return;
+ 
+    shd = ec->comp_data->shell.data;
+-   if (shd && (shd->version != 6)) return;
++   if (shd && (shd->version != 1)) return;
+    if (do_list && shd)
+      {
+         vF_Shell_Data *v;
+-- 
+2.20.1
+

@@ -1,0 +1,89 @@
+From 1643107aa592271413603601161b47681287065e Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Tue, 18 Sep 2018 11:32:04 +0800
+Subject: [PATCH 5/8] halt: Support rebooting with arg
+
+Support passing reboot arg(e.g. loader, fastboot, etc.) to kernel.
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ init/halt.c | 49 +++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 49 insertions(+)
+
+diff --git a/init/halt.c b/init/halt.c
+index fe3cb9e..2e8a0a5 100644
+--- a/init/halt.c
++++ b/init/halt.c
+@@ -93,6 +93,8 @@
+ 
+ #include "libbb.h"
+ #include "reboot.h"
++#include <linux/reboot.h>
++#include <sys/syscall.h>
+ 
+ #if ENABLE_FEATURE_WTMP
+ #include <sys/utsname.h>
+@@ -161,6 +163,48 @@ static int init_was_not_there(void)
+ # define init_was_not_there() 0
+ #endif
+ 
++static volatile int caught_sigterm = FALSE;
++static void signal_handler(int sig)
++{
++	bb_error_msg("Caught signal %d", sig);
++
++	if (sig == SIGTERM)
++		caught_sigterm = TRUE;
++}
++
++static int reboot_with_arg(const char *arg)
++{
++	struct sigaction sa;
++	int pid;
++
++	/* Fork new thread to handle reboot */
++	if ((pid = fork()))
++		return pid < 0 ? pid : 0;
++
++	/* Handle signal and reboot in child thread */
++	sigemptyset(&sa.sa_mask);
++	sa.sa_flags = 0;
++	sa.sa_handler = signal_handler;
++	sigaction_set(SIGTERM, &sa);
++
++	bb_error_msg("Waiting for SIGTERM");
++
++	/* The init will send SIGTERM to us after SHUTDOWN actions */
++	while (!caught_sigterm)
++		usleep(50000);
++
++	bb_error_msg("Ready to reboot");
++
++	/* Wait 200ms for other processes to exit */
++	usleep(200000);
++	sync();
++
++	bb_error_msg("Rebooting with arg(%s)", arg);
++	return syscall(__NR_reboot, LINUX_REBOOT_MAGIC1,
++			LINUX_REBOOT_MAGIC2,
++			LINUX_REBOOT_CMD_RESTART2, arg);
++}
++
+ int halt_main(int argc, char **argv) MAIN_EXTERNALLY_VISIBLE;
+ int halt_main(int argc UNUSED_PARAM, char **argv)
+ {
+@@ -239,6 +283,11 @@ int halt_main(int argc UNUSED_PARAM, char **argv)
+ 						CONFIG_TELINIT_PATH);
+ 			}
+ 		}
++
++		/* Handle rebooting with arg */
++		if (signals[which] == SIGTERM && argc > 1 && argv[1][0] != '-')
++			rc = reboot_with_arg(argv[1]);
++
+ 	} else {
+ 		rc = reboot(magic[which]);
+ 	}
+-- 
+2.20.1
+

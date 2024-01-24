@@ -1,0 +1,52 @@
+From 8656a0534fc8178138fa48ae1a165d43acd11a6f Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Fri, 26 Nov 2021 09:38:19 +0800
+Subject: [PATCH 17/17] gstreamer: Support choosing playbin2 and playbin3
+
+Neither of them is perfect.
+
+The playbin2 (decodebin2) cannot handle multiqueue overrun for some
+broken streams:
+https://bugzilla.gnome.org/show_bug.cgi?id=775474
+
+The playbin3 (decodebin3) might cause memory corruption or ghostpad
+activation deadlock in looping.
+
+So let's support choosing them by setting QT_GSTREAMER_PLAYBIN env to
+playbin or playbin3.
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ src/gsttools/qgstreamerplayersession.cpp                        | 2 +-
+ .../gstreamer/audiodecoder/qgstreameraudiodecodersession.cpp    | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/gsttools/qgstreamerplayersession.cpp b/src/gsttools/qgstreamerplayersession.cpp
+index b0a37f8..635b6e9 100755
+--- a/src/gsttools/qgstreamerplayersession.cpp
++++ b/src/gsttools/qgstreamerplayersession.cpp
+@@ -120,7 +120,7 @@ QGstreamerPlayerSession::QGstreamerPlayerSession(QObject *parent)
+ 
+ void QGstreamerPlayerSession::initPlaybin()
+ {
+-    m_playbin = gst_element_factory_make(QT_GSTREAMER_PLAYBIN_ELEMENT_NAME, nullptr);
++    m_playbin = gst_element_factory_make(getenv("QT_GSTREAMER_PLAYBIN") ?: QT_GSTREAMER_PLAYBIN_ELEMENT_NAME, NULL);
+     if (m_playbin) {
+         //GST_PLAY_FLAG_NATIVE_VIDEO omits configuration of ffmpegcolorspace and videoscale,
+         //since those elements are included in the video output bin when necessary.
+diff --git a/src/plugins/gstreamer/audiodecoder/qgstreameraudiodecodersession.cpp b/src/plugins/gstreamer/audiodecoder/qgstreameraudiodecodersession.cpp
+index d6b8ad7..6ad6849 100644
+--- a/src/plugins/gstreamer/audiodecoder/qgstreameraudiodecodersession.cpp
++++ b/src/plugins/gstreamer/audiodecoder/qgstreameraudiodecodersession.cpp
+@@ -91,7 +91,7 @@ QGstreamerAudioDecoderSession::QGstreamerAudioDecoderSession(QObject *parent)
+      m_durationQueries(0)
+ {
+     // Create pipeline here
+-    m_playbin = gst_element_factory_make(QT_GSTREAMER_PLAYBIN_ELEMENT_NAME, NULL);
++    m_playbin = gst_element_factory_make(getenv("QT_GSTREAMER_PLAYBIN") ?: QT_GSTREAMER_PLAYBIN_ELEMENT_NAME, NULL);
+ 
+     if (m_playbin != 0) {
+         // Sort out messages
+-- 
+2.20.1
+

@@ -1,0 +1,19 @@
+#!/bin/sh
+# Log some extra information at the beginning of a suspend/resume cycle.
+# TODO: Make this hook only run when PM_DEBUG is true?
+
+. "${PM_FUNCTIONS}"
+
+case "$1" in
+       hibernate|suspend)
+		hciconfig hci0 down
+		ifconfig wlan0 down
+               ;;
+       thaw|resume)
+		kilall brcm_patchram_plus1
+		ifconfig wlan0 up
+		bt_init.sh&
+               ;;
+       *) exit $NA
+               ;;
+esac

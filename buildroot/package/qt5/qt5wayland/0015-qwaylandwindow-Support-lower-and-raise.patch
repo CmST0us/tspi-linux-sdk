@@ -1,0 +1,86 @@
+From b3be9051f1ad37160d412cb215e7230257d0919a Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Wed, 3 Nov 2021 17:55:58 +0800
+Subject: [PATCH 15/17] qwaylandwindow: Support lower() and raise()
+
+Support lower() and raise() through hacked subsurface::place_below() and
+subsurface::place_below().
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ src/client/qwaylandsubsurface.cpp | 10 ++++++++++
+ src/client/qwaylandsubsurface_p.h |  3 +++
+ src/client/qwaylandwindow.cpp     | 12 ++++++++++--
+ 3 files changed, 23 insertions(+), 2 deletions(-)
+
+diff --git a/src/client/qwaylandsubsurface.cpp b/src/client/qwaylandsubsurface.cpp
+index 2ff966c..2fcb79e 100644
+--- a/src/client/qwaylandsubsurface.cpp
++++ b/src/client/qwaylandsubsurface.cpp
+@@ -62,6 +62,16 @@ QWaylandSubSurface::~QWaylandSubSurface()
+     destroy();
+ }
+ 
++void QWaylandSubSurface::placeAbove(struct ::wl_surface *sibling)
++{
++    QtWayland::wl_subsurface::place_above(sibling);
++}
++
++void QWaylandSubSurface::placeBelow(struct ::wl_surface *sibling)
++{
++    QtWayland::wl_subsurface::place_below(sibling);
++}
++
+ void QWaylandSubSurface::setSync()
+ {
+     QMutexLocker l(&m_syncLock);
+diff --git a/src/client/qwaylandsubsurface_p.h b/src/client/qwaylandsubsurface_p.h
+index 76da10b..1c38151 100644
+--- a/src/client/qwaylandsubsurface_p.h
++++ b/src/client/qwaylandsubsurface_p.h
+@@ -73,6 +73,9 @@ public:
+     QWaylandWindow *window() const { return m_window; }
+     QWaylandWindow *parent() const { return m_parent; }
+ 
++    void placeAbove(struct ::wl_surface *sibling);
++    void placeBelow(struct ::wl_surface *sibling);
++
+     void setSync();
+     void setDeSync();
+     bool isSync() const { return m_synchronized; }
+diff --git a/src/client/qwaylandwindow.cpp b/src/client/qwaylandwindow.cpp
+index ef308c5..b8d19a4 100644
+--- a/src/client/qwaylandwindow.cpp
++++ b/src/client/qwaylandwindow.cpp
+@@ -501,18 +501,26 @@ void QWaylandWindow::setVisible(bool visible)
+     }
+ }
+ 
+-
+ void QWaylandWindow::raise()
+ {
+     if (mShellSurface)
+         mShellSurface->raise();
+-}
+ 
++    if (mSubSurfaceWindow && wlSurface()) {
++        mSubSurfaceWindow->placeAbove(wlSurface());
++        mSubSurfaceWindow->parent()->commit();
++    }
++}
+ 
+ void QWaylandWindow::lower()
+ {
+     if (mShellSurface)
+         mShellSurface->lower();
++
++    if (mSubSurfaceWindow && wlSurface()) {
++        mSubSurfaceWindow->placeBelow(wlSurface());
++        mSubSurfaceWindow->parent()->commit();
++    }
+ }
+ 
+ void QWaylandWindow::setOpacity(qreal level)
+-- 
+2.20.1
+

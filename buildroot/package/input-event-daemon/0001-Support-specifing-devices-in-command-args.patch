@@ -1,0 +1,65 @@
+From 27d225a8a88a002f02c9ad3f5db357b0ad5b1bf1 Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Thu, 7 Mar 2019 17:38:16 +0800
+Subject: [PATCH] Support specifing devices in command args
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ input-event-daemon.c | 19 ++++++++++++++++---
+ 1 file changed, 16 insertions(+), 3 deletions(-)
+
+diff --git a/input-event-daemon.c b/input-event-daemon.c
+index 51e1e3c..2a7b527 100644
+--- a/input-event-daemon.c
++++ b/input-event-daemon.c
+@@ -791,7 +791,7 @@ static void daemon_print_help() {
+             "    "PROGRAM" "
+             "[ [ --monitor | --list | --help | --version ] |\n"
+             "                         "
+-            "[--config=FILE] [--verbose] [--no-daemon] ]\n"
++            "[--config=FILE] [--verbose] [--no-daemon] ] [devices]\n"
+             "\n"
+             "Available Options:\n"
+             "\n"
+@@ -814,7 +814,7 @@ static void daemon_print_version() {
+ }
+ 
+ int main(int argc, char *argv[]) {
+-    int result, arguments = 0;
++    int result, arguments = 0, listen_len = 0;
+     static const struct option long_options[] = {
+         { "monitor",   no_argument,       0, 'm' },
+         { "list",      no_argument,       0, 'l' },
+@@ -834,6 +834,9 @@ int main(int argc, char *argv[]) {
+ 
+     while (optind < argc) {
+         result = getopt_long(argc, argv, "mlc:vDhV", long_options, NULL);
++        if (result == -1)
++            break;
++
+         arguments++;
+ 
+         switch(result) {
+@@ -875,8 +878,18 @@ int main(int argc, char *argv[]) {
+         }
+     }
+ 
++    for (arguments = optind; arguments < argc; arguments++) {
++        if(listen_len >= MAX_LISTENER) {
++            fprintf(stderr, PROGRAM": Listener limit exceeded!\n");
++            break;
++        }
++
++        conf.listen[listen_len++] = strdup(argv[arguments]);
++    }
++
+     if(conf.monitor) {
+-        input_open_all_listener();
++        if (!conf.listen[0])
++            input_open_all_listener();
+     } else {
+         config_parse_file();
+     }
+-- 
+2.11.0
+

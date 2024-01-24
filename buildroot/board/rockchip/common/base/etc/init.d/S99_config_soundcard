@@ -1,0 +1,20 @@
+#!/bin/sh
+
+alsactl restore -f /var/lib/alsa/asound.state
+
+#configure default sound card
+if [ `grep nano-rk3588 -c /proc/device-tree/compatible` -ne '0' ]; then
+        echo -i "use nano-rk3588 es8311_asound.conf"
+        if [ `grep es8311 -c /etc/asound.conf` -le '0' ]; then
+                cp /etc/es8311_asound.conf /etc/asound.conf
+                echo -i "use es8311_asound.conf"
+        fi
+elif [ `grep rk3588 -c /proc/device-tree/compatible` -ne '0' ]; then
+        echo -i "use rk3588 rt5640c_asound.conf"
+        if [ `grep rt5640c -c /etc/asound.conf` -le '0' ]; then
+                cp /etc/rt5640c_asound.conf /etc/asound.conf
+                echo -i "use rt5640c_asound.conf"
+        fi
+else
+        echo -i "use default asound.conf"
+fi

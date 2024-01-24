@@ -1,0 +1,151 @@
+From 75b3b3fba88f13d1bf4ffe1091af061758561000 Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Mon, 11 Jul 2022 19:19:56 +0800
+Subject: [PATCH 11/11] gl_drm: Support external dmabuf
+
+Tested with gstreamer mppvideodec + waylandsink.
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ src/lib/ector/gl/shader/ector_gl_shaders.x                | 8 ++++----
+ src/lib/ector/gl/shader/include.glsl                      | 8 ++++----
+ src/modules/evas/engines/gl_common/evas_gl_shader.c       | 4 ++--
+ .../evas/engines/gl_common/shader/evas_gl_shaders.x       | 8 ++++----
+ src/modules/evas/engines/gl_common/shader/include.glsl    | 8 ++++----
+ src/modules/evas/engines/gl_drm/evas_engine.c             | 4 ++--
+ 6 files changed, 20 insertions(+), 20 deletions(-)
+
+diff --git a/src/lib/ector/gl/shader/ector_gl_shaders.x b/src/lib/ector/gl/shader/ector_gl_shaders.x
+index 19120e26c3..a6dc50415b 100644
+--- a/src/lib/ector/gl/shader/ector_gl_shaders.x
++++ b/src/lib/ector/gl/shader/ector_gl_shaders.x
+@@ -8,15 +8,15 @@ static const char fragment_glsl[] =
+    " * through cpp first (in which case the precision must be manually added).\n"
+    " */\n"
+    "#ifdef GL_ES\n"
++   "# ifdef SHD_EXTERNAL\n"
++   "#extension GL_OES_EGL_image_external : require\n"
++   "#  define SAMPLER_EXTERNAL_OES samplerExternalOES\n"
++   "# endif\n"
+    "# ifdef GL_FRAGMENT_PRECISION_HIGH\n"
+    "precision highp float;\n"
+    "# else\n"
+    "precision mediump float;\n"
+    "# endif\n"
+-   "# ifdef SHD_EXTERNAL\n"
+-   "extension GL_OES_EGL_image_external : require\n"
+-   "#  define SAMPLER_EXTERNAL_OES samplerExternalOES\n"
+-   "# endif\n"
+    "#else\n"
+    "# define SAMPLER_EXTERNAL_OES sampler2D\n"
+    "#endif\n"
+diff --git a/src/lib/ector/gl/shader/include.glsl b/src/lib/ector/gl/shader/include.glsl
+index b8f8ac115e..f987544080 100644
+--- a/src/lib/ector/gl/shader/include.glsl
++++ b/src/lib/ector/gl/shader/include.glsl
+@@ -1,14 +1,14 @@
+ define(`FRAGMENT_SHADER',`
+ #ifdef GL_ES
++# ifdef SHD_EXTERNAL
++#extension GL_OES_EGL_image_external : require
++#  define SAMPLER_EXTERNAL_OES samplerExternalOES
++# endif
+ # ifdef GL_FRAGMENT_PRECISION_HIGH
+ precision highp float;
+ # else
+ precision mediump float;
+ # endif
+-# ifdef SHD_EXTERNAL
+-extension GL_OES_EGL_image_external : require
+-#  define SAMPLER_EXTERNAL_OES samplerExternalOES
+-# endif
+ #else
+ # define SAMPLER_EXTERNAL_OES sampler2D
+ #endif
+diff --git a/src/modules/evas/engines/gl_common/evas_gl_shader.c b/src/modules/evas/engines/gl_common/evas_gl_shader.c
+index 5d84504817..65dd25800f 100644
+--- a/src/modules/evas/engines/gl_common/evas_gl_shader.c
++++ b/src/modules/evas/engines/gl_common/evas_gl_shader.c
+@@ -896,8 +896,8 @@ evas_gl_common_shader_flags_get(Evas_GL_Shared *shared, Shader_Type type,
+      {
+         if (tex->im && tex->im->native.target == GL_TEXTURE_EXTERNAL_OES)
+           flags |= SHADER_FLAG_EXTERNAL;
+-        else
+-          bgra = 1;
++
++        bgra = 1;
+      }
+    else
+      bgra = shared->info.bgra;
+diff --git a/src/modules/evas/engines/gl_common/shader/evas_gl_shaders.x b/src/modules/evas/engines/gl_common/shader/evas_gl_shaders.x
+index 411a680e78..abde490e0b 100644
+--- a/src/modules/evas/engines/gl_common/shader/evas_gl_shaders.x
++++ b/src/modules/evas/engines/gl_common/shader/evas_gl_shaders.x
+@@ -8,15 +8,15 @@ static const char fragment_glsl[] =
+    " * through cpp first (in which case the precision must be manually added).\n"
+    " */\n"
+    "#ifdef GL_ES\n"
++   "# ifdef SHD_EXTERNAL\n"
++   "#extension GL_OES_EGL_image_external : require\n"
++   "#  define SAMPLER_EXTERNAL_OES samplerExternalOES\n"
++   "# endif\n"
+    "# ifdef GL_FRAGMENT_PRECISION_HIGH\n"
+    "precision highp float;\n"
+    "# else\n"
+    "precision mediump float;\n"
+    "# endif\n"
+-   "# ifdef SHD_EXTERNAL\n"
+-   "extension GL_OES_EGL_image_external : require\n"
+-   "#  define SAMPLER_EXTERNAL_OES samplerExternalOES\n"
+-   "# endif\n"
+    "#else\n"
+    "# define SAMPLER_EXTERNAL_OES sampler2D\n"
+    "#endif\n"
+diff --git a/src/modules/evas/engines/gl_common/shader/include.glsl b/src/modules/evas/engines/gl_common/shader/include.glsl
+index b8f8ac115e..f987544080 100644
+--- a/src/modules/evas/engines/gl_common/shader/include.glsl
++++ b/src/modules/evas/engines/gl_common/shader/include.glsl
+@@ -1,14 +1,14 @@
+ define(`FRAGMENT_SHADER',`
+ #ifdef GL_ES
++# ifdef SHD_EXTERNAL
++#extension GL_OES_EGL_image_external : require
++#  define SAMPLER_EXTERNAL_OES samplerExternalOES
++# endif
+ # ifdef GL_FRAGMENT_PRECISION_HIGH
+ precision highp float;
+ # else
+ precision mediump float;
+ # endif
+-# ifdef SHD_EXTERNAL
+-extension GL_OES_EGL_image_external : require
+-#  define SAMPLER_EXTERNAL_OES samplerExternalOES
+-# endif
+ #else
+ # define SAMPLER_EXTERNAL_OES sampler2D
+ #endif
+diff --git a/src/modules/evas/engines/gl_drm/evas_engine.c b/src/modules/evas/engines/gl_drm/evas_engine.c
+index d59f762160..7ebde60c6f 100644
+--- a/src/modules/evas/engines/gl_drm/evas_engine.c
++++ b/src/modules/evas/engines/gl_drm/evas_engine.c
+@@ -808,7 +808,7 @@ _native_cb_bind(void *image)
+              return;
+           }
+         img->native.invalid = EINA_FALSE;
+-        glsym_glEGLImageTargetTexture2DOES(GL_TEXTURE_2D, n->ns_data.wl_surface_dmabuf.image);
++        glsym_glEGLImageTargetTexture2DOES(img->native.target, n->ns_data.wl_surface_dmabuf.image);
+      }
+    else if (n->ns.type == EVAS_NATIVE_SURFACE_WL)
+      {
+@@ -1400,7 +1400,7 @@ eng_image_native_set(void *engine, void *image, void *native)
+                   img->native.func.bind = _native_cb_bind;
+                   img->native.func.unbind = _native_cb_unbind;
+                   img->native.func.free = _native_cb_free;
+-                  img->native.target = GL_TEXTURE_2D;
++                  img->native.target = GL_TEXTURE_EXTERNAL_OES;
+                   img->native.mipmap = 0;
+ 
+                   glsym_evas_gl_common_image_native_enable(img);
+-- 
+2.20.1
+

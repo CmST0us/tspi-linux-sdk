@@ -1,0 +1,35 @@
+From 0f4945f9cc03452f2a20d7a48d53b2085ee80bfe Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Sat, 9 May 2020 17:28:29 +0800
+Subject: [PATCH 10/17] qwaylandwindow: Support setting window activate
+
+Support setting window activate through app_id, for example:
+app_id = "requests=activate"
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ src/client/qwaylandwindow.cpp | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/src/client/qwaylandwindow.cpp b/src/client/qwaylandwindow.cpp
+index 7c18a72..032008f 100644
+--- a/src/client/qwaylandwindow.cpp
++++ b/src/client/qwaylandwindow.cpp
+@@ -1123,7 +1123,13 @@ void QWaylandWindow::restoreMouseCursor(QWaylandInputDevice *device)
+ 
+ void QWaylandWindow::requestActivateWindow()
+ {
+-    qCWarning(lcQpaWayland) << "Wayland does not support QWindow::requestActivate()";
++    if (!mShellSurface) {
++        qCWarning(lcQpaWayland) << "Wayland does not support QWindow::requestActivate()";
++        return;
++    }
++
++    // HACK: Set window activate through app id
++    mShellSurface->setAppId(QLatin1String("requests=activate"));
+ }
+ 
+ bool QWaylandWindow::isExposed() const
+-- 
+2.20.1
+

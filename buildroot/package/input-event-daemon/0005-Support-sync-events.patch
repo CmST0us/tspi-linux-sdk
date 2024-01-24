@@ -1,0 +1,127 @@
+From 740cfb20ae7e386391fb6528a8765e5827c9781c Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Wed, 26 May 2021 07:10:47 +0800
+Subject: [PATCH] Support sync events
+
+Wait for child process when handling sync events(start with '*').
+
+For example:
+[Keys]
+*POWER:1      = /etc/power-key.sh press
+*POWER:0      = /etc/power-key.sh release
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ input-event-daemon.c | 23 +++++++++++++++++++----
+ input-event-daemon.h |  4 +++-
+ 2 files changed, 22 insertions(+), 5 deletions(-)
+
+diff --git a/input-event-daemon.c b/input-event-daemon.c
+index 4bf2a33..e1528a6 100644
+--- a/input-event-daemon.c
++++ b/input-event-daemon.c
+@@ -233,7 +233,7 @@ static int idle_event_parse(unsigned long idle) {
+ 
+             fprintf(stderr, "  exec     : \"%s\"\n\n", fired_idle_event->exec);
+         }
+-        daemon_exec(fired_idle_event->exec);
++        daemon_exec(fired_idle_event->exec, 0);
+     }
+ 
+     return (fired_idle_event != NULL);
+@@ -371,7 +371,7 @@ static void input_parse_event(struct input_event *event, const char *src) {
+             fired_key_event = key_event_parse(event->code, event->value, src);
+ 
+             if(fired_key_event != NULL) {
+-                daemon_exec(fired_key_event->exec);
++                daemon_exec(fired_key_event->exec, fired_key_event->sync);
+             }
+             break;
+         case EV_SW:
+@@ -379,7 +379,7 @@ static void input_parse_event(struct input_event *event, const char *src) {
+                 switch_event_parse(event->code, event->value, src);
+ 
+             if(fired_switch_event != NULL) {
+-                daemon_exec(fired_switch_event->exec);
++                daemon_exec(fired_switch_event->exec, fired_switch_event->sync);
+             }
+ 
+             break;
+@@ -549,6 +549,12 @@ static const char *config_key_event(char *shortcut, char *exec) {
+     strsep(&value, ":");
+     shortcut = config_trim_string(shortcut);
+ 
++	new_key_event->sync = 0;
++	if (shortcut[0] == '*') {
++		new_key_event->sync = 1;
++		shortcut++;
++	}
++
+     if((code = strrchr(shortcut, '+')) != NULL) {
+         *code = '\0';
+         code = config_trim_string(code+1);
+@@ -650,6 +656,12 @@ static const char *config_switch_event(char *switchcode, char *exec) {
+     code = config_trim_string(code);
+     value = config_trim_string(value);
+ 
++	new_switch_event->sync = 0;
++	if (code[0] == '*') {
++		new_switch_event->sync = 1;
++		code++;
++	}
++
+     new_switch_event->code = strdup(code);
+     new_switch_event->value = atoi(value);
+     new_switch_event->exec = strdup(exec);
+@@ -783,8 +795,9 @@ void daemon_start_listener() {
+     }
+ }
+ 
+-static void daemon_exec(const char *command) {
++static void daemon_exec(const char *command, int sync) {
+     pid_t pid = fork();
++
+     if(pid == 0) {
+         const char *args[] = {
+             "sh", "-c", command, NULL
+@@ -810,6 +823,8 @@ static void daemon_exec(const char *command) {
+         _exit(127);
+     } else if(pid < 0) {
+         perror(PROGRAM": fork()");
++    } else if (sync) {
++        waitpid(pid, NULL, 0);
+     }
+ 
+     return;
+diff --git a/input-event-daemon.h b/input-event-daemon.h
+index 7cab13d..4a6944b 100644
+--- a/input-event-daemon.h
++++ b/input-event-daemon.h
+@@ -41,6 +41,7 @@ typedef struct key_event {
+     const char *modifiers[MAX_MODIFIERS];
+     size_t     modifier_n;
+     const char *exec;
++    int sync;
+ } key_event_t;
+ 
+ 
+@@ -53,6 +54,7 @@ typedef struct switch_event {
+     const char *code;
+     signed int value;
+     const char *exec;
++    int sync;
+ } switch_event_t;
+ 
+ /**
+@@ -109,7 +111,7 @@ static char         *config_trim_string(char *str);
+ 
+ void        daemon_init();
+ void        daemon_start_listener();
+-static void daemon_exec(const char *command);
++static void daemon_exec(const char *command, int sync);
+ void        daemon_clean();
+ static void daemon_print_help();
+ static void daemon_print_version();
+-- 
+2.20.1
+

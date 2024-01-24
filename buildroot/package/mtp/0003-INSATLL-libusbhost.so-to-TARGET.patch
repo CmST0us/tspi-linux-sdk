@@ -1,0 +1,26 @@
+From b00c1dc78c7346594cb3dceb4400d53aa7013ccb Mon Sep 17 00:00:00 2001
+From: "zain.wang" <wzz@rock-chips.com>
+Date: Fri, 17 Aug 2018 15:27:21 +0800
+Subject: [PATCH 3/3] INSATLL libusbhost.so to $TARGET
+
+Signed-off-by: zain.wang <wzz@rock-chips.com>
+---
+ libusbhost/CMakeLists.txt | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/libusbhost/CMakeLists.txt b/libusbhost/CMakeLists.txt
+index 5a1bd6a..4de8a14 100644
+--- a/libusbhost/CMakeLists.txt
++++ b/libusbhost/CMakeLists.txt
+@@ -8,3 +8,8 @@ add_library(
+     usbhost
+     src/usbhost.c
+ )
++
++install (
++  TARGETS usbhost
++  LIBRARY DESTINATION lib
++)
+-- 
+2.17.1
+

@@ -1,0 +1,8 @@
+config BR2_PACKAGE_LIBIMOBILEDEVICE_GLUE
+	bool "libimobiledevice-glue"
+	select BR2_PACKAGE_LIBPLIST
+	help
+	  Library with common code used by the libraries and tools around
+	  the libimobiledevice project.
+
+	  http://www.libimobiledevice.org/

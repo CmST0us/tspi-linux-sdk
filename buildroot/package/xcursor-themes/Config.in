@@ -1,0 +1,5 @@
+config BR2_PACKAGE_XCURSOR_THEMES
+	bool "xcursor-themes"
+	select BR2_PACKAGE_XLIB_LIBXCURSOR if BR2_PACKAGE_XORG7
+	help
+	  No description available

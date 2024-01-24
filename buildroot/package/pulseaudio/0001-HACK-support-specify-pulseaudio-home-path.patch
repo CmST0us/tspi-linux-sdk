@@ -1,0 +1,29 @@
+From 93c061e8032cab51c2f29c01398538e7cc951792 Mon Sep 17 00:00:00 2001
+From: Jiajian Wu <jair.wu@rock-chips.com>
+Date: Sun, 23 Apr 2023 18:14:45 +0800
+Subject: [PATCH] HACK: support specify pulseaudio home path
+
+Signed-off-by: Jiajian Wu <jair.wu@rock-chips.com>
+---
+ src/pulse/util.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/src/pulse/util.c b/src/pulse/util.c
+index 2be389b2..cb610df2 100644
+--- a/src/pulse/util.c
++++ b/src/pulse/util.c
+@@ -171,6 +171,11 @@ char *pa_get_home_dir(char *s, size_t l) {
+     pa_assert(s);
+     pa_assert(l > 0);
+ 
++    if ((e = getenv("PULSE_HOME"))) {
++        dir = pa_strlcpy(s, e, l);
++        goto finish;
++    }
++
+     if ((e = getenv("HOME"))) {
+         dir = pa_strlcpy(s, e, l);
+         goto finish;
+-- 
+2.25.1
+

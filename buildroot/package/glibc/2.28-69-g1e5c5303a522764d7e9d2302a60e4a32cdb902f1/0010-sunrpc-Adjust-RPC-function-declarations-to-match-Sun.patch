@@ -1,0 +1,73 @@
+From 4328f1db48ef4a0ec90a63c344c97063ade3e94a Mon Sep 17 00:00:00 2001
+From: Martin Sebor <msebor@redhat.com>
+Date: Thu, 8 Oct 2020 12:53:09 -0600
+Subject: [PATCH 10/20] sunrpc: Adjust RPC function declarations to match Sun's
+ (bug 26686]
+
+Building Glibc with the latest GCC 11 shows a number of instances
+of the new -Warray-parameter warning designed to encourage
+consistency in the forms of array arguments in redeclarations of
+the same function (and, ultimately, to enable the detection of out
+of bounds accesses via such arguments).
+
+To avoid the subset of these warnings for the RPC APIs, this patch
+changes the declarations of these functions to match both their
+definitions and the Oracle RPC documentation.
+
+Besides avoiding the -Warray-parameter warnings the effect of this
+change is for GCC to issue warnings when either the functions are
+passed an array with fewer than MAXNETNAMELEN + 1 elements, or when
+the functions themselves access elements outside the array bounds.
+
+(cherry picked from commit c5db00dc30e0513dc17ad8aefe54c807f55ec967)
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ sunrpc/netname.c  | 5 ++---
+ sunrpc/rpc/auth.h | 8 +++++---
+ 2 files changed, 7 insertions(+), 6 deletions(-)
+
+diff --git a/sunrpc/netname.c b/sunrpc/netname.c
+index 4e3730ce..2695870f 100644
+--- a/sunrpc/netname.c
++++ b/sunrpc/netname.c
+@@ -142,7 +142,7 @@ typedef int (*netname2user_function) (const char netname[MAXNETNAMELEN + 1],
+ 				      uid_t *, gid_t *, int *, gid_t *);
+ 
+ int
+-netname2user (const char netname[MAXNETNAMELEN + 1], uid_t * uidp, gid_t * gidp,
++netname2user (const char *netname, uid_t * uidp, gid_t * gidp,
+ 	      int *gidlenp, gid_t * gidlist)
+ {
+   static service_user *startp;
+@@ -189,8 +189,7 @@ libc_hidden_nolink_sunrpc (netname2user, GLIBC_2_1)
+ #endif
+ 
+ int
+-netname2host (const char netname[MAXNETNAMELEN + 1], char *hostname,
+-	      const int hostlen)
++netname2host (const char *netname, char *hostname, const int hostlen)
+ {
+   char *p1, *p2;
+ 
+diff --git a/sunrpc/rpc/auth.h b/sunrpc/rpc/auth.h
+index e01b0772..0b464088 100644
+--- a/sunrpc/rpc/auth.h
++++ b/sunrpc/rpc/auth.h
+@@ -179,9 +179,11 @@ extern AUTH *authdes_pk_create (const char *, netobj *, u_int,
+  *  Netname manipulating functions
+  *
+  */
+-extern int getnetname (char *) __THROW;
+-extern int host2netname (char *, const char *, const char *) __THROW;
+-extern int user2netname (char *, const uid_t, const char *) __THROW;
++extern int getnetname (char [MAXNETNAMELEN + 1]) __THROW;
++extern int host2netname (char [MAXNETNAMELEN + 1], const char *,
++			 const char *) __THROW;
++extern int user2netname (char [MAXNETNAMELEN + 1], const uid_t,
++			 const char *) __THROW;
+ extern int netname2user (const char *, uid_t *, gid_t *, int *, gid_t *)
+      __THROW;
+ extern int netname2host (const char *, char *, const int) __THROW;
+-- 
+2.20.1
+

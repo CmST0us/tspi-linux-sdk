@@ -1,0 +1,51 @@
+From 3a9799364be4c5b0bb24528f2ca4f61df1cc395d Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Fri, 10 Jun 2022 12:16:21 +0800
+Subject: [PATCH 5/9] Allow ignoring drm master
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ Makefile | 5 +++++
+ drm.h    | 5 +++++
+ 2 files changed, 10 insertions(+)
+
+diff --git a/Makefile b/Makefile
+index 1f44dcf..1658b3c 100644
+--- a/Makefile
++++ b/Makefile
+@@ -7,11 +7,16 @@ include common.mk
+ FRECON_LITE ?= 0
+ CHROMEOS ?= 1
+ USE_GETTY ?= 1
++DRM_NO_MASTER ?= 0
+ 
+ ifeq ($(USE_GETTY),1)
+ CPPFLAGS += -DUSE_GETTY=1
+ endif
+ 
++ifeq ($(DRM_NO_MASTER),1)
++CPPFLAGS += -DDRM_NO_MASTER=1
++endif
++
+ PC_DEPS = libdrm libpng libtsm
+ ifeq ($(FRECON_LITE),1)
+ FRECON_OBJECTS = $(filter-out %_full.o,$(C_OBJECTS))
+diff --git a/drm.h b/drm.h
+index 303253a..c00ec06 100644
+--- a/drm.h
++++ b/drm.h
+@@ -57,6 +57,11 @@ typedef struct _drm_t {
+ 	int32_t panel_orientation; // DRM_PANEL_ORIENTATION_*
+ } drm_t;
+ 
++#ifdef DRM_NO_MASTER
++#define drmSetMaster(fd) 0
++#define drmDropMaster(fd) 0
++#endif
++
+ drm_t* drm_scan(void);
+ void drm_set(drm_t* drm);
+ void drm_close(void);
+-- 
+2.20.1
+

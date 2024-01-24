@@ -1,0 +1,28 @@
+config BR2_PACKAGE_LV_DRIVERS
+	bool "lv-drivers"
+	default n
+	help
+	  lv drivers The concrete implementation of hardware
+
+	config BR2_PACKAGE_LV_DRIVERS_USE_RGA
+	depends on BR2_PACKAGE_LV_DRIVERS
+		bool "rga"                                                                                               
+	default n
+	help
+		Enbale rga
+
+choice
+	prompt "LV drivers select"
+	depends on BR2_PACKAGE_LV_DRIVERS
+
+	config BR2_PACKAGE_LV_DRIVERS_USE_SDL_GPU
+		bool "sdl"
+		help
+		  Enbale sdl renderer
+
+	config BR2_PACKAGE_LV_DRIVERS_USE_DRM
+		bool "drm"
+		help
+		  Enbale drm renderer
+
+endchoice

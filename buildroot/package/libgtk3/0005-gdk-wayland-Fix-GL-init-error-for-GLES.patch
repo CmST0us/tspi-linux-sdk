@@ -1,0 +1,41 @@
+From 83f010dad9de71888efb43af7a5e40e2cc58ff2d Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Fri, 7 Aug 2020 12:09:58 +0800
+Subject: [PATCH 5/6] gdk: wayland: Fix GL init error for GLES
+
+Use EGL_OPENGL_ES_API when _gdk_gl_flags has GDK_GL_GLES.
+
+See:
+https://gitlab.gnome.org/GNOME/gtk/-/issues/3028
+
+Tested with:
+GDK_GL=gles gdkgears
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ gdk/wayland/gdkglcontext-wayland.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/gdk/wayland/gdkglcontext-wayland.c b/gdk/wayland/gdkglcontext-wayland.c
+index a221025..2376959 100644
+--- a/gdk/wayland/gdkglcontext-wayland.c
++++ b/gdk/wayland/gdkglcontext-wayland.c
+@@ -326,8 +326,13 @@ gdk_wayland_display_init_gl (GdkDisplay *display)
+   if (!eglInitialize (dpy, &major, &minor))
+     return FALSE;
+ 
+-  if (!eglBindAPI (EGL_OPENGL_API))
+-    return FALSE;
++  if (_gdk_gl_flags & GDK_GL_GLES) {
++    if (!eglBindAPI (EGL_OPENGL_ES_API))
++      return FALSE;
++  } else {
++    if (!eglBindAPI (EGL_OPENGL_API))
++      return FALSE;
++  }
+ 
+   display_wayland->egl_display = dpy;
+   display_wayland->egl_major_version = major;
+-- 
+2.20.1
+

@@ -1,0 +1,43 @@
+From f0eb1daab8fb027436786e22d7b8828e47928f9e Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Mon, 14 Mar 2022 14:35:56 +0800
+Subject: [PATCH] CMakeList.txt: tjbench: Link to libm.so
+
+Fix undefined 'log10' reported by clang.
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ CMakeLists.txt | 10 ++--------
+ 1 file changed, 2 insertions(+), 8 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 1198ece..dcedaae 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -638,10 +638,7 @@ if(WITH_TURBOJPEG)
+     target_link_libraries(tjunittest turbojpeg)
+ 
+     add_executable(tjbench tjbench.c tjutil.c)
+-    target_link_libraries(tjbench turbojpeg)
+-    if(UNIX)
+-      target_link_libraries(tjbench m)
+-    endif()
++    target_link_libraries(tjbench turbojpeg m)
+ 
+     add_executable(tjexample tjexample.c)
+     target_link_libraries(tjexample turbojpeg)
+@@ -662,10 +659,7 @@ if(WITH_TURBOJPEG)
+     target_link_libraries(tjunittest-static turbojpeg-static)
+ 
+     add_executable(tjbench-static tjbench.c tjutil.c)
+-    target_link_libraries(tjbench-static turbojpeg-static)
+-    if(UNIX)
+-      target_link_libraries(tjbench-static m)
+-    endif()
++    target_link_libraries(tjbench-static turbojpeg-static m)
+   endif()
+ endif()
+ 
+-- 
+2.20.1
+

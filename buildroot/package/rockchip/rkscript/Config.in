@@ -1,0 +1,161 @@
+config BR2_PACKAGE_RKSCRIPT
+	bool "rockchip script"
+	depends on BR2_PACKAGE_HAS_UDEV
+	help
+	  Rockchip helper scripts.
+
+if BR2_PACKAGE_RKSCRIPT
+
+config BR2_PACKAGE_RKSCRIPT_DEFAULT_PCM
+	string "default PCM"
+	help
+	  Alsa's default PCM
+
+config BR2_PACKAGE_RKSCRIPT_IODOMAIN
+	bool "rkscript iodomain"
+	#default y if BR2_PACKAGE_RK3308
+	#default y if BR2_PACKAGE_RV1126_RV1109
+	#default y if BR2_PACKAGE_RK3566_RK3568
+	help
+	  Install iodomain scripts.
+
+config BR2_PACKAGE_RKSCRIPT_MOUNTALL
+	bool "rkscript mountall"
+	# The recovery might handle it internally
+	default y if !BR2_PACKAGE_SYSTEMD && (!BR2_PACKAGE_RECOVERY || BR2_PACKAGE_RECOVERY_USE_UPDATEENGINE)
+	help
+	  Install mountall script.
+
+config BR2_PACKAGE_RKSCRIPT_RESIZEALL
+	bool "rkscript resizeall"
+	default y if BR2_PACKAGE_SYSTEMD
+	depends on !BR2_PACKAGE_RKSCRIPT_MOUNTALL
+	help
+	  Install resizeall script.
+
+config BR2_PACKAGE_RKSCRIPT_BOOTANIM
+	bool "rkscript bootanim"
+	help
+	  Install bootanim scripts.
+
+if BR2_PACKAGE_RKSCRIPT_BOOTANIM
+
+config BR2_PACKAGE_RKSCRIPT_BOOTANIM_TIMEOUT
+	int "bootanim timeout"
+	default 3
+	help
+	  Bootanim timeout.
+
+endif
+
+config BR2_PACKAGE_RKSCRIPT_USB
+	bool "rkscript usbdevice"
+	default y
+	help
+	  Install usbdevice scripts.
+
+if BR2_PACKAGE_RKSCRIPT_USB
+
+config BR2_PACKAGE_RKSCRIPT_USB_EXTRA_CONFIG
+	string "usb extra config"
+	help
+	  Extra usb configs.
+
+config BR2_PACKAGE_RKSCRIPT_USB_ADBD
+	bool "adbd"
+	default y if BR2_PACKAGE_ANDROID_TOOLS_ADBD
+	help
+	  Android adbd.
+
+config BR2_PACKAGE_RKSCRIPT_USB_MTP
+	bool "mtp"
+	default y if BR2_PACKAGE_MTP
+	help
+	  Media Transfer Protocal (MTP).
+
+config BR2_PACKAGE_RKSCRIPT_USB_ACM
+	bool "acm"
+	help
+	  USB ACM.
+
+config BR2_PACKAGE_RKSCRIPT_USB_NTB
+	bool "ntb"
+	help
+	  Rockchip NTB.
+
+config BR2_PACKAGE_RKSCRIPT_USB_UVC
+	bool "uvc"
+	help
+	  USB UVC.
+
+config BR2_PACKAGE_RKSCRIPT_USB_UAC1
+	bool "uac1"
+	help
+	  USB UAC1.
+
+config BR2_PACKAGE_RKSCRIPT_USB_UAC2
+	bool "uac2"
+	help
+	  USB UAC2.
+
+config BR2_PACKAGE_RKSCRIPT_USB_HID
+	bool "hid"
+	help
+	  USB HID.
+
+config BR2_PACKAGE_RKSCRIPT_USB_RNDIS
+	bool "rndis"
+	help
+	  USB RNDIS.
+
+config BR2_PACKAGE_RKSCRIPT_USB_UMS
+	bool "ums"
+	help
+	  USB mass storage (UMS).
+
+if BR2_PACKAGE_RKSCRIPT_USB_UMS
+
+config BR2_PACKAGE_RKSCRIPT_USB_UMS_FILE
+	string "ums file"
+	default "/userdata/ums_shared.img"
+	help
+	  Block device or image file to share through UMS.
+
+config BR2_PACKAGE_RKSCRIPT_USB_UMS_SIZE
+	string "ums size"
+	default "256M"
+	help
+	  UMS's size.
+
+config BR2_PACKAGE_RKSCRIPT_USB_UMS_FSTYPE
+	string "ums fstype"
+	default "vfat"
+	help
+	  UMS's filesystem type.
+
+config BR2_PACKAGE_RKSCRIPT_USB_UMS_RO
+	bool "ums ro"
+	default n
+	help
+	  UMS is read-only.
+
+config BR2_PACKAGE_RKSCRIPT_USB_UMS_MOUNT
+	bool "ums mount"
+	default n
+	help
+	  Mount when USB disconnected, umount when connected.
+
+	  Warning:
+	  Umounting UMS may failed if it is still in use.
+
+config BR2_PACKAGE_RKSCRIPT_USB_UMS_MOUNTPOINT
+	string "ums mountpoint"
+	default "/mnt/ums"
+	help
+	  UMS's mountpoint.
+
+endif # BR2_PACKAGE_RKSCRIPT_USB_UMS
+
+endif # BR2_PACKAGE_RKSCRIPT_USB
+
+endif

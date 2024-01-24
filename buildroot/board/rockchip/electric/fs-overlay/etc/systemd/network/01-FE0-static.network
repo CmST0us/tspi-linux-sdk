@@ -1,0 +1,5 @@
+[Match]
+Name=FE0
+
+[Network]
+DHCP=yes

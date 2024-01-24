@@ -1,0 +1,41 @@
+menuconfig BR2_PACKAGE_CAMERA_ENGINE_RKAIQ
+	depends on BR2_PACKAGE_CAMERA_ENGINE
+	depends on BR2_PACKAGE_ROCKCHIP_HAS_ISP2 || BR2_PACKAGE_ROCKCHIP_HAS_ISP3
+	bool "Rockchip Camera Engine Rkaiq for SoC with ISP2 or ISP3"
+	help
+	  Rockchip camera engine rkaiq for linux.
+
+if BR2_PACKAGE_CAMERA_ENGINE_RKAIQ
+
+config BR2_PACKAGE_CAMERA_ENGINE_RKAIQ_FORCE_INSTALL_TO_ROOTFS
+	bool "Rockchip Camera Engine install to rootfs"
+	default n
+	help
+	  Rockchip Camera Engine install to rootfs.
+
+config BR2_PACKAGE_CAMERA_ENGINE_RKAIQ_IQFILE
+	string "Rockchip Camera Engine IQ xml file"
+	default ""
+	help
+	  Rockchip sensor IQ xml file.
+
+config BR2_PACKAGE_CAMERA_ENGINE_RKAIQ_IQFILE_USE_BIN
+	bool "Rockchip Camera Engine IQ xml file conver to bin"
+	default n
+	help
+	  Rockchip sensor IQ bin file.
+
+config BR2_PACKAGE_CAMERA_ENGINE_RKAIQ_FAKE_CAMERA_IQFILE
+	string "Rockchip Camera Engine fake camera IQ xml file"
+	default ""
+	help
+	  Rockchip sensor fake camera IQ xml file.
+
+config BR2_PACKAGE_CAMERA_ENGINE_RKAIQ_RKISP_DEMO
+	depends on BR2_PACKAGE_ROCKCHIP_RGA
+	bool "Build rkisp_demo"
+	default n
+	help
+	  Build rkisp_demo
+
+endif

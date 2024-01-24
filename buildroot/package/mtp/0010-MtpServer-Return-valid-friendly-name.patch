@@ -1,0 +1,32 @@
+From f2b9f20afdeb2800871dc355405df0f98e935a8a Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Sun, 9 Oct 2022 16:54:50 +0800
+Subject: [PATCH 10/10] MtpServer: Return valid friendly name
+
+Some clients, e.g. libmtp's examples, require valid friendly name.
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ server/UbuntuMtpDatabase.h | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/server/UbuntuMtpDatabase.h b/server/UbuntuMtpDatabase.h
+index 6078c31..7b508ce 100644
+--- a/server/UbuntuMtpDatabase.h
++++ b/server/UbuntuMtpDatabase.h
+@@ -746,9 +746,11 @@ public:
+         switch(property)
+         {
+             case MTP_DEVICE_PROPERTY_SYNCHRONIZATION_PARTNER:
+-            case MTP_DEVICE_PROPERTY_DEVICE_FRIENDLY_NAME:
+                 packet.putString("");
+                 break;
++            case MTP_DEVICE_PROPERTY_DEVICE_FRIENDLY_NAME:
++                packet.putString(getenv("MTP_FRIENDLY_NAME") ? : "Rockchip");
++                break;
+             default: return MTP_RESPONSE_OPERATION_NOT_SUPPORTED; break;
+         }
+ 
+-- 
+2.20.1
+

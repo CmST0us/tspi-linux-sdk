@@ -1,0 +1,18 @@
+#!/bin/sh -x
+
+DEFGROUPS="adm,dialout,cdrom,audio,dip,video,plugdev,bluetooth,pulse-access,sudo,systemd-journal,netdev,staff"
+
+IFS=','
+for group in $DEFGROUPS; do
+	/bin/egrep  -i "^$group" /etc/group
+	if [ $? -eq 0 ]; then
+	   echo "Group '$group' exists in /etc/group"
+	else
+	   echo "Group '$group' does not exists in /etc/group, creating"
+	   groupadd $group
+	fi
+done
+unset IFS
+
+echo "I: add linaro to ($DEFGROUPS) groups"
+usermod -a -G ${DEFGROUPS} linaro

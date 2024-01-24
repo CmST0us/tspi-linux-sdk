@@ -1,0 +1,4 @@
+#!/bin/sh
+
+ACTION=="add", KERNEL=="sd[a-z][1-9]", ENV{ID_BUS}=="ata", RUN+="/etc/sata-mount.sh %k"
+ACTION=="remove", KERNEL=="sd[a-z][1-9]", ENV{ID_BUS}=="ata", RUN+="/etc/sata-mount.sh %k"

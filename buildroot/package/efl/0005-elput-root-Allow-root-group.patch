@@ -1,0 +1,26 @@
+From 40d6330b248b9e0bfe5925472eed9a14c684f117 Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Fri, 1 Jul 2022 19:19:32 +0800
+Subject: [PATCH 05/10] elput: root: Allow root group
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ src/lib/elput/elput_root.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/lib/elput/elput_root.c b/src/lib/elput/elput_root.c
+index 3d69dc0..0bdd7a4 100644
+--- a/src/lib/elput/elput_root.c
++++ b/src/lib/elput/elput_root.c
+@@ -40,7 +40,7 @@ _user_part_of_input(void)
+ 
+    for (int i = 0; i < number_of_groups; ++i)
+      {
+-        if (gids[i] == input_group->gr_gid)
++        if (!gids[i] || gids[i] == input_group->gr_gid)
+           return EINA_TRUE;
+      }
+    return EINA_FALSE;
+-- 
+2.20.1
+

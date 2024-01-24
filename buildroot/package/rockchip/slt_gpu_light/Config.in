@@ -1,0 +1,5 @@
+config BR2_PACKAGE_SLT_GPU_LIGHT
+	bool "Rockchip slt gpu light lib for linux"
+	select BR2_PACKAGE_LIBDRM
+	help
+	  Rockchip slt gpu light lib for linux.

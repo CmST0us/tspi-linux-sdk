@@ -1,0 +1,260 @@
+From 762b506da170480bb101c4d7841850cc2aba3825 Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Thu, 11 Jun 2020 10:27:16 +0800
+Subject: [PATCH 16/28] HACK: linuxfb: Support direct painting
+
+Doing direct painting on fully update single window case.
+
+Define QT_FB_DIRECT_PAINTING macro to enable.
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ .../fbconvenience/qfbbackingstore.cpp         | 29 +++++++++--
+ .../fbconvenience/qfbbackingstore_p.h         | 12 ++++-
+ .../fbconvenience/qfbscreen.cpp               | 49 +++++++++++++++++--
+ .../fbconvenience/qfbscreen_p.h               |  2 +
+ .../platforms/linuxfb/qlinuxfbdrmscreen.cpp   | 14 ++++++
+ 5 files changed, 98 insertions(+), 8 deletions(-)
+
+diff --git a/src/platformsupport/fbconvenience/qfbbackingstore.cpp b/src/platformsupport/fbconvenience/qfbbackingstore.cpp
+index e2d94406..92c2d92c 100644
+--- a/src/platformsupport/fbconvenience/qfbbackingstore.cpp
++++ b/src/platformsupport/fbconvenience/qfbbackingstore.cpp
+@@ -47,6 +47,9 @@
+ 
+ QT_BEGIN_NAMESPACE
+ 
++QImage * QFbBackingStore::gScreenImage = NULL;
++QImage * QFbBackingStore::gFbImage = NULL;
++
+ QFbBackingStore::QFbBackingStore(QWindow *window)
+     : QPlatformBackingStore(window)
+ {
+@@ -76,15 +79,33 @@ void QFbBackingStore::resize(const QSize &size, const QRegion &staticContents)
+         mImage = QImage(size, window()->screen()->handle()->format());
+ }
+ 
+-const QImage QFbBackingStore::image()
++QPaintDevice *QFbBackingStore::paintDevice()
+ {
+-    return mImage;
+-}
++    // HACK: gScreenImage available means allowing directly painting
++    if (!gScreenImage)
++        return &mImage;
+ 
++    // HACK: Prefer directly painting to fb when it's available
++    if (gFbImage)
++        return gFbImage;
++
++    return gScreenImage;
++}
+ 
+ QImage QFbBackingStore::toImage() const
+ {
+-    return mImage;
++    if (!gScreenImage)
++        return mImage;
++
++    if (gFbImage)
++        return *gFbImage;
++
++    return *gScreenImage;
++}
++
++const QImage QFbBackingStore::image()
++{
++    return toImage();
+ }
+ 
+ void QFbBackingStore::lock()
+diff --git a/src/platformsupport/fbconvenience/qfbbackingstore_p.h b/src/platformsupport/fbconvenience/qfbbackingstore_p.h
+index c4762c93..214d85c2 100644
+--- a/src/platformsupport/fbconvenience/qfbbackingstore_p.h
++++ b/src/platformsupport/fbconvenience/qfbbackingstore_p.h
+@@ -66,7 +66,7 @@ public:
+     QFbBackingStore(QWindow *window);
+     ~QFbBackingStore();
+ 
+-    QPaintDevice *paintDevice() override { return &mImage; }
++    QPaintDevice *paintDevice() override;
+     void flush(QWindow *window, const QRegion &region, const QPoint &offset) override;
+ 
+     void resize(const QSize &size, const QRegion &region) override;
+@@ -80,11 +80,21 @@ public:
+     void beginPaint(const QRegion &) override;
+     void endPaint() override;
+ 
++    static void setScreenImage(QImage *screenImage)
++        { gScreenImage = screenImage; };
++    static void setFbImage(QImage *fbImage) { gFbImage = fbImage; }
++
++    static bool hasScreenImage() { return gScreenImage != NULL; };
++    static bool hasFbImage() { return gFbImage != NULL; };
++
+ protected:
+     friend class QFbWindow;
+ 
+     QImage mImage;
+     QMutex mImageMutex;
++
++    static QImage *gScreenImage;
++    static QImage *gFbImage;
+ };
+ 
+ QT_END_NAMESPACE
+diff --git a/src/platformsupport/fbconvenience/qfbscreen.cpp b/src/platformsupport/fbconvenience/qfbscreen.cpp
+index 76984dfe..21308067 100644
+--- a/src/platformsupport/fbconvenience/qfbscreen.cpp
++++ b/src/platformsupport/fbconvenience/qfbscreen.cpp
+@@ -56,7 +56,8 @@ QFbScreen::QFbScreen()
+       mCursor(0),
+       mDepth(16),
+       mFormat(QImage::Format_RGB16),
+-      mPainter(nullptr)
++      mPainter(nullptr),
++      mDirectPainting(false)
+ {
+ }
+ 
+@@ -84,6 +85,15 @@ bool QFbScreen::event(QEvent *event)
+ void QFbScreen::addWindow(QFbWindow *window)
+ {
+     mWindowStack.prepend(window);
++
++#ifdef QT_FB_DIRECT_PAINTING
++    // HACK: Only allow direct painting for single window
++    if (windowCount() == 1)
++        QFbBackingStore::setScreenImage(&mScreenImage);
++    else
++        QFbBackingStore::setScreenImage(NULL);
++#endif
++
+     if (!mPendingBackingStores.isEmpty()) {
+         //check if we have a backing store for this window
+         for (int i = 0; i < mPendingBackingStores.size(); ++i) {
+@@ -106,6 +116,15 @@ void QFbScreen::addWindow(QFbWindow *window)
+ void QFbScreen::removeWindow(QFbWindow *window)
+ {
+     mWindowStack.removeOne(window);
++
++#ifdef QT_FB_DIRECT_PAINTING
++    // HACK: Only allow direct painting for single window
++    if (windowCount() == 1)
++        QFbBackingStore::setScreenImage(&mScreenImage);
++    else
++        QFbBackingStore::setScreenImage(NULL);
++#endif
++
+     setDirty(window->geometry());
+     QWindow *w = topWindow();
+     QWindowSystemInterface::handleWindowActivated(w);
+@@ -208,16 +227,35 @@ QRegion QFbScreen::doRedraw()
+         return touchedRegion;
+ 
+     if (!mPainter)
+-        mPainter = new QPainter(&mScreenImage);
++        mPainter = new QPainter();
+ 
+     const QRect screenRect = mGeometry.translated(-screenOffset);
++    bool fully_repainted = mRepaintRegion.rectCount() == 1 &&
++        mRepaintRegion.boundingRect().contains(screenRect);
++
++    if (fully_repainted && QFbBackingStore::hasScreenImage()) {
++        // HACK: The screen(or fb) has been fully repainted
++        touchedRegion += mRepaintRegion;
++        mRepaintRegion = QRegion();
++        mDirectPainting = true;
++        return touchedRegion;
++    }
++
++    // HACK: Ignore partial update in direct paiting mode
++    if (mDirectPainting && !fully_repainted)
++        return touchedRegion;
++
++    mPainter->begin(&mScreenImage);
++
+     for (QRect rect : mRepaintRegion) {
+         rect = rect.intersected(screenRect);
+         if (rect.isEmpty())
+             continue;
+ 
+         mPainter->setCompositionMode(QPainter::CompositionMode_Source);
+-        mPainter->fillRect(rect, mScreenImage.hasAlphaChannel() ? Qt::transparent : Qt::black);
++
++        if (!QFbBackingStore::hasScreenImage())
++            mPainter->fillRect(rect, mScreenImage.hasAlphaChannel() ? Qt::transparent : Qt::black);
+ 
+         for (int layerIndex = mWindowStack.size() - 1; layerIndex != -1; layerIndex--) {
+             if (!mWindowStack[layerIndex]->window()->isVisible())
+@@ -241,6 +279,11 @@ QRegion QFbScreen::doRedraw()
+     touchedRegion += mRepaintRegion;
+     mRepaintRegion = QRegion();
+ 
++    // HACK: Force updating fb when not doing direct painting
++    QFbBackingStore::setFbImage(NULL);
++
++    mPainter->end();
++
+     return touchedRegion;
+ }
+ 
+diff --git a/src/platformsupport/fbconvenience/qfbscreen_p.h b/src/platformsupport/fbconvenience/qfbscreen_p.h
+index eed615de..48ee4c23 100644
+--- a/src/platformsupport/fbconvenience/qfbscreen_p.h
++++ b/src/platformsupport/fbconvenience/qfbscreen_p.h
+@@ -124,6 +124,8 @@ protected:
+     QSizeF mPhysicalSize;
+     QImage mScreenImage;
+ 
++    bool mDirectPainting;
++
+ private:
+     QPainter *mPainter;
+     QList<QFbBackingStore*> mPendingBackingStores;
+diff --git a/src/plugins/platforms/linuxfb/qlinuxfbdrmscreen.cpp b/src/plugins/platforms/linuxfb/qlinuxfbdrmscreen.cpp
+index 0c4f6d2c..5745ef06 100644
+--- a/src/plugins/platforms/linuxfb/qlinuxfbdrmscreen.cpp
++++ b/src/plugins/platforms/linuxfb/qlinuxfbdrmscreen.cpp
+@@ -52,6 +52,7 @@
+ #include <QtCore/QRegularExpression>
+ #include <QtFbSupport/private/qfbcursor_p.h>
+ #include <QtFbSupport/private/qfbwindow_p.h>
++#include <QtFbSupport/private/qfbbackingstore_p.h>
+ #include <QtKmsSupport/private/qkmsdevice_p.h>
+ #include <QtCore/private/qcore_unix_p.h>
+ #include <sys/mman.h>
+@@ -486,6 +487,10 @@ QRegion QLinuxFbDrmScreen::doRedraw()
+         return dirty;
+ 
+     QPainter pntr(&output->fb[output->backFb].wrapper);
++
++    if (QFbBackingStore::hasScreenImage() && QFbBackingStore::hasFbImage())
++        goto swap;
++
+     // Image has alpha but no need for blending at this stage.
+     // Do not waste time with the default SourceOver.
+     pntr.setCompositionMode(QPainter::CompositionMode_Source);
+@@ -506,10 +511,19 @@ QRegion QLinuxFbDrmScreen::doRedraw()
+     }
+     pntr.end();
+ 
++swap:
+     output->dirty[output->backFb] = QRegion();
+ 
+     m_device->swapBuffers(output);
+ 
++    static int count_down = BUFFER_COUNT;
++    if (count_down || m_rotation || m_device->outputCount() > 1) {
++        count_down --;
++        QFbBackingStore::setFbImage(NULL);
++    } else {
++        QFbBackingStore::setFbImage(&output->fb[output->backFb].wrapper);
++    }
++
+     return dirty;
+ }
+ 
+-- 
+2.20.1
+

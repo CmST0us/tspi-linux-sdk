@@ -1,0 +1,25 @@
+From d759db418dee14b696a4ef7d4e535492e96f1cef Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Wed, 26 Dec 2018 17:40:19 +0800
+Subject: [PATCH] qt: FullScreenVideoWidget: Use transparent background
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ Source/WebKit/qt/WidgetSupport/FullScreenVideoWidget.cpp | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/Source/WebKit/qt/WidgetSupport/FullScreenVideoWidget.cpp b/Source/WebKit/qt/WidgetSupport/FullScreenVideoWidget.cpp
+index 4105d02..2c40ba0 100644
+--- a/Source/WebKit/qt/WidgetSupport/FullScreenVideoWidget.cpp
++++ b/Source/WebKit/qt/WidgetSupport/FullScreenVideoWidget.cpp
+@@ -49,6 +49,7 @@ FullScreenVideoWidget::FullScreenVideoWidget()
+ 
+     setWindowModality(Qt::ApplicationModal);
+     setWindowFlags(windowFlags() | Qt::FramelessWindowHint);
++    setAttribute(Qt::WA_TranslucentBackground, true);
+ 
+     setGeometry(QApplication::desktop()->screenGeometry());
+ 
+-- 
+2.20.1
+

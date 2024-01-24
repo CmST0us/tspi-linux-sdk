@@ -1,0 +1,85 @@
+From e17351b08ab2a27c549434858650fedd112baaa4 Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Tue, 5 Jul 2022 11:20:42 +0800
+Subject: [PATCH 08/10] ecore_drm2: Ignore other primary planes and support
+ ZPOS
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ src/lib/ecore_drm2/ecore_drm2_device.c  |  5 +++++
+ src/lib/ecore_drm2/ecore_drm2_fb.c      |  3 +++
+ src/lib/ecore_drm2/ecore_drm2_outputs.c | 11 ++++++++++-
+ src/lib/ecore_drm2/ecore_drm2_private.h |  1 +
+ 4 files changed, 19 insertions(+), 1 deletion(-)
+
+diff --git a/src/lib/ecore_drm2/ecore_drm2_device.c b/src/lib/ecore_drm2/ecore_drm2_device.c
+index 77498d8..e8f5347 100644
+--- a/src/lib/ecore_drm2/ecore_drm2_device.c
++++ b/src/lib/ecore_drm2/ecore_drm2_device.c
+@@ -495,6 +495,11 @@ _drm2_atomic_state_plane_fill(Ecore_Drm2_Plane_State *pstate, int fd)
+                     }
+                }
+           }
++        else if (!strcasecmp(prop->name, "zpos"))
++          {
++             pstate->zpos.id = prop->prop_id;
++             pstate->zpos.value = oprops->prop_values[i];
++          }
+ 
+         sym_drmModeFreeProperty(prop);
+      }
+diff --git a/src/lib/ecore_drm2/ecore_drm2_fb.c b/src/lib/ecore_drm2/ecore_drm2_fb.c
+index e2ef2e8..38c8287 100644
+--- a/src/lib/ecore_drm2/ecore_drm2_fb.c
++++ b/src/lib/ecore_drm2/ecore_drm2_fb.c
+@@ -396,6 +396,9 @@ _fb_atomic_flip_test(Ecore_Drm2_Output *output)
+                                        pstate->fid.id, pstate->fid.value);
+         if (ret < 0) goto err;
+ 
++        sym_drmModeAtomicAddProperty(req, pstate->obj_id,
++                                     pstate->zpos.id, pstate->zpos.value);
++
+         ret =
+           sym_drmModeAtomicAddProperty(req, pstate->obj_id,
+                                        pstate->sx.id, pstate->sx.value);
+diff --git a/src/lib/ecore_drm2/ecore_drm2_outputs.c b/src/lib/ecore_drm2/ecore_drm2_outputs.c
+index d7ff6a2..2140079 100644
+--- a/src/lib/ecore_drm2/ecore_drm2_outputs.c
++++ b/src/lib/ecore_drm2/ecore_drm2_outputs.c
+@@ -653,11 +653,20 @@ _output_plane_states_get(Ecore_Drm2_Atomic_State *state, unsigned int crtc_id, i
+    Eina_List *states = NULL;
+    Ecore_Drm2_Plane_State *pstate;
+ 
+-   int i = 0;
++   int i = 0, num_primaries = 0;
+ 
+    for (; i < state->planes; i++)
+      {
+         pstate = &state->plane_states[i];
++        if (pstate->type.value == DRM_PLANE_TYPE_PRIMARY) {
++           num_primaries ++;
++
++           if (num_primaries != index + 1)
++              continue;
++
++           pstate->zpos.value = 0;
++        }
++
+         if (pstate->cid.value == crtc_id)
+           {
+              states =
+diff --git a/src/lib/ecore_drm2/ecore_drm2_private.h b/src/lib/ecore_drm2/ecore_drm2_private.h
+index 56c9fe8..ccb233f 100644
+--- a/src/lib/ecore_drm2/ecore_drm2_private.h
++++ b/src/lib/ecore_drm2/ecore_drm2_private.h
+@@ -103,6 +103,7 @@ typedef struct _Ecore_Drm2_Plane_State
+    Ecore_Drm2_Atomic_Property sx, sy, sw, sh;
+    Ecore_Drm2_Atomic_Property cx, cy, cw, ch;
+    Ecore_Drm2_Atomic_Property rotation;
++   Ecore_Drm2_Atomic_Property zpos;
+ 
+    /* these are not part of an atomic state, but we store these here
+     * so that we do not have to refetch properties when iterating planes */
+-- 
+2.20.1
+

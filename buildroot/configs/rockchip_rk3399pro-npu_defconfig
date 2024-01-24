@@ -1,0 +1,15 @@
+#include "base/base.config"
+#include "chips/rk3399pro_npu_aarch64.config"
+# BR2_PACKAGE_E2FSPROGS is reset to default
+BR2_PACKAGE_IO=y
+BR2_PACKAGE_LIBUSB=y
+BR2_PACKAGE_LIBXML2=y
+# BR2_PACKAGE_PM_UTILS is reset to default
+BR2_PACKAGE_PROCRANK_LINUX=y
+BR2_PACKAGE_RKNPU=y
+BR2_PACKAGE_RKNPU_NTB=y
+BR2_PACKAGE_ROCKCHIP_TEST=y
+# BR2_PACKAGE_UPDATE is reset to default
+# BR2_PACKAGE_USBMOUNT is reset to default
+# BR2_PACKAGE_UTIL_LINUX_MOUNT is reset to default
+# BR2_PACKAGE_VENDOR_STORAGE is reset to default

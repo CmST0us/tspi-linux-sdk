@@ -1,0 +1,41 @@
+From bd3c0f4e32f574bd289a8ddcd30e34bcda1e6a83 Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Mon, 16 May 2022 16:44:04 +0800
+Subject: [PATCH] meson: Make wayland-egl optional
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ meson.build       | 4 +++-
+ meson_options.txt | 4 ++++
+ 2 files changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/meson.build b/meson.build
+index 8bb47c2..128d6bd 100644
+--- a/meson.build
++++ b/meson.build
+@@ -117,7 +117,9 @@ subdir('src')
+ 
+ if get_option('libraries')
+ 	subdir('cursor')
+-	subdir('egl')
++	if get_option('egl')
++		subdir('egl')
++	endif
+ endif
+ if get_option('tests')
+ 	subdir('tests')
+diff --git a/meson_options.txt b/meson_options.txt
+index b8e2ec6..4ff8ea2 100644
+--- a/meson_options.txt
++++ b/meson_options.txt
+@@ -1,3 +1,7 @@
++option('egl',
++  description: 'Compile Wayland egl',
++  type: 'boolean',
++  value: 'true')
+ option('libraries',
+   description: 'Compile Wayland libraries',
+   type: 'boolean',
+-- 
+2.20.1
+

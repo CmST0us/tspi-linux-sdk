@@ -1,0 +1,29 @@
+From 659dc25f745c597e5665cc0a1a494a6edd78ee11 Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Wed, 25 Nov 2020 15:43:25 +0800
+Subject: [PATCH 23/28] qlayoutitem: Force disable size cache
+
+Somehow the size cache might result in empty size hint randomly.
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ src/widgets/kernel/qlayoutitem.cpp | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/src/widgets/kernel/qlayoutitem.cpp b/src/widgets/kernel/qlayoutitem.cpp
+index af575077..74d78261 100644
+--- a/src/widgets/kernel/qlayoutitem.cpp
++++ b/src/widgets/kernel/qlayoutitem.cpp
+@@ -730,7 +730,8 @@ QSizePolicy::ControlTypes QWidgetItem::controlTypes() const
+ 
+ inline bool QWidgetItemV2::useSizeCache() const
+ {
+-    return wid->d_func()->widgetItem == this;
++    /* HACK: Force disable size cache */
++    return false;//wid->d_func()->widgetItem == this;
+ }
+ 
+ void QWidgetItemV2::updateCacheIfNecessary() const
+-- 
+2.20.1
+

@@ -1,0 +1,165 @@
+From 4b7c398d252dad26e33fcb22d9c7a98c30d41aec Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Fri, 22 Jul 2022 14:55:41 +0800
+Subject: [PATCH 08/11] wl: Support subsurface stacking
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ src/bin/e_comp_wl.c | 68 +++++++++++++++++++++++++++++++--------------
+ src/bin/e_comp_wl.h |  2 +-
+ 2 files changed, 48 insertions(+), 22 deletions(-)
+
+diff --git a/src/bin/e_comp_wl.c b/src/bin/e_comp_wl.c
+index db8806c3b..b51eb4e33 100644
+--- a/src/bin/e_comp_wl.c
++++ b/src/bin/e_comp_wl.c
+@@ -722,30 +722,55 @@ _e_comp_wl_evas_cb_focus_out(void *data, Evas *evas EINA_UNUSED, Evas_Object *ob
+ }
+ 
+ static void
+-_e_comp_wl_evas_cb_restack(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
++_e_comp_wl_evas_restack(E_Client *ec)
+ {
+-   E_Client *sec, *ec = data;
+-   Eina_List *l, *ll;
++   E_Client *sec;
++   Eina_List *l;
++   int below;
+ 
+    if (e_object_is_del(E_OBJECT(ec))) return;
+    if (e_client_has_xwindow(ec)) return;
+ 
+-   /* only restack to enforce shell spec if config would otherwise not force restack */
+-   if (!e_config->transient.raise)
+-     e_client_transients_restack(ec);
++   if (ec->comp_data->sub.restacking == EINA_TRUE) return;
++   ec->comp_data->sub.restacking = EINA_TRUE;
+ 
+-   if (!ec->comp_data->sub.list) return;
++   below = 1;
+    EINA_LIST_FOREACH(ec->comp_data->sub.list, l, sec)
+-     evas_object_layer_set(sec->frame, evas_object_layer_get(ec->frame));
+-   sec = eina_list_last_data_get(ec->comp_data->sub.list);
+-   evas_object_stack_above(sec->frame, ec->frame);
+-   EINA_LIST_REVERSE_FOREACH_SAFE(ec->comp_data->sub.list, l, ll, sec)
+      {
+-        E_Client *nsec = eina_list_data_get(ll);
++        if (sec == ec)
++          {
++             below = 0;
++             continue;
++          }
++
++        if (below)
++          evas_object_stack_below(sec->frame, ec->frame);
++        else
++          evas_object_stack_above(sec->frame, ec->frame);
+ 
+-        if (nsec)
+-          evas_object_stack_below(nsec->frame, sec->frame);
++        _e_comp_wl_evas_restack(sec);
+      }
++
++   ec->comp_data->sub.restacking = EINA_FALSE;
++}
++
++static void
++_e_comp_wl_evas_cb_restack(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
++{
++   E_Client *ec = data;
++
++   if (e_object_is_del(E_OBJECT(ec))) return;
++   if (e_client_has_xwindow(ec)) return;
++   if (ec->layer_block) return;
++
++   /* only restack to enforce shell spec if config would otherwise not force restack */
++   if (!e_config->transient.raise)
++     e_client_transients_restack(ec);
++
++   if (ec->comp_data->sub.data)
++     _e_comp_wl_evas_restack(ec->comp_data->sub.data->parent);
++   else
++     _e_comp_wl_evas_restack(ec);
+ }
+ 
+ static void
+@@ -758,7 +783,7 @@ _e_comp_wl_evas_cb_move(void *data, Evas *e EINA_UNUSED, Evas_Object *obj EINA_U
+    ec->comp_data->moved = 1;
+    EINA_LIST_FOREACH(ec->comp_data->sub.list, l, sec)
+      {
+-        if (!sec->comp_data->sub.data->position.set)
++        if (ec != sec && !sec->comp_data->sub.data->position.set)
+           evas_object_move(sec->frame, ec->client.x + sec->comp_data->sub.data->position.x,
+                            ec->client.y + sec->comp_data->sub.data->position.y);
+      }
+@@ -2310,7 +2335,7 @@ _e_comp_wl_subsurface_cb_place_above(struct wl_client *client EINA_UNUSED, struc
+    /* try to get the client from the sibling resource */
+    if (!(ecs = wl_resource_get_user_data(sibling_resource))) return;
+ 
+-   if (!ecs->comp_data->sub.data) return;
++   if (!ec->comp_data->sub.data) return;
+ 
+    if (!(parent = ec->comp_data->sub.data->parent)) return;
+ 
+@@ -2320,7 +2345,7 @@ _e_comp_wl_subsurface_cb_place_above(struct wl_client *client EINA_UNUSED, struc
+    parent->comp_data->sub.list =
+      eina_list_append_relative(parent->comp_data->sub.list, ec, ecs);
+ 
+-   parent->comp_data->sub.restack_target = parent;
++   _e_comp_wl_evas_restack(parent);
+ }
+ 
+ static void
+@@ -2338,8 +2363,7 @@ _e_comp_wl_subsurface_cb_place_below(struct wl_client *client EINA_UNUSED, struc
+ 
+    /* try to get the client from the sibling resource */
+    if (!(ecs = wl_resource_get_user_data(sibling_resource))) return;
+-
+-   if (!ecs->comp_data->sub.data) return;
++   if (!ec->comp_data->sub.data) return;
+ 
+    if (!(parent = ec->comp_data->sub.data->parent)) return;
+ 
+@@ -2349,7 +2373,7 @@ _e_comp_wl_subsurface_cb_place_below(struct wl_client *client EINA_UNUSED, struc
+    parent->comp_data->sub.list =
+      eina_list_prepend_relative(parent->comp_data->sub.list, ec, ecs);
+ 
+-   parent->comp_data->sub.restack_target = parent;
++   _e_comp_wl_evas_restack(parent);
+ }
+ 
+ static void
+@@ -2558,6 +2582,8 @@ _e_comp_wl_client_cb_new(void *data EINA_UNUSED, E_Client *ec)
+         return;
+      }
+ 
++   ec->comp_data->sub.list = eina_list_append(ec->comp_data->sub.list, ec);
++
+    wl_signal_init(&ec->comp_data->destroy_signal);
+    _e_comp_wl_surface_state_init(&ec->comp_data->pending);
+ 
+@@ -2609,7 +2635,7 @@ _e_comp_wl_client_cb_del(void *data EINA_UNUSED, E_Client *ec)
+    /* remove sub list */
+    EINA_LIST_FREE(ec->comp_data->sub.list, subc)
+      {
+-        if (!e_object_is_del(E_OBJECT(subc)))
++        if (ec != subc && !e_object_is_del(E_OBJECT(subc)))
+           subc->comp_data->sub.data->parent = NULL;
+      }
+ 
+diff --git a/src/bin/e_comp_wl.h b/src/bin/e_comp_wl.h
+index 8f844dd58..0d1163bfa 100644
+--- a/src/bin/e_comp_wl.h
++++ b/src/bin/e_comp_wl.h
+@@ -294,7 +294,7 @@ struct _E_Comp_Wl_Client_Data
+    struct
+      {
+         E_Comp_Wl_Subsurf_Data *data;
+-        E_Client *restack_target;
++        Eina_Bool restacking;
+         Eina_List *list;
+      } sub;
+ 
+-- 
+2.20.1
+

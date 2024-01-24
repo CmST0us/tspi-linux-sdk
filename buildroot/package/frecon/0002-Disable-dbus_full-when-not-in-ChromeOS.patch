@@ -1,0 +1,46 @@
+From 98ead7437f2c3e96c87230e5d7fde61fdfb4bb99 Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Thu, 9 Jun 2022 16:59:54 +0800
+Subject: [PATCH 2/9] Disable dbus_full when not in ChromeOS
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ Makefile | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 3fef7e9..a2e0d43 100644
+--- a/Makefile
++++ b/Makefile
+@@ -5,6 +5,7 @@
+ include common.mk
+ 
+ FRECON_LITE ?= 0
++CHROMEOS ?= 1
+ 
+ PC_DEPS = libdrm libpng libtsm
+ ifeq ($(FRECON_LITE),1)
+@@ -12,10 +13,18 @@ FRECON_OBJECTS = $(filter-out %_full.o,$(C_OBJECTS))
+ CPPFLAGS += -DFRECON_LITE=1
+ TARGET ?= frecon-lite
+ else
+-FRECON_OBJECTS = $(filter-out %_lite.o,$(C_OBJECTS))
+-PC_DEPS += dbus-1 libudev
++FRECON_OBJECTS = $(filter-out dbus_full.o,$(filter-out %_lite.o,$(C_OBJECTS)))
++PC_DEPS += libudev
+ CPPFLAGS += -DFRECON_LITE=0
+ TARGET ?= frecon
++
++ifeq ($(CHROMEOS),1)
++PC_DEPS += dbus-1
++FRECON_OBJECTS += dbus_full.o
++else
++FRECON_OBJECTS += dbus_lite.o
++endif
++
+ endif
+ 
+ PC_CFLAGS := $(shell $(PKG_CONFIG) --cflags $(PC_DEPS))
+-- 
+2.20.1
+

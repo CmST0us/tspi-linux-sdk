@@ -1,0 +1,31 @@
+From 5adf8cdfef83ddddead8029e311729b381c7fd33 Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Mon, 4 Mar 2019 17:22:51 +0800
+Subject: [PATCH 06/17] qwaylandwindow: Don't try to move fullscreen/maximized
+ window
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ src/client/qwaylandwindow.cpp | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/src/client/qwaylandwindow.cpp b/src/client/qwaylandwindow.cpp
+index 6cbd315..6ec9e99 100644
+--- a/src/client/qwaylandwindow.cpp
++++ b/src/client/qwaylandwindow.cpp
+@@ -351,7 +351,11 @@ void QWaylandWindow::setGeometry_helper(const QRect &rect)
+ 
+ void QWaylandWindow::setGeometry(const QRect &rect)
+ {
+-    setGeometry_helper(rect);
++    if (window()->windowStates() == Qt::WindowFullScreen
++        || window()->windowStates() == Qt::WindowMaximized)
++        setGeometry_helper(QRect(QPoint(), rect.size()));
++    else
++        setGeometry_helper(rect);
+ 
+     if (window()->isVisible() && rect.isValid()) {
+         if (mWindowDecoration)
+-- 
+2.20.1
+

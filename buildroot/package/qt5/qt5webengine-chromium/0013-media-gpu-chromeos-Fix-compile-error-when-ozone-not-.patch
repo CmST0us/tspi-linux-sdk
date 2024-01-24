@@ -1,0 +1,40 @@
+From f15bcf3dd459afafa443046b77e3c05a661a7495 Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Thu, 23 Jun 2022 12:02:25 +0800
+Subject: [PATCH 13/14] media: gpu: chromeos: Fix compile error when ozone not
+ enabled
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ chromium/media/gpu/chromeos/BUILD.gn | 1 +
+ chromium/ui/gfx/linux/BUILD.gn       | 2 --
+ 2 files changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/chromium/media/gpu/chromeos/BUILD.gn b/chromium/media/gpu/chromeos/BUILD.gn
+index 633a3c74e..e1d6e3f8d 100644
+--- a/chromium/media/gpu/chromeos/BUILD.gn
++++ b/chromium/media/gpu/chromeos/BUILD.gn
+@@ -3,6 +3,7 @@
+ # found in the LICENSE file.
+ 
+ import("//media/gpu/args.gni")
++import("//ui/ozone/ozone.gni")
+ import("//testing/test.gni")
+ 
+ assert(use_v4l2_codec || use_vaapi)
+diff --git a/chromium/ui/gfx/linux/BUILD.gn b/chromium/ui/gfx/linux/BUILD.gn
+index 3574e02b1..a0182f89b 100644
+--- a/chromium/ui/gfx/linux/BUILD.gn
++++ b/chromium/ui/gfx/linux/BUILD.gn
+@@ -5,8 +5,6 @@
+ import("//build/config/ui.gni")
+ import("//ui/ozone/ozone.gni")
+ 
+-assert(use_x11 || ozone_platform_drm || ozone_platform_wayland)
+-
+ source_set("drm") {
+   sources = [
+     "drm_util_linux.cc",
+-- 
+2.20.1
+

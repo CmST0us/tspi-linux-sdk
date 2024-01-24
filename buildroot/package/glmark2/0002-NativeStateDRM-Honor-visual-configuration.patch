@@ -1,0 +1,69 @@
+From 78032ab9467c3217375d917beff219468893649a Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Thu, 12 May 2022 11:26:31 +0800
+Subject: [PATCH] NativeStateDRM: Honor visual configuration
+
+Create GBM surface that matches visual configuration.
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ src/native-state-drm.cpp | 22 ++++++++++++----------
+ 1 file changed, 12 insertions(+), 10 deletions(-)
+
+diff --git a/src/native-state-drm.cpp b/src/native-state-drm.cpp
+index 2979917..dad4154 100644
+--- a/src/native-state-drm.cpp
++++ b/src/native-state-drm.cpp
+@@ -50,13 +50,22 @@ NativeStateDRM::display()
+ }
+ 
+ bool
+-NativeStateDRM::create_window(WindowProperties const& /*properties*/)
++NativeStateDRM::create_window(WindowProperties const& properties)
+ {
+     if (!dev_) {
+         Log::error("Error: DRM device has not been initialized!\n");
+         return false;
+     }
+ 
++    /* egl config's native visual id is drm fourcc */
++    surface_ = gbm_surface_create(dev_, mode_->hdisplay, mode_->vdisplay,
++                                  properties.visual_id,
++                                  GBM_BO_USE_SCANOUT | GBM_BO_USE_RENDERING);
++    if (!surface_) {
++        Log::error("Failed to create GBM surface\n");
++        return false;
++    }
++
+     return true;
+ }
+ 
+@@ -427,8 +436,9 @@ NativeStateDRM::fb_get_from_bo(gbm_bo* bo)
+     unsigned int height = gbm_bo_get_height(bo);
+     unsigned int stride = gbm_bo_get_stride(bo);
+     unsigned int handle = gbm_bo_get_handle(bo).u32;
++    unsigned int bpp = gbm_bo_get_bpp(bo);
+     unsigned int fb_id(0);
+-    int status = drmModeAddFB(fd_, width, height, 24, 32, stride, handle, &fb_id);
++    int status = drmModeAddFB(fd_, width, height, bpp, bpp, stride, handle, &fb_id);
+     if (status < 0) {
+         Log::error("Failed to create FB: %d\n", status);
+         return 0;
+@@ -452,14 +462,6 @@ NativeStateDRM::init_gbm()
+         return false;
+     }
+ 
+-    surface_ = gbm_surface_create(dev_, mode_->hdisplay, mode_->vdisplay,
+-                                  GBM_FORMAT_XRGB8888,
+-                                  GBM_BO_USE_SCANOUT | GBM_BO_USE_RENDERING);
+-    if (!surface_) {
+-        Log::error("Failed to create GBM surface\n");
+-        return false;
+-    }
+-
+     return true;
+ }
+ 
+-- 
+2.20.1
+

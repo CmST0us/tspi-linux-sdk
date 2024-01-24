@@ -1,0 +1,21 @@
+Buildroot for the Rockchip SOC boards
+  - wiki <http://opensource.rock-chips.com/wiki_Main_Page>.
+
+Quick Start
+
+1. Choose Rockchip defconfig:
+   ~ $ source build/envsetup.sh
+
+2. Change configs:
+   ~ $ make menuconfig
+   ~ $ make update-defconfig # Or savedefconfig to update/save defconfig
+
+3. Run "make" to build the rootfs images
+
+4. Flash "output/latest/images/rootfs.<fstype>" to your device
+
+5. Run "make <pkg>-dirclean <pkg>" to perform a clean-rebuild for a package
+
+6. Run "bdeploy <pkg>" to deploy a package to the device through adb
+
+7. Run "breconfig <pkg>" to perform an inplace reconfigure, build, install and deploy for a package

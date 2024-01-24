@@ -1,0 +1,39 @@
+From b611a79fcc4211aca3d2f27f5d44bd2ba4f0036b Mon Sep 17 00:00:00 2001
+From: Jinkun Hong <jinkun.hong@rock-chips.com>
+Date: Mon, 6 Jun 2022 09:46:02 +0800
+Subject: [PATCH 02/11] Increase width and height limits
+
+Signed-off-by: Jinkun Hong <jinkun.hong@rock-chips.com>
+---
+ src/draw/lv_img_buf.h | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/src/draw/lv_img_buf.h b/src/draw/lv_img_buf.h
+index 1be7bb652..98b7eff04 100644
+--- a/src/draw/lv_img_buf.h
++++ b/src/draw/lv_img_buf.h
+@@ -114,8 +114,8 @@ typedef uint8_t lv_img_cf_t;
+ #if LV_BIG_ENDIAN_SYSTEM
+ typedef struct {
+ 
+-    uint32_t h : 11; /*Height of the image map*/
+-    uint32_t w : 11; /*Width of the image map*/
++    uint32_t h : 16; /*Height of the image map*/
++    uint32_t w : 16; /*Width of the image map*/
+     uint32_t reserved : 2; /*Reserved to be used later*/
+     uint32_t always_zero : 3; /*It the upper bits of the first byte. Always zero to look like a
+                                  non-printable character*/
+@@ -131,8 +131,8 @@ typedef struct {
+ 
+     uint32_t reserved : 2; /*Reserved to be used later*/
+ 
+-    uint32_t w : 11; /*Width of the image map*/
+-    uint32_t h : 11; /*Height of the image map*/
++    uint32_t w : 16; /*Width of the image map*/
++    uint32_t h : 16; /*Height of the image map*/
+ } lv_img_header_t;
+ #endif
+ 
+-- 
+2.25.1
+

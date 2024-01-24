@@ -1,0 +1,32 @@
+From df51f06d51c3abe94df44e137c9ff88f32d76d24 Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Mon, 27 May 2019 12:13:56 +0800
+Subject: [PATCH] HACK: sys/types.h: Add back sys/sysmacros.h
+
+The inclusion of sys/sysmacros.h was removed at glibc 2.28, but many
+packages are stilling expecting that.
+
+Instead of modifying them, let's just hack this.
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ posix/sys/types.h | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/posix/sys/types.h b/posix/sys/types.h
+index 27129c5..d873509 100644
+--- a/posix/sys/types.h
++++ b/posix/sys/types.h
+@@ -194,6 +194,9 @@ typedef int register_t __attribute__ ((__mode__ (__word__)));
+ 
+ /* It also defines `fd_set' and the FD_* macros for `select'.  */
+ # include <sys/select.h>
++
++/* BSD defines these symbols, so we follow.  */
++# include <sys/sysmacros.h>
+ #endif /* Use misc.  */
+ 
+ 
+-- 
+2.11.0
+

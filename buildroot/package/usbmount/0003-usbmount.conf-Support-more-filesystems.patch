@@ -1,0 +1,28 @@
+From 0c32ff1b896f1c0976faed6f1b59923d4df1494e Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Fri, 17 Jun 2022 15:18:57 +0800
+Subject: [PATCH 3/5] usbmount.conf: Support more filesystems
+
+Add ntfs exfat fuseblk.
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ usbmount.conf | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/usbmount.conf b/usbmount.conf
+index 97f7ccc..b265940 100644
+--- a/usbmount.conf
++++ b/usbmount.conf
+@@ -14,7 +14,7 @@ MOUNTPOINTS="/media/usb0 /media/usb1 /media/usb2 /media/usb3
+ 
+ # Filesystem types: removable storage devices are only mounted if they
+ # contain a filesystem type which is in this list.
+-FILESYSTEMS="vfat ext2 ext3 ext4 hfsplus"
++FILESYSTEMS="vfat ext2 ext3 ext4 hfsplus ntfs exfat fuseblk"
+ 
+ #############################################################################
+ # WARNING!                                                                  #
+-- 
+2.20.1
+

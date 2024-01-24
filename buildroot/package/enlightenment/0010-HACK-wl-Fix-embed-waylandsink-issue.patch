@@ -1,0 +1,28 @@
+From 8ff9916305e10f13c12835c573dd036bf7bac02c Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Fri, 22 Jul 2022 18:30:10 +0800
+Subject: [PATCH 10/10] HACK: wl: Fix embed waylandsink issue
+
+Tested with qplayer.
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ src/bin/e_comp_wl.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/bin/e_comp_wl.c b/src/bin/e_comp_wl.c
+index a7d584041..edb3e4f02 100644
+--- a/src/bin/e_comp_wl.c
++++ b/src/bin/e_comp_wl.c
+@@ -1494,7 +1494,7 @@ _e_comp_wl_surface_state_commit(E_Client *ec, E_Comp_Wl_Surface_State *state)
+              if ((ec->comp_data->shell.surface) && (ec->comp_data->shell.map))
+                ec->comp_data->shell.map(ec->comp_data->shell.surface);
+              else if ((ec == e_comp->pointer->client.ec) || e_client_has_xwindow(ec) || ec->internal_elm_win ||
+-                      (ec->comp_data->sub.data && ec->comp_data->sub.data->parent->comp_data->mapped) ||
++                      (ec->comp_data->sub.data/* && ec->comp_data->sub.data->parent->comp_data->mapped*/) ||
+                       (ec == e_comp_wl->drag_client))
+                {
+                   ec->visible = EINA_TRUE;
+-- 
+2.20.1
+

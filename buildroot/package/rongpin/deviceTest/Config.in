@@ -1,0 +1,4 @@
+config BR2_PACKAGE_DEVICETEST
+    bool "deviceTest"
+    help
+        this is a app for rpdzkj function test

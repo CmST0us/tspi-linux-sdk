@@ -1,0 +1,35 @@
+From 75a708d9345f057cf6c11635534ded7ccef4070a Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Thu, 20 Oct 2022 12:03:16 +0800
+Subject: [PATCH 20/20] adbd: Support setting adb shell
+
+Tested with:
+cat /etc/profile.d/adbd.sh
+export ADBD_SHELL=/bin/bash
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ core/adbd/services.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/core/adbd/services.c b/core/adbd/services.c
+index 239f49f..2006d14 100644
+--- a/core/adbd/services.c
++++ b/core/adbd/services.c
+@@ -383,10 +383,11 @@ static int create_subproc_thread(const char *name)
+     adb_thread_t t;
+     int ret_fd;
+     pid_t pid;
++    const char *shell = getenv("ADBD_SHELL") ? : SHELL_COMMAND;
+     if(name) {
+-        ret_fd = create_subprocess(SHELL_COMMAND, "-c", name, &pid);
++        ret_fd = create_subprocess(shell, "-c", name, &pid);
+     } else {
+-        ret_fd = create_subprocess(SHELL_COMMAND, 0, 0, &pid);
++        ret_fd = create_subprocess(shell, 0, 0, &pid);
+     }
+     D("create_subprocess() ret_fd=%d pid=%d\n", ret_fd, pid);
+ 
+-- 
+2.20.1
+

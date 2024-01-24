@@ -1,0 +1,15 @@
+#start
+[Unit]
+Description=Setup rockchip bt
+After=rkwifibt.service
+
+[Service]
+Type=forking
+KillMode=none
+SendSIGKILL=no
+ExecStart=/etc/init.d/rkbt.sh
+
+[Install]
+WantedBy=network-online.target
+#end
+

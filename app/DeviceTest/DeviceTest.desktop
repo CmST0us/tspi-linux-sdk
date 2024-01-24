@@ -1,0 +1,5 @@
+[Desktop Entry]
+Name=deviceTest
+Exec=/usr/bin/DeviceTest
+Icon=/usr/share/icon/icon_deviceTest.png
+Type=Application

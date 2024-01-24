@@ -1,0 +1,34 @@
+From 65dce9bd2fc22cef26460a834ca770982322fda9 Mon Sep 17 00:00:00 2001
+From: Jeffy Chen <jeffy.chen@rock-chips.com>
+Date: Mon, 18 Oct 2021 16:10:11 +0800
+Subject: [PATCH 15/17] gsttools: videowidget: Reflush window handle even it's
+ unchanged
+
+To avoid losing video after hide() and show().
+
+Signed-off-by: Jeffy Chen <jeffy.chen@rock-chips.com>
+---
+ src/gsttools/qgstreamervideowidget.cpp | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
+
+diff --git a/src/gsttools/qgstreamervideowidget.cpp b/src/gsttools/qgstreamervideowidget.cpp
+index f082bec..878702c 100644
+--- a/src/gsttools/qgstreamervideowidget.cpp
++++ b/src/gsttools/qgstreamervideowidget.cpp
+@@ -187,11 +187,8 @@ void QGstreamerVideoWidgetControl::onNativeVideoSizeChanged()
+ bool QGstreamerVideoWidgetControl::eventFilter(QObject *object, QEvent *e)
+ {
+     if (m_widget && object == m_widget) {
+-        if (e->type() == QEvent::ParentChange || e->type() == QEvent::Show || e->type() == QEvent::WinIdChange) {
+-            WId newWId = m_widget->videoWinId();
+-            if (newWId != m_windowId)
+-                m_videoOverlay.setWindowHandle(m_windowId = newWId);
+-        }
++        if (e->type() == QEvent::ParentChange || e->type() == QEvent::Show || e->type() == QEvent::WinIdChange)
++            m_videoOverlay.setWindowHandle(m_windowId = m_widget->videoWinId());
+ 
+         if (e->type() == QEvent::Paint) {
+             // Update overlay by new size if any.
+-- 
+2.20.1
+

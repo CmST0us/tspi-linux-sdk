@@ -1,0 +1,6 @@
+config BR2_PACKAGE_SOURCE_HAN_SANS_KR
+	bool "Source Han Sans KR"
+	help
+	  Adobe OpenType Pan-CJK font family for Korean.
+
+	  https://github.com/adobe-fonts/source-han-sans

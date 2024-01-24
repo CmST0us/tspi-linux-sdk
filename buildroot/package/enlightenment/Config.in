@@ -1,0 +1,32 @@
+config BR2_PACKAGE_ENLIGHTENMENT
+	bool "enlightenment"
+	depends on BR2_PACKAGE_HOST_RUSTC_TARGET_ARCH_SUPPORTS # efl svg -> librsvg
+	# libevas-generic-loaders-svg -> librsvg -> glib2 / pango
+	depends on BR2_USE_WCHAR
+	depends on BR2_INSTALL_LIBSTDCPP
+	# libedbus -> dbus
+	# libedbus -> glib2, libevas
+	depends on BR2_TOOLCHAIN_HAS_THREADS
+	# libedbus -> dbus, efl libraries
+	depends on BR2_USE_MMU
+	depends on BR2_PACKAGE_EFL
+	depends on BR2_PACKAGE_HAS_UDEV # efl (eeze) -> libudev
+	# libevas-generic-loaders-svg -> librsvg -> pango -> harfbuzz
+	depends on BR2_TOOLCHAIN_HAS_SYNC_4
+	depends on BR2_TOOLCHAIN_GCC_AT_LEAST_4_9
+	select BR2_PACKAGE_EFL_EEZE
+	select BR2_PACKAGE_EFL_JPEG # needed at runtime by enlightenment_start
+	select BR2_PACKAGE_EFL_SVG
+	help
+	  Enlightenment is an eye-candy, compositing and stacking window
+	  manager that is released under the permissive BSD License.
+
+	  https://www.enlightenment.org/
+
+comment "enlightenment needs udev /dev management and a toolchain w/ wchar, C++, threads, gcc >= 4.9"
+	depends on BR2_PACKAGE_HOST_RUSTC_TARGET_ARCH_SUPPORTS
+	depends on BR2_PACKAGE_EFL && BR2_USE_MMU
+	depends on !BR2_USE_WCHAR || !BR2_TOOLCHAIN_HAS_THREADS || !BR2_INSTALL_LIBSTDCPP || \
+		!BR2_TOOLCHAIN_GCC_AT_LEAST_4_9 || \
+		!BR2_PACKAGE_HAS_UDEV
+	depends on BR2_TOOLCHAIN_HAS_SYNC_4

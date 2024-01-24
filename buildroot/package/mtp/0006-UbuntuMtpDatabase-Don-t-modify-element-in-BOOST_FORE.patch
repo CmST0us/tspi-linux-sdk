@@ -1,0 +1,82 @@
+From 9ebda0dd531a7afd16eac9070a36591056cb7a0e Mon Sep 17 00:00:00 2001
+From: Zain Wang <wzz@rock-chips.com>
+Date: Fri, 8 Nov 2019 10:07:15 +0800
+Subject: [PATCH] UbuntuMtpDatabase: Don't modify element in BOOST_FOREACH
+
+Signed-off-by: Zain Wang <wzz@rock-chips.com>
+---
+ server/UbuntuMtpDatabase.h | 37 +++++++++++++++++++------------------
+ 1 file changed, 19 insertions(+), 18 deletions(-)
+
+diff --git a/server/UbuntuMtpDatabase.h b/server/UbuntuMtpDatabase.h
+index d675809..71561bf 100644
+--- a/server/UbuntuMtpDatabase.h
++++ b/server/UbuntuMtpDatabase.h
+@@ -317,16 +317,23 @@ private:
+             }
+             else if(ievent->len > 0 && ievent->mask & IN_DELETE)
+             {
++                MtpObjectHandle exist = -1; /* ROOT */
++
+                 VLOG(2) << __PRETTY_FUNCTION__ << ": file deleted: " << p.string();
+                 BOOST_FOREACH(MtpObjectHandle i, db | boost::adaptors::map_keys) {
+                     if (db.at(i).path == p.string()) {
+-                        VLOG(2) << "deleting file at handle " << i;
+-                        deleteFile(i);
+-                        if (local_server)
+-                            local_server->sendObjectRemoved(i);
++                        exist = i;
+                         break;
+                     }
+                 }
++
++                if (exist != -1) {
++                    VLOG(2) << "deleting file at handle " << exist
++                            <<"(path: " << db.at(exist).path << ")\n";
++                    deleteFile(exist);
++                    if (local_server)
++                        local_server->sendObjectRemoved(exist);
++                }
+             }
+         }
+ 
+@@ -375,9 +382,13 @@ public:
+     virtual void removeStorage(MtpStorageID storage)
+     {
+         // remove all database entries corresponding to said storage.
+-        BOOST_FOREACH(MtpObjectHandle i, db | boost::adaptors::map_keys) {
+-            if (db.at(i).storage_id == storage)
+-                db.erase(i);
++        std::map<MtpObjectHandle, DbEntry>::iterator obj;
++
++        for (std::map<MtpObjectHandle, DbEntry>::iterator i = db.begin();
++             i != db.end();) {
++            obj = i++;
++            if (obj->second.storage_id == storage)
++                db.erase(obj);
+         }
+     }
+ 
+@@ -1044,18 +1055,8 @@ public:
+ 
+             new_size = db.erase(handle);
+ 
+-            if (orig_size > new_size) {
+-                /* Recursively remove children object from the DB as well.
+-                 * we can safely ignore failures here, since the objects
+-                 * would not be reachable anyway.
+-                 */
+-                BOOST_FOREACH(MtpObjectHandle i, db | boost::adaptors::map_keys) {
+-                    if (db.at(i).parent == handle)
+-                        db.erase(i);
+-                }
+-
++            if (orig_size > new_size)
+                 return MTP_RESPONSE_OK;
+-            }
+             else
+                 return MTP_RESPONSE_GENERAL_ERROR;
+         }
+-- 
+2.7.4
+

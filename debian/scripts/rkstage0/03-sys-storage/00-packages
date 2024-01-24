@@ -1,0 +1,11 @@
+adb
+dosfstools
+udisks2
+usbutils
+usb-modeswitch
+libmtp-runtime
+rsync
+ntfs-3g
+pciutils
+libblockdev-mdraid2
+libblockdev-dev
