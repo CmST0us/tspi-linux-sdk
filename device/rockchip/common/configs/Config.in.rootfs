@@ -1,0 +1,148 @@
+#
+
+comment "Rootfs system depends on linux kernel"
+	depends on RK_KERNEL_CFG = ""
+
+if RK_KERNEL_CFG != ""
+
+menu "Rootfs"
+
+config RK_BUILDROOT_BASE_CFG
+	string "buildroot rootfs base cfg (rockchip_<cfg>_defconfig)"
+	default "px30_64" if RK_CHIP_FAMILY = "px30"
+	default "rk3326_64" if RK_CHIP_FAMILY = "rk3326"
+	default "rk3358_64" if RK_CHIP_FAMILY = "rk3358"
+	default "rk3566_rk3568_ramboot" if RK_CHIP_FAMILY = "rk3566_rk3568" && \
+		RK_ROOTFS_INITRD
+	default "rk3588_ramboot" if RK_CHIP_FAMILY = "rk3588" && \
+		RK_ROOTFS_INITRD
+	default RK_CHIP if RK_CHIP = "rk3126c" || \
+		RK_CHIP_FAMILY = "rk3566_rk3568"
+	default RK_CHIP_FAMILY
+	help
+	  Base name of buildroot defconfig for rootfs.
+	  Set "" for no buildroot rootfs.
+
+config RK_BUILDROOT_CFG
+	string
+	depends on RK_BUILDROOT_BASE_CFG != ""
+	default "rockchip_${RK_BUILDROOT_BASE_CFG}"
+
+config RK_YOCTO_CFG
+	string "yocto rootfs local config"
+	help
+	  Name of yocto local config for rootfs.
+	  Set "" for no yocto rootfs.
+
+if RK_YOCTO_CFG != ""
+
+config RK_YOCTO_DISPLAY_PLATFORM
+	string
+	default "wayland" if RK_YOCTO_DISPLAY_PLATFORM_WAYLAND
+	default "x11" if RK_YOCTO_DISPLAY_PLATFORM_X11
+
+choice
+	prompt "yocto rootfs display platform"
+
+config RK_YOCTO_DISPLAY_PLATFORM_WAYLAND
+	bool "wayland (weston)"
+
+config RK_YOCTO_DISPLAY_PLATFORM_X11
+	bool "x11"
+
+endchoice
+
+endif
+
+config RK_DEBIAN_VERSION
+	string "debian rootfs version"
+	default "bullseye" if RK_CHIP_FAMILY = "rk3399" || \
+		RK_CHIP_FAMILY = "rk3566_rk3568" || RK_CHIP_FAMILY = "rk3588" || \
+		RK_CHIP_FAMILY = "rk3562" ||  RK_CHIP_FAMILY = "rk3566" || RK_CHIP_FAMILY = "rk3568"
+	default "buster" if RK_CHIP_FAMILY = "px30" || \
+		RK_CHIP = "rk3126c" || RK_CHIP_FAMILY = "rk3288" || \
+		RK_CHIP_FAMILY = "rk3326" || RK_CHIP_FAMILY = "rk3328" || \
+		RK_CHIP_FAMILY = "rk3399pro"
+	help
+	  Version of debian rootfs.
+	  Set "" for no debian rootfs.
+
+if RK_DEBIAN_VERSION != ""
+
+config RK_DEBIAN_ARCH
+	string
+	default "armhf" if RK_DEBIAN_ARMHF
+	default "arm64" if RK_DEBIAN_ARM64
+
+choice
+	prompt "debian rootfs arch"
+
+config RK_DEBIAN_ARM64
+	bool "arm64"
+	depends on RK_KERNEL_ARM64
+
+config RK_DEBIAN_ARMHF
+	bool "armhf"
+
+endchoice
+
+endif
+
+config RK_ROOTFS_SYSTEM
+	string
+	default "buildroot" if RK_ROOTFS_SYSTEM_BUILDROOT
+	default "debian" if RK_ROOTFS_SYSTEM_DEBIAN
+	default "yocto" if RK_ROOTFS_SYSTEM_YOCTO
+	default "ubuntu" if RK_ROOTFS_SYSTEM_UBUNTU
+	default "openkylin" if RK_ROOTFS_SYSTEM_OPENKYLIN
+	default "manjaro" if RK_ROOTFS_SYSTEM_MANJARO
+
+choice
+	prompt "default rootfs system"
+	help
+	  Default rootfs system.
+
+config RK_ROOTFS_SYSTEM_BUILDROOT
+	bool "buildroot"
+	depends on RK_BUILDROOT_BASE_CFG != ""
+
+config RK_ROOTFS_SYSTEM_DEBIAN
+	bool "debian"
+	depends on RK_DEBIAN_VERSION != ""
+
+config RK_ROOTFS_SYSTEM_YOCTO
+	bool "yocto"
+	depends on RK_YOCTO_CFG != ""
+
+config RK_ROOTFS_SYSTEM_UBUNTU
+	bool "ubuntu"
+
+config RK_ROOTFS_SYSTEM_OPENKYLIN
+	bool "openkylin"
+
+config RK_ROOTFS_SYSTEM_MANJARO
+	bool "manjaro"
+
+endchoice
+
+config RK_ROOTFS_TYPE
+	string "rootfs filesystem type"
+	default "cpio.gz" if RK_ROOTFS_INITRD
+	default "ext4"
+
+config RK_ROOTFS_INITRD
+	bool "init ramfs/ramdisk for rootfs"
+
+if RK_ROOTFS_INITRD
+
+config RK_ROOTFS_INITRD_COMPRESS
+	bool "compress the init ramfs/ramdisk and kernel"
+	default y if RK_ROOTFS_TYPE = "romfs"
+
+endif
+
+source "Config.in.post-rootfs"
+
+endmenu # Rootfs
+
+endif

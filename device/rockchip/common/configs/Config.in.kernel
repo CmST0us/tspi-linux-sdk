@@ -1,0 +1,84 @@
+#
+
+menu "Kernel"
+
+config RK_KERNEL_CFG
+	string "kernel defconfig"
+	default "px30_linux_defconfig" if RK_CHIP = "px30" || \
+		RK_CHIP = "rk3326" || RK_CHIP_FAMILY = "rk3358"
+	default "rv1126_defconfig" if RK_CHIP_FAMILY = "rv1126_rv1109"
+	default "rk1806_linux_defconfig" if RK_CHIP = "rk1806"
+	default "rk1808_linux_defconfig" if RK_CHIP = "rk1808"
+	default "rk3308_linux_defconfig" if RK_CHIP_FAMILY = "rk3308"
+	default "rockchip_linux_defconfig"
+
+if RK_KERNEL_CFG != ""
+
+config RK_KERNEL_VERSION
+	string "kernel version, e.g. 5.10"
+
+config RK_KERNEL_ARCH
+	string
+	default "arm" if RK_KERNEL_ARM32
+	default "arm64" if RK_KERNEL_ARM64
+
+choice
+	prompt "kernel arch"
+
+config RK_KERNEL_ARM64
+	bool "arm64"
+	depends on RK_CHIP_FAMILY != "px3se" && RK_CHIP_FAMILY != "rk3036" && \
+		RK_CHIP_FAMILY != "rk3128h" && RK_CHIP_FAMILY != "rk312x" && \
+		RK_CHIP_FAMILY != "rk3229" && RK_CHIP_FAMILY != "rk3288" && \
+		RK_CHIP_FAMILY != "rv1126_rv1109"
+
+config RK_KERNEL_ARM32
+	bool "arm"
+
+endchoice
+
+config RK_KERNEL_CFG_FRAGMENTS
+	string "kernel defconfig fragments"
+	default "rk3126_linux.config" if RK_CHIP = "rk3126c"
+	default "rk3128_linux.config" if RK_CHIP = "rk3128"
+	default "rk3326_linux.config" if RK_CHIP = "rk3326"
+	default "rk3358_linux.config" if RK_CHIP_FAMILY = "rk3358"
+	default "rk3588_linux.config" if RK_CHIP_FAMILY = "rk3588"
+
+config RK_KERNEL_DTS_NAME
+	string "kernel device-tree name"
+
+config RK_KERNEL_DTS_DIR
+	string
+	default "kernel/arch/arm/boot/dts" if RK_KERNEL_ARCH = "arm"
+	default "kernel/arch/arm64/boot/dts/rockchip"
+
+config RK_KERNEL_DTS
+	string
+	default "$RK_KERNEL_DTS_DIR/$RK_KERNEL_DTS_NAME.dts"
+
+config RK_KERNEL_DTB
+	string
+	default "$RK_KERNEL_DTS_DIR/$RK_KERNEL_DTS_NAME.dtb"
+
+config RK_KERNEL_IMG_NAME
+	string "kernel image name"
+	default "zImage" if RK_KERNEL_ARM32 && RK_BOOT_COMPRESSED
+	default "Image.lz4" if RK_KERNEL_ARM64 && RK_BOOT_COMPRESSED
+	default "Image"
+
+config RK_KERNEL_IMG
+	string
+	default "kernel/arch/$RK_KERNEL_ARCH/boot/$RK_KERNEL_IMG_NAME"
+
+config RK_KERNEL_DISTROBOOT
+	bool "enable distroboot"
+	default n
+
+config RK_KERNEL_DISTROBOOT_CMD
+	string "kernel bootcmd"
+	default "earlycon=uart8250,mmio32,0xfe660000 console=ttyFIQ0 root=PARTUUID=614e0000-0000 rw rootwait"
+
+endif
+
+endmenu # Kernel

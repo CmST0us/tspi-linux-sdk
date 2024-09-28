@@ -1,0 +1,1 @@
+../scripts/post-disk.sh

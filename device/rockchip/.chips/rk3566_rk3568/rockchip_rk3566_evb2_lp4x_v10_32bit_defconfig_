@@ -1,0 +1,6 @@
+RK_BUILDROOT_BASE_CFG="rk3566_32"
+RK_YOCTO_CFG="rockchip-rk3566-evb"
+RK_KERNEL_DTS_NAME="rk3566-evb2-lp4x-v10-linux"
+RK_USE_FIT_IMG=y
+RK_WIFIBT_TTY="ttyS1"
+RK_PARAMETER="parameter-buildroot-fit.txt"

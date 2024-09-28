@@ -1,0 +1,76 @@
+#!/bin/bash
+
+[ -z "$DEBUG" ] || set -x
+
+# Make sure that we are sourced and called inside of RK build scripts.
+if [ "$BASH_SOURCE" = "$0" -o -z "$RK_SESSION" ];then
+	echo "$(realpath "$0") is not supposed to be executed directly"
+	exit 1
+fi
+
+err_handler()
+{
+	ret=${1:-$?}
+	[ "$ret" -eq 0 ] && return
+
+	echo "ERROR: Running $0 - ${2:-${FUNCNAME[1]}} failed!"
+	echo "ERROR: exit code $ret from line ${BASH_LINENO[0]}:"
+	echo "    ${3:-$BASH_COMMAND}"
+	echo "ERROR: call stack:"
+	for i in $(seq 1 $((${#FUNCNAME[@]} - 1))); do
+		SOURCE="${BASH_SOURCE[$i]}"
+		LINE=${BASH_LINENO[$(( $i - 1 ))]}
+		echo "    $(basename "$SOURCE"): ${FUNCNAME[$i]}($LINE)"
+	done
+	exit $ret
+}
+trap 'err_handler' ERR
+set -eE
+
+usage()
+{
+	echo "Usage: $0 [OPTIONS]"
+	echo "<rootfs dir>       - target rootfs dir"
+	echo "help               - usage"
+	exit 1
+}
+
+case "$1" in
+	usage | help | h | -h | --help | \?) usage ;;
+esac
+
+[ -d "$1" ] || usage
+
+TARGET_DIR=$(realpath "$1")
+shift
+
+case "$TARGET_DIR/" in
+	*/debian/binary/*) POST_OS=debian ;;
+	*/yocto/*/core-image-minimal/*) POST_OS=yocto ;;
+	*/buildroot/output/*_recovery/target/*) POST_OS=recovery ;;
+	*/buildroot/output/*_pcba/target/*) POST_OS=pcba ;;
+	*/buildroot/output/*/target/*) POST_OS=buildroot ;;
+	*) POST_OS=unknown ;;
+esac
+echo "$POST_OS_DISALLOWED" | grep -wvq $POST_OS || exit 0
+
+unset POST_INIT_BUSYBOX POST_INIT_SYSTEMD POST_INIT_SYSV
+if [ -e "$TARGET_DIR/etc/init.d/rcS" ]; then
+	if [ -d "$TARGET_DIR/etc/rcS.d" ]; then
+		POST_INIT_SYSV=1
+		POST_INIT=sysv
+	fi
+	if grep -wq BusyBox "$TARGET_DIR/etc/inittab"; then
+		POST_INIT_BUSYBOX=1
+		POST_INIT="${POST_INIT:+$POST_INIT }busybox"
+	fi
+fi
+if [ -d "$TARGET_DIR/etc/systemd/system/" ]; then
+	mkdir -p "$TARGET_DIR/lib/systemd/system/"
+	POST_INIT_SYSTEMD=1
+	POST_INIT="${POST_INIT:+$POST_INIT }systemd"
+fi
+
+echo "Running $(basename "$0") for $TARGET_DIR ($POST_OS init=${POST_INIT:-none})..."
+
+cd "$TARGET_DIR"

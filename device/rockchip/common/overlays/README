@@ -1,0 +1,9 @@
+Overlay dirs
+============
+
+The overlay-<OS>/ would be automatically installed into the related OS's rootfs.
+
+Set RK_ROOTFS_OVERLAY_DIRS for custom overlay dirs.
+
+If there's an install.sh under the overlay dir, it would be executed instead of
+the default rsync installing.

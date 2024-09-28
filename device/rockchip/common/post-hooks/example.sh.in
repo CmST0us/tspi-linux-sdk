@@ -1,0 +1,15 @@
+#!/bin/bash -e
+
+source "${POST_HELPER:-$(dirname "$(realpath "$0")")/../post-hooks/post-helper}"
+
+NAME=$(basename $0)
+NAME=${NAME%.sh}
+
+# Post rootfs hook for "./build.sh post-rootfs <rootfs dir> [args]"
+echo "post-rootfs $NAME: $@"
+
+# Test:
+# ./build.sh post-rootfs /tmp/ A B C
+# Output:
+# ...
+# post-rootfs example: /tmp/ A B C

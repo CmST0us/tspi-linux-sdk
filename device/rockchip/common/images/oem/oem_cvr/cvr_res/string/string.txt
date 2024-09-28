@@ -1,0 +1,28 @@
+﻿RES_STR_MEDIA_LIB_VIDEO_F	前摄视频	前攝視頻	Front video	前のビデオ
+RES_STR_MEDIA_LIB_VIDEO_P	后摄视频	後攝視頻	Back video	バックビデオ
+RES_STR_MEDIA_LIB_VIDEO_U	紧急视频	緊急視頻	Emergency video	緊急ビデオ
+RES_STR_MEDIA_LIB_PHOTO	照片	照片	Photo	写真
+RES_STR_SETTINGS_SET	设置	設置	set up	設定
+RES_STR_SETTINGS_MOVIE	录像时长	錄像時長	Video duration	ビデオの長さ
+RES_STR_SETTINGS_RES	分辨率	分辨率	Resolution	解像度
+RES_STR_SETTINGS_CODE	编码格式	編碼格式	Encoding format	エンコード形式
+RES_STR_SETTINGS_VOL	音量调节	音量調節	Volume adjustment	音量調節
+RES_STR_SETTINGS_MIC	录音开关	錄音開關	Recording switch	録音スイッチ
+RES_STR_SETTINGS_LANG	语言	語言	Language	言語
+RES_STR_SETTINGS_STORE	储存状态	儲存狀態	Storage status	ストレージステータス
+RES_STR_SETTINGS_FORMAT	格式化	格式化	Format	フォーマット
+RES_STR_SETTINGS_BOX_LANG_TITLE	语言选择	語言選擇	Language selection	言語選択
+RES_STR_SETTINGS_BOX_LANG_SN	简体中文	简体中文	简体中文	简体中文
+RES_STR_SETTINGS_BOX_LANG_TN	繁體中文	繁體中文	繁體中文	繁體中文
+RES_STR_SETTINGS_BOX_LANG_EN	English	English	English	English
+RES_STR_SETTINGS_BOX_LANG_JA	日本	日本	日本	日本
+RES_STR_SETTINGS_BOX_STORE_TITLE	储存状态	儲存狀態	Storage status	ストレージステータス
+RES_STR_SETTINGS_BOX_STORE_INFO	已用	已用	used	中古  
+RES_STR_SETTINGS_BOX_FORMAT_TITLE	格式化	格式化	Format	フォーマット
+RES_STR_SETTINGS_BOX_FORMAT_INFO	确认格式化？	確認格式化？	Confirm formatting?	フォーマットを確認しますか？
+RES_STR_SETTINGS_BOX_FORMAT_OK	确认	確認	OK	確認
+RES_STR_SETTINGS_BOX_FORMAT_CANCEL	取消	取消	Cancel	キャンセル
+RES_STR_SETTINGS_BOX_STORE_TOTAL	总共	總共	In total	合計で 
+RES_STR_SETTINGS_BOX_NOSDCARD	没有SD card	沒有SD card	No SD card	SDカードなし
+RES_STR_SETTINGS_BOX_SCAN	SD卡扫描进行中	SD卡掃描進行中	The SD card is being scanned	SDカードスキャンが進行中
+RES_STR_SETTINGS_BOX_NOFORMAT	未格式化	未格式化	Not formatted	書式なし

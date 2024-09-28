@@ -1,0 +1,40 @@
+#
+
+comment "Security features depend on init ramfs/ramdisk rootfs"
+	depends on !RK_ROOTFS_INITRD
+
+if RK_ROOTFS_INITRD
+
+menu "Security"
+
+config RK_SECURITY
+	bool "security features"
+
+if RK_SECURITY
+
+config RK_SECURITY_CHECK_METHOD
+	string
+	default "DM-E" if RK_SECURITY_CHECK_DM_E
+	default "DM-V" if RK_SECURITY_CHECK_DM_V
+
+choice
+	prompt "security check method (DM-E|DM-V)"
+	default RK_SECURITY_CHECK_DM_E if RK_CHIP_FAMILY = "rk3566_rk3568"
+
+config RK_SECURITY_CHECK_DM_E
+	bool "DM-E"
+
+config RK_SECURITY_CHECK_DM_V
+	bool "DM-V"
+
+endchoice
+
+config RK_SECURITY_OTP_DEBUG
+	string "security OTP debug"
+	default y
+
+endif
+
+endmenu # Security
+
+endif

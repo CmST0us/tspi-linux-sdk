@@ -1,0 +1,56 @@
+#!/bin/sh
+
+CMD=${0##*/}
+
+# busybox doesn't provide shutdown command
+[ "$CMD" != shutdown ] || CMD=poweroff
+
+unset ARGS HELP
+while [ -n "$1" ];do
+        case "$1" in
+            # Original args
+            -n|-f|-w)
+                ARGS="$ARGS $1"
+                ;;
+            -d)
+                ARGS="$ARGS $1 $2"
+                shift
+                ;;
+            # Additional args
+            --halt)
+                CMD=halt
+                ;;
+            -p|--poweroff)
+                CMD=poweroff
+                ;;
+            --reboot)
+                CMD=reboot
+                ;;
+            --no-wall)
+                ARGS="$ARGS -f"
+                ;;
+            --help)
+                HELP=1
+                ARGS="$ARGS $1"
+                ;;
+            *)
+                ARGS="$ARGS $1"
+                ;;
+        esac
+        shift
+done
+
+if [ -n "$HELP" ]; then
+    busybox $CMD --help
+else
+    busybox $CMD $ARGS && exit 0
+fi
+
+# Print add-on usages
+cat << EOF
+	--help	Show this help
+	--halt	Halt the machine
+	-p --poweroff	Switch off the machine
+	--reboot	Reboot the machine
+	--no-wall	Don't send wall message before halt/power-off/reboot
+EOF

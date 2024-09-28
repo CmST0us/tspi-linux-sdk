@@ -1,0 +1,152 @@
+#!/bin/bash -e
+
+NAME=$(basename $0)
+NAME=${NAME%.sh}
+
+# Print available options for this module
+usage_hook()
+{
+	echo -e "dummy                             \tbuild dummy"
+	echo -e "A                                 \tbuild dummy A"
+	echo -e "B                                 \tbuild dummy B"
+	echo -e "C                                 \tbuild dummy C"
+
+# Test:
+# ./build.sh shell
+# ./device/rockchip/common/build-hooks/example.sh -h
+# Output:
+# Usage: ./device/rockchip/common/build-hooks/example.sh [OPTIONS]
+# dummy                                   build dummy
+# A                                       build dummy A
+# B                                       build dummy B
+# C                                       build dummy C
+# clean                                   cleanup
+# help                                    usage
+
+
+# Test:
+# ./build.sh -h
+# Output:
+# Usage: build.sh [OPTIONS]
+# Available options:
+# dummy                                   build dummy
+# A                                       build dummy A
+# B                                       build dummy B
+# C                                       build dummy C
+}
+
+# Cleanup hook for "./build.sh cleanall"
+clean_hook()
+{
+	echo "cleanup $NAME"
+
+# Test:
+# ./build.sh cleanall
+# Output:
+# ...
+# cleanup example
+}
+
+# Build stages:
+#   init (preparing SDK configs, etc.)
+#   (inherit configs)
+#   pre-build (submodule configuring, etc.)
+#   build (building, etc.)
+#   post-build (firmware packing, etc.)
+#
+# <STAGE>_CMDS:
+# call "<stage>_hook <command> [args]" when commands matched
+# "default" command means unconditional match.
+# args are parsed from command:arg1:arg2...
+
+# Call init_hook() in init stage for "dummy" command and call it again
+# unconditionally
+INIT_CMDS="dummy default"
+init_hook()
+{
+	echo "init hook for $0 - $@"
+	finish_build init-$NAME $@
+
+# Test:
+# ./build.sh dummy
+# Output:
+# ...
+# init hook for /XXX/device/rockchip/common/build-hooks/example.sh - dummy
+# Running example.sh - init-example dummy succeeded.
+# init hook for /XXX/device/rockchip/common/build-hooks/example.sh - default
+# Running example.sh - init-example default succeeded.
+}
+
+# Call pre_build_hook() in pre-build stage unconditionally and call it again
+# for "A" command
+PRE_BUILD_CMDS="default A"
+pre_build_hook()
+{
+	echo "pre-build hook for $0 - $@"
+	finish_build pre-build-$NAME $@
+
+# Test:
+# ./build.sh A
+# Output:
+# ...
+# pre-build hook for /XXX/device/rockchip/common/build-hooks/example.sh - default
+# Running example.sh - pre-build-example default succeeded.
+# pre-build hook for /XXX/device/rockchip/common/build-hooks/example.sh - A
+# Running example.sh - pre-build-example A succeeded.
+}
+
+# Call build_hook() in build stage for "B" and "C" commands
+BUILD_CMDS="B C"
+build_hook()
+{
+	echo "build hook for $0 - $@"
+	finish_build build-$NAME $@
+
+# Test:
+# ./build.sh C B
+# Output:
+# ...
+# build hook for /XXX/device/rockchip/common/build-hooks/example.sh - C
+# Running example.sh - build-example C succeeded.
+# build hook for /XXX/device/rockchip/common/build-hooks/example.sh - B
+# Running example.sh - build-example B succeeded.
+}
+
+# Call post_build_hook() in post-build stage for "A" "C" and "B" commands
+POST_BUILD_CMDS="A C B"
+post_build_hook()
+{
+	echo "post-build hook for $0 - $@"
+	finish_build post-build-$NAME $@
+
+# Test:
+# ./build.sh A:arg1:arg2
+# Output:
+# ...
+# post-build hook for /XXX/device/rockchip/common/build-hooks/example.sh - A arg1 arg2
+# Running example.sh - post-build-example A arg1 arg2 succeeded.
+}
+
+# 1: Inherit initial checks
+#    Make sure that it's been executed inside of build.sh, or after
+#    "./build.sh shell" for developing.
+# 2: Call build hooks when needed
+source "${BUILD_HELPER:-$(dirname "$(realpath "$0")")/../build-hooks/build-helper}"
+
+# Test:
+# ./device/rockchip/common/build-hooks/example.sh
+# Output:
+# /XXX/device/rockchip/common/build-hooks/example.sh.in is not supposed to be executed directly
+
+# Reaching here when executed directly(not from hook triggers)
+
+echo "$0 is executed directly${@:+ with $@}."
+
+# Do something
+
+# Test:
+# ./build.sh shell
+# ./device/rockchip/common/build-hooks/example.sh
+# Output:
+# ...
+# ./device/rockchip/common/build-hooks/example.sh is executed directly.

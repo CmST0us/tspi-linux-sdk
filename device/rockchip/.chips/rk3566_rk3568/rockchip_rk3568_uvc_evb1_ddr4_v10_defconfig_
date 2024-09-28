@@ -1,0 +1,6 @@
+RK_BUILDROOT_BASE_CFG="rk3568_uvc"
+RK_YOCTO_CFG="rockchip-rk3568-evb"
+RK_KERNEL_DTS_NAME="rk3568-evb1-ddr4-v10-linux"
+RK_USE_FIT_IMG=y
+RK_PARAMETER="parameter-buildroot-fit.txt"
+RK_EXTRA_PARTITION_1_SRC="uvcc"
