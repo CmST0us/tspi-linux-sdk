@@ -1,0 +1,3 @@
+[submodule "ubuntu"]
+	path = ubuntu
+	url = https://github.com/CmST0us/tspi-linux-sdk-ubuntu-rootfs.git
