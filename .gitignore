@@ -1,0 +1,15 @@
+/output
+/rockdev
+/download
+/buildroot/dl/ccache/*
+/buildroot/dl/*
+
+ubuntu/ubuntu-rootfs.img
+ubuntu/.ubuntu*
+ubuntu/.kernel*
+ubuntu/.boot*
+ubuntu/ubuntu-rootfs-img/*
+device/rockchip/.chip
+device/rockchip/rk3566_rk3568
+device/rockchip/rk3588
+manjaro/manjaro-rootfs.img
