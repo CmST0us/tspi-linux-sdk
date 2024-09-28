@@ -1,0 +1,64 @@
+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+/*
+ * Copyright (c) 2020 Rockchip Electronics Co., Ltd.
+ *
+ */
+
+ /*********************************************************************
+ *           立创开发板不靠卖板赚钱，以培养中国工程师为己任  
+ *         泰山派软硬件资料与相关扩展板软硬件资料官网全部开源
+ *                      开发板官网：www.lckfb.com            
+ *                     立创论坛：oshwhub.com/forum           
+ *            关注B站：【立创开发板】，掌握我们的最新动态！  
+ *********************************************************************
+ * 文件名：tspi-rk3566-user-v10.dtsi
+ * 描述：用户自定义层
+ * 更新:
+ * 时间          作者           联系           说明
+ * 2023-09-13   吴才成    1378913492@qq.com   v1.0.0
+ *********************************************************************/
+#include "tspi-rk3566-user-v10-linux.dts"
+
+//【开/关】网口 扩展板上使用的是千兆网，不接扩展板情况下可以关闭
+#include "tspi-rk3566-gmac1-v10.dtsi"
+
+/{
+	ex39-usb-vcc5v0-host-en {
+		compatible = "regulator-fixed";
+		enable-active-high;
+		gpio = <&gpio0 RK_PA5 GPIO_ACTIVE_HIGH>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&ex39_usb_vcc5v0_host_en>;
+		regulator-name = "ex39_usb_vcc5v0_host_en";
+		regulator-always-on;
+	};
+};
+
+&usbhost_dwc3 {
+	phys = <&u2phy0_host>; 
+	phy-names = "usb2-phy";
+	maximum-speed = "high-speed"; 
+	status = "okay";
+};
+&combphy1_usq {
+	rockchip,dis-u3otg1-port; 
+	status = "okay";
+};
+
+&sata1 {
+	rockchip,enable-ssc;
+	status = "okay";
+};
+
+//耳机插入检测，不使用扩展板情况需关闭，否则默认会检测到耳机插入
+&rk_headset {
+	status = "okay";
+};
+
+&pinctrl {
+	ex39_usb {
+		ex39_usb_vcc5v0_host_en: ex39-usb-vcc5v0-host-en {
+			rockchip,pins = <0 RK_PA5 RK_FUNC_GPIO &pcfg_pull_none>;
+		};
+	};
+};

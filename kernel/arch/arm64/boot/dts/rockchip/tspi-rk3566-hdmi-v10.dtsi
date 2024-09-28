@@ -1,0 +1,61 @@
+/*********************************************************************
+ *           立创开发板不靠卖板赚钱，以培养中国工程师为己任  
+ *         泰山派软硬件资料与相关扩展板软硬件资料官网全部开源
+ *                      开发板官网：www.lckfb.com            
+ *                     立创论坛：oshwhub.com/forum           
+ *            关注B站：【立创开发板】，掌握我们的最新动态！  
+ *********************************************************************
+ * 文件名：tspi-rk3566-hdmi-v10.dtsi
+ * 描述：
+ * 更新:
+ * 时间          作者           联系           说明
+ * 2023-09-13   吴才成    1378913492@qq.com   v1.0.0
+ *********************************************************************/
+/{
+    hdmi_sound: hdmi-sound {
+		compatible = "simple-audio-card";
+		simple-audio-card,format = "i2s";
+		simple-audio-card,mclk-fs = <128>;
+		simple-audio-card,name = "rockchip,hdmi";
+		status = "disabled";
+
+		simple-audio-card,cpu {
+				sound-dai = <&i2s0_8ch>;
+		};
+		simple-audio-card,codec {
+				sound-dai = <&hdmi>;
+		};
+	};
+};
+
+&hdmi {
+	status = "okay";
+	rockchip,phy-table =
+		<92812500  0x8009 0x0000 0x0270>,
+		<165000000 0x800b 0x0000 0x026d>,
+		<185625000 0x800b 0x0000 0x01ed>,
+		<297000000 0x800b 0x0000 0x01ad>,
+		<594000000 0x8029 0x0000 0x0088>,
+		<000000000 0x0000 0x0000 0x0000>;
+};
+
+&hdmi_in_vp0 {
+	status = "okay";
+};
+
+&hdmi_in_vp1 {
+	status = "disabled";
+};
+
+&hdmi_sound {
+	status = "okay";
+};
+
+&i2s0_8ch {
+	status = "okay";
+};
+
+&route_hdmi {
+	status = "okay";
+	connect = <&vp0_out_hdmi>;
+};
