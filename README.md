@@ -4,8 +4,12 @@
 基于Rockchip原厂 `rk4.1-202305` 版本
 
 ## 预编译固件
+
+### xcfe桌面，ARM Mali GPU 驱动， 不支持桌面 OpenGL 版本
 链接：https://pan.baidu.com/s/1yd-n9Xr-0quVid7sIeTM7Q?pwd=2653 
 提取码：2653 
+
+### Gnome 桌面，Panfrost Mesa GPU 驱动， 支持桌面 OpenGL 版本
 
 
 ## 编译步骤
@@ -56,12 +60,21 @@ adb shell
 adb forward tcp:2222 tcp:22
 ```
 
-## Build
+## 构建
 
-Build 基础Ubuntu镜像
+### ARM Mali GPU 版本
+
 **注意在构建Ubuntu时，需要输入电脑的root密码**
 ```
-./build.sh init
+./build.sh tspi-rk3566-ext39-ubuntu_defconfig
+./build.sh 
+```
+
+### Panfrost Mesa GPU 版本
+
+**注意在构建Ubuntu时，需要输入电脑的root密码**
+```
+./build.sh tspi-rk3566-ubuntu-panfrost_defconfig
 ./build.sh 
 ```
 
@@ -69,13 +82,17 @@ Build 基础Ubuntu镜像
 
 ### 使用 update.img
 
-**注意带日期的文件才是最终的update.img**
 ```
-mv rockdev/<带日期的update.img> rockdev/update.img
-sudo ./rkflash.sh updateimg
+sudo ./rkflash.sh update
 ```
 
 ### 使用分区小包
 ```
 sudo ./rkflash.sh
 ```
+
+-----------------
+## Panfrost GPU 版本说明
+1. **如果开机在Kernel界面不断重启，请务必使用外接电源进行供电，不要使用电脑USB口**
+2. 使用 Panfrost GPU 版本后，不能再安装 `libmali`, 否则不能进桌面
+3. 浏览器可以直接使用 `apt` 安装 `chromium`
