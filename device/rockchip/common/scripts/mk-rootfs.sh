@@ -154,8 +154,11 @@ build_manjaro()
 
 build_ubuntu()
 {
+
+	ROOTFS_SYSTEM_PREFIX=${RK_ROOTFS_SYSTEM_UBUNTU_TYPE:-"ubuntu"}
+
 	# To build ubuntu, first need to mount image, than install kernel module into ubuntu
-	if [ ! -f ubuntu/ubuntu.tar.gz ]; then
+	if [ ! -f ubuntu/${ROOTFS_SYSTEM_PREFIX}.tar.gz ]; then
 		echo -e "找不到Ubuntu Rootfs Tar 包"
 		return -1
 	else
@@ -168,7 +171,7 @@ build_ubuntu()
 
 		echo "Decompress ubuntu rootfs"
 		mkdir -p ubuntu/.ubuntu-rootfs
-		sudo tar zxf ubuntu/ubuntu.tar.gz -C ubuntu/.ubuntu-rootfs
+		sudo tar zxf ubuntu/${ROOTFS_SYSTEM_PREFIX}.tar.gz -C ubuntu/.ubuntu-rootfs
 
 		if [ "${RK_KERNEL_DISTROBOOT}" = "y" ]; then
 			echo "Build rootfs distroboot"
@@ -187,6 +190,9 @@ build_ubuntu()
 			sudo mkdir -p ubuntu/.ubuntu-rootfs/vendor/etc/firmware
 		fi
 		sudo cp -ax ${SDK_DIR}/firmware/* ubuntu/.ubuntu-rootfs/vendor/etc/firmware
+
+		echo "Copy rootfs apt overlay"
+		sudo cp -ax ${SDK_DIR}/device/rockchip/common/overlays/rootfs/apt/sources.list ubuntu/.ubuntu-rootfs/etc/apt/sources.list
 
 		echo "Pack ubuntu rootfs"
 		cd ${SDK_DIR}

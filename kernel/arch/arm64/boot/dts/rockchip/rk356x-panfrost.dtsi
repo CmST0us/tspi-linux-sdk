@@ -1,0 +1,25 @@
+&gpu {
+	clock-names = "gpu", "bus";
+	interrupt-names = "gpu", "mmu", "job";
+};
+
+&gpu_opp_table {
+	opp-200000000 {
+		/delete-property/ opp-supported-hw;
+	};
+	opp-300000000 {
+		/delete-property/ opp-supported-hw;
+	};
+	opp-400000000 {
+		/delete-property/ opp-supported-hw;
+	};
+	opp-600000000 {
+		/delete-property/ opp-supported-hw;
+	};
+	opp-700000000 {
+		/delete-property/ opp-supported-hw;
+	};
+	opp-800000000 {
+		/delete-property/ opp-supported-hw;
+	};
+};

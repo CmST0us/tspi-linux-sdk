@@ -125,6 +125,14 @@ config RK_ROOTFS_SYSTEM_MANJARO
 
 endchoice
 
+if RK_ROOTFS_SYSTEM_UBUNTU
+
+config RK_ROOTFS_SYSTEM_UBUNTU_TYPE
+	string "ubuntu system type"
+	default "ubuntu"
+
+endif
+
 config RK_ROOTFS_TYPE
 	string "rootfs filesystem type"
 	default "cpio.gz" if RK_ROOTFS_INITRD
