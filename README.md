@@ -10,7 +10,8 @@
 提取码：2653 
 
 ### Gnome 桌面，Panfrost Mesa GPU 驱动， 支持桌面 OpenGL 版本
-
+链接: https://pan.baidu.com/s/1pDLs1ndT9YF41CjD2lPQeA?pwd=fqy6 
+提取码: fqy6 
 
 ## 编译步骤
 以下步骤针对Ubuntu 22.04编译环境
